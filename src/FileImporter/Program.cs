@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using CommandLine;
+using FileImporter.CmdOptions;
 using FileImporter.Data;
 using FileImporter.Json;
 
@@ -17,73 +18,162 @@ namespace FileImporter
             Run(args);
         }
 
-
         public static void Run(string[] args)
         {
-            // parse options
-            var parserResult = Parser.Default.ParseArguments<Options>(args);
-            var options = ((Parsed<Options>) parserResult).Value;
+            Parser.Default.ParseArguments<IndexOptions, MergeOptions, FindAndHandleDuplicatesOptions>(args)
+                .WithParsed<IndexOptions>(IndexData)
+                .WithParsed<MergeOptions>(ProcessMerge)
+                .WithParsed<FindAndHandleDuplicatesOptions>(FindAndProcessDuplicates)
+                .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
 
-            // read input file
-            var alreadyProcessedFiles = ReadInputFile(options.InputFile);
+            Console.WriteLine("Done. Press enter to exit.");
+            Console.ReadLine();
+        }
 
-            // process directory.
-            var processedFiles = ProcessDirectory(options.InputDirectory);
+        private static void FindAndProcessDuplicates(FindAndHandleDuplicatesOptions opts)
+        {
+            if (string.IsNullOrWhiteSpace(opts.IndexFile))
+                ShowError($"Indexfile cannot be null or empty.");
+
+            if (!File.Exists(opts.IndexFile))
+                ShowError($"File '{opts.IndexFile}' doesn't exist.");
+
+            if (string.IsNullOrWhiteSpace(opts.ProcessingFile))
+                ShowError($"ProcessingFile cannot be null or empty.");
+
+            if (!File.Exists(opts.ProcessingFile))
+                ShowError($"File '{opts.ProcessingFile}' doesn't exist.");
+
+            if (opts.DuplicateAction == FileAction.Move)
+            {
+                if (string.IsNullOrWhiteSpace(opts.DuplicateDir))
+                    ShowError($"DuplicateDir cannot be null or empty.");
+
+                if (!Directory.Exists(opts.DuplicateDir))
+                    Directory.CreateDirectory(opts.DuplicateDir);
+            }
+
+
+            var index = ReadInputFile(opts.IndexFile);
+            var filesToProcess = ReadInputFile(opts.ProcessingFile);
+
 
             // find duplicate files
-            var duplicateFiles = processedFiles
-                .Where(f =>
-                    alreadyProcessedFiles.Any(alreadyProcessed => 
-                        alreadyProcessed.Sha256.SequenceEqual(f.Sha256)))
+            var duplicateFiles = filesToProcess
+                .Where(f => index.Any(file => file.Sha256.SequenceEqual(f.Sha256)))
                 .ToArray();
 
             // find new files
-            var newFiles = processedFiles.Except(duplicateFiles).ToArray();
-            
-            HandleDuplicates(duplicateFiles, options);
+            var newFiles = filesToProcess.Except(duplicateFiles).ToArray();
 
-            HandleNewFiles(newFiles, options);
 
-            // save output file
-            var result = alreadyProcessedFiles.Concat(newFiles);
-            JsonEncoding.WriteDateToJsonFile(result, options.InputFile);
+            HandleDuplicates(duplicateFiles, opts);
+            //HandleNewFiles(newFiles, opts);
+
+            JsonEncoding.WriteDateToJsonFile(duplicateFiles, opts.OutputDuplicateFile);
+            JsonEncoding.WriteDateToJsonFile(newFiles, opts.OutputNewFile);
         }
 
-        private static void HandleNewFiles(FileData[] files, Options options)
+        private static void IndexData(IndexOptions opts)
         {
-            // Don't do anything with new files for this moment.
-            foreach (var file in files)
-                Console.WriteLine($"New file '{file}'");
-        }
+            if (string.IsNullOrWhiteSpace(opts.DirectoryToIndex))
+                ShowError("Directory cannot be null or empty.");
 
-        private static void HandleDuplicates(FileData[] files, Options options)
-        {
-            var origBaseDir = Path.Combine(options.InputDirectory);
-            var newBaseDir = @"d:\fotos deleted\tmp\";
+            if (!Directory.Exists(opts.DirectoryToIndex))
+                ShowError($"Directory '{opts.DirectoryToIndex}' does not exists.");
 
-            // move the file to other directory.
-            foreach (var file in files)
+            if (string.IsNullOrWhiteSpace(opts.OutputFile))
+                ShowError("Outputfile cannot be null or empty.");
+
+            var existingData = new List<FileData>();
+            if (File.Exists(opts.OutputFile) && opts.AppendResults)
             {
-                var newFilename = file.FileName.Replace(origBaseDir, newBaseDir);
+                existingData = ReadInputFile(opts.OutputFile);
+            }
 
-                var fi = new FileInfo(newFilename);
-                
-                if (File.Exists(newFilename))
+            var processedFiles = ProcessDirectory(opts.DirectoryToIndex);
+            
+            var result = existingData.Concat(processedFiles).ToList();
+            JsonEncoding.WriteDateToJsonFile(result, opts.OutputFile);
+        }
+
+        private static void ProcessMerge(MergeOptions opts)
+        {
+            if (string.IsNullOrWhiteSpace(opts.InputFile1))
+                ShowError($"Inputfile1 cannot be null or empty.");
+
+            if (!File.Exists(opts.InputFile1))
+                ShowError($"File '{opts.InputFile1}' doesn't exist.");
+
+            if (string.IsNullOrWhiteSpace(opts.InputFile2))
+                ShowError($"Inputfile2 cannot be null or empty.");
+
+            if (!File.Exists(opts.InputFile2))
+                ShowError($"File '{opts.InputFile2}' doesn't exist.");
+
+            if (string.IsNullOrWhiteSpace(opts.OutputFile))
+                ShowError("Output file cannot be null or empty.");
+
+            if (File.Exists(opts.OutputFile) && opts.OverwriteOutput == false)
+                ShowError($"File '{opts.OutputFile}' already exists and overwrite is disabled.");
+
+            var file1Content = ReadInputFile(opts.InputFile1);
+            var file2Content = ReadInputFile(opts.InputFile2);
+
+            JsonEncoding.WriteDateToJsonFile(file1Content.Concat(file2Content).ToList(), opts.OutputFile);
+        }
+
+        private static void ShowError(string s)
+        {
+            Console.WriteLine(s);
+            throw new Exception(s);
+        }
+
+        private static void HandleDuplicates(FileData[] files, FindAndHandleDuplicatesOptions options)
+        {
+            if (options.DuplicateAction == FileAction.Keep)
+                return;
+
+
+            if (options.DuplicateAction == FileAction.Delete)
+            {
+                foreach (var file in files)
                 {
-                    Console.WriteLine($"File '{newFilename}' already exists");
+                    try
+                    {
+                        if (File.Exists(file.FileName))
+                            File.Delete(file.FileName);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($" Error deleting file '{file.FileName}'. Ex msg : {e.Message}");
+                    }
                 }
-                else
+            }
+
+
+            if (options.DuplicateAction == FileAction.Move)
+            {
+                foreach (var file in files)
                 {
-                    Console.WriteLine($" - Move file '{file}' to '{newFilename}'");
-                    if (!Directory.Exists(fi.DirectoryName))
-                        Directory.CreateDirectory(fi.DirectoryName);
-                    File.Move(file.FileName, newFilename);
+                    try
+                    {
+                        var fi = new FileInfo(file.FileName);
+                        if (fi.Exists)
+                        {
+                            var destFileName = Path.Combine(options.DuplicateDir, fi.Name);
+                            fi.MoveTo(destFileName);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($" Error moving file '{file.FileName}'. Ex msg : {e.Message}");
+                    }
                 }
             }
         }
 
-
-        private static List<FileData> ProcessDirectory(string inputDir)
+        private static IEnumerable<FileData> ProcessDirectory(string inputDir)
         {
             if (!Directory.Exists(inputDir))
                 throw new Exception("Directory does not exists.");
