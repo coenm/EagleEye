@@ -206,6 +206,7 @@ namespace FileImporter
                 using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true))
                 {
                     result.Sha256 = CalculateHash(fileStream);
+
                 }
 
                 return result;
