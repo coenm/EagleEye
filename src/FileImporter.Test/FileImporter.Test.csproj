@@ -13,4 +13,9 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\TestImages\TestImages.csproj" />
+    <ProjectReference Include="..\FileImporter\FileImporter.csproj" />
+  </ItemGroup>
+
 </Project>

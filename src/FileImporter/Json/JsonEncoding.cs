@@ -5,7 +5,7 @@ using Newtonsoft.Json.Converters;
 
 namespace FileImporter.Json
 {
-    internal static class JsonEncoding
+    public static class JsonEncoding
     {
         private static readonly JsonSerializerSettings JsonSerializerSettings;
 
@@ -41,7 +41,7 @@ namespace FileImporter.Json
             return result;
         }
 
-        public static void WriteDateToJsonFile(object obj, string filename)
+        public static void WriteDataToJsonFile(object obj, string filename)
         {
             Debug.Assert(string.IsNullOrWhiteSpace(filename) == false);
             Debug.Assert(obj != null);

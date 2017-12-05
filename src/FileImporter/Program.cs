@@ -70,8 +70,8 @@ namespace FileImporter
             HandleDuplicates(duplicateFiles, opts);
             //HandleNewFiles(newFiles, opts);
 
-            JsonEncoding.WriteDateToJsonFile(duplicateFiles, opts.OutputDuplicateFile);
-            JsonEncoding.WriteDateToJsonFile(newFiles, opts.OutputNewFile);
+            JsonEncoding.WriteDataToJsonFile(duplicateFiles, opts.OutputDuplicateFile);
+            JsonEncoding.WriteDataToJsonFile(newFiles, opts.OutputNewFile);
         }
 
         private static void IndexData(IndexOptions opts)
@@ -94,7 +94,7 @@ namespace FileImporter
             var processedFiles = ProcessDirectory(opts.DirectoryToIndex);
             
             var result = existingData.Concat(processedFiles).ToList();
-            JsonEncoding.WriteDateToJsonFile(result, opts.OutputFile);
+            JsonEncoding.WriteDataToJsonFile(result, opts.OutputFile);
         }
 
         private static void ProcessMerge(MergeOptions opts)
@@ -120,7 +120,7 @@ namespace FileImporter
             var file1Content = ReadInputFile(opts.InputFile1);
             var file2Content = ReadInputFile(opts.InputFile2);
 
-            JsonEncoding.WriteDateToJsonFile(file1Content.Concat(file2Content).ToList(), opts.OutputFile);
+            JsonEncoding.WriteDataToJsonFile(file1Content.Concat(file2Content).ToList(), opts.OutputFile);
         }
 
         private static void ShowError(string s)
