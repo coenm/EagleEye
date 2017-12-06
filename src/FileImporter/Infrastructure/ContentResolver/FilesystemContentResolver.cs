@@ -1,6 +1,7 @@
 ﻿using System.IO;
+using FileImporter.Indexing;
 
-namespace FileImporter.Indexing
+namespace FileImporter.Infrastructure.ContentResolver
 {
     public class FilesystemContentResolver : IContentResolver
     {

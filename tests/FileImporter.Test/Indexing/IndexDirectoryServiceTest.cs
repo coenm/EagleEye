@@ -1,17 +1,18 @@
 ﻿using System.IO;
 using System.Linq;
 using FileImporter.Indexing;
+using FileImporter.Infrastructure.ContentResolver;
 using FileImporter.Json;
 using TestImages;
 using Xunit;
 
 namespace FileImporter.Test.Indexing
 {
-    public class IndexDirectoryTest
+    public class IndexDirectoryServiceTest
     {
         private readonly string[] _imageFilenames;
 
-        public IndexDirectoryTest()
+        public IndexDirectoryServiceTest()
         {
             _imageFilenames = Directory
                 .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
@@ -33,7 +34,7 @@ namespace FileImporter.Test.Indexing
         {
             // arrange
             var contentResolver = new RelativeFilesystemContentResolver(TestEnvironment.InputImagesDirectoryFullPath);
-            var sut = new IndexDirectory(contentResolver);
+            var sut = new IndexDirectoryService(contentResolver);
 
             // act
             var result = sut.CalculateIndex(_imageFilenames);

@@ -4,11 +4,11 @@ using FileImporter.Imaging;
 
 namespace FileImporter.Indexing
 {
-    public class IndexDirectory
+    public class IndexDirectoryService
     {
         private readonly IContentResolver _contentResolver;
 
-        public IndexDirectory(IContentResolver contentResolver)
+        public IndexDirectoryService(IContentResolver contentResolver)
         {
             _contentResolver = contentResolver ?? throw new ArgumentNullException(nameof(contentResolver));
         }
