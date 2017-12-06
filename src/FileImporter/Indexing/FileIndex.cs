@@ -2,9 +2,14 @@
 
 namespace FileImporter.Indexing
 {
-    public struct FileIndex
+    public class FileIndex
     {
-        public string Identifier { get; set; }
+        public FileIndex(string identifier)
+        {
+            Identifier = identifier;
+        }
+
+        public string Identifier { get; }
 
         public ImageHashValues Hashes { get; set; }
     }
