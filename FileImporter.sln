@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileImporter", "src\FileImporter\FileImporter.csproj", "{FEC19554-04CA-416D-A771-485D73EC3001}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileImporter.Test", "src\FileImporter.Test\FileImporter.Test.csproj", "{2F6E7A87-C560-459D-B730-3D8A335A3CC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileImporter.Test", "tests\FileImporter.Test\FileImporter.Test.csproj", "{2F6E7A87-C560-459D-B730-3D8A335A3CC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestImages", "TestImages\TestImages.csproj", "{105D5482-9356-41FE-A637-5AB15EE639D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestImages", "tests\TestImages\TestImages.csproj", "{105D5482-9356-41FE-A637-5AB15EE639D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

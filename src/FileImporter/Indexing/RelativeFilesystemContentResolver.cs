@@ -1,14 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace FileImporter.Indexing
 {
-    public class AbstractFilesystemContentResolver : IContentResolver
+    public class RelativeFilesystemContentResolver : IContentResolver
     {
         private readonly string _baseDirectory;
 
-        public AbstractFilesystemContentResolver(string baseDirectory)
+        public RelativeFilesystemContentResolver(string baseDirectory)
         {
-            _baseDirectory = baseDirectory;
+            _baseDirectory = baseDirectory ?? throw new ArgumentNullException(nameof(baseDirectory));
         }
 
         public Stream Read(string identifier)

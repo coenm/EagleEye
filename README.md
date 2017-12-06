@@ -15,3 +15,10 @@ This project is a quick (commandline) tool to build an index with filename and h
 
 # Current State
 :grinning:
+
+
+# Download
+```
+git clone https://github.com/coenm/FindProcessedFiles.git
+git submodule update --init --recursive
+```

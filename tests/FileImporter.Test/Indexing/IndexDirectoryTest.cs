@@ -32,7 +32,8 @@ namespace FileImporter.Test.Indexing
         public void CalculateIndexOfFilesTest()
         {
             // arrange
-            var sut = new IndexDirectory(new AbstractFilesystemContentResolver(TestEnvironment.InputImagesDirectoryFullPath));
+            var contentResolver = new RelativeFilesystemContentResolver(TestEnvironment.InputImagesDirectoryFullPath);
+            var sut = new IndexDirectory(contentResolver);
 
             // act
             var result = sut.CalculateIndex(_imageFilenames);

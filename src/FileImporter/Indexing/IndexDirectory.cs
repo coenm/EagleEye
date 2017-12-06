@@ -24,7 +24,7 @@ namespace FileImporter.Indexing
             {
                 using (var stream = _contentResolver.Read(fileIdentifiers[index]))
                 {
-                    result[index] = new FileIndex()
+                    result[index] = new FileIndex
                     {
                         Identifier = fileIdentifiers[index],
                         Hashes = ImageHashing.Calculate(stream)

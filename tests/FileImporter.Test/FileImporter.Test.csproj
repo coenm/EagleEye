@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TestImages\TestImages.csproj" />
-    <ProjectReference Include="..\FileImporter\FileImporter.csproj" />
+    <ProjectReference Include="..\TestImages\TestImages.csproj" />
+    <ProjectReference Include="..\..\src\FileImporter\FileImporter.csproj" />
   </ItemGroup>
 
 </Project>
