@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FileImporter.Indexing;
-using FileImporter.Json;
 
 namespace FileImporter.Infrastructure.FileIndexRepository
 {
@@ -11,14 +10,14 @@ namespace FileImporter.Infrastructure.FileIndexRepository
     /// </summary>
     public class SingleFileIndexRepository : IFileIndexRepository
     {
-        private readonly string _filename;
+        private readonly IPersistantSerializer<List<FileIndex>> _storage;
         private readonly List<FileIndex> _data;
         private readonly object _syncLock = new object();
 
-        public SingleFileIndexRepository(string filename)
+        public SingleFileIndexRepository(IPersistantSerializer<List<FileIndex>> storage)
         {
-            _filename = filename ?? throw new ArgumentNullException(nameof(filename));
-            _data = JsonEncoding.ReadFromFile<List<FileIndex>>(_filename);
+            _storage = storage ?? throw new ArgumentNullException(nameof(_storage));
+            _data = _storage.Load();
         }
 
         public FileIndex Get(string identifier)
@@ -37,12 +36,65 @@ namespace FileImporter.Infrastructure.FileIndexRepository
             return _data.Where(index => predicate(index)).Take(take).Skip(skip);
         }
 
+        public IEnumerable<FileIndex> FindSimilar(FileIndex src, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95,
+            int take = 0, int skip = 0)
+        {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
+
+            var result = _data.Where(index =>
+                {
+                    if (index.Identifier.Equals(src.Identifier, StringComparison.InvariantCulture))
+                        return false;
+
+                    if (index.Hashes.FileHash.SequenceEqual(src.Hashes.FileHash))
+                        return true;
+
+                    if (index.Hashes.ImageHash.SequenceEqual(src.Hashes.ImageHash))
+                        return true;
+
+                    if (minAvgHash >= 0 && minAvgHash <= 100)
+                    {
+                        if (CoenM.ImageSharp.CompareHash.Similarity(index.Hashes.AverageHash, src.Hashes.AverageHash) >= minAvgHash)
+                            return true;
+                    }
+
+                    if (minDiffHash >= 0 && minDiffHash <= 100)
+                    {
+                        if (CoenM.ImageSharp.CompareHash.Similarity(index.Hashes.DifferenceHash, src.Hashes.DifferenceHash) >= minDiffHash)
+                            return true;
+                    }
+
+                    if (minPerHash >= 0 && minPerHash <= 100)
+                    {
+                        if (CoenM.ImageSharp.CompareHash.Similarity(index.Hashes.PerceptualHash, src.Hashes.PerceptualHash) >= minPerHash)
+                            return true;
+                    }
+
+                    return false;
+                });
+
+            if (skip > 0)
+                result = result.Skip(skip);
+
+            if (take > 0)
+                result = result.Take(take);
+
+            return result;
+        }
+
         public int Count(Predicate<FileIndex> predicate)
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
             return _data.Count(index => predicate(index));
+        }
+
+        public int CountSimilar(FileIndex src, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95)
+        {
+            return FindSimilar(src, minAvgHash, minDiffHash, minPerHash).Count();
         }
 
         public void Save(FileIndex item)
@@ -56,7 +108,7 @@ namespace FileImporter.Infrastructure.FileIndexRepository
 
                 _data.Add(item);
 
-                JsonEncoding.WriteDataToJsonFile(_data, _filename);
+                _storage.Save(_data);
             }
         }
     }

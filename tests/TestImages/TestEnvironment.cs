@@ -31,7 +31,7 @@ namespace TestImages
 
             var assemblyFile = new FileInfo(assemblyLocation);
 
-            DirectoryInfo directory = assemblyFile.Directory;
+            var directory = assemblyFile.Directory;
 
             while (!directory.EnumerateFiles(SolutionFileName).Any())
             {
@@ -84,9 +84,5 @@ namespace TestImages
         /// Gets the correct full path to the Images directory.
         /// </summary>
         public static string InputImagesDirectoryFullPath => GetFullPath(InputImagesRelativePath);
-
-        public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-
-        public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     }
 }

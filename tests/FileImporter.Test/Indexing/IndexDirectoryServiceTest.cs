@@ -24,11 +24,9 @@ namespace FileImporter.Test.Indexing
         private static string ConvertToRelativeFilename(string fullFilename)
         {
             var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
-            var result = fullFilename.Remove(0, slnDirectoryLength);
-            return result;
+            return fullFilename.Remove(0, slnDirectoryLength);
         }
-
-
+        
         [Fact]
         public void CalculateIndexOfFilesTest()
         {
