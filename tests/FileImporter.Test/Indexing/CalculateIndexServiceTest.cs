@@ -8,11 +8,11 @@ using Xunit;
 
 namespace FileImporter.Test.Indexing
 {
-    public class IndexDirectoryServiceTest
+    public class CalculateIndexServiceTest
     {
         private readonly string[] _imageFilenames;
 
-        public IndexDirectoryServiceTest()
+        public CalculateIndexServiceTest()
         {
             _imageFilenames = Directory
                 .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
@@ -32,7 +32,7 @@ namespace FileImporter.Test.Indexing
         {
             // arrange
             var contentResolver = new RelativeFilesystemContentResolver(TestEnvironment.InputImagesDirectoryFullPath);
-            var sut = new IndexDirectoryService(contentResolver);
+            var sut = new CalculateIndexService(contentResolver);
 
             // act
             var result = sut.CalculateIndex(_imageFilenames);

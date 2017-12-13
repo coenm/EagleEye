@@ -8,13 +8,22 @@ using CommandLine;
 using FileImporter.CmdOptions;
 using FileImporter.Data;
 using FileImporter.Json;
+using SimpleInjector;
 
 namespace FileImporter
 {
     public static class Program
     {
+        private static Container _container;
+
         public static void Main(string[] args)
         {
+            _container = new Container();
+
+            const string rootPath = @"D:\Fotoalbum";
+            const string indexFilename = @"D:\Fotoalbum\index.json";
+            Startup.ConfigureContainer(_container, rootPath, indexFilename);
+
             Run(args);
         }
 

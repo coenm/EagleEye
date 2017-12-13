@@ -15,6 +15,8 @@ namespace FileImporter.Indexing
 
         int CountSimilar(FileIndex src, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95);
 
-        void Save(FileIndex item);
+        void Delete(FileIndex fileIndex);
+
+        void AddOrUpdate(FileIndex fileIndex);
     }
 }

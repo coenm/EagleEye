@@ -96,9 +96,30 @@ namespace FileImporter.Infrastructure.FileIndexRepository
         {
             return FindSimilar(src, minAvgHash, minDiffHash, minPerHash).Count();
         }
+     
 
-        public void Save(FileIndex item)
+        public void Delete(FileIndex item)
         {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            lock (_syncLock)
+            {
+                var existingItem = _data.FirstOrDefault(index => index.Identifier.Equals(item.Identifier, StringComparison.InvariantCulture));
+
+                if (existingItem == null)
+                    return;
+
+                _data.Remove(existingItem);
+                _storage.Save(_data);
+            }
+        }
+
+        public void AddOrUpdate(FileIndex item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
             lock (_syncLock)
             {
                 var existingItem = _data.FirstOrDefault(index => index.Identifier.Equals(item.Identifier, StringComparison.InvariantCulture));
@@ -107,7 +128,6 @@ namespace FileImporter.Infrastructure.FileIndexRepository
                     _data.Remove(existingItem);
 
                 _data.Add(item);
-
                 _storage.Save(_data);
             }
         }
