@@ -1,4 +1,7 @@
-﻿namespace FileImporter.Infrastructure.PersistantSerializer
+﻿using System;
+using FileImporter.Json;
+
+namespace FileImporter.Infrastructure.PersistantSerializer
 {
     public class JsonToFileSerializer<T> : IPersistantSerializer<T> where T : new()
     {
@@ -11,7 +14,17 @@
 
         public T Load()
         {
-            return Json.JsonEncoding.ReadFromFile<T>(_filename);
+            try
+            {
+                var result = JsonEncoding.ReadFromFile<T>(_filename);
+                if (result == null)
+                    return new T();
+                return result;
+            }
+            catch (Exception)
+            {
+                return new T();
+            }
         }
 
         public void Save(T data)

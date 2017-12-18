@@ -7,29 +7,34 @@ using System.Security.Cryptography;
 using CommandLine;
 using FileImporter.CmdOptions;
 using FileImporter.Data;
+using FileImporter.Indexing;
 using FileImporter.Json;
+using ShellProgressBar;
 using SimpleInjector;
 
 namespace FileImporter
 {
     public static class Program
     {
+        private const string RootPath = @"D:\Fotoalbum";
+        private const string IndexFilename = @"D:\Fotoalbum\index.json";
+
         private static Container _container;
 
         public static void Main(string[] args)
         {
             _container = new Container();
 
-            const string rootPath = @"D:\Fotoalbum";
-            const string indexFilename = @"D:\Fotoalbum\index.json";
-            Startup.ConfigureContainer(_container, rootPath, indexFilename);
+            
+//            Startup.ConfigureContainer(_container, rootPath, indexFilename);
 
             Run(args);
         }
 
         public static void Run(string[] args)
         {
-            Parser.Default.ParseArguments<IndexOptions, MergeOptions, FindAndHandleDuplicatesOptions>(args)
+            Parser.Default.ParseArguments<UpdateIndexOptions, IndexOptions, MergeOptions, FindAndHandleDuplicatesOptions>(args)
+                .WithParsed<UpdateIndexOptions>(UpdateIndex)
                 .WithParsed<IndexOptions>(IndexData)
                 .WithParsed<MergeOptions>(ProcessMerge)
                 .WithParsed<FindAndHandleDuplicatesOptions>(FindAndProcessDuplicates)
@@ -38,6 +43,75 @@ namespace FileImporter
             Console.WriteLine("Done. Press enter to exit.");
             Console.ReadLine();
         }
+
+        private static void UpdateIndex(UpdateIndexOptions options)
+        {
+            // todo input validation
+            if (!Directory.Exists(options.DirectoryToIndex))
+            {
+                Console.WriteLine("Directory does not exist.");
+                return;
+            }
+
+            var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
+            var diRoot = new DirectoryInfo(RootPath).FullName;
+
+            var rp = string.Empty;
+            if (diDirToIndex.StartsWith(diRoot))
+            {
+                rp = RootPath;
+            }
+
+            Startup.ConfigureContainer(_container, rp, options.OutputFile);
+
+
+            var files = Directory
+                .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
+                .Select(f => ConvertToRelativeFilename(rp, f))
+                .ToArray();
+
+
+            var progressOptions = new ProgressBarOptions
+            {
+                ProgressCharacter = '─',
+                ProgressBarOnBottom = true
+            };
+
+            var searchService = _container.GetInstance<SearchService>();
+            var indexService = _container.GetInstance<CalculateIndexService>();
+            var persistantService = _container.GetInstance<PersistantFileIndexService>();
+
+            using (var pbar = new ProgressBar(files.Length, "Initial message", progressOptions))
+            {
+                foreach (var file in files)
+                {
+                    pbar.Tick(file);
+
+                    var foundItem = searchService.FindById(file);
+                    var items = new string[1];
+                    if (foundItem == null)
+                    {
+                        // index and add
+                        pbar.Message = $"Processing '{file}' ";
+                        items[0] = file;
+                        var index = indexService.CalculateIndex(items);
+                        persistantService.AddOrUpdate(index.Single());
+                    }
+                }
+            }
+
+            Console.ReadKey();
+        }
+
+        private static string ConvertToRelativeFilename(string rootPath, string fullFilename)
+        {
+            var slnDirectoryLength = rootPath.Length;
+            var result = fullFilename.Remove(0, slnDirectoryLength);
+            while (result.Length > 0 && (result[0] == '/' || result[0] == '\\'))
+                result = result.Substring(1);
+            return result;
+        }
+
 
         private static void FindAndProcessDuplicates(FindAndHandleDuplicatesOptions opts)
         {
