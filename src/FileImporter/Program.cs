@@ -16,7 +16,7 @@ namespace FileImporter
 {
     public static class Program
     {
-        private const string RootPath = @"D:\Fotoalbum";
+//        private const string RootPath = @"D:\Fotoalbum";
         private const string IndexFilename = @"D:\Fotoalbum\index.json";
 
         private static Container _container;
@@ -25,7 +25,7 @@ namespace FileImporter
         {
             _container = new Container();
 
-            
+
 //            Startup.ConfigureContainer(_container, rootPath, indexFilename);
 
             Run(args);
@@ -33,8 +33,9 @@ namespace FileImporter
 
         public static void Run(string[] args)
         {
-            Parser.Default.ParseArguments<UpdateIndexOptions, IndexOptions, MergeOptions, FindAndHandleDuplicatesOptions>(args)
+            Parser.Default.ParseArguments<UpdateIndexOptions, CheckIndexOptions, IndexOptions, MergeOptions, FindAndHandleDuplicatesOptions>(args)
                 .WithParsed<UpdateIndexOptions>(UpdateIndex)
+                .WithParsed<CheckIndexOptions>(CheckIndex)
                 .WithParsed<IndexOptions>(IndexData)
                 .WithParsed<MergeOptions>(ProcessMerge)
                 .WithParsed<FindAndHandleDuplicatesOptions>(FindAndProcessDuplicates)
@@ -42,6 +43,44 @@ namespace FileImporter
 
             Console.WriteLine("Done. Press enter to exit.");
             Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Remove index if file does not exist anymore.
+        /// </summary>
+        private static void CheckIndex(CheckIndexOptions options)
+        {
+            // todo input validation
+//            var diRoot = new DirectoryInfo(RootPath).FullName;
+//            var rp = RootPath;
+
+            Startup.ConfigureContainer(_container, "", options.OutputFile);
+
+            var searchService = _container.GetInstance<SearchService>();
+            var persistantService = _container.GetInstance<PersistantFileIndexService>();
+            var contentResolver = _container.GetInstance<IContentResolver>();
+
+            var progressOptions = new ProgressBarOptions
+                                      {
+                                          ProgressCharacter = '─',
+                                          ProgressBarOnBottom = true
+                                      };
+
+            var allIdexes = searchService.FindAll().ToArray();
+
+            using (var pbar = new ProgressBar(allIdexes.Length, "Initial message", progressOptions))
+            {
+                foreach (var index in allIdexes)
+                {
+                    pbar.Tick(index.Identifier);
+
+                    // check if file exists.
+                    if (!contentResolver.Exist(index.Identifier))
+                    {
+                        persistantService.Delete(index.Identifier);
+                    }
+                }
+            }
         }
 
         private static void UpdateIndex(UpdateIndexOptions options)
@@ -54,20 +93,20 @@ namespace FileImporter
             }
 
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
-            var diRoot = new DirectoryInfo(RootPath).FullName;
-
+//            var diRoot = new DirectoryInfo(RootPath).FullName;
+//
             var rp = string.Empty;
-            if (diDirToIndex.StartsWith(diRoot))
-            {
-                rp = RootPath;
-            }
+//            if (diDirToIndex.StartsWith(diRoot))
+//            {
+//                rp = RootPath;
+//            }
 
             Startup.ConfigureContainer(_container, rp, options.OutputFile);
 
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
-                .Select(f => ConvertToRelativeFilename(rp, f))
+//                .Select(f => ConvertToRelativeFilename(rp, f))
                 .ToArray();
 
 
@@ -86,17 +125,28 @@ namespace FileImporter
                 foreach (var file in files)
                 {
                     pbar.Tick(file);
-
-                    var foundItem = searchService.FindById(file);
                     var items = new string[1];
-                    if (foundItem == null)
+                    items[0] = file;
+
+                    if (options.Force)
                     {
                         // index and add
                         pbar.Message = $"Processing '{file}' ";
-                        items[0] = file;
                         var index = indexService.CalculateIndex(items);
                         persistantService.AddOrUpdate(index.Single());
                     }
+                    else
+                    {
+                        var foundItem = searchService.FindById(file);
+                        if (foundItem == null)
+                        {
+                            // index and add
+                            pbar.Message = $"Processing '{file}' ";
+                            var index = indexService.CalculateIndex(items);
+                            persistantService.AddOrUpdate(index.Single());
+                        }
+                    }
+
                 }
             }
 
@@ -175,7 +225,7 @@ namespace FileImporter
             }
 
             var processedFiles = ProcessDirectory(opts.DirectoryToIndex);
-            
+
             var result = existingData.Concat(processedFiles).ToList();
             JsonEncoding.WriteDataToJsonFile(result, opts.OutputFile);
         }

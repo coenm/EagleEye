@@ -13,9 +13,19 @@ namespace FileImporter.Infrastructure.ContentResolver
             _baseDirectory = baseDirectory ?? throw new ArgumentNullException(nameof(baseDirectory));
         }
 
+        public bool Exist(string identifier)
+        {
+            return FilesystemContentResolver.Instance.Exist(FullPath(identifier));
+        }
+
         public Stream Read(string identifier)
         {
-            return FilesystemContentResolver.Instance.Read(Path.Combine(_baseDirectory, identifier));
+            return FilesystemContentResolver.Instance.Read(FullPath(identifier));
+        }
+
+        private string FullPath(string identifier)
+        {
+            return Path.Combine(_baseDirectory, identifier);
         }
     }
 }

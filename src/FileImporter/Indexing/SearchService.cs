@@ -21,5 +21,10 @@ namespace FileImporter.Indexing
         {
             return _repository.FindSimilar(src, minAvgHash, minDiffHash, minPerHash, take, skip);
         }
+
+        public IEnumerable<FileIndex> FindAll()
+        {
+            return _repository.Find(p => true);
+        }
     }
 }

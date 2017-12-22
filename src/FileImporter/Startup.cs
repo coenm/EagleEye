@@ -13,7 +13,8 @@ namespace FileImporter
         {
             // todo check arguments.
 
-            container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
+//            container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
+            container.RegisterSingleton<IContentResolver>(FilesystemContentResolver.Instance);
             container.RegisterSingleton<IFileIndexRepository>(() => new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(indexFilename)));
 
             container.Verify(VerificationOption.VerifyAndDiagnose);

@@ -11,5 +11,8 @@ namespace FileImporter.CmdOptions
 
         [Option('o', "output-file", HelpText = "Filename containing all indexes", Required = true)]
         public string OutputFile { get; set; }
+
+        [Option('f', "force", Required = false, Default = false, HelpText = "ReIndex already existing files.")]
+        public bool Force { get; set; }
     }
 }
