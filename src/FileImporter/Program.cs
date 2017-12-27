@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using CommandLine;
 using FileImporter.CmdOptions;
 using FileImporter.Data;
 using FileImporter.Indexing;
-using FileImporter.Json;
+using FileImporter.Infrastructure;
+using FileImporter.Infrastructure.Everything;
+using FileImporter.Infrastructure.FileIndexRepository;
+using FileImporter.Infrastructure.PersistantSerializer;
 using ShellProgressBar;
 using SimpleInjector;
 
@@ -21,28 +22,261 @@ namespace FileImporter
 
         private static Container _container;
 
+        private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
+        {
+            ProgressCharacter = '─',
+            ProgressBarOnBottom = true
+        };
+
+
         public static void Main(string[] args)
         {
             _container = new Container();
-
-
 //            Startup.ConfigureContainer(_container, rootPath, indexFilename);
-
             Run(args);
         }
 
         public static void Run(string[] args)
         {
-            Parser.Default.ParseArguments<UpdateIndexOptions, CheckIndexOptions, IndexOptions, MergeOptions, FindAndHandleDuplicatesOptions>(args)
+            Parser.Default.ParseArguments<AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, FindAndHandleDuplicatesOptions>(args)
+                .WithParsed<AutoDeleteSameFile>(AutoDeleteSameFile)
+                .WithParsed<MoveOptions>(MoveFiles)
                 .WithParsed<UpdateIndexOptions>(UpdateIndex)
                 .WithParsed<CheckIndexOptions>(CheckIndex)
-                .WithParsed<IndexOptions>(IndexData)
-                .WithParsed<MergeOptions>(ProcessMerge)
+                .WithParsed<SearchOptions>(Search)
                 .WithParsed<FindAndHandleDuplicatesOptions>(FindAndProcessDuplicates)
-                .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
+                .WithNotParsed(errs =>
+                {
+                    Console.WriteLine("Could not parse the arguments.");
+                });
 
             Console.WriteLine("Done. Press enter to exit.");
             Console.ReadLine();
+        }
+
+        private static void AutoDeleteSameFile(AutoDeleteSameFile options)
+        {
+            Startup.ConfigureContainer(_container, "", options.IndexFile);
+
+            var searchService = _container.GetInstance<SearchService>();
+            var contentResolver = _container.GetInstance<IContentResolver>();
+
+            var allIdexes = searchService.FindAll().ToArray();
+
+            using (var pbar = new ProgressBar(allIdexes.Length, "Initial message", ProgressOptions))
+            {
+                foreach (var index in allIdexes)
+                {
+                    pbar.Tick(index.Identifier);
+
+                    // check if file exists.
+                    if (!contentResolver.Exist(index.Identifier))
+                    {
+                        continue;
+                    }
+
+                    var duplicates = allIdexes
+                        .Where(f => f != index && f.Hashes.FileHash.SequenceEqual(index.Hashes.FileHash))
+                        .ToList();
+
+                    if (!duplicates.Any())
+                        continue;
+
+                    var fileInfo = new FileInfo(index.Identifier);
+                    var dirIndex = fileInfo.Directory.FullName;
+
+                    var filenameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
+                    var duplicatesInSameDirectory = duplicates
+                        .Where(f =>
+                        {
+                            var info = new FileInfo(f.Identifier);
+                            if (info.Directory.FullName != dirIndex)
+                                return false;
+
+                            return true;
+                            var filenameWithoutExt = info.Name.Substring(0, info.Name.Length - info.Extension.Length);
+                            if (filenameWithoutExt.StartsWith(filenameWithoutExtension))
+                                return true;
+
+                            return false;
+
+                        })
+                        .ToList();
+
+                    if (duplicatesInSameDirectory.Any())
+                    {
+                        // remove these
+                        foreach (var fileToRemove in duplicatesInSameDirectory)
+                        {
+                            try
+                            {
+                                if (File.Exists(fileToRemove.Identifier))
+                                    File.Delete(fileToRemove.Identifier);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private static void MoveFiles(MoveOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.Directory))
+            {
+                Console.WriteLine("Cannot be null or empty");
+                return;
+            }
+
+            if (!Directory.Exists(options.Directory))
+            {
+                Console.WriteLine("Directory does not exist");
+                return;
+            }
+            
+            var directoryInfo = new DirectoryInfo(options.Directory);
+            
+            var files = Directory
+                .EnumerateFiles(directoryInfo.FullName, "*.*", SearchOption.TopDirectoryOnly)
+                .ToArray();
+
+            using (var pbar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            {
+                foreach (var file in files)
+                {
+                    pbar.Tick(file);
+
+                    var dt = ExtractDateFromFilename.TryGetFromFilename(file);
+                    if (!dt.HasValue)
+                    {
+                        continue;
+                    }
+
+                    var d = Path.Combine(directoryInfo.FullName, dt.Value.ToString("yyyy-MM-dd"));
+                    if (!Directory.Exists(d))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(d);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+                    }
+
+                    if (!Directory.Exists(d))
+                    {
+                        continue;
+                    }
+
+
+                    try
+                    {
+                        var fi = new FileInfo(file);
+                        var destFileName = Path.Combine(d, fi.Name);
+                        File.Move(fi.FullName, destFileName);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+        }
+
+        private static void Search(SearchOptions options)
+        {
+            SingleFileIndexRepository repo2;
+            var rp = string.Empty;
+            Startup.ConfigureContainer(_container, rp, options.IndexFile);
+
+
+            var searchService = _container.GetInstance<SearchService>();
+            var everything = new Everything();
+
+            if (string.IsNullOrWhiteSpace(options.DirectoryToIndex))
+            {
+                if (!File.Exists(options.IndexFiles2))
+                {
+                    Console.WriteLine("File doesnt exist");
+                    return;
+                }
+
+                repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(options.IndexFiles2));
+
+
+                var allFiles = repo2.Find(f => true).Where(f => File.Exists(f.Identifier)).ToList();
+
+
+                using (var pbar = new ProgressBar(allFiles.Count, "Initial message", ProgressOptions))
+                {
+                    foreach (var index in allFiles)
+                    {
+                        pbar.Tick(index.Identifier);
+                        List<FileIndex> similars = searchService.FindSimilar(index).ToList();
+                        similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList(); 
+                        similars = similars.Where(f => File.Exists(f.Identifier)).ToList();
+                        
+                        if (similars.Any())
+                        {
+                            similars.Add(index);
+                            everything.Show(similars);
+                            Console.WriteLine("Press enter for next");
+                            Console.ReadKey();
+                        }
+                    }
+                }
+
+                return;
+            }
+            else
+            {
+                if (!Directory.Exists(options.DirectoryToIndex))
+                {
+                    Console.WriteLine("Directory does not exist.");
+                    return;
+                }
+            }
+
+            var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
+            var files = Directory
+                .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
+                .ToArray();
+
+
+            var indexService = _container.GetInstance<CalculateIndexService>();
+
+            using (var pbar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            {
+                foreach (var index in files)
+                {
+                    pbar.Tick(index);
+
+                    var items = new string[1];
+                    items[0] = index;
+
+                    var result = indexService.CalculateIndex(items).Single();
+                    List<FileIndex> similars = searchService.FindSimilar(result).ToList();
+
+                    similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
+
+                    if (similars.Any())
+                    {
+                        similars.Add(result);
+                        everything.Show(similars);
+                        Console.WriteLine("Press enter for next");
+                        Console.ReadKey();
+                    }
+                }
+            }
+
+            Console.WriteLine("DONE");
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -60,15 +294,9 @@ namespace FileImporter
             var persistantService = _container.GetInstance<PersistantFileIndexService>();
             var contentResolver = _container.GetInstance<IContentResolver>();
 
-            var progressOptions = new ProgressBarOptions
-                                      {
-                                          ProgressCharacter = '─',
-                                          ProgressBarOnBottom = true
-                                      };
-
             var allIdexes = searchService.FindAll().ToArray();
 
-            using (var pbar = new ProgressBar(allIdexes.Length, "Initial message", progressOptions))
+            using (var pbar = new ProgressBar(allIdexes.Length, "Initial message", ProgressOptions))
             {
                 foreach (var index in allIdexes)
                 {
@@ -110,17 +338,11 @@ namespace FileImporter
                 .ToArray();
 
 
-            var progressOptions = new ProgressBarOptions
-            {
-                ProgressCharacter = '─',
-                ProgressBarOnBottom = true
-            };
-
             var searchService = _container.GetInstance<SearchService>();
             var indexService = _container.GetInstance<CalculateIndexService>();
             var persistantService = _container.GetInstance<PersistantFileIndexService>();
 
-            using (var pbar = new ProgressBar(files.Length, "Initial message", progressOptions))
+            using (var pbar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
                 foreach (var file in files)
                 {
@@ -186,74 +408,25 @@ namespace FileImporter
                     Directory.CreateDirectory(opts.DuplicateDir);
             }
 
-
-            var index = ReadInputFile(opts.IndexFile);
-            var filesToProcess = ReadInputFile(opts.ProcessingFile);
-
-
-            // find duplicate files
-            var duplicateFiles = filesToProcess
-                .Where(f => index.Any(file => file.Sha256.SequenceEqual(f.Sha256)))
-                .ToArray();
-
-            // find new files
-            var newFiles = filesToProcess.Except(duplicateFiles).ToArray();
-
-
-            HandleDuplicates(duplicateFiles, opts);
-            //HandleNewFiles(newFiles, opts);
-
-            JsonEncoding.WriteDataToJsonFile(duplicateFiles, opts.OutputDuplicateFile);
-            JsonEncoding.WriteDataToJsonFile(newFiles, opts.OutputNewFile);
-        }
-
-        private static void IndexData(IndexOptions opts)
-        {
-            if (string.IsNullOrWhiteSpace(opts.DirectoryToIndex))
-                ShowError("Directory cannot be null or empty.");
-
-            if (!Directory.Exists(opts.DirectoryToIndex))
-                ShowError($"Directory '{opts.DirectoryToIndex}' does not exists.");
-
-            if (string.IsNullOrWhiteSpace(opts.OutputFile))
-                ShowError("Outputfile cannot be null or empty.");
-
-            var existingData = new List<FileData>();
-            if (File.Exists(opts.OutputFile) && opts.AppendResults)
-            {
-                existingData = ReadInputFile(opts.OutputFile);
-            }
-
-            var processedFiles = ProcessDirectory(opts.DirectoryToIndex);
-
-            var result = existingData.Concat(processedFiles).ToList();
-            JsonEncoding.WriteDataToJsonFile(result, opts.OutputFile);
-        }
-
-        private static void ProcessMerge(MergeOptions opts)
-        {
-            if (string.IsNullOrWhiteSpace(opts.InputFile1))
-                ShowError($"Inputfile1 cannot be null or empty.");
-
-            if (!File.Exists(opts.InputFile1))
-                ShowError($"File '{opts.InputFile1}' doesn't exist.");
-
-            if (string.IsNullOrWhiteSpace(opts.InputFile2))
-                ShowError($"Inputfile2 cannot be null or empty.");
-
-            if (!File.Exists(opts.InputFile2))
-                ShowError($"File '{opts.InputFile2}' doesn't exist.");
-
-            if (string.IsNullOrWhiteSpace(opts.OutputFile))
-                ShowError("Output file cannot be null or empty.");
-
-            if (File.Exists(opts.OutputFile) && opts.OverwriteOutput == false)
-                ShowError($"File '{opts.OutputFile}' already exists and overwrite is disabled.");
-
-            var file1Content = ReadInputFile(opts.InputFile1);
-            var file2Content = ReadInputFile(opts.InputFile2);
-
-            JsonEncoding.WriteDataToJsonFile(file1Content.Concat(file2Content).ToList(), opts.OutputFile);
+//
+//            var index = ReadInputFile(opts.IndexFile);
+//            var filesToProcess = ReadInputFile(opts.ProcessingFile);
+//
+//
+//            // find duplicate files
+//            var duplicateFiles = filesToProcess
+//                .Where(f => index.Any(file => file.Sha256.SequenceEqual(f.Sha256)))
+//                .ToArray();
+//
+//            // find new files
+//            var newFiles = filesToProcess.Except(duplicateFiles).ToArray();
+//
+//
+//            HandleDuplicates(duplicateFiles, opts);
+//            //HandleNewFiles(newFiles, opts);
+//
+//            JsonEncoding.WriteDataToJsonFile(duplicateFiles, opts.OutputDuplicateFile);
+//            JsonEncoding.WriteDataToJsonFile(newFiles, opts.OutputNewFile);
         }
 
         private static void ShowError(string s)
@@ -303,79 +476,6 @@ namespace FileImporter
                         Console.WriteLine($" Error moving file '{file.FileName}'. Ex msg : {e.Message}");
                     }
                 }
-            }
-        }
-
-        private static IEnumerable<FileData> ProcessDirectory(string inputDir)
-        {
-            if (!Directory.Exists(inputDir))
-                throw new Exception("Directory does not exists.");
-
-            var files = Directory
-                .EnumerateFiles(inputDir, "*.*", SearchOption.AllDirectories)
-                .Where(f => !f.ToLower().EndsWith(".zip"))
-                .Where(f => !f.ToLower().EndsWith(".ini"))
-                .ToArray();
-
-            var total = files.Length;
-            var result = new List<FileData>(total);
-
-            result.AddRange(files.Select(ProcesFile));
-
-            return result;
-        }
-
-        private static FileData ProcesFile(string file)
-        {
-            try
-            {
-                var fileinfo = new FileInfo(file);
-                var result = new FileData
-                {
-                    FileName = file,
-                    SizeInBytes = fileinfo.Length
-                };
-
-                using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true))
-                {
-                    result.Sha256 = CalculateHash(fileStream);
-
-                }
-
-                return result;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine($"Could not procses file '{file}'");
-                throw;
-            }
-        }
-
-        private static List<FileData> ReadInputFile(string filename)
-        {
-            if (!File.Exists(filename))
-                throw new Exception("File doesn't exists.");
-
-            try
-            {
-                return JsonEncoding.ReadFromFile<List<FileData>>(filename);
-            }
-            catch (Exception)
-            {
-                throw new Exception($"Could not read or parse '{filename}'.");
-            }
-        }
-
-        public static byte[] CalculateHash(Stream stream)
-        {
-            Debug.Assert(stream != null);
-            Debug.Assert(stream.CanSeek);
-
-            stream.Position = 0;
-
-            using (var sha256 = SHA256.Create())
-            {
-                return sha256.ComputeHash(stream);
             }
         }
     }
