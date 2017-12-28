@@ -3,7 +3,6 @@
     enum FileAction
     {
         Delete,
-        Keep,
         Move
     }
 }

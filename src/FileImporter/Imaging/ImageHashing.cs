@@ -36,7 +36,7 @@ namespace FileImporter.Imaging
                     result.AverageHash = AHash.Hash(clone);
 
                 using (var clone = image.Clone())
-                    result.DifferenceHash= DHash.Hash(clone);
+                    result.DifferenceHash = DHash.Hash(clone);
 
                 using (var clone = image.Clone())
                     result.PerceptualHash = PHash.Hash(clone);

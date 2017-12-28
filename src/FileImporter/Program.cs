@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using FileImporter.CmdOptions;
-using FileImporter.Data;
 using FileImporter.Indexing;
 using FileImporter.Infrastructure;
 using FileImporter.Infrastructure.Everything;
@@ -17,9 +16,6 @@ namespace FileImporter
 {
     public static class Program
     {
-//        private const string RootPath = @"D:\Fotoalbum";
-        private const string IndexFilename = @"D:\Fotoalbum\index.json";
-
         private static Container _container;
 
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
@@ -38,7 +34,8 @@ namespace FileImporter
 
         public static void Run(string[] args)
         {
-            Parser.Default.ParseArguments<AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, FindAndHandleDuplicatesOptions>(args)
+            Parser.Default.ParseArguments<AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions>(args)
+                .WithParsed<SearchDuplicateFileOptions>(SearchDuplicateFile)
                 .WithParsed<AutoDeleteSameFile>(AutoDeleteSameFile)
                 .WithParsed<MoveOptions>(MoveFiles)
                 .WithParsed<UpdateIndexOptions>(UpdateIndex)
@@ -52,6 +49,60 @@ namespace FileImporter
 
             Console.WriteLine("Done. Press enter to exit.");
             Console.ReadLine();
+        }
+
+        private static void SearchDuplicateFile(SearchDuplicateFileOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.OriginalImageFile))
+            {
+                Console.WriteLine("Image file cannot be empty.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(options.IndexFile))
+            {
+                Console.WriteLine("IndexFile file cannot be empty.");
+                return;
+            }
+
+            if (!File.Exists(options.OriginalImageFile))
+            {
+                Console.WriteLine();
+                return;
+            }
+            if (!File.Exists(options.IndexFile))
+            {
+                Console.WriteLine();
+                return;
+            }
+
+
+            Startup.ConfigureContainer(_container, string.Empty, options.IndexFile);
+
+            
+            var searchService = _container.GetInstance<SearchService>();
+            var indexService = _container.GetInstance<CalculateIndexService>();
+            var everything = new Everything();
+
+            var files = new[] {options.OriginalImageFile};
+            var index = indexService.CalculateIndex(files).Single();
+
+            var similars = searchService.FindSimilar(index)
+                .Where(f => File.Exists(f.Identifier))
+                .ToList();
+
+            if (similars.Any())
+            {
+                similars.Add(index);
+                everything.Show(similars);
+                Console.WriteLine("Press enter for next");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("Nothing found.");
+            }
+
+            
         }
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
@@ -191,11 +242,9 @@ namespace FileImporter
 
         private static void Search(SearchOptions options)
         {
-            SingleFileIndexRepository repo2;
             var rp = string.Empty;
             Startup.ConfigureContainer(_container, rp, options.IndexFile);
-
-
+            
             var searchService = _container.GetInstance<SearchService>();
             var everything = new Everything();
 
@@ -207,9 +256,8 @@ namespace FileImporter
                     return;
                 }
 
-                repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(options.IndexFiles2));
-
-
+                var repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(options.IndexFiles2));
+                
                 var allFiles = repo2.Find(f => true).Where(f => File.Exists(f.Identifier)).ToList();
 
 
@@ -234,13 +282,13 @@ namespace FileImporter
 
                 return;
             }
-            else
+
+
+
+            if (!Directory.Exists(options.DirectoryToIndex))
             {
-                if (!Directory.Exists(options.DirectoryToIndex))
-                {
-                    Console.WriteLine("Directory does not exist.");
-                    return;
-                }
+                Console.WriteLine("Directory does not exist.");
+                return;
             }
 
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
@@ -433,50 +481,6 @@ namespace FileImporter
         {
             Console.WriteLine(s);
             throw new Exception(s);
-        }
-
-        private static void HandleDuplicates(FileData[] files, FindAndHandleDuplicatesOptions options)
-        {
-            if (options.DuplicateAction == FileAction.Keep)
-                return;
-
-
-            if (options.DuplicateAction == FileAction.Delete)
-            {
-                foreach (var file in files)
-                {
-                    try
-                    {
-                        if (File.Exists(file.FileName))
-                            File.Delete(file.FileName);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($" Error deleting file '{file.FileName}'. Ex msg : {e.Message}");
-                    }
-                }
-            }
-
-
-            if (options.DuplicateAction == FileAction.Move)
-            {
-                foreach (var file in files)
-                {
-                    try
-                    {
-                        var fi = new FileInfo(file.FileName);
-                        if (fi.Exists)
-                        {
-                            var destFileName = Path.Combine(options.DuplicateDir, fi.Name);
-                            fi.MoveTo(destFileName);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($" Error moving file '{file.FileName}'. Ex msg : {e.Message}");
-                    }
-                }
-            }
         }
     }
 }
