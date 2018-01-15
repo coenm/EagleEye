@@ -7,8 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="CoenM.Encoding.Z85e" Version="1.0.0" />
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="0.1.0-alpha.16.build.15" />
-    <PackageReference Include="CommandLineParser" Version="2.1.1-beta" />
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="0.1.0-alpha.17.build.17" />
+    <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="NetMQ" Version="4.0.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="ShellProgressBar" Version="4.0.0" />

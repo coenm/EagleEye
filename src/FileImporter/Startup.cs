@@ -9,10 +9,9 @@ namespace FileImporter
 {
     public static class Startup
     {
-        public static void ConfigureContainer(Container container, string rootPath, string indexFilename)
+        public static void ConfigureContainer(Container container, string indexFilename)
         {
             // todo check arguments.
-
 //            container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
             container.RegisterSingleton<IContentResolver>(FilesystemContentResolver.Instance);
             container.RegisterSingleton<IFileIndexRepository>(() => new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(indexFilename)));

@@ -66,18 +66,17 @@ namespace FileImporter
 
             if (!File.Exists(options.OriginalImageFile))
             {
-                Console.WriteLine();
+                Console.WriteLine("OriginalImage file doesn't exist.");
                 return;
             }
             if (!File.Exists(options.IndexFile))
             {
-                Console.WriteLine();
+                Console.WriteLine("Index file doesn't exist.");
                 return;
             }
 
 
-            Startup.ConfigureContainer(_container, string.Empty, options.IndexFile);
-
+            Startup.ConfigureContainer(_container, options.IndexFile);
             
             var searchService = _container.GetInstance<SearchService>();
             var indexService = _container.GetInstance<CalculateIndexService>();
@@ -87,6 +86,7 @@ namespace FileImporter
             var index = indexService.CalculateIndex(files).Single();
 
             var similars = searchService.FindSimilar(index)
+                .Where(f => f.Identifier != index.Identifier)
                 .Where(f => File.Exists(f.Identifier))
                 .ToList();
 
@@ -107,7 +107,7 @@ namespace FileImporter
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
         {
-            Startup.ConfigureContainer(_container, "", options.IndexFile);
+            Startup.ConfigureContainer(_container, options.IndexFile);
 
             var searchService = _container.GetInstance<SearchService>();
             var contentResolver = _container.GetInstance<IContentResolver>();
@@ -243,7 +243,7 @@ namespace FileImporter
         private static void Search(SearchOptions options)
         {
             var rp = string.Empty;
-            Startup.ConfigureContainer(_container, rp, options.IndexFile);
+            Startup.ConfigureContainer(_container, options.IndexFile);
             
             var searchService = _container.GetInstance<SearchService>();
             var everything = new Everything();
@@ -336,7 +336,7 @@ namespace FileImporter
 //            var diRoot = new DirectoryInfo(RootPath).FullName;
 //            var rp = RootPath;
 
-            Startup.ConfigureContainer(_container, "", options.OutputFile);
+            Startup.ConfigureContainer(_container, options.OutputFile);
 
             var searchService = _container.GetInstance<SearchService>();
             var persistantService = _container.GetInstance<PersistantFileIndexService>();
@@ -377,7 +377,7 @@ namespace FileImporter
 //                rp = RootPath;
 //            }
 
-            Startup.ConfigureContainer(_container, rp, options.OutputFile);
+            Startup.ConfigureContainer(_container, options.OutputFile);
 
 
             var files = Directory
