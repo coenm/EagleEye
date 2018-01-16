@@ -24,7 +24,6 @@ namespace FileImporter
             ProgressBarOnBottom = true
         };
 
-
         public static void Main(string[] args)
         {
             _container = new Container();
@@ -64,15 +63,45 @@ namespace FileImporter
                 return;
             }
 
-            if (!File.Exists(options.OriginalImageFile))
+            List<string> filesToProcess = new List<string>();
+            if (File.Exists(options.OriginalImageFile))
             {
-                Console.WriteLine("OriginalImage file doesn't exist.");
+                filesToProcess.Add(options.OriginalImageFile);
+            }
+            else
+            {
+                if (!Directory.Exists(options.OriginalImageFile))
+                {
+                    Console.WriteLine("OriginalImage file doesn't exist.");
+                    return;
+                }
+
+                var diDirToIndex = new DirectoryInfo(options.OriginalImageFile).FullName;
+                filesToProcess = Directory
+                    .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
+                    .ToList();
+            }
+
+            if (!filesToProcess.Any())
+            {
+                Console.WriteLine("No files found.");
                 return;
             }
+
             if (!File.Exists(options.IndexFile))
             {
                 Console.WriteLine("Index file doesn't exist.");
                 return;
+            }
+
+            Func<FileIndex, bool> Aap = fi => true;
+            if (string.IsNullOrWhiteSpace(options.PathPrefix))
+            {
+                if (Directory.Exists(options.PathPrefix))
+                    Aap = fi =>
+                    {
+                        return fi.Identifier.StartsWith(options.PathPrefix);
+                    };
             }
 
 
@@ -82,27 +111,53 @@ namespace FileImporter
             var indexService = _container.GetInstance<CalculateIndexService>();
             var everything = new Everything();
 
-            var files = new[] {options.OriginalImageFile};
-            var index = indexService.CalculateIndex(files).Single();
 
-            var similars = searchService.FindSimilar(index)
-                .Where(f => f.Identifier != index.Identifier)
-                .Where(f => File.Exists(f.Identifier))
-                .ToList();
-
-            if (similars.Any())
+            foreach (var file in filesToProcess)
             {
-                similars.Add(index);
-                everything.Show(similars);
-                Console.WriteLine("Press enter for next");
-                Console.ReadKey();
-            }
-            else
-            {
-                Console.WriteLine("Nothing found.");
+                var files = new[] { file };
+                var index = indexService.CalculateIndex(files).Single();
+
+                int found = int.MaxValue;
+                var lastSimilars = new List<FileIndex>();
+                var similars = new List<FileIndex>();
+
+                while (found > 10 && options.Value <= 100)
+                {
+                    lastSimilars = similars;
+                    similars = searchService.FindSimilar(index, options.Value, options.Value, options.Value)
+                        .Where(f => f.Identifier != index.Identifier)
+                        .Where(f => File.Exists(f.Identifier))
+                        .Where(f => !f.Identifier.Contains("_weg"))
+                        .Where(Aap)
+                        .ToList();
+                    found = similars.Count;
+                    options.Value++;
+                }
+                
+                if (similars.Any())
+                {
+                    similars.Add(index);
+                    everything.Show(similars);
+                    Console.WriteLine("Press enter for next");
+                    Console.ReadKey();
+                }
+                else if (lastSimilars.Any())
+                {
+                    lastSimilars.Add(index);
+                    everything.Show(lastSimilars);
+                    Console.WriteLine("Press enter for next");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine($"Nothing found for file {file}.");
+                }
             }
 
-            
+
+            Console.WriteLine("DONE.");
+
+
         }
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
