@@ -94,15 +94,30 @@ namespace FileImporter
                 return;
             }
 
-            Func<FileIndex, bool> Aap = fi => true;
-            if (string.IsNullOrWhiteSpace(options.PathPrefix))
+            Func<FileIndex, bool> tempSpecialPredicate = fi => true;
+            tempSpecialPredicate = fi =>
             {
-                if (Directory.Exists(options.PathPrefix))
-                    Aap = fi =>
-                    {
-                        return fi.Identifier.StartsWith(options.PathPrefix);
-                    };
-            }
+                if (!fi.Identifier.StartsWith(@"D:\Fotoalbum"))
+                    return true;
+
+                var matchYear = false;
+                matchYear |= fi.Identifier.Contains("2015");
+                matchYear |= fi.Identifier.Contains("2016");
+                matchYear |= fi.Identifier.Contains("2017");
+                matchYear |= fi.Identifier.Contains("2018");
+                return matchYear;
+
+                //return fi.Identifier.StartsWith(options.PathPrefix);
+            };
+
+//            if (string.IsNullOrWhiteSpace(options.PathPrefix))
+//            {
+//                if (Directory.Exists(options.PathPrefix))
+//                    tempSpecialPredicate = fi =>
+//                    {
+//                        //return fi.Identifier.StartsWith(options.PathPrefix);
+//                    };
+//            }
 
 
             Startup.ConfigureContainer(_container, options.IndexFile);
@@ -111,46 +126,50 @@ namespace FileImporter
             var indexService = _container.GetInstance<CalculateIndexService>();
             var everything = new Everything();
 
-
-            foreach (var file in filesToProcess)
+            bool show = false;
+            using (var pbar = new ProgressBar(filesToProcess.Count, "Search duplicates", ProgressOptions))
             {
-                var files = new[] { file };
-                var index = indexService.CalculateIndex(files).Single();
-
-                int found = int.MaxValue;
-                var lastSimilars = new List<FileIndex>();
-                var similars = new List<FileIndex>();
-
-                while (found > 10 && options.Value <= 100)
+                foreach (var file in filesToProcess)
                 {
-                    lastSimilars = similars;
-                    similars = searchService.FindSimilar(index, options.Value, options.Value, options.Value)
-                        .Where(f => f.Identifier != index.Identifier)
-                        .Where(f => File.Exists(f.Identifier))
-                        .Where(f => !f.Identifier.Contains("_weg"))
-                        .Where(Aap)
-                        .ToList();
-                    found = similars.Count;
-                    options.Value++;
-                }
-                
-                if (similars.Any())
-                {
+                    pbar.Tick(file);
+                    if (!File.Exists(file))
+                        continue;
+                    
+                    var files = new[] { file };
+                    var index = indexService.CalculateIndex(files).Single();
+
+                    var found = int.MaxValue;
+                    var lastSimilars = new List<FileIndex>();
+                    var similars = new List<FileIndex>();
+                    var matchValue = options.Value;
+
+                    while (found > 10 && matchValue <= 100)
+                    {
+                        lastSimilars = similars;
+                        similars = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
+                            .Where(f => f.Identifier != index.Identifier 
+                                        && 
+                                        File.Exists(f.Identifier)
+                                        &&
+                                        tempSpecialPredicate(f))
+                            .ToList();
+                        found = similars.Count;
+                        matchValue++;
+                    }
+
+
+                    if (!similars.Any())
+                        similars = lastSimilars;
+
+                    if (!similars.Any())
+                        continue;
+
+                    if (show)
+                        Console.ReadKey();
+
                     similars.Add(index);
                     everything.Show(similars);
-                    Console.WriteLine("Press enter for next");
-                    Console.ReadKey();
-                }
-                else if (lastSimilars.Any())
-                {
-                    lastSimilars.Add(index);
-                    everything.Show(lastSimilars);
-                    Console.WriteLine("Press enter for next");
-                    Console.ReadKey();
-                }
-                else
-                {
-                    Console.WriteLine($"Nothing found for file {file}.");
+                    show = true;
                 }
             }
 
