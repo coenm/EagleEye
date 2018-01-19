@@ -121,7 +121,7 @@ namespace FileImporter
 
 
             Startup.ConfigureContainer(_container, options.IndexFile);
-            
+
             var searchService = _container.GetInstance<SearchService>();
             var indexService = _container.GetInstance<CalculateIndexService>();
             var everything = new Everything();
@@ -134,7 +134,7 @@ namespace FileImporter
                     pbar.Tick(file);
                     if (!File.Exists(file))
                         continue;
-                    
+
                     var files = new[] { file };
                     var index = indexService.CalculateIndex(files).Single();
 
@@ -147,8 +147,8 @@ namespace FileImporter
                     {
                         lastSimilars = similars;
                         similars = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
-                            .Where(f => f.Identifier != index.Identifier 
-                                        && 
+                            .Where(f => f.Identifier != index.Identifier
+                                        &&
                                         File.Exists(f.Identifier)
                                         &&
                                         tempSpecialPredicate(f))
@@ -262,9 +262,9 @@ namespace FileImporter
                 Console.WriteLine("Directory does not exist");
                 return;
             }
-            
+
             var directoryInfo = new DirectoryInfo(options.Directory);
-            
+
             var files = Directory
                 .EnumerateFiles(directoryInfo.FullName, "*.*", SearchOption.TopDirectoryOnly)
                 .ToArray();
@@ -318,7 +318,7 @@ namespace FileImporter
         {
             var rp = string.Empty;
             Startup.ConfigureContainer(_container, options.IndexFile);
-            
+
             var searchService = _container.GetInstance<SearchService>();
             var everything = new Everything();
 
@@ -331,7 +331,7 @@ namespace FileImporter
                 }
 
                 var repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(options.IndexFiles2));
-                
+
                 var allFiles = repo2.Find(f => true).Where(f => File.Exists(f.Identifier)).ToList();
 
 
@@ -341,9 +341,9 @@ namespace FileImporter
                     {
                         pbar.Tick(index.Identifier);
                         List<FileIndex> similars = searchService.FindSimilar(index).ToList();
-                        similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList(); 
+                        similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
                         similars = similars.Where(f => File.Exists(f.Identifier)).ToList();
-                        
+
                         if (similars.Any())
                         {
                             similars.Add(index);

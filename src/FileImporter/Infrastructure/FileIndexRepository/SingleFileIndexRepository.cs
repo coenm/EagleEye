@@ -92,6 +92,27 @@ namespace FileImporter.Infrastructure.FileIndexRepository
             return result;
         }
 
+        public IEnumerable<FileIndex> FindByContentHash(byte[] imageHash)
+        {
+            if (imageHash == null)
+                throw new ArgumentNullException(nameof(imageHash));
+
+            return Find(index => index.Hashes.ImageHash.SequenceEqual(imageHash));
+        }
+
+        public IEnumerable<FileIndex> FindImageHashesNotInList(IEnumerable<byte[]> imageHashes)
+        {
+            if (imageHashes == null)
+                throw new ArgumentNullException(nameof(imageHashes));
+
+            var hashes = imageHashes.ToArray();
+
+            if (!hashes.Any())
+                return Enumerable.Empty<FileIndex>();
+
+            return Find(index => !hashes.Contains(index.Hashes.ImageHash));
+        }
+
         public int Count(Predicate<FileIndex> predicate)
         {
             if (predicate == null)
@@ -104,7 +125,6 @@ namespace FileImporter.Infrastructure.FileIndexRepository
         {
             return FindSimilar(src, minAvgHash, minDiffHash, minPerHash).Count();
         }
-
 
         public void Delete(FileIndex item)
         {
