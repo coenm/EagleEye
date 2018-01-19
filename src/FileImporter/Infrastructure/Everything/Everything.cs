@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,23 +20,13 @@ namespace FileImporter.Infrastructure.Everything
             var files2 = files.Select(f=>f.Identifier);
             var search = string.Join(Or, files2);
 
-            var tsc = new TaskCompletionSource<bool>();
-
-            
             Process p = new Process();
-            p.Exited += (sender, eventArgs) => { tsc.TrySetResult(true); };
-
-
             string args = "-s " + Escape + "filelist:" + StartEnd + search + StartEnd + " " + Escape;
 
-
             p.StartInfo = new ProcessStartInfo(EverythingExe, args);
-           // p.StartInfo.CreateNoWindow = true;B
-
             p.Start();
-           
 
-            return tsc.Task;
+            return Task.CompletedTask;
         }
     }
 }
