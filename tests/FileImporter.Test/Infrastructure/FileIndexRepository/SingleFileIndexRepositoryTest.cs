@@ -10,13 +10,13 @@ namespace FileImporter.Test.Infrastructure.FileIndexRepository
     public class SingleFileIndexRepositoryTest
     {
         private readonly SingleFileIndexRepository _sut;
-        private readonly List<FileIndex> _fileIndex;
-        private readonly IPersistantSerializer<List<FileIndex>> _storage;
+        private readonly List<ImageData> _fileIndex;
+        private readonly IPersistantSerializer<List<ImageData>> _storage;
 
         public SingleFileIndexRepositoryTest()
         {
             _fileIndex = TestImagesIndex.Index;
-            _storage = A.Fake<IPersistantSerializer<List<FileIndex>>>();
+            _storage = A.Fake<IPersistantSerializer<List<ImageData>>>();
             A.CallTo(() => _storage.Load()).Returns(_fileIndex);
 
             _sut = new SingleFileIndexRepository(_storage);
@@ -44,7 +44,7 @@ namespace FileImporter.Test.Infrastructure.FileIndexRepository
 
             // assert
             A.CallTo(() => _storage.Load()).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _storage.Save(A<List<FileIndex>>._)).MustNotHaveHappened();
+            A.CallTo(() => _storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
             if (expectedMatch == null)
                 Assert.Empty(result);
             else
@@ -69,7 +69,7 @@ namespace FileImporter.Test.Infrastructure.FileIndexRepository
 
             // assert
             A.CallTo(() => _storage.Load()).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _storage.Save(A<List<FileIndex>>._)).MustNotHaveHappened();
+            A.CallTo(() => _storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
             Assert.Equal(expectedCount, result);
         }
     }

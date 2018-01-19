@@ -13,18 +13,18 @@ namespace FileImporter.Indexing
             _contentResolver = contentResolver ?? throw new ArgumentNullException(nameof(contentResolver));
         }
         
-        public IEnumerable<FileIndex> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
+        public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
         {
             if (fileIdentifiers == null)
                 throw new ArgumentNullException(nameof(fileIdentifiers));
 
-            var result = new FileIndex[fileIdentifiers.Count];
+            var result = new ImageData[fileIdentifiers.Count];
 
             for (var index = 0; index < fileIdentifiers.Count; index++)
             {
                 using (var stream = _contentResolver.Read(fileIdentifiers[index]))
                 {
-                    result[index] = new FileIndex(fileIdentifiers[index])
+                    result[index] = new ImageData(fileIdentifiers[index])
                     {
                         Hashes = ImageHashing.Calculate(stream)
                     };

@@ -139,6 +139,6 @@ namespace FileImporter.Test
   }
 ]";
 
-        public static List<FileIndex> Index { get; } = JsonEncoding.Deserialize<List<FileIndex>>(IndexJson);
+        public static List<ImageData> Index { get; } = JsonEncoding.Deserialize<List<ImageData>>(IndexJson);
     }
 }

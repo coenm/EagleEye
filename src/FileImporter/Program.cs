@@ -94,7 +94,7 @@ namespace FileImporter
                 return;
             }
 
-            Func<FileIndex, bool> tempSpecialPredicate = fi => true;
+            Func<ImageData, bool> tempSpecialPredicate = fi => true;
             tempSpecialPredicate = fi =>
             {
                 if (!fi.Identifier.StartsWith(@"D:\Fotoalbum"))
@@ -139,8 +139,8 @@ namespace FileImporter
                     var index = indexService.CalculateIndex(files).Single();
 
                     var found = int.MaxValue;
-                    var lastSimilars = new List<FileIndex>();
-                    var similars = new List<FileIndex>();
+                    var lastSimilars = new List<ImageData>();
+                    var similars = new List<ImageData>();
                     var matchValue = options.Value;
 
                     while (found > 10 && matchValue <= 100)
@@ -330,7 +330,7 @@ namespace FileImporter
                     return;
                 }
 
-                var repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(options.IndexFiles2));
+                var repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<ImageData>>(options.IndexFiles2));
 
                 var allFiles = repo2.Find(f => true).Where(f => File.Exists(f.Identifier)).ToList();
 
@@ -340,7 +340,7 @@ namespace FileImporter
                     foreach (var index in allFiles)
                     {
                         pbar.Tick(index.Identifier);
-                        List<FileIndex> similars = searchService.FindSimilar(index).ToList();
+                        List<ImageData> similars = searchService.FindSimilar(index).ToList();
                         similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
                         similars = similars.Where(f => File.Exists(f.Identifier)).ToList();
 
@@ -383,7 +383,7 @@ namespace FileImporter
                     items[0] = index;
 
                     var result = indexService.CalculateIndex(items).Single();
-                    List<FileIndex> similars = searchService.FindSimilar(result).ToList();
+                    List<ImageData> similars = searchService.FindSimilar(result).ToList();
 
                     similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
 

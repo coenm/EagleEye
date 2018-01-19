@@ -11,9 +11,9 @@ namespace FileImporter.Indexing
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public void AddOrUpdate(FileIndex fileIndex)
+        public void AddOrUpdate(ImageData imageData)
         {
-            _repository.AddOrUpdate(fileIndex);
+            _repository.AddOrUpdate(imageData);
         }
 
         public void Delete(string identifier)

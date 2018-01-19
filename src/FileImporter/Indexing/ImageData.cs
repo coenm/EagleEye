@@ -2,9 +2,9 @@
 
 namespace FileImporter.Indexing
 {
-    public class FileIndex
+    public class ImageData
     {
-        public FileIndex(string identifier)
+        public ImageData(string identifier)
         {
             Identifier = identifier;
         }

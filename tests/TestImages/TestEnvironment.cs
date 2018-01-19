@@ -68,9 +68,7 @@ namespace TestImages
                 .Combine(paths)
                 .Replace('\\', Path.DirectorySeparatorChar);
         }
-
-
-
+        
         /// <summary> Read image from relative filename for testing purposes </summary>
         /// <param name="relativeFilename">Filename relative to 'solution directory' + 'images/data/'. </param>
         /// <returns>FileStream or throws exception</returns>

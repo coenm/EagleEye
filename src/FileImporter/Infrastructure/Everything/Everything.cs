@@ -14,7 +14,7 @@ namespace FileImporter.Infrastructure.Everything
         private const string StartEnd = "\"\"\"";
 
 
-        public Task Show(List<FileIndex> files)
+        public Task Show(List<ImageData> files)
         {
             var files2 = files.Select(f=>f.Identifier);
             var search = string.Join(Or, files2);

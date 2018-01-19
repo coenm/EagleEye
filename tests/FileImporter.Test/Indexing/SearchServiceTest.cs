@@ -38,15 +38,15 @@ namespace FileImporter.Test.Indexing
         {
             // arrange
             var sut = new SearchService(_repository);
-            var src = A.Dummy<FileIndex>();
-            A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).Returns(new List<FileIndex>());
+            var src = A.Dummy<ImageData>();
+            A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).Returns(new List<ImageData>());
 
             // act
             var result = sut.FindSimilar(src, 1, 2, 3, 4, 5);
 
             // assert
             A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).MustHaveHappened(Repeated.Exactly.Once);
-            Assert.Equal(new List<FileIndex>(), result);
+            Assert.Equal(new List<ImageData>(), result);
         }
 
         [Theory]
@@ -57,7 +57,7 @@ namespace FileImporter.Test.Indexing
             // arrange
             var sut = new SearchService(_repository);
             var id = A.Dummy<string>();
-            var fileIndex = resultFound ? new FileIndex("") : null;
+            var fileIndex = resultFound ? new ImageData("") : null;
             A.CallTo(() => _repository.Get(id)).Returns(fileIndex);
 
             // act

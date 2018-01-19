@@ -18,7 +18,7 @@ namespace FileImporter
             // todo check arguments.
             //            container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
             container.RegisterSingleton<IContentResolver>(FilesystemContentResolver.Instance);
-            container.RegisterSingleton<IFileIndexRepository>(() => new SingleFileIndexRepository(new JsonToFileSerializer<List<FileIndex>>(indexFilename)));
+            container.RegisterSingleton<IFileIndexRepository>(() => new SingleFileIndexRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
             container.RegisterSingleton<ISimilarityCacheRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
 
             container.Verify(VerificationOption.VerifyAndDiagnose);

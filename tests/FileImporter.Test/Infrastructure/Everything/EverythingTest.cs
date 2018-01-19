@@ -22,7 +22,7 @@ namespace FileImporter.Test.Infrastructure.Everything
             // arrange
 
             var sut = new FileImporter.Infrastructure.Everything.Everything();
-            var fileIndexes = files.Select(p => new FileIndex(p)).ToList();
+            var fileIndexes = files.Select(p => new ImageData(p)).ToList();
 
             // act
             await sut.Show(fileIndexes);
