@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FileImporter.Indexing
 {
-    public interface IFileIndexRepository
+    public interface IImageDataRepository
     {
         ImageData Get(string identifier);
 

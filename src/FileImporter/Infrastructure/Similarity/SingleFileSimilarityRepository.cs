@@ -7,7 +7,7 @@
     using FileImporter.Infrastructure.FileIndexRepository;
     using FileImporter.Similarity;
 
-    public class SingleFileSimilarityRepository : ISimilarityCacheRepository
+    public class SingleFileSimilarityRepository : ISimilarityRepository
     {
         private readonly IPersistantSerializer<List<SimilarityResultStorage>> _storage;
         private readonly List<SimilarityResultStorage> _data;

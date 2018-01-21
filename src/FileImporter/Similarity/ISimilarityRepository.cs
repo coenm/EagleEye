@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public interface ISimilarityCacheRepository
+    public interface ISimilarityRepository
     {
         IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash);
 

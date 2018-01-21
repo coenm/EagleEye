@@ -9,6 +9,7 @@ using FileImporter.Infrastructure;
 using FileImporter.Infrastructure.Everything;
 using FileImporter.Infrastructure.FileIndexRepository;
 using FileImporter.Infrastructure.PersistantSerializer;
+using FileImporter.Similarity;
 using ShellProgressBar;
 using SimpleInjector;
 
@@ -33,7 +34,8 @@ namespace FileImporter
 
         public static void Run(string[] args)
         {
-            Parser.Default.ParseArguments<AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions>(args)
+            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions>(args)
+                .WithParsed<UpdateSimilarityOptions>(UpdateSimilarity)
                 .WithParsed<SearchDuplicateFileOptions>(SearchDuplicateFile)
                 .WithParsed<AutoDeleteSameFile>(AutoDeleteSameFile)
                 .WithParsed<MoveOptions>(MoveFiles)
@@ -48,6 +50,25 @@ namespace FileImporter
 
             Console.WriteLine("Done. Press enter to exit.");
             Console.ReadLine();
+        }
+
+        private static void UpdateSimilarity(UpdateSimilarityOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.IndexFile))
+            {
+                Console.WriteLine("IndexFile file cannot be empty.");
+                return;
+            }
+
+            Startup.ConfigureContainer(_container, options.IndexFile);
+
+            var searchService = _container.GetInstance<SearchService>();
+            var indexService = _container.GetInstance<CalculateIndexService>();
+            var similarityRepository = _container.GetInstance<SimilarityService>();
+
+
+
+
         }
 
         private static void SearchDuplicateFile(SearchDuplicateFileOptions options)
@@ -330,7 +351,7 @@ namespace FileImporter
                     return;
                 }
 
-                var repo2 = new SingleFileIndexRepository(new JsonToFileSerializer<List<ImageData>>(options.IndexFiles2));
+                var repo2 = new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(options.IndexFiles2));
 
                 var allFiles = repo2.Find(f => true).Where(f => File.Exists(f.Identifier)).ToList();
 

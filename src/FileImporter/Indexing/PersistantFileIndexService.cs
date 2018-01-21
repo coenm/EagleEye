@@ -4,9 +4,9 @@ namespace FileImporter.Indexing
 {
     public class PersistantFileIndexService
     {
-        private readonly IFileIndexRepository _repository;
+        private readonly IImageDataRepository _repository;
 
-        public PersistantFileIndexService(IFileIndexRepository repository)
+        public PersistantFileIndexService(IImageDataRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }

@@ -8,11 +8,11 @@ namespace FileImporter.Test.Indexing
 {
     public class SearchServiceTest
     {
-        private readonly IFileIndexRepository _repository;
+        private readonly IImageDataRepository _repository;
 
         public SearchServiceTest()
         {
-            _repository = A.Fake<IFileIndexRepository>();
+            _repository = A.Fake<IImageDataRepository>();
         }
 
         [Fact]

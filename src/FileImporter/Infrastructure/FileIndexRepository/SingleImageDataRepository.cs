@@ -8,13 +8,13 @@ namespace FileImporter.Infrastructure.FileIndexRepository
     /// <summary>
     /// Stores data in file.
     /// </summary>
-    public class SingleFileIndexRepository : IFileIndexRepository
+    public class SingleImageDataRepository : IImageDataRepository
     {
         private readonly IPersistantSerializer<List<ImageData>> _storage;
         private readonly List<ImageData> _data;
         private readonly object _syncLock = new object();
 
-        public SingleFileIndexRepository(IPersistantSerializer<List<ImageData>> storage)
+        public SingleImageDataRepository(IPersistantSerializer<List<ImageData>> storage)
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(_storage));
             _data = _storage.Load();

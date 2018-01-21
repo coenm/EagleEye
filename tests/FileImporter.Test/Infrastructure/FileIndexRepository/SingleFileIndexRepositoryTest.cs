@@ -9,7 +9,7 @@ namespace FileImporter.Test.Infrastructure.FileIndexRepository
 {
     public class SingleFileIndexRepositoryTest
     {
-        private readonly SingleFileIndexRepository _sut;
+        private readonly SingleImageDataRepository _sut;
         private readonly List<ImageData> _fileIndex;
         private readonly IPersistantSerializer<List<ImageData>> _storage;
 
@@ -19,7 +19,7 @@ namespace FileImporter.Test.Infrastructure.FileIndexRepository
             _storage = A.Fake<IPersistantSerializer<List<ImageData>>>();
             A.CallTo(() => _storage.Load()).Returns(_fileIndex);
 
-            _sut = new SingleFileIndexRepository(_storage);
+            _sut = new SingleImageDataRepository(_storage);
         }
 
 
