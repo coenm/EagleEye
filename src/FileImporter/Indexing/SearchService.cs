@@ -5,9 +5,9 @@ namespace FileImporter.Indexing
 {
     public class SearchService
     {
-        private readonly IFileIndexRepository _repository;
+        private readonly IImageDataRepository _repository;
 
-        public SearchService(IFileIndexRepository repository)
+        public SearchService(IImageDataRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }

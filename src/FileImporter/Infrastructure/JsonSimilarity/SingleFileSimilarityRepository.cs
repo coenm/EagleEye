@@ -1,17 +1,17 @@
-﻿namespace FileImporter.Infrastructure.Similarity
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FileImporter.Similarity;
+
+namespace FileImporter.Infrastructure.JsonSimilarity
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using FileImporter.Infrastructure.FileIndexRepository;
-    using FileImporter.Similarity;
-
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
         private readonly IPersistantSerializer<List<SimilarityResultStorage>> _storage;
         private readonly List<SimilarityResultStorage> _data;
         private readonly object _syncLock = new object();
+
+        private bool autoSave = true;
 
         public SingleFileSimilarityRepository(IPersistantSerializer<List<SimilarityResultStorage>> storage)
         {
@@ -115,7 +115,25 @@
                                                       similarity.OtherImageHash
                                                   }
                               });
+
+                if (autoSave)
+                    _storage.Save(_data);
+            }
+        }
+
+        public void SaveChanges()
+        {
+            lock (_syncLock)
+            {
                 _storage.Save(_data);
+            }
+        }
+
+        public void AutoSave(bool value)
+        {
+            lock (_syncLock)
+            {
+                autoSave = value;
             }
         }
     }

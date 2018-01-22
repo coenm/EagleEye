@@ -22,7 +22,16 @@ namespace FileImporter
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
-            ProgressBarOnBottom = true
+//            ProgressBarOnBottom = true,
+            ForegroundColor = ConsoleColor.Yellow,
+            BackgroundColor = ConsoleColor.DarkYellow,
+        };
+
+        private static readonly ProgressBarOptions ChildOptions = new ProgressBarOptions
+        {
+            ForegroundColor = ConsoleColor.Green,
+            BackgroundColor = ConsoleColor.DarkGreen,
+            ProgressCharacter = '─'
         };
 
         public static void Main(string[] args)
@@ -65,10 +74,32 @@ namespace FileImporter
             var searchService = _container.GetInstance<SearchService>();
             var indexService = _container.GetInstance<CalculateIndexService>();
             var similarityRepository = _container.GetInstance<SimilarityService>();
+            
+            var contentResolver = _container.GetInstance<IContentResolver>();
 
+            var allIdexes = searchService.FindAll().ToArray();
 
+            using (var pbar = new ProgressBar(allIdexes.Length, "Search duplicates", ProgressOptions))
+            {
+                using (var subBar = pbar.Spawn(allIdexes.Length, "", ChildOptions))
+                {
+                    foreach (var indexedFile in allIdexes)
+                    {
+                        pbar.Tick(indexedFile.Identifier);
 
+                        var yy = new Progress<FilenameProgressData>(data =>
+                        {
+                            subBar.MaxTicks = data.Total;
+                            subBar.Tick(data.Filename);
+                        });
 
+                        subBar.Tick(0, "start");
+                        similarityRepository.Update(indexedFile, yy);
+                    }
+                }
+            }
+
+            Console.WriteLine("Done!");
         }
 
         private static void SearchDuplicateFile(SearchDuplicateFileOptions options)
@@ -148,6 +179,7 @@ namespace FileImporter
             var everything = new Everything();
 
             bool show = false;
+            
             using (var pbar = new ProgressBar(filesToProcess.Count, "Search duplicates", ProgressOptions))
             {
                 foreach (var file in filesToProcess)
@@ -194,10 +226,7 @@ namespace FileImporter
                 }
             }
 
-
             Console.WriteLine("DONE.");
-
-
         }
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)

@@ -1,7 +1,7 @@
-﻿namespace FileImporter.Infrastructure.FileIndexRepository
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace FileImporter.Infrastructure.JsonSimilarity
+{
     public class SimilarityResultStorage
     {
         public SimilarityResultStorage()
