@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileImporter.Test", "tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages", "tests\TestImages\TestImages.csproj", "{105D5482-9356-41FE-A637-5AB15EE639D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneNet.Test", "LuceneNet.Test\LuceneNet.Test.csproj", "{C53D005C-2022-494F-B313-BBEB41C8A96F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneNet.Test", "tests\LuceneNet.Test\LuceneNet.Test.csproj", "{C53D005C-2022-494F-B313-BBEB41C8A96F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
