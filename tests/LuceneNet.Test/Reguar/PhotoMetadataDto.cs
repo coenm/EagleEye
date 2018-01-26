@@ -1,23 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
-namespace LuceneNet.Test.Persons
+namespace LuceneNet.Test.Reguar
 {
-
-    public class SearchResultPhotoMetadataDto : PhotoMetadataDto
-    {
-        public SearchResultPhotoMetadataDto()
-        {
-        }
-
-        public SearchResultPhotoMetadataDto(string filename, params string[] persons) : base(filename, persons)
-        {
-        }
-
-        public float Score { get; set; }
-    }
-
     public class PhotoMetadataDto
     {
         public PhotoMetadataDto()

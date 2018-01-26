@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -11,7 +10,7 @@ using Lucene.Net.Store;
 using Lucene.Net.Util;
 using Xunit;
 
-namespace LuceneNet.Test.Persons
+namespace LuceneNet.Test.Reguar
 {
     public class IndexAndSearchPhoto
     {
@@ -36,30 +35,56 @@ namespace LuceneNet.Test.Persons
             };
         }
 
-        [Fact]
-        public void SearchFilesWithWildcardShouldReturnAllFilesWithSameScoreTest()
+        [Theory]
+        [InlineData("file*")]
+        [InlineData("f*")]
+        [InlineData("filename:f*")]
+        [InlineData("filename:f*  ")]
+        [InlineData("filename:file*")]
+        [InlineData("filename:file1 OR filename:file2 OR filename:file3 OR filename:file4 OR file5 OR file6 OR file7 OR file8 OR file9")]
+        [InlineData("file1 OR file2 OR file3 OR file4 OR file5 OR file6 OR file7 OR file8 OR file9")]
+        public void SearchFilesShouldReturnAllFilesTest(string search)
         {
             // arrange
             IndexStaticDocuments();
 
             // act
-            var result = Search("file*").ToArray();
-            
+            var result = Search(search).ToArray();
+
             // assert
             var resultsFilenames = result.Select(x => x.Filename).ToArray();
             var originalFilenames = StaticDocuments.Photos.Select(x => x.Filename).ToArray();
             Assert.Equal(originalFilenames, resultsFilenames);
-
-            Assert.DoesNotContain(result, item => Math.Abs(item.Score - 1.0) > 0);
         }
 
-        private IEnumerable<SearchResultPhotoMetadataDto> Search(string query)
+        [Theory]
+        [InlineData("\"Robin van Persie\"", "file5", "file6")]
+        [InlineData("\"Robin van Persie\" -ruud", "file6")]
+        [InlineData("+person:\"Persie\" -person:ruud", "file6", "file8")]
+        public void SearchPersonsShouldReturnAllFilesTest(string search, params string[] expectedFilenames)
+        {
+            // arrange
+            IndexStaticDocuments();
+
+            // act
+            var result = SearchPersons(search).ToArray();
+
+            // assert
+            Assert.Equal(expectedFilenames, result.Select(x => x.Filename));
+        }
+
+        private IEnumerable<SearchResultPhotoMetadataDto> SearchPersons(string query)
+        {
+            return Search(query, Person);
+        }
+
+        private IEnumerable<SearchResultPhotoMetadataDto> Search(string query, string defaultSearchField = Filename)
         {
             var results = new List<SearchResultPhotoMetadataDto>();
             using (var reader = DirectoryReader.Open(_directory))
             {
                 var searcher = new IndexSearcher(reader);
-                var parser = new QueryParser(LuceneVersion.LUCENE_48, Filename, _analyzer);
+                var parser = new QueryParser(LuceneVersion.LUCENE_48, defaultSearchField, _analyzer);
                 var q = parser.Parse(query);
 
                 var hitsFound = searcher.Search(q, 10);
@@ -82,7 +107,7 @@ namespace LuceneNet.Test.Persons
 
             return results;
         }
-
+        
         private void IndexStaticDocuments()
         {
             using (var writer = new IndexWriter(_directory, _indexWriterConfig))

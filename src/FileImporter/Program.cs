@@ -57,8 +57,9 @@ namespace FileImporter
                     Console.WriteLine("Could not parse the arguments.");
                 });
 
-            Console.WriteLine("Done. Press enter to exit.");
-            Console.ReadLine();
+            Console.WriteLine("Done.");
+//            Console.WriteLine("Done. Press enter to exit.");
+//            Console.ReadLine();
         }
 
         private static void UpdateSimilarity(UpdateSimilarityOptions options)
@@ -503,7 +504,6 @@ namespace FileImporter
 
             Startup.ConfigureContainer(_container, options.OutputFile);
 
-
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
 //                .Select(f => ConvertToRelativeFilename(rp, f))
@@ -544,7 +544,7 @@ namespace FileImporter
                 }
             }
 
-            Console.ReadKey();
+//            Console.ReadKey();
         }
 
         private static string ConvertToRelativeFilename(string rootPath, string fullFilename)
