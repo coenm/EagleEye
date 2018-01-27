@@ -26,9 +26,9 @@ namespace LuceneNet.Test.Reguar
             _directory = new RAMDirectory();
             // _directory = FSDirectory.Open(PathIndex);
 
-            _analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
+            _analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
-            _indexWriterConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, _analyzer)
+            _indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, _analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
                 RAMBufferSizeMB = 256.0

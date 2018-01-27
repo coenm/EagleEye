@@ -21,11 +21,10 @@ namespace LuceneNet.Test.Facet
         public NumberFacetSearchTest()
         {
             _directory = new RAMDirectory();
-            // _directory = FSDirectory.Open(PathIndex);
+            
+            Analyzer analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
-            Analyzer analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
-
-            _indexWriterConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer)
+            _indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
                 RAMBufferSizeMB = 256.0
