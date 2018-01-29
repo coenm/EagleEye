@@ -8,7 +8,6 @@ using Lucene.Net.Facet.Range;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using Lucene.Net.Util;
 using Xunit;
 
 namespace LuceneNet.Test.Facet

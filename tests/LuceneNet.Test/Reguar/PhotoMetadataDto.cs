@@ -5,6 +5,10 @@ namespace LuceneNet.Test.Reguar
 {
     public class PhotoMetadataDto
     {
+        public PhotoMetadataDto()
+        {
+        }
+
         public PhotoMetadataDto(string filename, params string[] persons)
         {
             Filename = filename;

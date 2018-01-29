@@ -52,7 +52,7 @@ namespace LuceneNet.Test.Reguar
             var result = Search(search).ToArray();
 
             // assert
-            var resultsFilenames = result.Select(x => x.Filename).ToArray();
+            var resultsFilenames = result.Select(x => x.Data.Filename).ToArray();
             var originalFilenames = StaticDocuments.Photos.Select(x => x.Filename).ToArray();
             Assert.Equal(originalFilenames, resultsFilenames);
         }
@@ -70,17 +70,17 @@ namespace LuceneNet.Test.Reguar
             var result = SearchPersons(search).ToArray();
 
             // assert
-            Assert.Equal(expectedFilenames, result.Select(x => x.Filename));
+            Assert.Equal(expectedFilenames, result.Select(x => x.Data.Filename));
         }
 
-        private IEnumerable<SearchResultPhotoMetadataDto> SearchPersons(string query)
+        private IEnumerable<SearchResults<PhotoMetadataDto>> SearchPersons(string query)
         {
             return Search(query, Person);
         }
 
-        private IEnumerable<SearchResultPhotoMetadataDto> Search(string query, string defaultSearchField = Filename)
+        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = Filename)
         {
-            var results = new List<SearchResultPhotoMetadataDto>();
+            var results = new List<SearchResults<PhotoMetadataDto>>();
             using (var reader = DirectoryReader.Open(_directory))
             {
                 var searcher = new IndexSearcher(reader);
@@ -96,10 +96,7 @@ namespace LuceneNet.Test.Reguar
                     var persons = doc.GetValues(Person);
                     var score = t.Score;
 
-                    var searchResultDto = new SearchResultPhotoMetadataDto(filename, persons)
-                        {
-                            Score = score
-                        };
+                    var searchResultDto = new SearchResults<PhotoMetadataDto>(new PhotoMetadataDto(filename, persons), score);
 
                     results.Add(searchResultDto);
                 }
