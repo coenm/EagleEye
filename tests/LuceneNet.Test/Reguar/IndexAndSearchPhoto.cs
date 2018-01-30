@@ -7,7 +7,6 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using Lucene.Net.Util;
 using Xunit;
 
 namespace LuceneNet.Test.Reguar
@@ -24,8 +23,6 @@ namespace LuceneNet.Test.Reguar
         public IndexAndSearchPhoto()
         {
             _directory = new RAMDirectory();
-            // _directory = FSDirectory.Open(PathIndex);
-
             _analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
             _indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, _analyzer)
@@ -73,22 +70,39 @@ namespace LuceneNet.Test.Reguar
             Assert.Equal(expectedFilenames, result.Select(x => x.Data.Filename));
         }
 
+
+        [Fact]
+        public void DeleteFromIndexTest()
+        {
+            // arrange
+            IndexStaticDocuments();
+
+            // assume
+            var results = SearchPersons("ruud").ToList();
+            Assert.NotEmpty(results);
+
+            // act
+            DeleteFromIndex(new Term("person", "ruud"));
+            results = SearchPersons("ruud").ToList();
+
+            // assert
+            Assert.Empty(results);
+        }
+
         private IEnumerable<SearchResults<PhotoMetadataDto>> SearchPersons(string query)
         {
             return Search(query, Person);
         }
 
-        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = Filename)
+        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(Query query)
         {
             var results = new List<SearchResults<PhotoMetadataDto>>();
             using (var reader = DirectoryReader.Open(_directory))
             {
                 var searcher = new IndexSearcher(reader);
-                var parser = new QueryParser(LuceneVersion.LUCENE_48, defaultSearchField, _analyzer);
-                var q = parser.Parse(query);
-
-                var hitsFound = searcher.Search(q, 10);
                 
+                var hitsFound = searcher.Search(query, 10);
+
                 foreach (var t in hitsFound.ScoreDocs)
                 {
                     var doc = searcher.Doc(t.Doc);
@@ -104,7 +118,13 @@ namespace LuceneNet.Test.Reguar
 
             return results;
         }
-        
+
+        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = Filename)
+        {
+            var parser = new QueryParser(TestHelper.LuceneVersion, defaultSearchField, _analyzer);
+            return Search(parser.Parse(query));
+        }
+
         private void IndexStaticDocuments()
         {
             using (var writer = new IndexWriter(_directory, _indexWriterConfig))
@@ -114,6 +134,22 @@ namespace LuceneNet.Test.Reguar
                     IndexDocs(writer, photo);
                 }
 
+                writer.ForceMerge(1);
+            }
+        }
+
+
+        private void DeleteFromIndex(Term term)
+        {
+            var indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, _analyzer)
+                                     {
+                                         OpenMode = OpenMode.CREATE_OR_APPEND,
+                                         RAMBufferSizeMB = 256.0
+                                     };
+
+            using (var writer = new IndexWriter(_directory, indexWriterConfig))
+            {
+                writer.DeleteDocuments(term);
                 writer.ForceMerge(1);
             }
         }
@@ -136,7 +172,7 @@ namespace LuceneNet.Test.Reguar
                 doc.Add(fieldPerson);
             }
 
-            
+
             if (writer.Config.OpenMode == OpenMode.CREATE)
             {
                 // New index, so we just add the document (no old document can be there):
@@ -144,8 +180,8 @@ namespace LuceneNet.Test.Reguar
             }
             else
             {
-                // Existing index (an old copy of this document may have been indexed) so 
-                // we use updateDocument instead to replace the old one matching the exact 
+                // Existing index (an old copy of this document may have been indexed) so
+                // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
                 writer.UpdateDocument(new Term(Filename, photo.Filename), doc);
             }
