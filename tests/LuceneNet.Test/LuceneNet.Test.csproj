@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="4.3.0" />
-    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.3.0" />
+    <PackageReference Include="FakeItEasy" Version="4.4.0" />
+    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.4.0" />
+    <PackageReference Include="FluentAssertions" Version="5.0.0" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Expressions" Version="4.8.0-beta00005" />
@@ -24,6 +25,10 @@
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

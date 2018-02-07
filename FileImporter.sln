@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileImporter", "src\FileImporter\FileImporter.csproj", "{FEC19554-04CA-416D-A771-485D73EC3001}"
 EndProject
@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileImporter.Test", "tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages", "tests\TestImages\TestImages.csproj", "{105D5482-9356-41FE-A637-5AB15EE639D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneNet.Test", "tests\LuceneNet.Test\LuceneNet.Test.csproj", "{C53D005C-2022-494F-B313-BBEB41C8A96F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneNet.Test", "tests\LuceneNet.Test\LuceneNet.Test.csproj", "{C53D005C-2022-494F-B313-BBEB41C8A96F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExifToolWrapper.Test", "tests\ExifToolWrapper.Test\ExifToolWrapper.Test.csproj", "{B29B8C03-329C-4B68-95F1-A3A50114C4F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExifToolWrapper", "ExifToolWrapper\ExifToolWrapper.csproj", "{34632040-7AF4-4A39-A10D-91DEF204BB4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{C53D005C-2022-494F-B313-BBEB41C8A96F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C53D005C-2022-494F-B313-BBEB41C8A96F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C53D005C-2022-494F-B313-BBEB41C8A96F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29B8C03-329C-4B68-95F1-A3A50114C4F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29B8C03-329C-4B68-95F1-A3A50114C4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29B8C03-329C-4B68-95F1-A3A50114C4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29B8C03-329C-4B68-95F1-A3A50114C4F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34632040-7AF4-4A39-A10D-91DEF204BB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34632040-7AF4-4A39-A10D-91DEF204BB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34632040-7AF4-4A39-A10D-91DEF204BB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34632040-7AF4-4A39-A10D-91DEF204BB4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
