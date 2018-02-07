@@ -10,7 +10,7 @@ namespace FileImporter.Test
   {
     ""Identifier"": ""1.jpg"",
     ""Hashes"": {
-      ""FileHash"": ""YpWDXKpv?p8-Tq=.?8Y2/25wyk1LwA=[uz!QR#Gh"",
+      ""FileHash"": ""++w{S2[kj437J2P(i{waAoqjvk1S)wE%vL3@fv0O"",
       ""ImageHash"": ""+]JP}/TH1-hP/ax&a)iqy%H<Ze>cpbBhph)ggipp"",
       ""AverageHash"": 18446717683803819524,
       ""DifferenceHash"": 3573764261290621052,

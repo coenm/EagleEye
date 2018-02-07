@@ -16,16 +16,16 @@ namespace FileImporter.Test.Indexing
         {
             _imageFilenames = Directory
                 .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
-//                .Select(ConvertToRelativeFilename)
+                .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
 
-//        // Convert Fullfilename to relative such that it doesn't matter what machine in what directory the sln is stored.
-//        private static string ConvertToRelativeFilename(string fullFilename)
-//        {
-//            var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
-//            return fullFilename.Remove(0, slnDirectoryLength);
-//        }
+        // Convert Fullfilename to relative such that it doesn't matter what machine in what directory the sln is stored.
+        private static string ConvertToRelativeFilename(string fullFilename)
+        {
+            var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
+            return fullFilename.Remove(0, slnDirectoryLength);
+        }
         
         [Fact]
         public void CalculateIndexOfFilesTest()
