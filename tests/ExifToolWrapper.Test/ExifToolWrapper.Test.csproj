@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ExifToolWrapper\ExifToolWrapper.csproj" />
+    <ProjectReference Include="..\..\src\ExifToolWrapper\ExifToolWrapper.csproj" />
     <ProjectReference Include="..\TestImages\TestImages.csproj" />
   </ItemGroup>
 

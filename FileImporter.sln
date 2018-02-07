@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneNet.Test", "tests\Luc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExifToolWrapper.Test", "tests\ExifToolWrapper.Test\ExifToolWrapper.Test.csproj", "{B29B8C03-329C-4B68-95F1-A3A50114C4F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExifToolWrapper", "ExifToolWrapper\ExifToolWrapper.csproj", "{34632040-7AF4-4A39-A10D-91DEF204BB4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExifToolWrapper", "src\ExifToolWrapper\ExifToolWrapper.csproj", "{34632040-7AF4-4A39-A10D-91DEF204BB4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
