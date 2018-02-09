@@ -107,7 +107,7 @@ namespace ExifToolWrapper.Test
                 capturedExifToolResults.Add(dataCapturedArgs.Key, dataCapturedArgs.Data);
             }
 
-            using (var stream = new ExifToolStayOpenStreamAdapter(new UTF8Encoding()))
+            using (var stream = new ExifToolStayOpenStream(new UTF8Encoding()))
             {
                 stream.Update += StreamOnUpdate;
 

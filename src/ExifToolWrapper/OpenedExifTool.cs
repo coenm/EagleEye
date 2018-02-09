@@ -16,7 +16,7 @@ namespace ExifToolWrapper
         private readonly AsyncLock _syncLockAddToExifTool = new AsyncLock();
         private readonly List<string> _defaultArgs;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> _waitingTasks;
-        private ExifToolStayOpenStreamAdapter _stream;
+        private ExifToolStayOpenStream _stream;
         private Command _cmd;
         private int _key;
 
@@ -42,7 +42,7 @@ namespace ExifToolWrapper
         {
             lock (_syncLock)
             {
-                _stream = new ExifToolStayOpenStreamAdapter(Encoding.UTF8);
+                _stream = new ExifToolStayOpenStream(Encoding.UTF8);
                 _stream.Update += StreamOnUpdate;
 
                 _cmd = Command.Run(_exifToolPath, _defaultArgs)
