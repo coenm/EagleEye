@@ -14,7 +14,7 @@ namespace ExifToolWrapper.Test
     {
         private readonly string _image;
 
-        private const string CurrentExifToolVersion = "10.25";
+        private const string CurrentExifToolVersion = "10.79";
         private const string ExifToolExecutable = "exiftool.exe";
 
         //
@@ -48,38 +48,6 @@ namespace ExifToolWrapper.Test
         }
 
         [Fact]
-        public async Task RunExifToolWithTextWriter()
-        {
-            // arrange
-            IEnumerable<string> args = new List<string>
-            {
-                "-stay_open",
-                "True",
-                "-@",
-                "-",
-                ExifToolArguments.JsonOutput,
-                ExifToolArguments.IgnoreMinorErrorsAndWarnings,
-                ExifToolArguments.Quiet,
-                ExifToolArguments.Quiet
-            };
-
-            var sb = new StringBuilder();
-            TextWriter writer = new StringWriter(sb);
-
-            // act
-            var cmd = Command.Run(ExifToolExecutable, args).RedirectTo(writer);
-
-            await cmd.StandardInput.WriteLineAsync(ExifToolArguments.Version);
-            await cmd.StandardInput.WriteLineAsync("-execute0000");
-            await cmd.StandardInput.WriteLineAsync("-stay_open");
-            await cmd.StandardInput.WriteLineAsync("False");
-            await cmd.Task;
-
-            // assert
-            sb.ToString().Should().Be(CurrentExifToolVersion + "\r\n{ready0000}\r\n");
-        }
-
-        [Fact]
         public async Task RunExifToolWithCustomStream()
         {
             // arrange
@@ -95,7 +63,7 @@ namespace ExifToolWrapper.Test
                 // format coordinates as signed decimals.
                 "-c",
                 "%+.6f",
-
+                
                 "-struct",
                 "-g", // group
             };
