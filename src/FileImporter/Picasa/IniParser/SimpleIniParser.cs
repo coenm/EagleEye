@@ -23,10 +23,10 @@ namespace FileImporter.Picasa.IniParser
                 using (var reader = new StreamReader(stream))
                 {
                     var content = reader.ReadToEnd();
-                    return content.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+                    return  content.Replace("\r\n", "\n").Split('\n', StringSplitOptions.RemoveEmptyEntries);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Could not parse stream");
             }

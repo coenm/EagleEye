@@ -52,10 +52,6 @@ namespace ExifToolWrapper
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
-            // is opened message
-            // is closed message
-            // is progress message
-
             if (_waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
             {
                 tcs.TrySetResult(dataCapturedArgs.Data);

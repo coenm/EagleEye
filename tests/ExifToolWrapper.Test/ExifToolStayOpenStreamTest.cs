@@ -45,7 +45,7 @@ namespace ExifToolWrapper.Test
         public void ParseSingleMessage()
         {
             // arrange
-            const string msg = "a b c\r\nd e f\r\n{ready0}";
+            const string msg = "a b c\r\nd e f\r\n{ready0}\r\n";
 
             // act
             WriteMessageToSut(msg);

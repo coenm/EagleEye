@@ -12,7 +12,7 @@ namespace ExifToolWrapper
         private const int OneMb = 1024 * 1024;
         private int _index;
         private const string Prefix = "\r\n{ready";
-        private const string Suffix = "}";
+        private const string Suffix = "}\r\n";
         private readonly byte[] _endOfMessageSequenceStart;
         private readonly byte[] _endOfMessageSequenceEnd;
 
@@ -21,29 +21,11 @@ namespace ExifToolWrapper
             _encoding = encoding ?? new UTF8Encoding();
             _cache = new byte[OneMb];
             _index = 0;
-            _endOfMessageSequenceStart = Encoding.ASCII.GetBytes(Prefix);
-            _endOfMessageSequenceEnd = Encoding.ASCII.GetBytes(Suffix);
+            _endOfMessageSequenceStart = _encoding.GetBytes(Prefix);
+            _endOfMessageSequenceEnd = _encoding.GetBytes(Suffix);
         }
 
-        public override void Flush()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
+        public event EventHandler<DataCapturedArgs> Update = delegate { };
 
         public override void Write(byte[] buffer, int offset, int count)
         {
@@ -64,7 +46,7 @@ namespace ExifToolWrapper
 
             for (var i = 0; i < _index - 1; i++)
             {
-                var key = "";
+                var key = string.Empty;
 
                 var j = 0;
                 while (j < _endOfMessageSequenceStart.Length && _cache[i + j] == _endOfMessageSequenceStart[j])
@@ -98,13 +80,6 @@ namespace ExifToolWrapper
 
                 j += k;
 
-                // clear line ending after '}'
-                if (j < _index && (_cache[j] == '\r' || _cache[j] == '\n'))
-                    j++;
-                if (j < _index && (_cache[j] == '\r' || _cache[j] == '\n'))
-                    j++;
-
-
                 Update(this, new DataCapturedArgs(key, content));
 
                 i = j;
@@ -128,6 +103,26 @@ namespace ExifToolWrapper
 
         public override bool CanWrite => true;
 
+        public override void Flush()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            throw new NotImplementedException();
+        }
+
         public override long Length => throw new NotImplementedException();
 
         public override long Position
@@ -135,7 +130,5 @@ namespace ExifToolWrapper
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
-
-        public event EventHandler<DataCapturedArgs> Update = delegate { };
     }
 }
