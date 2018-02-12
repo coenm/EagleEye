@@ -39,7 +39,7 @@ namespace FileImporter.Test.Indexing
 
             // assert
             // take shortcut to assert the result.
-            Assert.Equal(TestImagesIndex.IndexJson, JsonEncoding.Serialize(result.OrderBy(item => item.Identifier)));
+            Assert.Equal(TestImagesIndex.IndexJson.Replace("\r\n", "\n"), JsonEncoding.Serialize(result.OrderBy(item => item.Identifier)).Replace("\r\n", "\n"));
         }
     }
 }
