@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>EagleEye.FileImporter.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

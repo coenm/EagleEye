@@ -1,4 +1,4 @@
-# FindProcessedFiles
+# EagleEye
 quick .net core app to remove already processed images.
 
 # My Problem
@@ -19,6 +19,6 @@ This project is a quick (commandline) tool to build an index with filename and h
 
 # Download
 ```
-git clone https://github.com/coenm/FindProcessedFiles.git
+git clone https://github.com/coenm/EagleEye.git
 git submodule update --init --recursive
 ```
