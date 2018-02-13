@@ -14,15 +14,16 @@ namespace EagleEye.FileImporter.Infrastructure.Everything
         private const string StartEnd = "\"\"\"";
 
 
-        public Task Show(List<ImageData> files)
+        public Task Show(IEnumerable<ImageData> files)
         {
             var files2 = files.Select(f=>f.Identifier);
             var search = string.Join(Or, files2);
+            var args = "-s " + Escape + "filelist:" + StartEnd + search + StartEnd + " " + Escape;
 
-            Process p = new Process();
-            string args = "-s " + Escape + "filelist:" + StartEnd + search + StartEnd + " " + Escape;
-
-            p.StartInfo = new ProcessStartInfo(EverythingExe, args);
+            var p = new Process
+            {
+                StartInfo = new ProcessStartInfo(EverythingExe, args)
+            };
             p.Start();
 
             return Task.CompletedTask;

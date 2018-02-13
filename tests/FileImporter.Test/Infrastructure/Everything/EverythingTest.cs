@@ -20,7 +20,7 @@ namespace EagleEye.FileImporter.Test.Infrastructure.Everything
         public async Task ManualTestIfEverythingIsStartedTest()
         {
             // arrange
-            var sut = new EagleEye.FileImporter.Infrastructure.Everything.Everything();
+            var sut = new FileImporter.Infrastructure.Everything.Everything();
             var fileIndexes = _imageFilenames.Select(p => new ImageData(p)).ToList();
 
             // act
