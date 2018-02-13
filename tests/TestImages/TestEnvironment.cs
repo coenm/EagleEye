@@ -7,7 +7,7 @@ namespace TestImages
 {
     public static class TestEnvironment
     {
-        private const string SolutionFileName = "FileImporter.sln";
+        private const string SolutionFileName = "EagleEye.sln";
 
         private const string InputImagesRelativePath = @"Images\data\";
 
