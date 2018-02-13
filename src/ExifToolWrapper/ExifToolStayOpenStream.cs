@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace ExifToolWrapper
+namespace EagleEye.ExifToolWrapper
 {
     public class ExifToolStayOpenStream : Stream
     {

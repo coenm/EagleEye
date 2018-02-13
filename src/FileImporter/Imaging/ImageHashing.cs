@@ -4,7 +4,7 @@ using CoenM.ImageSharp;
 using CoenM.ImageSharp.HashAlgorithms;
 using SixLabors.ImageSharp;
 
-namespace FileImporter.Imaging
+namespace EagleEye.FileImporter.Imaging
 {
     public static class ImageHashing
     {

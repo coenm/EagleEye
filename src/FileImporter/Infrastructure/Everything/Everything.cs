@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using FileImporter.Indexing;
+using EagleEye.FileImporter.Indexing;
 
-namespace FileImporter.Infrastructure.Everything
+namespace EagleEye.FileImporter.Infrastructure.Everything
 {
     public class Everything
     {

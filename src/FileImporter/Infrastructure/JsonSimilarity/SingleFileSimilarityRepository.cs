@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FileImporter.Similarity;
+using EagleEye.FileImporter.Similarity;
 
-namespace FileImporter.Infrastructure.JsonSimilarity
+namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
 {
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {

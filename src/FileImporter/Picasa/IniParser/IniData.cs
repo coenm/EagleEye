@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FileImporter.Picasa.IniParser
+namespace EagleEye.FileImporter.Picasa.IniParser
 {
     public class IniData
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace TestImages
+namespace EagleEye.TestImages
 {
     public static class TestEnvironment
     {
@@ -26,11 +26,14 @@ namespace TestImages
 
         private static string GetSolutionDirectoryFullPathImpl()
         {
-            string assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
+            var assemblyLocation = typeof(TestEnvironment).GetTypeInfo().Assembly.Location;
 
             var assemblyFile = new FileInfo(assemblyLocation);
 
             var directory = assemblyFile.Directory;
+
+            if (directory == null)
+                throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
 
             while (!directory.EnumerateFiles(SolutionFileName).Any())
             {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using FileImporter.Indexing;
-using FileImporter.Json;
+using EagleEye.FileImporter.Indexing;
+using EagleEye.FileImporter.Json;
 
-namespace FileImporter.Test
+namespace EagleEye.FileImporter.Test
 {
     public static class TestImagesIndex
     {

@@ -3,7 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace FileImporter.Json
+namespace EagleEye.FileImporter.Json
 {
     public static class JsonEncoding
     {

@@ -1,7 +1,7 @@
-﻿namespace FileImporter.CmdOptions
-{
-    using CommandLine;
+﻿using CommandLine;
 
+namespace EagleEye.FileImporter.CmdOptions
+{
     [Verb("autodelete", HelpText = "Remove files with specific file name convention that have a duplicate in same folder")]
     // ReSharper disable once ClassNeverInstantiated.Global
     class AutoDeleteSameFile

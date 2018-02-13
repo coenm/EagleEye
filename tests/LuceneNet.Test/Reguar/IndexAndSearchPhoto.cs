@@ -9,7 +9,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Xunit;
 
-namespace LuceneNet.Test.Reguar
+namespace EagleEye.LuceneNet.Test.Reguar
 {
     public class IndexAndSearchPhoto
     {

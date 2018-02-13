@@ -1,7 +1,7 @@
 ﻿using System;
-using FileImporter.Json;
+using EagleEye.FileImporter.Json;
 
-namespace FileImporter.Infrastructure.PersistantSerializer
+namespace EagleEye.FileImporter.Infrastructure.PersistantSerializer
 {
     public class JsonToFileSerializer<T> : IPersistantSerializer<T> where T : new()
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FileImporter.Indexing
+namespace EagleEye.FileImporter.Indexing
 {
     public class SearchService
     {

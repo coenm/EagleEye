@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Medallion.Shell;
 using Nito.AsyncEx;
 
-namespace ExifToolWrapper
+namespace EagleEye.ExifToolWrapper
 {
     public class OpenedExifTool : IDisposable
     {

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Xunit;
 
-namespace FileImporter.Test
+namespace EagleEye.FileImporter.Test
 {
     public class DirectoryInfoTest
     {

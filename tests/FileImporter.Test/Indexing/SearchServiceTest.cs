@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using EagleEye.FileImporter.Indexing;
 using FakeItEasy;
-using FileImporter.Indexing;
 using Xunit;
 
-namespace FileImporter.Test.Indexing
+namespace EagleEye.FileImporter.Test.Indexing
 {
     public class SearchServiceTest
     {

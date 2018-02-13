@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace FileImporter.Indexing
+namespace EagleEye.FileImporter.Indexing
 {
     public interface IContentResolver
     {

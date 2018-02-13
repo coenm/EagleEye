@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExifToolWrapper
+namespace EagleEye.ExifToolWrapper
 {
     public class DataCapturedArgs : EventArgs
     {

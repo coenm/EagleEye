@@ -1,4 +1,4 @@
-﻿namespace FileImporter.Imaging
+﻿namespace EagleEye.FileImporter.Imaging
 {
     public struct ImageHashValues
     {

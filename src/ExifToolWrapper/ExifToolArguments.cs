@@ -1,4 +1,4 @@
-﻿namespace ExifToolWrapper
+﻿namespace EagleEye.ExifToolWrapper
 {
     public static class ExifToolArguments
     {

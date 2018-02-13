@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FileImporter.Indexing
+namespace EagleEye.FileImporter.Indexing
 {
     public class PersistantFileIndexService
     {

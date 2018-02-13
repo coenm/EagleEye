@@ -1,14 +1,12 @@
-﻿namespace LuceneNet.Test.Reguar.DateTime
+﻿namespace EagleEye.LuceneNet.Test.Reguar.DateTime
 {
-    using System;
-
     public class PersonDto
     {
         public PersonDto()
         {
         }
 
-        public PersonDto(string name, DateTime dateOfBirth)
+        public PersonDto(string name, System.DateTime dateOfBirth)
         {
             Name = name;
             DateOfBirth = dateOfBirth;
@@ -16,6 +14,6 @@
 
         public string Name { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public System.DateTime DateOfBirth { get; set; }
     }
 }

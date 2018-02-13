@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace FileImporter.Picasa.IniParser
+namespace EagleEye.FileImporter.Picasa.IniParser
 {
     public static class SimpleIniParser
     {

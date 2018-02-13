@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace FileImporter.Infrastructure
+namespace EagleEye.FileImporter.Infrastructure
 {
     public static class ExtractDateFromFilename
     {

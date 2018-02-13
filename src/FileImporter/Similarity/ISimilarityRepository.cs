@@ -1,7 +1,7 @@
-﻿namespace FileImporter.Similarity
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace EagleEye.FileImporter.Similarity
+{
     public interface ISimilarityRepository
     {
         IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash);

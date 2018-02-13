@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace FileImporter.CmdOptions
+namespace EagleEye.FileImporter.CmdOptions
 {
     [Verb("update-similarity", HelpText = "Update similarities index files")]
     // ReSharper disable once ClassNeverInstantiated.Global

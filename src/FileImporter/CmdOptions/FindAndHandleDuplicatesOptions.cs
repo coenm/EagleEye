@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace FileImporter.CmdOptions
+namespace EagleEye.FileImporter.CmdOptions
 {
     [Verb("handle-duplicates", HelpText = "Remove duplicate files (based on hash)")]
     // ReSharper disable once ClassNeverInstantiated.Global

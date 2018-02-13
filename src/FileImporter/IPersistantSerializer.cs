@@ -1,4 +1,4 @@
-﻿namespace FileImporter
+﻿namespace EagleEye.FileImporter
 {
     public interface IPersistantSerializer<T> where T : new()
     {

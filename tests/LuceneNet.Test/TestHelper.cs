@@ -1,6 +1,6 @@
 ﻿using Lucene.Net.Util;
 
-namespace LuceneNet.Test
+namespace EagleEye.LuceneNet.Test
 {
     internal static class TestHelper
     {

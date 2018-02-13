@@ -1,18 +1,17 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.Queries;
 using Lucene.Net.Search;
+using Lucene.Net.Store;
+using Xunit;
 
-namespace LuceneNet.Test.Reguar.DateTime
+namespace EagleEye.LuceneNet.Test.Reguar.DateTime
 {
-    using System;
-    using System.Collections.Generic;
-    using Lucene.Net.Analysis;
-    using Lucene.Net.Analysis.Standard;
-    using Lucene.Net.Documents;
-    using Lucene.Net.Index;
-    using Lucene.Net.Store;
-    using Xunit;
-
     public class IndexAndSearchDateTimesTest
     {
         private readonly Directory _directory;
@@ -122,12 +121,12 @@ namespace LuceneNet.Test.Reguar.DateTime
         {
             get
             {
-                yield return new PersonDto("alice", new DateTime(2000, 1, 2));
-                yield return new PersonDto("bob", new DateTime(2002, 1, 12));
-                yield return new PersonDto("calvin", new DateTime(2007, 6, 2));
-                yield return new PersonDto("dwane", new DateTime(2007, 11, 2));
-                yield return new PersonDto("eve", new DateTime(2001, 6, 2));
-                yield return new PersonDto("fred", new DateTime(1999, 12, 2));
+                yield return new PersonDto("alice", new System.DateTime(2000, 1, 2));
+                yield return new PersonDto("bob", new System.DateTime(2002, 1, 12));
+                yield return new PersonDto("calvin", new System.DateTime(2007, 6, 2));
+                yield return new PersonDto("dwane", new System.DateTime(2007, 11, 2));
+                yield return new PersonDto("eve", new System.DateTime(2001, 6, 2));
+                yield return new PersonDto("fred", new System.DateTime(1999, 12, 2));
             }
         }
 

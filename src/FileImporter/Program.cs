@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CommandLine;
-using FileImporter.CmdOptions;
-using FileImporter.Indexing;
-using FileImporter.Infrastructure;
-using FileImporter.Infrastructure.Everything;
-using FileImporter.Infrastructure.FileIndexRepository;
-using FileImporter.Infrastructure.PersistantSerializer;
-using FileImporter.Similarity;
+using EagleEye.FileImporter.CmdOptions;
+using EagleEye.FileImporter.Indexing;
+using EagleEye.FileImporter.Infrastructure;
+using EagleEye.FileImporter.Infrastructure.Everything;
+using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
+using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
+using EagleEye.FileImporter.Similarity;
 using ShellProgressBar;
 using SimpleInjector;
 
-namespace FileImporter
+namespace EagleEye.FileImporter
 {
     public static class Program
     {

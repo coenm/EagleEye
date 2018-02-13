@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using EagleEye.TestImages;
 using FluentAssertions;
-using TestImages;
 using Xunit;
 
-namespace ExifToolWrapper.Test
+namespace EagleEye.ExifToolWrapper.Test
 {
     public class OpenedExifToolTest
     {

@@ -1,4 +1,4 @@
-﻿namespace FileImporter.Similarity
+﻿namespace EagleEye.FileImporter.Similarity
 {
     public class SimilarityResult
     {

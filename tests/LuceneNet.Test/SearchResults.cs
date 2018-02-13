@@ -1,4 +1,4 @@
-﻿namespace LuceneNet.Test
+﻿namespace EagleEye.LuceneNet.Test
 {
     internal class SearchResults<T> where T : class, new()
     {

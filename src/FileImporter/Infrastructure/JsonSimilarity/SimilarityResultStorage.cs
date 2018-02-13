@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FileImporter.Infrastructure.JsonSimilarity
+namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
 {
     public class SimilarityResultStorage
     {

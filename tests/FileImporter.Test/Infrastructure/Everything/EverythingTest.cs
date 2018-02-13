@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using FileImporter.Indexing;
-using TestImages;
+using EagleEye.FileImporter.Indexing;
+using EagleEye.TestImages;
 using Xunit;
 
-namespace FileImporter.Test.Infrastructure.Everything
+namespace EagleEye.FileImporter.Test.Infrastructure.Everything
 {
     public class EverythingTest
     {
@@ -21,7 +20,7 @@ namespace FileImporter.Test.Infrastructure.Everything
         public async Task ManualTestIfEverythingIsStartedTest()
         {
             // arrange
-            var sut = new FileImporter.Infrastructure.Everything.Everything();
+            var sut = new EagleEye.FileImporter.Infrastructure.Everything.Everything();
             var fileIndexes = _imageFilenames.Select(p => new ImageData(p)).ToList();
 
             // act

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FileImporter.Picasa
+namespace EagleEye.FileImporter.Picasa
 {
     public class FileWithPersons
     {

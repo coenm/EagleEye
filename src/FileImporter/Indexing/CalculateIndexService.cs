@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using FileImporter.Imaging;
+using EagleEye.FileImporter.Imaging;
 
-namespace FileImporter.Indexing
+namespace EagleEye.FileImporter.Indexing
 {
     public class CalculateIndexService
     {

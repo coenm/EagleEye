@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FileImporter.Indexing;
+using EagleEye.FileImporter.Indexing;
 
-namespace FileImporter.Similarity
+namespace EagleEye.FileImporter.Similarity
 {
     public class FilenameProgressData
     {

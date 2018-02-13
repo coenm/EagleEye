@@ -10,7 +10,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Xunit;
 
-namespace LuceneNet.Test.Facet
+namespace EagleEye.LuceneNet.Test.Facet
 {
     public partial class NumberFacetSearchTest
     {

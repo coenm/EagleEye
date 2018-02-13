@@ -1,8 +1,8 @@
 ﻿using System;
-using FileImporter.Infrastructure;
+using EagleEye.FileImporter.Infrastructure;
 using Xunit;
 
-namespace FileImporter.Test.Infrastructure
+namespace EagleEye.FileImporter.Test.Infrastructure
 {
     public class ExtractDateFromFilenameTest
     {

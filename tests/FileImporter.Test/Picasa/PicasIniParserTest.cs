@@ -2,12 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using FileImporter.Picasa;
+using EagleEye.FileImporter.Picasa;
 using Xunit;
+using Sut = EagleEye.FileImporter.Picasa.PicasaIniParser;
 
-using Sut = FileImporter.Picasa.PicasaIniParser;
-
-namespace FileImporter.Test.Picasa
+namespace EagleEye.FileImporter.Test.Picasa
 {
     public class PicasIniParserTest
     {

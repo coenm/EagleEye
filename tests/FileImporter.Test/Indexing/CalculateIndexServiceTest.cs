@@ -1,12 +1,12 @@
 ﻿using System.IO;
 using System.Linq;
-using FileImporter.Indexing;
-using FileImporter.Infrastructure.ContentResolver;
-using FileImporter.Json;
-using TestImages;
+using EagleEye.FileImporter.Indexing;
+using EagleEye.FileImporter.Infrastructure.ContentResolver;
+using EagleEye.FileImporter.Json;
+using EagleEye.TestImages;
 using Xunit;
 
-namespace FileImporter.Test.Indexing
+namespace EagleEye.FileImporter.Test.Indexing
 {
     public class CalculateIndexServiceTest
     {

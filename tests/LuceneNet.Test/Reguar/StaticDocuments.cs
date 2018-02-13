@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LuceneNet.Test.Reguar
+namespace EagleEye.LuceneNet.Test.Reguar
 {
     internal static class StaticDocuments
     {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EagleEye.FileImporter.Indexing;
+using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
 using FakeItEasy;
-using FileImporter.Indexing;
-using FileImporter.Infrastructure.FileIndexRepository;
 using Xunit;
 
-namespace FileImporter.Test.Infrastructure.FileIndexRepository
+namespace EagleEye.FileImporter.Test.Infrastructure.FileIndexRepository
 {
     public class SingleFileIndexRepositoryTest
     {

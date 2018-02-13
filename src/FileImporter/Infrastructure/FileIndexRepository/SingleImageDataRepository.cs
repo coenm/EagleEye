@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FileImporter.Indexing;
+using EagleEye.FileImporter.Indexing;
 
-namespace FileImporter.Infrastructure.FileIndexRepository
+namespace EagleEye.FileImporter.Infrastructure.FileIndexRepository
 {
     /// <summary>
     /// Stores data in file.

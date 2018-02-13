@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using FileImporter.Indexing;
+using EagleEye.FileImporter.Indexing;
 
-namespace FileImporter.Infrastructure.ContentResolver
+namespace EagleEye.FileImporter.Infrastructure.ContentResolver
 {
     public class RelativeFilesystemContentResolver : IContentResolver
     {

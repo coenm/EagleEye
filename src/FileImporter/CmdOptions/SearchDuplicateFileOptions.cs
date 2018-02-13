@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace FileImporter.CmdOptions
+namespace EagleEye.FileImporter.CmdOptions
 {
     [Verb("search-file")]
     // ReSharper disable once ClassNeverInstantiated.Global

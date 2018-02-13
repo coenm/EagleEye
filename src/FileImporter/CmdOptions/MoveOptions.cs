@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace FileImporter.CmdOptions
+namespace EagleEye.FileImporter.CmdOptions
 {
     [Verb("move", HelpText = "Move files to folders with date")]
     // ReSharper disable once ClassNeverInstantiated.Global

@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
-using FileImporter.Indexing;
-using FileImporter.Infrastructure.ContentResolver;
-using FileImporter.Infrastructure.FileIndexRepository;
-using FileImporter.Infrastructure.JsonSimilarity;
-using FileImporter.Infrastructure.PersistantSerializer;
+using EagleEye.FileImporter.Indexing;
+using EagleEye.FileImporter.Infrastructure.ContentResolver;
+using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
+using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
+using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
+using EagleEye.FileImporter.Similarity;
 using SimpleInjector;
 
-namespace FileImporter
+namespace EagleEye.FileImporter
 {
-    using Similarity;
-
     public static class Startup
     {
         public static void ConfigureContainer(Container container, string indexFilename)

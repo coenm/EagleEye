@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FileImporter.Picasa.IniParser;
+using EagleEye.FileImporter.Picasa.IniParser;
 
-namespace FileImporter.Picasa
+namespace EagleEye.FileImporter.Picasa
 {
     public static class PicasaIniParser
     {

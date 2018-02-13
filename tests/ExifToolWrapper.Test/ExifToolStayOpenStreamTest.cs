@@ -1,15 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using FluentAssertions;
+using Xunit;
 
-namespace ExifToolWrapper.Test
+namespace EagleEye.ExifToolWrapper.Test
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
-    using FluentAssertions;
-
-    using Xunit;
-
     public class ExifToolStayOpenStreamTest : IDisposable
     {
         private readonly ExifToolStayOpenStream _sut;

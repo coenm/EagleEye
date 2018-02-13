@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace LuceneNet.Test.Reguar
+namespace EagleEye.LuceneNet.Test.Reguar
 {
     public class PhotoMetadataDto
     {

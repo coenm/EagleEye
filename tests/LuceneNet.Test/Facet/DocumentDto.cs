@@ -1,4 +1,4 @@
-﻿namespace LuceneNet.Test.Facet
+﻿namespace EagleEye.LuceneNet.Test.Facet
 {
     public class DocumentDto 
     {

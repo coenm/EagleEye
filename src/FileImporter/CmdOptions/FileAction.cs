@@ -1,4 +1,4 @@
-﻿namespace FileImporter.CmdOptions
+﻿namespace EagleEye.FileImporter.CmdOptions
 {
     enum FileAction
     {
