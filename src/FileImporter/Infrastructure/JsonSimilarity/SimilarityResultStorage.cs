@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
+﻿namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
 {
+    using System.Collections.Generic;
+
     public class SimilarityResultStorage
     {
         public SimilarityResultStorage()

@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using EagleEye.FileImporter.Indexing;
-using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-using FakeItEasy;
-using Xunit;
-
-namespace EagleEye.FileImporter.Test.Infrastructure.FileIndexRepository
+﻿namespace EagleEye.FileImporter.Test.Infrastructure.FileIndexRepository
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using EagleEye.FileImporter.Indexing;
+    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
+
+    using FakeItEasy;
+
+    using Xunit;
+
     public class SingleFileIndexRepositoryTest
     {
         private readonly SingleImageDataRepository _sut;
@@ -58,7 +61,7 @@ namespace EagleEye.FileImporter.Test.Infrastructure.FileIndexRepository
         [InlineData("4.jpg", 1)]
         [InlineData("6.jpg", 1)]
         [InlineData("7.jpg", 1)]
-        [InlineData("8.jpg", 0)] 
+        [InlineData("8.jpg", 0)]
         public void CountSimilarTest(string identifier, int expectedCount)
         {
             // arrange

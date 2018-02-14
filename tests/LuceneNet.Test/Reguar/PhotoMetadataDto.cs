@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace EagleEye.LuceneNet.Test.Reguar
+﻿namespace EagleEye.LuceneNet.Test.Reguar
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class PhotoMetadataDto
     {
         public PhotoMetadataDto()

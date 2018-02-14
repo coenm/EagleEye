@@ -1,9 +1,9 @@
-﻿using Lucene.Net.Util;
-
-namespace EagleEye.LuceneNet.Test
+﻿namespace EagleEye.LuceneNet.Test
 {
+    using Lucene.Net.Util;
+
     internal static class TestHelper
     {
-        public const LuceneVersion LuceneVersion = Lucene.Net.Util.LuceneVersion.LUCENE_48;
+        public const LuceneVersion LUCENE_VERSION = LuceneVersion.LUCENE_48;
     }
 }

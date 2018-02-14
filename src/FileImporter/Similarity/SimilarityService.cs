@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using EagleEye.FileImporter.Indexing;
-
-namespace EagleEye.FileImporter.Similarity
+﻿namespace EagleEye.FileImporter.Similarity
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using EagleEye.FileImporter.Indexing;
+
     public class FilenameProgressData
     {
         public FilenameProgressData(int current, int total, string filename)

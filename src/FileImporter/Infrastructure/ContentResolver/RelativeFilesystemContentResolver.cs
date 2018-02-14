@@ -1,9 +1,10 @@
-﻿using System;
-using System.IO;
-using EagleEye.FileImporter.Indexing;
-
-namespace EagleEye.FileImporter.Infrastructure.ContentResolver
+﻿namespace EagleEye.FileImporter.Infrastructure.ContentResolver
 {
+    using System;
+    using System.IO;
+
+    using EagleEye.FileImporter.Indexing;
+
     public class RelativeFilesystemContentResolver : IContentResolver
     {
         private readonly string _baseDirectory;

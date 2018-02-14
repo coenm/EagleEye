@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifToolWrapper
 {
+    using System;
+
     public class DataCapturedArgs : EventArgs
     {
         public DataCapturedArgs(string key, string data)

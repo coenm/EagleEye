@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
-using Lucene.Net.Store;
-using Xunit;
-
-namespace EagleEye.LuceneNet.Test.Reguar
+﻿namespace EagleEye.LuceneNet.Test.Reguar
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Lucene.Net.Analysis;
+    using Lucene.Net.Analysis.Standard;
+    using Lucene.Net.Documents;
+    using Lucene.Net.Index;
+    using Lucene.Net.QueryParsers.Classic;
+    using Lucene.Net.Search;
+    using Lucene.Net.Store;
+
+    using Xunit;
+
     public class IndexAndSearchPhoto
     {
-        private const string Person = "person";
-        private const string Filename = "filename";
+        private const string PERSON = "person";
+        private const string FILENAME = "filename";
 
         private readonly Directory _directory;
         private readonly Analyzer _analyzer;
@@ -23,9 +25,9 @@ namespace EagleEye.LuceneNet.Test.Reguar
         public IndexAndSearchPhoto()
         {
             _directory = new RAMDirectory();
-            _analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
+            _analyzer = new StandardAnalyzer(TestHelper.LUCENE_VERSION);
 
-            _indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, _analyzer)
+            _indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, _analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
                 RAMBufferSizeMB = 256.0
@@ -91,7 +93,7 @@ namespace EagleEye.LuceneNet.Test.Reguar
 
         private IEnumerable<SearchResults<PhotoMetadataDto>> SearchPersons(string query)
         {
-            return Search(query, Person);
+            return Search(query, PERSON);
         }
 
         private IEnumerable<SearchResults<PhotoMetadataDto>> Search(Query query)
@@ -100,14 +102,14 @@ namespace EagleEye.LuceneNet.Test.Reguar
             using (var reader = DirectoryReader.Open(_directory))
             {
                 var searcher = new IndexSearcher(reader);
-                
+
                 var hitsFound = searcher.Search(query, 10);
 
                 foreach (var t in hitsFound.ScoreDocs)
                 {
                     var doc = searcher.Doc(t.Doc);
-                    var filename = doc.Get(Filename);
-                    var persons = doc.GetValues(Person);
+                    var filename = doc.Get(FILENAME);
+                    var persons = doc.GetValues(PERSON);
                     var score = t.Score;
 
                     var searchResultDto = new SearchResults<PhotoMetadataDto>(new PhotoMetadataDto(filename, persons), score);
@@ -119,9 +121,9 @@ namespace EagleEye.LuceneNet.Test.Reguar
             return results;
         }
 
-        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = Filename)
+        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = FILENAME)
         {
-            var parser = new QueryParser(TestHelper.LuceneVersion, defaultSearchField, _analyzer);
+            var parser = new QueryParser(TestHelper.LUCENE_VERSION, defaultSearchField, _analyzer);
             return Search(parser.Parse(query));
         }
 
@@ -141,7 +143,7 @@ namespace EagleEye.LuceneNet.Test.Reguar
 
         private void DeleteFromIndex(Term term)
         {
-            var indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, _analyzer)
+            var indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, _analyzer)
                                      {
                                          OpenMode = OpenMode.CREATE_OR_APPEND,
                                          RAMBufferSizeMB = 256.0
@@ -158,7 +160,7 @@ namespace EagleEye.LuceneNet.Test.Reguar
         {
             var doc = new Document();
 
-            Field fieldFilename = new TextField(Filename, photo.Filename, Field.Store.YES);
+            Field fieldFilename = new TextField(FILENAME, photo.Filename, Field.Store.YES);
             doc.Add(fieldFilename);
 
             var persons = photo.Persons
@@ -168,7 +170,7 @@ namespace EagleEye.LuceneNet.Test.Reguar
 
             foreach (var person in persons)
             {
-                Field fieldPerson = new TextField(Person, person, Field.Store.YES);
+                Field fieldPerson = new TextField(PERSON, person, Field.Store.YES);
                 doc.Add(fieldPerson);
             }
 
@@ -183,7 +185,7 @@ namespace EagleEye.LuceneNet.Test.Reguar
                 // Existing index (an old copy of this document may have been indexed) so
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
-                writer.UpdateDocument(new Term(Filename, photo.Filename), doc);
+                writer.UpdateDocument(new Term(FILENAME, photo.Filename), doc);
             }
         }
     }

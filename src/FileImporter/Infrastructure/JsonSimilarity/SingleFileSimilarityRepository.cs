@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EagleEye.FileImporter.Similarity;
-
-namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
+﻿namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using EagleEye.FileImporter.Similarity;
+
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
         private readonly IPersistantSerializer<List<SimilarityResultStorage>> _storage;
         private readonly List<SimilarityResultStorage> _data;
         private readonly object _syncLock = new object();
-
-        private bool autoSave = true;
+        private bool _autoSave = true;
 
         public SingleFileSimilarityRepository(IPersistantSerializer<List<SimilarityResultStorage>> storage)
         {
@@ -116,7 +116,7 @@ namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
                                                   }
                               });
 
-                if (autoSave)
+                if (_autoSave)
                     _storage.Save(_data);
             }
         }
@@ -133,7 +133,7 @@ namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
         {
             lock (_syncLock)
             {
-                autoSave = value;
+                _autoSave = value;
             }
         }
     }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace EagleEye.FileImporter.Picasa
+﻿namespace EagleEye.FileImporter.Picasa
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class FileWithPersons
     {
         private readonly List<string> _persons;

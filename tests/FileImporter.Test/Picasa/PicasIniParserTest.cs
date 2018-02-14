@@ -1,37 +1,19 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using EagleEye.FileImporter.Picasa;
-using Xunit;
-using Sut = EagleEye.FileImporter.Picasa.PicasaIniParser;
-
-namespace EagleEye.FileImporter.Test.Picasa
+﻿namespace EagleEye.FileImporter.Test.Picasa
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
+    using EagleEye.FileImporter.Picasa;
+
+    using Xunit;
+
+    using Sut = FileImporter.Picasa.PicasaIniParser;
+
     public class PicasIniParserTest
     {
-        [Fact]
-        public void PicasaFileParserTest()
-        {
-            // arrange
-            using (var stream = GenerateStreamFromString(PicasaIniFileContent))
-            {
-                // act
-                var result = Sut.Parse(stream);
-
-                // assert
-                var expectedResult = new List<FileWithPersons>
-                {
-                    new FileWithPersons("pica 1.jpg", "Calvin", "David", "Alice"),
-                    new FileWithPersons("photo 2.jpg", "Alice", "Bob"),
-                    new FileWithPersons("nice photo.jpg", "Alice", "Eve Jackson"),
-                };
-
-                Assert.Equal(expectedResult.Select(x => x.ToString()), result.Select(x => x.ToString()));
-            }
-        }
-
-        private const string PicasaIniFileContent = @"
+        private const string PICASA_INI_FILE_CONTENT = @"
 [pica 1.jpg]
 backuphash=15125
 faces=rect64(a16a5261b7037516),ffffffffffffffff;rect64(397a37cb697a77cb),5bee603ee623542d;rect64(7ba11f6daba15f6d),8ad3eb33cfdf42ce;rect64(a3e041b9d3d081b9),7131e767c91646ae
@@ -50,10 +32,30 @@ backuphash=11571
 faces=rect64(787e40a89fff7fc0),ffffffffffffffff;rect64(3df8363c8b6289d8),7131e767c91646ae;rect64(7c1f1126c5898483),46c60ba61d7cb034
 backuphash=11571";
 
-        private static MemoryStream GenerateStreamFromString(string value)
+        [Fact]
+        public void PicasaFileParserTest()
         {
-            return new MemoryStream(Encoding.UTF8.GetBytes(value ?? ""));
+            // arrange
+            using (var stream = GenerateStreamFromString(PICASA_INI_FILE_CONTENT))
+            {
+                // act
+                var result = Sut.Parse(stream);
+
+                // assert
+                var expectedResult = new List<FileWithPersons>
+                                         {
+                                             new FileWithPersons("pica 1.jpg", "Calvin", "David", "Alice"),
+                                             new FileWithPersons("photo 2.jpg", "Alice", "Bob"),
+                                             new FileWithPersons("nice photo.jpg", "Alice", "Eve Jackson"),
+                                         };
+
+                Assert.Equal(expectedResult.Select(x => x.ToString()), result.Select(x => x.ToString()));
+            }
         }
 
+        private static MemoryStream GenerateStreamFromString(string value)
+        {
+            return new MemoryStream(Encoding.UTF8.GetBytes(value ?? string.Empty));
+        }
     }
 }

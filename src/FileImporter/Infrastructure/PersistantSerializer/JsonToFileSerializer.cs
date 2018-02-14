@@ -1,8 +1,9 @@
-﻿using System;
-using EagleEye.FileImporter.Json;
-
-namespace EagleEye.FileImporter.Infrastructure.PersistantSerializer
+﻿namespace EagleEye.FileImporter.Infrastructure.PersistantSerializer
 {
+    using System;
+
+    using EagleEye.FileImporter.Json;
+
     public class JsonToFileSerializer<T> : IPersistantSerializer<T> where T : new()
     {
         private readonly string _filename;

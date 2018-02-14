@@ -1,8 +1,9 @@
-﻿using System;
-using Newtonsoft.Json;
-
-namespace EagleEye.FileImporter.Json
+﻿namespace EagleEye.FileImporter.Json
 {
+    using System;
+
+    using Newtonsoft.Json;
+
     /// <summary>
     /// JsonConverter to convert byte[] to arrays containing the integer value for each byte.
     /// </summary>

@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using EagleEye.FileImporter.Indexing;
-using FakeItEasy;
-using Xunit;
-
-namespace EagleEye.FileImporter.Test.Indexing
+﻿namespace EagleEye.FileImporter.Test.Indexing
 {
+    using System;
+    using System.Collections.Generic;
+
+    using EagleEye.FileImporter.Indexing;
+
+    using FakeItEasy;
+
+    using Xunit;
+
     public class SearchServiceTest
     {
         private readonly IImageDataRepository _repository;

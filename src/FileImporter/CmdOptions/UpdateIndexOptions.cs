@@ -1,10 +1,10 @@
-﻿using CommandLine;
-
-namespace EagleEye.FileImporter.CmdOptions
+﻿namespace EagleEye.FileImporter.CmdOptions
 {
+    using CommandLine;
+
     [Verb("update", HelpText = "Update index files")]
     // ReSharper disable once ClassNeverInstantiated.Global
-    class UpdateIndexOptions
+    internal class UpdateIndexOptions
     {
         [Option('d', "directory", HelpText = "Directory to process", Required = true)]
         public string DirectoryToIndex { get; set; }

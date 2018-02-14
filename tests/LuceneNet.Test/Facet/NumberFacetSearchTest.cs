@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
-using Lucene.Net.Facet;
-using Lucene.Net.Facet.Range;
-using Lucene.Net.Index;
-using Lucene.Net.Search;
-using Lucene.Net.Store;
-using Xunit;
-
-namespace EagleEye.LuceneNet.Test.Facet
+﻿namespace EagleEye.LuceneNet.Test.Facet
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Lucene.Net.Analysis;
+    using Lucene.Net.Analysis.Standard;
+    using Lucene.Net.Documents;
+    using Lucene.Net.Facet;
+    using Lucene.Net.Facet.Range;
+    using Lucene.Net.Index;
+    using Lucene.Net.Search;
+    using Lucene.Net.Store;
+
+    using Xunit;
+
     public partial class NumberFacetSearchTest
     {
         private readonly Directory _directory;
@@ -20,10 +22,10 @@ namespace EagleEye.LuceneNet.Test.Facet
         public NumberFacetSearchTest()
         {
             _directory = new RAMDirectory();
-            
-            Analyzer analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
-            _indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
+            Analyzer analyzer = new StandardAnalyzer(TestHelper.LUCENE_VERSION);
+
+            _indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
                 RAMBufferSizeMB = 256.0
@@ -87,8 +89,8 @@ namespace EagleEye.LuceneNet.Test.Facet
             }
             else
             {
-                // Existing index (an old copy of this document may have been indexed) so 
-                // we use updateDocument instead to replace the old one matching the exact 
+                // Existing index (an old copy of this document may have been indexed) so
+                // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
                 writer.UpdateDocument(new Term(nameof(dto.Name), dto.Name), doc);
             }

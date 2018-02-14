@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EagleEye.FileImporter.Indexing
+﻿namespace EagleEye.FileImporter.Indexing
 {
+    using System;
+    using System.Collections.Generic;
+
     public class SearchService
     {
         private readonly IImageDataRepository _repository;

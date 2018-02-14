@@ -1,9 +1,11 @@
-﻿using System;
-using EagleEye.FileImporter.Infrastructure;
-using Xunit;
-
-namespace EagleEye.FileImporter.Test.Infrastructure
+﻿namespace EagleEye.FileImporter.Test.Infrastructure
 {
+    using System;
+
+    using EagleEye.FileImporter.Infrastructure;
+
+    using Xunit;
+
     public class ExtractDateFromFilenameTest
     {
         [Theory]
@@ -14,7 +16,7 @@ namespace EagleEye.FileImporter.Test.Infrastructure
         {
             // arrange
             var expectedResult = new DateTime(year, month, day, 0, 0, 0);
-            
+
             // act
             var result = ExtractDateFromFilename.TryGetFromFilename(filename);
 

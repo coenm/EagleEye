@@ -1,10 +1,10 @@
-﻿using CommandLine;
-
-namespace EagleEye.FileImporter.CmdOptions
+﻿namespace EagleEye.FileImporter.CmdOptions
 {
+    using CommandLine;
+
     [Verb("search-file")]
     // ReSharper disable once ClassNeverInstantiated.Global
-    class SearchDuplicateFileOptions
+    internal class SearchDuplicateFileOptions
     {
         [Option('f', "File", HelpText = "Original image", Required = true)]
         public string OriginalImageFile { get; set; }

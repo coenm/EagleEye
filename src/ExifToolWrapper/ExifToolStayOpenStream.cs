@@ -1,31 +1,45 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-
-namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifToolWrapper
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Text;
+
     public class ExifToolStayOpenStream : Stream
     {
+        private const int ONE_MB = 1024 * 1024;
+        private const string PREFIX = "\r\n{ready";
+        private const string SUFFIX = "}\r\n";
         private readonly Encoding _encoding;
         private readonly byte[] _cache;
-        private const int OneMb = 1024 * 1024;
-        private int _index;
-        private const string Prefix = "\r\n{ready";
-        private const string Suffix = "}\r\n";
         private readonly byte[] _endOfMessageSequenceStart;
         private readonly byte[] _endOfMessageSequenceEnd;
+        private int _index;
 
         public ExifToolStayOpenStream(Encoding encoding)
         {
             _encoding = encoding ?? new UTF8Encoding();
-            _cache = new byte[OneMb];
+            _cache = new byte[ONE_MB];
             _index = 0;
-            _endOfMessageSequenceStart = _encoding.GetBytes(Prefix);
-            _endOfMessageSequenceEnd = _encoding.GetBytes(Suffix);
+            _endOfMessageSequenceStart = _encoding.GetBytes(PREFIX);
+            _endOfMessageSequenceEnd = _encoding.GetBytes(SUFFIX);
         }
 
         public event EventHandler<DataCapturedArgs> Update = delegate { };
+
+        public override bool CanRead => false;
+
+        public override bool CanSeek => false;
+
+        public override bool CanWrite => true;
+
+        public override long Length => throw new NotImplementedException();
+
+        public override long Position
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
@@ -36,13 +50,21 @@ namespace EagleEye.ExifToolWrapper
             if (offset + count > buffer.Length)
                 return;
 
-            if (count > OneMb - _index)
+            if (count > ONE_MB - _index)
                 throw new ArgumentOutOfRangeException();
 
             Array.Copy(buffer, 0, _cache, _index, count);
             _index += count;
 
             var lastEndIndex = 0;
+
+            Debug.Assert(lastEndIndex <= _index, "Expect that lastEndindex is less then index");
+
+            if (lastEndIndex == 0)
+                return;
+
+            if (_index > lastEndIndex)
+                Array.Copy(_cache, lastEndIndex, _cache, 0, _index - lastEndIndex);
 
             for (var i = 0; i < _index - 1; i++)
             {
@@ -55,9 +77,9 @@ namespace EagleEye.ExifToolWrapper
                 if (j != _endOfMessageSequenceStart.Length)
                     continue;
 
-                var content = _encoding.GetString(_cache, lastEndIndex, i-lastEndIndex);
+                var content = _encoding.GetString(_cache, lastEndIndex, i - lastEndIndex);
                 j = j + i;
-                    
+
                 // expect numbers as key.
                 while (j < _index && _cache[j] >= '0' && _cache[j] <= '9')
                 {
@@ -67,12 +89,12 @@ namespace EagleEye.ExifToolWrapper
 
                 if (key.Length == 0)
                 {
-                    // no key found. 
+                    // no key found.
                     continue;
                 }
 
                 var k = 0;
-                while (k < _endOfMessageSequenceEnd.Length && _cache[j+k] == _endOfMessageSequenceEnd[k])
+                while (k < _endOfMessageSequenceEnd.Length && _cache[j + k] == _endOfMessageSequenceEnd[k])
                     k++;
 
                 if (k != _endOfMessageSequenceEnd.Length)
@@ -86,22 +108,8 @@ namespace EagleEye.ExifToolWrapper
                 lastEndIndex = j;
             }
 
-            Debug.Assert(lastEndIndex <= _index);
-
-            if (lastEndIndex == 0)
-                return;
-
-            if (_index > lastEndIndex)
-                Array.Copy(_cache, lastEndIndex, _cache, 0, _index - lastEndIndex);
-
             _index -= lastEndIndex;
         }
-
-        public override bool CanRead => false;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => true;
 
         public override void Flush()
         {
@@ -121,14 +129,6 @@ namespace EagleEye.ExifToolWrapper
         public override int Read(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
-        }
-
-        public override long Length => throw new NotImplementedException();
-
-        public override long Position
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
         }
     }
 }

@@ -1,13 +1,15 @@
-﻿using System.IO;
-using System.Linq;
-using EagleEye.FileImporter.Indexing;
-using EagleEye.FileImporter.Infrastructure.ContentResolver;
-using EagleEye.FileImporter.Json;
-using EagleEye.TestImages;
-using Xunit;
-
-namespace EagleEye.FileImporter.Test.Indexing
+﻿namespace EagleEye.FileImporter.Test.Indexing
 {
+    using System.IO;
+    using System.Linq;
+
+    using EagleEye.FileImporter.Indexing;
+    using EagleEye.FileImporter.Infrastructure.ContentResolver;
+    using EagleEye.FileImporter.Json;
+    using EagleEye.TestImages;
+
+    using Xunit;
+
     public class CalculateIndexServiceTest
     {
         private readonly string[] _imageFilenames;
@@ -26,7 +28,7 @@ namespace EagleEye.FileImporter.Test.Indexing
             var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
             return fullFilename.Remove(0, slnDirectoryLength);
         }
-        
+
         [Fact]
         public void CalculateIndexOfFilesTest()
         {

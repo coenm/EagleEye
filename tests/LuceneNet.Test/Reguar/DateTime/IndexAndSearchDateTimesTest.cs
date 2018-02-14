@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using Lucene.Net.Queries;
-using Lucene.Net.Search;
-using Lucene.Net.Store;
-using Xunit;
-
-namespace EagleEye.LuceneNet.Test.Reguar.DateTime
+﻿namespace EagleEye.LuceneNet.Test.Reguar.DateTime
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Lucene.Net.Analysis;
+    using Lucene.Net.Analysis.Standard;
+    using Lucene.Net.Documents;
+    using Lucene.Net.Index;
+    using Lucene.Net.Queries;
+    using Lucene.Net.Search;
+    using Lucene.Net.Store;
+
+    using Xunit;
+
     public class IndexAndSearchDateTimesTest
     {
         private readonly Directory _directory;
@@ -21,9 +23,9 @@ namespace EagleEye.LuceneNet.Test.Reguar.DateTime
         {
             _directory = new RAMDirectory();
 
-            Analyzer analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
+            Analyzer analyzer = new StandardAnalyzer(TestHelper.LUCENE_VERSION);
 
-            _indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
+            _indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
                 RAMBufferSizeMB = 256.0
@@ -96,8 +98,8 @@ namespace EagleEye.LuceneNet.Test.Reguar.DateTime
             {
                 var searcher = new IndexSearcher(reader);
 
-                var hitsFound = (filter == null) 
-                    ? searcher.Search(query, 1000) 
+                var hitsFound = (filter == null)
+                    ? searcher.Search(query, 1000)
                     : searcher.Search(query, filter, 1000);
 
                 foreach (var t in hitsFound.ScoreDocs)
@@ -121,12 +123,12 @@ namespace EagleEye.LuceneNet.Test.Reguar.DateTime
         {
             get
             {
-                yield return new PersonDto("alice", new System.DateTime(2000, 1, 2));
-                yield return new PersonDto("bob", new System.DateTime(2002, 1, 12));
-                yield return new PersonDto("calvin", new System.DateTime(2007, 6, 2));
-                yield return new PersonDto("dwane", new System.DateTime(2007, 11, 2));
-                yield return new PersonDto("eve", new System.DateTime(2001, 6, 2));
-                yield return new PersonDto("fred", new System.DateTime(1999, 12, 2));
+                yield return new PersonDto("alice", new DateTime(2000, 1, 2));
+                yield return new PersonDto("bob", new DateTime(2002, 1, 12));
+                yield return new PersonDto("calvin", new DateTime(2007, 6, 2));
+                yield return new PersonDto("dwane", new DateTime(2007, 11, 2));
+                yield return new PersonDto("eve", new DateTime(2001, 6, 2));
+                yield return new PersonDto("fred", new DateTime(1999, 12, 2));
             }
         }
 

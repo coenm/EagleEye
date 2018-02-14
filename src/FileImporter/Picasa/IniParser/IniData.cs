@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace EagleEye.FileImporter.Picasa.IniParser
+﻿namespace EagleEye.FileImporter.Picasa.IniParser
 {
+    using System.Collections.Generic;
+
     public class IniData
     {
         public IniData(string section)

@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Medallion.Shell;
-using Nito.AsyncEx;
-
-namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifToolWrapper
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Medallion.Shell;
+
+    using Nito.AsyncEx;
+
     public class OpenedExifTool : IDisposable
     {
         private readonly string _exifToolPath;
@@ -30,10 +32,10 @@ namespace EagleEye.ExifToolWrapper
                 "True",
                 "-@",
                 "-",
-                ExifToolArguments.JsonOutput,
-                ExifToolArguments.IgnoreMinorErrorsAndWarnings,
-                ExifToolArguments.Quiet,
-                ExifToolArguments.Quiet
+                ExifToolArguments.JSON_OUTPUT,
+                ExifToolArguments.IGNORE_MINOR_ERRORS_AND_WARNINGS,
+                ExifToolArguments.QUIET,
+                ExifToolArguments.QUIET
             };
             _waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
@@ -47,14 +49,6 @@ namespace EagleEye.ExifToolWrapper
 
                 _cmd = Command.Run(_exifToolPath, _defaultArgs)
                     .RedirectTo(_stream);
-            }
-        }
-
-        private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
-        {
-            if (_waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
-            {
-                tcs.TrySetResult(dataCapturedArgs.Data);
             }
         }
 
@@ -108,6 +102,14 @@ namespace EagleEye.ExifToolWrapper
             }
 
             throw new Exception("Could not execute");
+        }
+
+        private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
+        {
+            if (_waitingTasks.TryRemove(dataCapturedArgs.Key, out var tcs))
+            {
+                tcs.TrySetResult(dataCapturedArgs.Data);
+            }
         }
 
         private async Task AddToExifTool(string key, IEnumerable<string> args, string filename)

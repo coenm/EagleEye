@@ -1,10 +1,10 @@
-﻿using CommandLine;
-
-namespace EagleEye.FileImporter.CmdOptions
+﻿namespace EagleEye.FileImporter.CmdOptions
 {
+    using CommandLine;
+
     [Verb("search")]
     // ReSharper disable once ClassNeverInstantiated.Global
-    class SearchOptions
+    internal class SearchOptions
     {
         [Option('d', "directory", HelpText = "Directory to process", Required = false)]
         public string DirectoryToIndex { get; set; }

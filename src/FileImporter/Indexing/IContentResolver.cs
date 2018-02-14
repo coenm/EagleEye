@@ -1,7 +1,7 @@
-﻿using System.IO;
-
-namespace EagleEye.FileImporter.Indexing
+﻿namespace EagleEye.FileImporter.Indexing
 {
+    using System.IO;
+
     public interface IContentResolver
     {
         bool Exist(string identifier);

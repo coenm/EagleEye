@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EagleEye.FileImporter.Indexing;
-
-namespace EagleEye.FileImporter.Infrastructure.FileIndexRepository
+﻿namespace EagleEye.FileImporter.Infrastructure.FileIndexRepository
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using EagleEye.FileImporter.Indexing;
+
     /// <summary>
     /// Stores data in file.
     /// </summary>

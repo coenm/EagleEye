@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace EagleEye.FileImporter.Indexing
+﻿namespace EagleEye.FileImporter.Indexing
 {
+    using System;
+
     public class PersistantFileIndexService
     {
         private readonly IImageDataRepository _repository;

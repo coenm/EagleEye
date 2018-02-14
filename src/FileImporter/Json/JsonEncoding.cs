@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace EagleEye.FileImporter.Json
+﻿namespace EagleEye.FileImporter.Json
 {
+    using System.Diagnostics;
+    using System.IO;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+
     public static class JsonEncoding
     {
         private static readonly JsonSerializerSettings JsonSerializerSettings;

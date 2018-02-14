@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.LuceneNet.Test.Facet
 {
-    public class DocumentDto 
+    public class DocumentDto
     {
         public DocumentDto(string name, int price)
         {

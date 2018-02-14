@@ -1,11 +1,13 @@
-﻿using System.IO;
-using System.Security.Cryptography;
-using CoenM.ImageSharp;
-using CoenM.ImageSharp.HashAlgorithms;
-using SixLabors.ImageSharp;
-
-namespace EagleEye.FileImporter.Imaging
+﻿namespace EagleEye.FileImporter.Imaging
 {
+    using System.IO;
+    using System.Security.Cryptography;
+
+    using CoenM.ImageSharp;
+    using CoenM.ImageSharp.HashAlgorithms;
+
+    using SixLabors.ImageSharp;
+
     public static class ImageHashing
     {
         private static readonly IImageHash PHash;
@@ -47,7 +49,6 @@ namespace EagleEye.FileImporter.Imaging
             return result;
         }
 
-        
         private static byte[] CalculateStreamHash(Stream input)
         {
             using (var sha256 = SHA256.Create())
@@ -61,5 +62,5 @@ namespace EagleEye.FileImporter.Imaging
             using (var sha256 = SHA256.Create())
                 return sha256.ComputeHash(data);
         }
-    } 
+    }
 }

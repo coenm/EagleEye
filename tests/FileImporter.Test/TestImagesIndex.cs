@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using EagleEye.FileImporter.Indexing;
-using EagleEye.FileImporter.Json;
-
-namespace EagleEye.FileImporter.Test
+﻿namespace EagleEye.FileImporter.Test
 {
+    using System.Collections.Generic;
+
+    using EagleEye.FileImporter.Indexing;
+    using EagleEye.FileImporter.Json;
+
     public static class TestImagesIndex
     {
         public static string IndexJson { get; } = @"[

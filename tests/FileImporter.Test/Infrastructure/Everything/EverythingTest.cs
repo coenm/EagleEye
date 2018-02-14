@@ -1,12 +1,14 @@
-﻿using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using EagleEye.FileImporter.Indexing;
-using EagleEye.TestImages;
-using Xunit;
-
-namespace EagleEye.FileImporter.Test.Infrastructure.Everything
+﻿namespace EagleEye.FileImporter.Test.Infrastructure.Everything
 {
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using EagleEye.FileImporter.Indexing;
+    using EagleEye.TestImages;
+
+    using Xunit;
+
     public class EverythingTest
     {
         private readonly string[] _imageFilenames;
@@ -15,7 +17,7 @@ namespace EagleEye.FileImporter.Test.Infrastructure.Everything
         {
             _imageFilenames = Directory.GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories).ToArray();
         }
-        
+
         [Fact(Skip = "Requires Everything.exe")]
         public async Task ManualTestIfEverythingIsStartedTest()
         {

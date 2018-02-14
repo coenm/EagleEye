@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.FileImporter.CmdOptions
 {
-    enum FileAction
+    internal enum FileAction
     {
         Delete,
         Move

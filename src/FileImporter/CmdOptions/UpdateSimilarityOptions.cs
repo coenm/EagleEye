@@ -1,10 +1,10 @@
-﻿using CommandLine;
-
-namespace EagleEye.FileImporter.CmdOptions
+﻿namespace EagleEye.FileImporter.CmdOptions
 {
+    using CommandLine;
+
     [Verb("update-similarity", HelpText = "Update similarities index files")]
     // ReSharper disable once ClassNeverInstantiated.Global
-    class UpdateSimilarityOptions
+    internal class UpdateSimilarityOptions
     {
         [Option('i', "index-file", HelpText = "Filename containing all indexes", Required = true)]
         public string IndexFile { get; set; }

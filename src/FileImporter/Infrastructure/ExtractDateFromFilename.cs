@@ -1,11 +1,10 @@
-﻿using System;
-using System.Text.RegularExpressions;
-
-namespace EagleEye.FileImporter.Infrastructure
+﻿namespace EagleEye.FileImporter.Infrastructure
 {
+    using System;
+    using System.Text.RegularExpressions;
+
     public static class ExtractDateFromFilename
     {
-
         public static DateTime? TryGetFromFilename(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
@@ -39,7 +38,7 @@ namespace EagleEye.FileImporter.Infrastructure
                 return null;
             if (day == 0 | day > 31)
                 return null;
-            
+
             return new DateTime(year, month, day, 0,0,0);
         }
     }

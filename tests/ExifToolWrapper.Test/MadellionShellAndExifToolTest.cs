@@ -1,26 +1,26 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EagleEye.TestImages;
-using FluentAssertions;
-using Medallion.Shell;
-using Xunit;
-
-namespace EagleEye.ExifToolWrapper.Test
+﻿namespace EagleEye.ExifToolWrapper.Test
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using EagleEye.TestImages;
+
+    using FluentAssertions;
+
+    using Medallion.Shell;
+
+    using Xunit;
+
     public class MadellionShellAndExifToolTest
     {
+        private const string CURRENT_EXIF_TOOL_VERSION = "10.79";
+        private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
         private readonly string _image;
 
-        private const string CurrentExifToolVersion = "10.79";
-        private const string ExifToolExecutable = "exiftool.exe";
-
-        //
         // These tests will only run when exiftool is available from PATH.
-        //
-
         public MadellionShellAndExifToolTest()
         {
             _image = Directory
@@ -36,15 +36,15 @@ namespace EagleEye.ExifToolWrapper.Test
             // arrange
             var args = new List<string>
             {
-                ExifToolArguments.Version
+                ExifToolArguments.VERSION
             };
 
             // act
-            var cmd = Command.Run(ExifToolExecutable, args);
+            var cmd = Command.Run(EXIF_TOOL_EXECUTABLE, args);
             await cmd.Task.ConfigureAwait(false);
 
             // assert
-            cmd.Result.StandardOutput.Should().Be($"{CurrentExifToolVersion}\r\n");
+            cmd.Result.StandardOutput.Should().Be($"{CURRENT_EXIF_TOOL_VERSION}\r\n");
         }
 
         [Fact]
@@ -58,12 +58,12 @@ namespace EagleEye.ExifToolWrapper.Test
                 "-@",
                 "-",
                 "-common_args",
-                ExifToolArguments.JsonOutput,
+                ExifToolArguments.JSON_OUTPUT,
 
                 // format coordinates as signed decimals.
                 "-c",
                 "%+.6f",
-                
+
                 "-struct",
                 "-g", // group
             };
@@ -80,9 +80,9 @@ namespace EagleEye.ExifToolWrapper.Test
                 stream.Update += StreamOnUpdate;
 
                 // act
-                var cmd = Command.Run(ExifToolExecutable, args).RedirectTo(stream);
+                var cmd = Command.Run(EXIF_TOOL_EXECUTABLE, args).RedirectTo(stream);
 
-                await cmd.StandardInput.WriteLineAsync(ExifToolArguments.Version);
+                await cmd.StandardInput.WriteLineAsync(ExifToolArguments.VERSION);
                 await cmd.StandardInput.WriteLineAsync("-execute0000");
                 await cmd.StandardInput.WriteLineAsync(_image);
                 await cmd.StandardInput.WriteLineAsync("-execute0005");

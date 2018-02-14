@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace EagleEye.FileImporter.Picasa.IniParser
+﻿namespace EagleEye.FileImporter.Picasa.IniParser
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
     public static class SimpleIniParser
     {
         public static List<IniData> Parse(Stream input)

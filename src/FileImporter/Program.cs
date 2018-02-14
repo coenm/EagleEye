@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using CommandLine;
-using EagleEye.FileImporter.CmdOptions;
-using EagleEye.FileImporter.Indexing;
-using EagleEye.FileImporter.Infrastructure;
-using EagleEye.FileImporter.Infrastructure.Everything;
-using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
-using EagleEye.FileImporter.Similarity;
-using ShellProgressBar;
-using SimpleInjector;
-
-namespace EagleEye.FileImporter
+﻿namespace EagleEye.FileImporter
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
+    using CommandLine;
+
+    using EagleEye.FileImporter.CmdOptions;
+    using EagleEye.FileImporter.Indexing;
+    using EagleEye.FileImporter.Infrastructure;
+    using EagleEye.FileImporter.Infrastructure.Everything;
+    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
+    using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
+    using EagleEye.FileImporter.Similarity;
+
+    using ShellProgressBar;
+
+    using SimpleInjector;
+
     public static class Program
     {
         private static Container _container;
@@ -22,7 +26,7 @@ namespace EagleEye.FileImporter
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
-//            ProgressBarOnBottom = true,
+            // ProgressBarOnBottom = true,
             ForegroundColor = ConsoleColor.Yellow,
             BackgroundColor = ConsoleColor.DarkYellow,
         };
@@ -75,7 +79,7 @@ namespace EagleEye.FileImporter
             var searchService = _container.GetInstance<SearchService>();
             var indexService = _container.GetInstance<CalculateIndexService>();
             var similarityRepository = _container.GetInstance<SimilarityService>();
-            
+
             var contentResolver = _container.GetInstance<IContentResolver>();
 
             var allIdexes = searchService.FindAll().ToArray();
@@ -180,7 +184,7 @@ namespace EagleEye.FileImporter
             var everything = new Everything();
 
             bool show = false;
-            
+
             using (var pbar = new ProgressBar(filesToProcess.Count, "Search duplicates", ProgressOptions))
             {
                 foreach (var file in filesToProcess)

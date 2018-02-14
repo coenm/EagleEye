@@ -1,8 +1,9 @@
-﻿using System.IO;
-using EagleEye.FileImporter.Indexing;
-
-namespace EagleEye.FileImporter.Infrastructure.ContentResolver
+﻿namespace EagleEye.FileImporter.Infrastructure.ContentResolver
 {
+    using System.IO;
+
+    using EagleEye.FileImporter.Indexing;
+
     public class FilesystemContentResolver : IContentResolver
     {
         public static readonly FilesystemContentResolver Instance = new FilesystemContentResolver();

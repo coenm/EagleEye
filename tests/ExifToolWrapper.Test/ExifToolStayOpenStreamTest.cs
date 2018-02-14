@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentAssertions;
-using Xunit;
-
-namespace EagleEye.ExifToolWrapper.Test
+﻿namespace EagleEye.ExifToolWrapper.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
+    using FluentAssertions;
+
+    using Xunit;
+
     public class ExifToolStayOpenStreamTest : IDisposable
     {
         private readonly ExifToolStayOpenStream _sut;
@@ -29,10 +31,10 @@ namespace EagleEye.ExifToolWrapper.Test
         public void SingleWriteShouldNotFireEvent()
         {
             // arrange
-            const string msg = "dummy data without delimitor";
+            const string MSG = "dummy data without delimitor";
 
             // act
-            WriteMessageToSut(msg);
+            WriteMessageToSut(MSG);
 
             // assert
             _capturedEvents.Should().BeEmpty();
@@ -42,10 +44,10 @@ namespace EagleEye.ExifToolWrapper.Test
         public void ParseSingleMessage()
         {
             // arrange
-            const string msg = "a b c\r\nd e f\r\n{ready0}\r\n";
+            const string MSG = "a b c\r\nd e f\r\n{ready0}\r\n";
 
             // act
-            WriteMessageToSut(msg);
+            WriteMessageToSut(MSG);
 
             // assert
             _capturedEvents.Should().HaveCount(1);
@@ -57,10 +59,10 @@ namespace EagleEye.ExifToolWrapper.Test
         public void ParseTwoMessagesInSingleWrite()
         {
             // arrange
-            const string msg = "a b c\r\n{ready0}\r\nd e f\r\n{ready1}\r\nxyz";
+            const string MSG = "a b c\r\n{ready0}\r\nd e f\r\n{ready1}\r\nxyz";
 
             // act
-            WriteMessageToSut(msg);
+            WriteMessageToSut(MSG);
 
             // assert
             _capturedEvents.Should().HaveCount(2);
@@ -76,16 +78,16 @@ namespace EagleEye.ExifToolWrapper.Test
         public void ParseTwoMessagesOverFourWrites()
         {
             // arrange
-            const string msg1 = "a b c\r\nd e f\r\n{ready0}\r\nghi";
-            const string msg2 = " jkl\r\n{re";
-            const string msg3 = "ad";
-            const string msg4 = "y2133}\r\n";
+            const string MSG1 = "a b c\r\nd e f\r\n{ready0}\r\nghi";
+            const string MSG2 = " jkl\r\n{re";
+            const string MSG3 = "ad";
+            const string MSG4 = "y2133}\r\n";
 
             // act
-            WriteMessageToSut(msg1);
-            WriteMessageToSut(msg2);
-            WriteMessageToSut(msg3);
-            WriteMessageToSut(msg4);
+            WriteMessageToSut(MSG1);
+            WriteMessageToSut(MSG2);
+            WriteMessageToSut(MSG3);
+            WriteMessageToSut(MSG4);
 
             // assert
             _capturedEvents.Should().HaveCount(2)
