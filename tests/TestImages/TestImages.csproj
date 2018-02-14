@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>EagleEye.TestImages</RootNamespace>
+
+    <!-- required for coverage-->
+    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

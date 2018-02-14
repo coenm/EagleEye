@@ -6,6 +6,11 @@
     <IsPackable>false</IsPackable>
 
     <RootNamespace>EagleEye.ExifToolWrapper.Test</RootNamespace>
+	
+    <!-- required for coverage-->
+    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>	
   </PropertyGroup>
 
   <ItemGroup>

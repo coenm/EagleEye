@@ -3,6 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>EagleEye.ExifToolWrapper</RootNamespace>
+	
+    <!-- do not update version, this will be done using appvayor -->
+    <Version>1.1.1</Version>
+
+    <!-- required for coverage-->
+    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
