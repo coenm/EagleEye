@@ -58,13 +58,6 @@
 
             var lastEndIndex = 0;
 
-            Debug.Assert(lastEndIndex <= _index, "Expect that lastEndindex is less then index");
-
-            if (lastEndIndex == 0)
-                return;
-
-            if (_index > lastEndIndex)
-                Array.Copy(_cache, lastEndIndex, _cache, 0, _index - lastEndIndex);
 
             for (var i = 0; i < _index - 1; i++)
             {
@@ -107,6 +100,14 @@
                 i = j;
                 lastEndIndex = j;
             }
+
+            Debug.Assert(lastEndIndex <= _index, "Expect that lastEndindex is less then index");
+
+            if (lastEndIndex == 0)
+                return;
+
+            if (_index > lastEndIndex)
+                Array.Copy(_cache, lastEndIndex, _cache, 0, _index - lastEndIndex);
 
             _index -= lastEndIndex;
         }
