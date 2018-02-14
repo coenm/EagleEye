@@ -1,6 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/CSharpLanguageProject/LanguageLevel/@EntryValue">CSharp70</s:String>
-	<s:Boolean x:Key="/Default/CodeInspection/CodeAnnotations/NamespacesWithAnnotations/=G2_002ESpeechReport_002ELibrary_002EAnnotations/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/GeneratedCode/GeneratedFileMasks/=AssemblyInfoVersion_002Ecs/@EntryIndexedValue">AssemblyInfoVersion.cs</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CSharpWarnings_003A_003ACS1573/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=MemberCanBeMadeStatic_002ELocal/@EntryIndexedValue">SUGGESTION</s:String>
@@ -507,38 +506,6 @@ II.2.12 &lt;HandlesEvent /&gt;&#xD;
 	<s:String x:Key="/Default/Environment/UnitTesting/JavaScriptUnitTestProviders/JasmineJsVersion/@EntryValue">2.0</s:String>
 	<s:Boolean x:Key="/Default/Environment/UnitTesting/SeparateAppDomainPerAssembly/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/UnitTesting/ShadowCopy/@EntryValue">False</s:Boolean>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/@KeyIndexDefined">True</s:Boolean>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/CustomProperties/=FileName/@EntryIndexedValue">ViewModelBase</s:String>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/CustomProperties/=ValidateFileName/@EntryIndexedValue">True</s:String>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Description/@EntryValue">ViewModel class</s:String>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=CLASS/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=CLASS/Expression/@EntryValue">getFileNameWithoutExtension()</s:String>
-	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=CLASS/InitialRange/@EntryValue">-1</s:Int64>
-	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=CLASS/Order/@EntryValue">2</s:Int64>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=HEADER/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=HEADER/Expression/@EntryValue">fileheader()</s:String>
-	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=HEADER/Order/@EntryValue">0</s:Int64>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=NAMESPACE/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=NAMESPACE/Expression/@EntryValue">fileDefaultNamespace()</s:String>
-	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=NAMESPACE/InitialRange/@EntryValue">-1</s:Int64>
-	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Field/=NAMESPACE/Order/@EntryValue">1</s:Int64>
-	
-	
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Reformat/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=14A9E2FC5A8ECE4D9C609BE54FD7AA8D/Text/@EntryValue">$HEADER$namespace $NAMESPACE$&#xD;
-{&#xD;
-  using G2.SpeechReport.Windmill.Utility;&#xD;
-&#xD;
-  public class $CLASS$ : ViewModelBase&lt;$CLASS$&gt; {&#xD;
-    public $CLASS$()&#xD;
-      : base(new Validator&lt;$CLASS$&gt;()) { }$END$&#xD;
-  }&#xD;
-}</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=24D7EEF21B960B45942427BFF0E2C7CA/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=24D7EEF21B960B45942427BFF0E2C7CA/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=24D7EEF21B960B45942427BFF0E2C7CA/Description/@EntryValue">Creates an NUnit test</s:String>

@@ -12,6 +12,7 @@
     <PackageReference Include="FakeItEasy" Version="4.4.0" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.4.0" />
     <PackageReference Include="FluentAssertions" Version="5.0.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="MedallionShell" Version="1.5.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
