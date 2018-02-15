@@ -1,5 +1,13 @@
 $ErrorActionPreference = "Stop"
 
+# Save the current location.
+$CurrentDir = $(Get-Location).Path;
+Write-Output 'CurrentDir: ' + $CurrentDir
+
+# Get location of powershell file
+Write-Output 'PSScriptRoot: ' +$PSScriptRoot
+
+
 # md -Force $outputLocation | Out-Null
 #$outputPath = (Resolve-Path $outputLocation).Path
 #$outputFile = Join-Path $outputPath -childpath 'coverage.xml'
@@ -11,8 +19,8 @@ $opencoverExe = 'C:\ProgramData\chocolatey\lib\opencover.portable\tools\OpenCove
 $dotnetExe = 'dotnet.exe'
 
 
-$outputTrxFile = 'C:\testrun.trx'
-$outputOpenCoverXmlFile = 'C:\coverage-dotnet.xml'
+$outputTrxFile = 'C:\projects\eagleeye\testrun.trx'
+$outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
 
 $dotnetTestArgs = '-c Debug --no-build --logger:trx;LogFileName=' + $outputTrxFile
 
