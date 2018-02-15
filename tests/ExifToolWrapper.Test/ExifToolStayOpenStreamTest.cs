@@ -80,14 +80,16 @@
             // arrange
             const string MSG1 = "a b c\r\nd e f\r\n{ready0}\r\nghi";
             const string MSG2 = " jkl\r\n{re";
-            const string MSG3 = "ad";
-            const string MSG4 = "y2133}\r\n";
+            const string MSG3 = "ady";
+            const string MSG4 = "213";
+            const string MSG5 = "3}\r\n";
 
             // act
             WriteMessageToSut(MSG1);
             WriteMessageToSut(MSG2);
             WriteMessageToSut(MSG3);
             WriteMessageToSut(MSG4);
+            WriteMessageToSut(MSG5);
 
             // assert
             _capturedEvents.Should().HaveCount(2)
