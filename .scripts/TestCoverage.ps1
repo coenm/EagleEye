@@ -8,31 +8,25 @@ Write-Output 'CurrentDir: ' + $CurrentDir
 Write-Output 'PSScriptRoot: ' +$PSScriptRoot
 
 
-# md -Force $outputLocation | Out-Null
-#$outputPath = (Resolve-Path $outputLocation).Path
-#$outputFile = Join-Path $outputPath -childpath 'coverage.xml'
-
 # OpenCover location appveyor.
-#$opencoverExe = 'C:\ProgramData\chocolatey\lib\opencover.portable\tools\OpenCover.Console.exe'
-$opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
-##Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % {Write-Host " "+ $_.FullName}
+#$opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
+$opencoverExe = 'OpenCover.Console.exe'
 
 # Search for opencover in the chocolatery directory.
-pushd
-cd C:\ProgramData\chocolatey
-Get-ChildItem -Recurse | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { Write-Host 'Found OpenCover.exe: ' + $_.FullName};
-popd
+Get-ChildItem -Recurse (C:\ProgramData\chocolatey\bin) | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { $opencoverExe = $_.FullName};
 
-#$opencoverExe = (Get-ChildItem ('C:\ProgramData\chocolatey\lib'))[0].FullName + '\tools\OpenCover.Console.exe'
+
+Write-Host "opencover.exe: " $opencoverExe
+
 # (Get-ChildItem ($env:USERPROFILE + '\.nuget\packages\OpenCover'))[0].FullName + '\tools\OpenCover.Console.exe'
 
 $dotnetExe = 'dotnet.exe'
 
-
 $outputTrxFile = 'C:\projects\eagleeye\testrun.trx'
 $outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
 
-$dotnetTestArgs = '-c Debug --no-build --logger:trx;LogFileName=' + $outputTrxFile
+#$dotnetTestArgs = '-c Debug --no-build --logger:trx;LogFileName=' + $outputTrxFile
+$dotnetTestArgs = '-c Debug --no-build --logger:trx'
 
 $filter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
 
