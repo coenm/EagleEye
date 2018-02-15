@@ -23,7 +23,7 @@ Write-Host "Location dotnet.exe: " $dotnetExe
 
 $outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
 Write-Host "Output xml: " $outputOpenCoverXmlFile
-Write-Host "Output xml2: " join-path $RootDir "coverage-dotnet.xml")
+Write-Host "Output xml2: " (join-path $RootDir "coverage-dotnet.xml")
 
 $dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
 $opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
