@@ -7,29 +7,23 @@ Write-Output 'CurrentDir: ' + $CurrentDir
 # Get location of powershell file
 Write-Output 'PSScriptRoot: ' +$PSScriptRoot
 
-
-# OpenCover location appveyor.
-#$opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
-$opencoverExe = 'OpenCover.Console.exe'
-
+# Expected OpenCover location appveyor.
+$opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
 # Search for opencover in the chocolatery directory.
 Get-ChildItem -Recurse ('C:\ProgramData\chocolatey\bin') | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { $opencoverExe = $_.FullName};
 
-
-Write-Host "opencover.exe: " $opencoverExe
-
-# (Get-ChildItem ($env:USERPROFILE + '\.nuget\packages\OpenCover'))[0].FullName + '\tools\OpenCover.Console.exe'
-
 $dotnetExe = 'dotnet.exe'
+
+Write-Host "Location opencover.exe: " $opencoverExe
+Write-Host "Location dotnet.exe: " $dotnetExe
 
 $outputTrxFile = 'C:\projects\eagleeye\testrun.trx'
 $outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
 
-#$dotnetTestArgs = '-c Debug --no-build --logger:trx;LogFileName=' + $outputTrxFile
-$dotnetTestArgs = '-c Debug --no-build --logger:trx'
+$dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
 
 $filter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
-
+# -filter:"+[*]EagleEye.* -[*.Test]EagleEye.*"
 # Get-ChildItem | Get-Member # this gets you everything
 
 pushd
@@ -43,10 +37,11 @@ Try
 	{
 		Write-Host "found csproj file: " (Resolve-Path $testProjectLocation).Path;
 	
-		$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:+[*]EagleEye.* -[*.Test]EagleEye.*"'
+		#$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:+[*]EagleEye.* -[*.Test]EagleEye.*"'
+		$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:' +  $filter + '"'
 		
 		# (Debug) command to run:
-		# Write-Output $command
+		Write-Output $command
 		
 		iex $command
 	}
