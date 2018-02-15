@@ -2,14 +2,14 @@ $ErrorActionPreference = "Stop"
 
 # Save the current location.
 $CurrentDir = $(Get-Location).Path;
-Write-Output "CurrentDir: " $CurrentDir
+Write-Host "CurrentDir: " $CurrentDir
 
 # Get location of powershell file
-Write-Output "PSScriptRoot: " $PSScriptRoot
+Write-Host "PSScriptRoot: " $PSScriptRoot
 
 # we know this script is located in the .scripts\ folder of the root.
 $RootDir = [IO.Path]::GetFullPath( (join-path $PSScriptRoot "..\") )
-Write-Output "ROOT: " $RootDir
+Write-Host "ROOT: " $RootDir
 
 # Expected OpenCover location appveyor.
 $opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
@@ -23,7 +23,7 @@ $outputOpenCoverXmlFile = (join-path $RootDir "coverage-dotnet.xml")
 
 Write-Host "Location opencover.exe: " $opencoverExe
 Write-Host "Location dotnet.exe: " $dotnetExe
-Write-Host "Output coverage result xml: " $outputOpenCoverXmlFile
+Write-Host "Location xml coverage result: " $outputOpenCoverXmlFile
 
 $dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
 $opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
@@ -38,11 +38,8 @@ Try
 	ForEach ($testProjectLocation in $testProjectLocations)
 	{
 		Write-Host "Run tests for project " (Resolve-Path $testProjectLocation).Path;
-		
+
 		$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:' +  $opencoverFilter + '"'
-		
-		# (Debug) command to run:
-		# Write-Output $command
 		
 		iex $command
 	}
