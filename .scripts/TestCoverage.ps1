@@ -2,10 +2,10 @@ $ErrorActionPreference = "Stop"
 
 # Save the current location.
 $CurrentDir = $(Get-Location).Path;
-Write-Output 'CurrentDir: ' + $CurrentDir
+Write-Output "CurrentDir: " $CurrentDir
 
 # Get location of powershell file
-Write-Output 'PSScriptRoot: ' +$PSScriptRoot
+Write-Output "PSScriptRoot: " $PSScriptRoot
 
 # Expected OpenCover location appveyor.
 $opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
@@ -17,14 +17,10 @@ $dotnetExe = 'dotnet.exe'
 Write-Host "Location opencover.exe: " $opencoverExe
 Write-Host "Location dotnet.exe: " $dotnetExe
 
-$outputTrxFile = 'C:\projects\eagleeye\testrun.trx'
 $outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
 
 $dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
-
-$filter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
-# -filter:"+[*]EagleEye.* -[*.Test]EagleEye.*"
-# Get-ChildItem | Get-Member # this gets you everything
+$opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
 
 pushd
 cd ..
@@ -35,13 +31,12 @@ Try
 {
 	ForEach ($testProjectLocation in $testProjectLocations)
 	{
-		Write-Host "found csproj file: " (Resolve-Path $testProjectLocation).Path;
-	
-		#$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:+[*]EagleEye.* -[*.Test]EagleEye.*"'
-		$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:' +  $filter + '"'
+		Write-Host "Run tests for project " (Resolve-Path $testProjectLocation).Path;
+		
+		$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:' +  $opencoverFilter + '"'
 		
 		# (Debug) command to run:
-		Write-Output $command
+		# Write-Output $command
 		
 		iex $command
 	}
