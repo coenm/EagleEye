@@ -7,6 +7,10 @@ Write-Output "CurrentDir: " $CurrentDir
 # Get location of powershell file
 Write-Output "PSScriptRoot: " $PSScriptRoot
 
+# we know this script is located in the .scripts\ folder of the root.
+$RootDir = [IO.Path]::GetFullPath( (join-path $PSScriptRoot "..\") )
+Write-Output "ROOT: " $RootDir
+
 # Expected OpenCover location appveyor.
 $opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
 # Search for opencover in the chocolatery directory.
@@ -18,6 +22,8 @@ Write-Host "Location opencover.exe: " $opencoverExe
 Write-Host "Location dotnet.exe: " $dotnetExe
 
 $outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
+Write-Host "Output xml: " $outputOpenCoverXmlFile
+Write-Host "Output xml2: " join-path $RootDir "coverage-dotnet.xml")
 
 $dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
 $opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
