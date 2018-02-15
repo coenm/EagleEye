@@ -18,12 +18,12 @@ Get-ChildItem -Recurse ('C:\ProgramData\chocolatey\bin') | Where-Object {$_.Name
 
 $dotnetExe = 'dotnet.exe'
 
+$outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
+$outputOpenCoverXmlFile = (join-path $RootDir "coverage-dotnet.xml")
+
 Write-Host "Location opencover.exe: " $opencoverExe
 Write-Host "Location dotnet.exe: " $dotnetExe
-
-$outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
-Write-Host "Output xml: " $outputOpenCoverXmlFile
-Write-Host "Output xml2: " (join-path $RootDir "coverage-dotnet.xml")
+Write-Host "Output coverage result xml: " $outputOpenCoverXmlFile
 
 $dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
 $opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
