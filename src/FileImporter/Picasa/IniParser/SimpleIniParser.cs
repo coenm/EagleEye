@@ -23,12 +23,12 @@
                 using (var reader = new StreamReader(stream))
                 {
                     var content = reader.ReadToEnd();
-                    return  content.Replace("\r\n", "\n").Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    return content.Replace("\r\n", "\n").Split('\n', StringSplitOptions.RemoveEmptyEntries);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Could not parse stream");
+                throw new Exception("Could not parse stream", e);
             }
         }
 
@@ -39,7 +39,7 @@
 
             var count = content.Length;
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 var line = content[i];
                 if (TryGetIniSection(line, out var iniSection))
@@ -56,11 +56,9 @@
             return result;
         }
 
-
-
         private static bool TryGetIniSection(string line, out string iniSection)
         {
-            iniSection = "";
+            iniSection = string.Empty;
 
             if (string.IsNullOrWhiteSpace(line))
                 return false;
