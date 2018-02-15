@@ -14,6 +14,15 @@ Write-Output 'PSScriptRoot: ' +$PSScriptRoot
 
 # OpenCover location appveyor.
 $opencoverExe = 'C:\ProgramData\chocolatey\lib\opencover.portable\tools\OpenCover.Console.exe'
+##Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % {Write-Host " "+ $_.FullName}
+Get-ChildItem -Recurse | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { Write-Host 'Found OpenCover: ' + $_.FullName};
+
+pushd
+cd C:\ProgramData\chocolatey
+Get-ChildItem -Recurse | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { Write-Host 'Found OpenCover: ' + $_.FullName};
+popd
+
+#$opencoverExe = (Get-ChildItem ('C:\ProgramData\chocolatey\lib'))[0].FullName + '\tools\OpenCover.Console.exe'
 # (Get-ChildItem ($env:USERPROFILE + '\.nuget\packages\OpenCover'))[0].FullName + '\tools\OpenCover.Console.exe'
 
 $dotnetExe = 'dotnet.exe'
