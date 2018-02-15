@@ -18,7 +18,7 @@ $dotnetTestArgs = '-c Debug --no-build --logger:trx;LogFileName=' + $outputTrxFi
 
 $filter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
 
-Get-ChildItem | Get-Member # this gets you everything
+# Get-ChildItem | Get-Member # this gets you everything
 
 pushd
 cd ..
