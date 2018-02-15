@@ -13,7 +13,7 @@ Write-Output 'PSScriptRoot: ' +$PSScriptRoot
 $opencoverExe = 'OpenCover.Console.exe'
 
 # Search for opencover in the chocolatery directory.
-Get-ChildItem -Recurse (C:\ProgramData\chocolatey\bin) | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { $opencoverExe = $_.FullName};
+Get-ChildItem -Recurse ('C:\ProgramData\chocolatey\bin') | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { $opencoverExe = $_.FullName};
 
 
 Write-Host "opencover.exe: " $opencoverExe
