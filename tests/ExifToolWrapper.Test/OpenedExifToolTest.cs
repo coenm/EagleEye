@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using EagleEye.TestImages;
-using FluentAssertions;
-using Xunit;
-
-namespace EagleEye.ExifToolWrapper.Test
+﻿namespace EagleEye.ExifToolWrapper.Test
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using EagleEye.TestImages;
+
+    using FluentAssertions;
+
+    using Xunit;
+
     public class OpenedExifToolTest
     {
+        private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
         private readonly string _image;
-        private const string ExifToolExecutable = "exiftool.exe";
 
         public OpenedExifToolTest()
         {
@@ -26,7 +29,7 @@ namespace EagleEye.ExifToolWrapper.Test
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            using (var sut = new OpenedExifTool(ExifToolExecutable))
+            using (var sut = new OpenedExifTool(EXIF_TOOL_EXECUTABLE))
             {
                 sut.Init();
 
@@ -36,9 +39,14 @@ namespace EagleEye.ExifToolWrapper.Test
                 var task3 = sut.Execute(_image, new List<string>());
 
                 // assert
-                (await task3).Should().NotBeNullOrEmpty();
-                (await task2).Should().NotBeNullOrEmpty();
-                (await task1).Should().NotBeNullOrEmpty();
+                var result3 = await task3.ConfigureAwait(false);
+                result3.Should().NotBeNullOrEmpty();
+
+                var result2 = await task2.ConfigureAwait(false);
+                result2.Should().NotBeNullOrEmpty();
+
+                var result1 = await task1.ConfigureAwait(false);
+                result1.Should().NotBeNullOrEmpty();
 
                 sut.CancelPendingAndStop();
                 //exifTool.Stop();

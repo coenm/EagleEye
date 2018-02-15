@@ -13,13 +13,14 @@ Write-Output 'PSScriptRoot: ' +$PSScriptRoot
 #$outputFile = Join-Path $outputPath -childpath 'coverage.xml'
 
 # OpenCover location appveyor.
-$opencoverExe = 'C:\ProgramData\chocolatey\lib\opencover.portable\tools\OpenCover.Console.exe'
+#$opencoverExe = 'C:\ProgramData\chocolatey\lib\opencover.portable\tools\OpenCover.Console.exe'
+$opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
 ##Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % {Write-Host " "+ $_.FullName}
-Get-ChildItem -Recurse | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { Write-Host 'Found OpenCover: ' + $_.FullName};
 
+# Search for opencover in the chocolatery directory.
 pushd
 cd C:\ProgramData\chocolatey
-Get-ChildItem -Recurse | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { Write-Host 'Found OpenCover: ' + $_.FullName};
+Get-ChildItem -Recurse | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { Write-Host 'Found OpenCover.exe: ' + $_.FullName};
 popd
 
 #$opencoverExe = (Get-ChildItem ('C:\ProgramData\chocolatey\lib'))[0].FullName + '\tools\OpenCover.Console.exe'
@@ -39,8 +40,7 @@ $filter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
 
 pushd
 cd ..
-# $testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % { Write-Host $_.DirectoryName};
-$testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % { $_.FullName };
+$testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % { $_.FullName }; # access $_.DirectoryName for the directory.
 popd
 
 Try
