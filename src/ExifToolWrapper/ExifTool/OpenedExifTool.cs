@@ -86,7 +86,7 @@
 
                 _stream.Update -= StreamOnUpdate;
 
-                if (!_cmd.Task.Wait(1000))
+                if (!_cmd.Task.Wait(TimeSpan.FromSeconds(10)))
                     _cmd.Kill();
 
                 _stream.Dispose();

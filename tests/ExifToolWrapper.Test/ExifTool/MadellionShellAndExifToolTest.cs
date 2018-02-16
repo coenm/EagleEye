@@ -108,7 +108,7 @@
 
         private void ProtectAgainstHangingTask(Command cmd)
         {
-            if (cmd.Task.Wait(1000))
+            if (cmd.Task.Wait(TimeSpan.FromSeconds(12)))
                 return;
 
             cmd.Kill();
