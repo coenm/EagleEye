@@ -50,7 +50,7 @@
                 result1.Should().NotBeNullOrEmpty();
 
                 sut.CancelPendingAndStop();
-                //exifTool.Stop();
+                sut.Stop();
             }
         }
     }

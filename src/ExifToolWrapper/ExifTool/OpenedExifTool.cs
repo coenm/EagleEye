@@ -21,22 +21,15 @@
         private ExifToolStayOpenStream _stream;
         private Command _cmd;
         private int _key;
+        private bool _disposed;
 
         public OpenedExifTool(string exifToolPath)
         {
+            _disposed = false;
             _key = 0;
             _exifToolPath = exifToolPath;
             _defaultArgs = new List<string>
             {
-//                ExifToolArguments.STAY_OPEN,
-//                ExifToolArguments.BOOL_TRUE,
-//                "-@",
-//                "-",
-//                ExifToolArguments.JSON_OUTPUT,
-//                ExifToolArguments.IGNORE_MINOR_ERRORS_AND_WARNINGS,
-//                ExifToolArguments.QUIET,
-//                ExifToolArguments.QUIET,
-
                 ExifToolArguments.STAY_OPEN,
                 ExifToolArguments.BOOL_TRUE,
                 "-@",
@@ -71,6 +64,9 @@
         {
             lock (_syncLock)
             {
+                if (_disposed)
+                    return;
+
                 // cancel pending..
                 // set state
 
@@ -83,6 +79,11 @@
         {
             lock (_syncLock)
             {
+                if (_disposed)
+                    return;
+
+                _disposed = true;
+
                 _stream.Update -= StreamOnUpdate;
 
                 if (!_cmd.Task.Wait(1000))
@@ -101,6 +102,9 @@
 
         public async Task<string> ExecuteAsync(string filename, IEnumerable<string> args)
         {
+            if (_disposed)
+                throw new ObjectDisposedException($"{nameof(OpenedExifTool)} is already disposed or is disposing.");
+
             var retries = 0;
             var tcs = new TaskCompletionSource<string>();
 

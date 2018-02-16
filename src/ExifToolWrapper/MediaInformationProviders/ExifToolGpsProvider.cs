@@ -25,7 +25,13 @@
         {
             var result = await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
+            if (result == null)
+                return;
+
             // check for gps data.
+
+            // in EXIF data
+
 
             media.Location.SetCoordinates(1, 2);
         }

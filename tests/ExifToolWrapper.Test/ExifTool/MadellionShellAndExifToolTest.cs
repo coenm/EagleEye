@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -42,6 +43,7 @@
 
             // act
             var cmd = Command.Run(EXIF_TOOL_EXECUTABLE, args);
+            ProtectAgainstHangingTask(cmd);
             await cmd.Task.ConfigureAwait(false);
 
             // assert
@@ -91,6 +93,8 @@
                 await cmd.StandardInput.WriteLineAsync("-execute0008").ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-stay_open").ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("False").ConfigureAwait(false);
+
+                ProtectAgainstHangingTask(cmd);
                 await cmd.Task.ConfigureAwait(false);
 
                 stream.Update -= StreamOnUpdate;
@@ -100,6 +104,15 @@
                 cmd.Result.StandardError.Should().BeNullOrEmpty();
                 capturedExifToolResults.Should().HaveCount(3).And.ContainKeys("0000", "0005", "0008");
             }
+        }
+
+        private void ProtectAgainstHangingTask(Command cmd)
+        {
+            if (cmd.Task.Wait(1000))
+                return;
+
+            cmd.Kill();
+            throw new Exception("Could not close Exiftool without killing it.");
         }
     }
 }
