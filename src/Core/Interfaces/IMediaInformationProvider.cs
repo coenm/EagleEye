@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    public interface IMediaInformationRetrievalProvider
+    public interface IMediaInformationProvider
     {
         int Priority { get; }
 

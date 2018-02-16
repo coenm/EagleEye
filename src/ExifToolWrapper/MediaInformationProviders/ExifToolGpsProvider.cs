@@ -1,12 +1,11 @@
-﻿namespace EagleEye.FileImporter.InformationRetrieval
+﻿namespace EagleEye.ExifToolWrapper.MediaInformationProviders
 {
     using System.Threading.Tasks;
 
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
-    using EagleEye.ExifToolWrapper;
 
-    public class ExifToolGpsProvider : IMediaInformationRetrievalProvider
+    public class ExifToolGpsProvider : IMediaInformationProvider
     {
         private readonly IExifTool _exiftool;
 
@@ -24,7 +23,7 @@
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
-            await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var result = await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             // check for gps data.
 

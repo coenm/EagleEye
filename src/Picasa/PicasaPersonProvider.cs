@@ -5,7 +5,7 @@
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
 
-    public class PicasaPersonProvider : IMediaInformationRetrievalProvider
+    public class PicasaPersonProvider : IMediaInformationProvider
     {
         private readonly IPicasaService _picasaService;
 

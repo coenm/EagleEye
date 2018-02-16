@@ -35,9 +35,9 @@
                 sut.Init();
 
                 // act
-                var task1 = sut.Execute(_image, new List<string>());
-                var task2 = sut.Execute(_image, new List<string>());
-                var task3 = sut.Execute(_image, new List<string>());
+                var task1 = sut.ExecuteAsync(_image, new List<string>());
+                var task2 = sut.ExecuteAsync(_image, new List<string>());
+                var task3 = sut.ExecuteAsync(_image, new List<string>());
 
                 // assert
                 var result3 = await task3.ConfigureAwait(false);

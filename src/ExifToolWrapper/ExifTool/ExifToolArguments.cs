@@ -8,5 +8,9 @@
         public const string QUIET = "-q";
         public const string FAST = "-fast";
         public const string SUPERFAST = "-fast2";
+        public const string STAY_OPEN = "-stay_open";
+        public const string BOOL_TRUE = "True";
+        public const string BOOL_FALSE = "False";
+        public const string COMMON_ARGS = "-common_args";
     }
 }

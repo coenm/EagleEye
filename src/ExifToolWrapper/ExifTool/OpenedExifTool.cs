@@ -28,15 +28,30 @@
             _exifToolPath = exifToolPath;
             _defaultArgs = new List<string>
             {
-                "-stay_open",
-                "True",
+//                ExifToolArguments.STAY_OPEN,
+//                ExifToolArguments.BOOL_TRUE,
+//                "-@",
+//                "-",
+//                ExifToolArguments.JSON_OUTPUT,
+//                ExifToolArguments.IGNORE_MINOR_ERRORS_AND_WARNINGS,
+//                ExifToolArguments.QUIET,
+//                ExifToolArguments.QUIET,
+
+                ExifToolArguments.STAY_OPEN,
+                ExifToolArguments.BOOL_TRUE,
                 "-@",
                 "-",
+                ExifToolArguments.COMMON_ARGS,
                 ExifToolArguments.JSON_OUTPUT,
-                ExifToolArguments.IGNORE_MINOR_ERRORS_AND_WARNINGS,
-                ExifToolArguments.QUIET,
-                ExifToolArguments.QUIET
+
+                // format coordinates as signed decimals.
+                "-c",
+                "%+.6f",
+
+                "-struct",
+                "-g", // group
             };
+
             _waitingTasks = new ConcurrentDictionary<string, TaskCompletionSource<string>>();
         }
 
@@ -59,8 +74,8 @@
                 // cancel pending..
                 // set state
 
-                _cmd.StandardInput.WriteLine("-stay_open");
-                _cmd.StandardInput.WriteLine("False");
+                _cmd.StandardInput.WriteLine(ExifToolArguments.STAY_OPEN);
+                _cmd.StandardInput.WriteLine(ExifToolArguments.BOOL_FALSE);
             }
         }
 
@@ -84,7 +99,7 @@
             Stop();
         }
 
-        public async Task<string> Execute(string filename, IEnumerable<string> args)
+        public async Task<string> ExecuteAsync(string filename, IEnumerable<string> args)
         {
             var retries = 0;
             var tcs = new TaskCompletionSource<string>();
@@ -94,8 +109,9 @@
                 var key = Interlocked.Increment(ref _key).ToString();
                 if (_waitingTasks.TryAdd(key, tcs))
                 {
-                    await AddToExifTool(key, args, filename).ConfigureAwait(false);
-                    return await tcs.Task;
+                    var argsWithFilename = new List<string>(args) { filename };
+                    await AddToExifToolAsync(key, argsWithFilename).ConfigureAwait(false);
+                    return await tcs.Task.ConfigureAwait(false);
                 }
 
                 retries++;
@@ -112,7 +128,7 @@
             }
         }
 
-        private async Task AddToExifTool(string key, IEnumerable<string> args, string filename)
+        private async Task AddToExifToolAsync(string key, IEnumerable<string> args)
         {
             using (await _syncLockAddToExifTool.LockAsync().ConfigureAwait(false))
             {
@@ -122,7 +138,6 @@
                 foreach (var arg in args)
                     await _cmd.StandardInput.WriteLineAsync(arg).ConfigureAwait(false);
 
-                await _cmd.StandardInput.WriteLineAsync(filename).ConfigureAwait(false);
                 await _cmd.StandardInput.WriteLineAsync($"-execute{key}").ConfigureAwait(false);
             }
         }

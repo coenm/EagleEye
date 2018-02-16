@@ -54,8 +54,8 @@
             // arrange
             IEnumerable<string> args = new List<string>
             {
-                "-stay_open",
-                "True",
+                ExifToolArguments.STAY_OPEN,
+                ExifToolArguments.BOOL_TRUE,
                 "-@",
                 "-",
                 "-common_args",
@@ -83,15 +83,15 @@
                 // act
                 var cmd = Command.Run(EXIF_TOOL_EXECUTABLE, args).RedirectTo(stream);
 
-                await cmd.StandardInput.WriteLineAsync(ExifToolArguments.VERSION);
-                await cmd.StandardInput.WriteLineAsync("-execute0000");
-                await cmd.StandardInput.WriteLineAsync(_image);
-                await cmd.StandardInput.WriteLineAsync("-execute0005");
-                await cmd.StandardInput.WriteLineAsync(_image);
-                await cmd.StandardInput.WriteLineAsync("-execute0008");
-                await cmd.StandardInput.WriteLineAsync("-stay_open");
-                await cmd.StandardInput.WriteLineAsync("False");
-                await cmd.Task;
+                await cmd.StandardInput.WriteLineAsync(ExifToolArguments.VERSION).ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync("-execute0000").ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync(_image).ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync("-execute0005").ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync(_image).ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync("-execute0008").ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync("-stay_open").ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync("False").ConfigureAwait(false);
+                await cmd.Task.ConfigureAwait(false);
 
                 stream.Update -= StreamOnUpdate;
 
