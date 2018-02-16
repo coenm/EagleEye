@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Picasa
+﻿namespace EagleEye.Picasa.Picasa
 {
     using System.Collections.Generic;
     using System.Linq;

@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Picasa.IniParser
+﻿namespace EagleEye.Picasa.IniParser
 {
     using System;
     using System.Collections.Generic;
@@ -23,7 +23,7 @@
                 using (var reader = new StreamReader(stream))
                 {
                     var content = reader.ReadToEnd();
-                    return content.Replace("\r\n", "\n").Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    return content.Replace("\r\n", "\n").Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 }
             }
             catch (Exception e)
@@ -65,10 +65,10 @@
 
             line = line.Trim();
 
-            if (!line.StartsWith('['))
+            if (!line.StartsWith("["))
                 return false;
 
-            if (!line.EndsWith(']'))
+            if (!line.EndsWith("]"))
                 return false;
 
             iniSection = line.Substring(1, line.Length - 2);
@@ -82,7 +82,7 @@
 
             line = line.Trim();
 
-            var result = line.Split('=', StringSplitOptions.RemoveEmptyEntries);
+            var result = line.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (result.Length != 2)
                 throw new ArgumentException($"Cannot parse {line}");

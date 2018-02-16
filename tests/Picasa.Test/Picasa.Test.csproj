@@ -3,23 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <RootNamespace>EagleEye.ExifToolWrapper.Test</RootNamespace>
-	
+    <RootNamespace>EagleEye.Picasa.Test</RootNamespace>
+
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>	
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="4.4.0" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.4.0" />
     <PackageReference Include="FluentAssertions" Version="5.1.1" />
-    <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-    <PackageReference Include="MedallionShell" Version="1.5.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="NExifTool" Version="0.8.1" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
@@ -27,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ExifToolWrapper\ExifToolWrapper.csproj" />
-    <ProjectReference Include="..\TestImages\TestImages.csproj" />
+    <ProjectReference Include="..\..\src\Picasa\Picasa.csproj" />
   </ItemGroup>
 
 </Project>

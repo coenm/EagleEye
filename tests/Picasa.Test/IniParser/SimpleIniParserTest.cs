@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Test.Picasa.IniParser
+﻿namespace EagleEye.Picasa.Test.IniParser
 {
     using System;
     using System.IO;
@@ -8,7 +8,7 @@
 
     using Xunit;
 
-    using Sut = FileImporter.Picasa.IniParser.SimpleIniParser;
+    using Sut = EagleEye.Picasa.IniParser.SimpleIniParser;
 
     public class SimpleIniParserTest
     {

@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Picasa.IniParser
+﻿namespace EagleEye.Picasa.IniParser
 {
     using System.Collections.Generic;
 

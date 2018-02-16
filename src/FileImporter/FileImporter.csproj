@@ -26,4 +26,10 @@
     <PackageReference Include="SimpleInjector" Version="4.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\ExifToolWrapper\ExifToolWrapper.csproj" />
+    <ProjectReference Include="..\Picasa\Picasa.csproj" />
+  </ItemGroup>
+
 </Project>

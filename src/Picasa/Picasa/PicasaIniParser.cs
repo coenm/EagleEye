@@ -1,11 +1,11 @@
-﻿namespace EagleEye.FileImporter.Picasa
+﻿namespace EagleEye.Picasa.Picasa
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
-    using EagleEye.FileImporter.Picasa.IniParser;
+    using EagleEye.Picasa.IniParser;
 
     public static class PicasaIniParser
     {
@@ -38,7 +38,7 @@
                         // like: rect64(9ee42f2ee2e49bfa),4759b81b11610b7a
                         // means: <coordinate>,<person key>
 
-                        var singleCoordinateAndKey = faceCoordinateKey.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        var singleCoordinateAndKey = faceCoordinateKey.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
                         // expect only two items
                         if (singleCoordinateAndKey.Length == 2)
@@ -61,9 +61,9 @@
             if (!contacts.Content.ContainsKey(key))
                 return string.Empty;
 
-            var contact =  contacts.Content[key];
+            var contact = contacts.Content[key];
 
-            while (contact.EndsWith(';'))
+            while (contact.EndsWith(";"))
                 contact = contact.Substring(0, contact.Length - 1);
 
             return contact;

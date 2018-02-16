@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifToolWrapper.ExifTool
 {
     using System;
     using System.Diagnostics;
@@ -33,12 +33,15 @@
 
         public override bool CanWrite => true;
 
-        public override long Length => throw new NotImplementedException();
+        public override long Length => _index;
 
         public override long Position
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get => _index;
+            set
+            {
+                // do nothing but also don't throw an excpetion.
+            }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -114,22 +117,22 @@
 
         public override void Flush()
         {
-            throw new NotImplementedException();
+            // intentionally do nothing.
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new NotImplementedException();
+            return 0;
         }
 
         public override void SetLength(long value)
         {
-            throw new NotImplementedException();
+            // intentionally do nothing.
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            return 0;
         }
     }
 }

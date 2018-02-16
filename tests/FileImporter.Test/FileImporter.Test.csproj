@@ -2,12 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <RootNamespace>EagleEye.FileImporter.Test</RootNamespace>
     
-	<!-- required for coverage-->
+    <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>	
@@ -16,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.4.0" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.4.0" />
-    <PackageReference Include="FluentAssertions" Version="5.0.0" />
+    <PackageReference Include="FluentAssertions" Version="5.1.1" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="xunit" Version="2.3.1" />

@@ -1,15 +1,15 @@
-﻿namespace EagleEye.FileImporter.Test.Picasa
+﻿namespace EagleEye.Picasa.Test.Picasa
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
 
-    using EagleEye.FileImporter.Picasa;
+    using EagleEye.Picasa.Picasa;
 
     using Xunit;
 
-    using Sut = FileImporter.Picasa.PicasaIniParser;
+    using Sut = EagleEye.Picasa.Picasa.PicasaIniParser;
 
     public class PicasIniParserTest
     {
