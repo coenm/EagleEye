@@ -41,7 +41,11 @@ Try
 
 		$command = $opencoverExe + ' -threshold:1 -register:user -oldStyle -mergebyhash -mergeoutput -target:"' + $dotnetExe + '" -targetargs:"test ' + $testProjectLocation + ' '+ $dotnetTestArgs + '" "-output:' + $outputOpenCoverXmlFile + '" -returntargetcode "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute" "-filter:' +  $opencoverFilter + '"'
 		
+		Write-Output $command
+		
 		iex $command
+		
+		Write-Host "Command finished, ready for the next one"
 	}
 
 	# Either display or publish the results
@@ -64,5 +68,6 @@ Try
 }
 Finally
 {
+	Write-Output "Finally"
 	popd
 }
