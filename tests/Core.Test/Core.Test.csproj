@@ -4,8 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>EagleEye.Core.Test</RootNamespace>
-    
-    
+        
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
@@ -19,7 +18,6 @@
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
