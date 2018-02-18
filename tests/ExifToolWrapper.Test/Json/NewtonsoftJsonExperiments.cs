@@ -25,7 +25,7 @@
             exif.ToString().Should().Be(EXPECTED_EXIF);
         }
 
-        [Fact(Skip = "AppVeyor")]
+        [Fact]
         public void DeserializeObjectAsObjectTest()
         {
             // arrange
@@ -33,7 +33,9 @@
             // act
             object jsonObject = JsonConvert.DeserializeObject(JSON_ARRAY);
             JArray jsonArray = jsonObject as JArray;
-            var exif = jsonArray?[0]["EXIF"].ToString();
+            JObject firtItem = jsonArray?[0] as JObject;
+            var exifItem = firtItem?["EXIF"] as JObject;
+            var exif = exifItem?.ToString();
 
             // assert
             exif.Should().Be(EXPECTED_EXIF);
