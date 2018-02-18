@@ -31,16 +31,11 @@
             try
             {
                 var jsonResult = JsonConvert.DeserializeObject(result);
-                if (!(jsonResult is JArray jsonArray))
+                var jsonArray = jsonResult as JArray;
+                if (jsonArray?.Count != 1)
                     return null;
 
-                if (jsonArray.Count != 1)
-                    return null;
-
-                if (!(jsonArray[0] is JObject jsonObject))
-                    return null;
-
-                return jsonObject;
+                return jsonArray[0] as JObject;
             }
             catch (Exception)
             {
