@@ -14,8 +14,8 @@ Write-Host "ROOT: " $RootDir
 # Expected OpenCover location appveyor.
 $dotcoverExe = 'C:\ProgramData\chocolatey\bin\dotCover.exe'
 # Search for opencover in the chocolatery directory.
-Get-ChildItem -Recurse ('C:\') | Where-Object {$_.Name -like "dotCover.exe"} | % { Write-Host "Found DotCover: " $_.FullName};
-Get-ChildItem -Recurse ('C:\') | Where-Object {$_.Name -like "dotCover.exe"} | % { $dotcoverExe = $_.FullName};
+# Get-ChildItem -Recurse ('C:\ProgramData\chocolatey') | Where-Object {$_.Name -like "dotCover.exe"} | % { Write-Host "Found DotCover: " $_.FullName};
+Get-ChildItem -Recurse ('C:\ProgramData\chocolatey') | Where-Object {$_.Name -like "dotCover.exe"} | % { $dotcoverExe = $_.FullName};
 
 $dotnetExe = 'dotnet.exe'
 
