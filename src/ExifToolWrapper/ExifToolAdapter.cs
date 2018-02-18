@@ -29,7 +29,7 @@
 
             try
             {
-                dynamic jsonResult = JsonConvert.DeserializeObject(result);
+                var jsonResult = (dynamic)JsonConvert.DeserializeObject(result);
 
                 var count = jsonResult.Count;
                 if (count != null && (int)count == 1)
