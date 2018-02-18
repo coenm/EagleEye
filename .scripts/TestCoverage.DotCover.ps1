@@ -12,10 +12,10 @@ $RootDir = [IO.Path]::GetFullPath( (join-path $PSScriptRoot "..\") )
 Write-Host "ROOT: " $RootDir
 
 # Expected OpenCover location appveyor.
-$dotcoverExe = 'C:\ProgramData\chocolatey\bin\dotCover.exe'
+$dotcoverExe = 'C:\Users\appveyor\AppData\Local\JetBrains\Installations\dotCover11\dotCover.exe'
 # Search for opencover in the chocolatery directory.
-# Get-ChildItem -Recurse ('C:\ProgramData\chocolatey') | Where-Object {$_.Name -like "dotCover.exe"} | % { Write-Host "Found DotCover: " $_.FullName};
-Get-ChildItem -Recurse ('C:\ProgramData\chocolatey') | Where-Object {$_.Name -like "dotCover.exe"} | % { $dotcoverExe = $_.FullName};
+#Get-ChildItem -Recurse ('C:\Users\appveyor\AppData\Local\JetBrains') | Where-Object {$_.Name -like "dotCover.exe"} | % { Write-Host "Found DotCover: " $_.FullName};
+#Get-ChildItem -Recurse ('C:\ProgramData\chocolatey') | Where-Object {$_.Name -like "dotCover.exe"} | % { $dotcoverExe = $_.FullName};
 
 $dotnetExe = 'dotnet.exe'
 
