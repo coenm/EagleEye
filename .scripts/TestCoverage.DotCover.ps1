@@ -17,7 +17,7 @@ $dotcoverExe = 'C:\Users\appveyor\AppData\Local\JetBrains\Installations\dotCover
 #Get-ChildItem -Recurse ('C:\Users\appveyor\AppData\Local\JetBrains') | Where-Object {$_.Name -like "dotCover.exe"} | % { Write-Host "Found DotCover: " $_.FullName};
 #Get-ChildItem -Recurse ('C:\ProgramData\chocolatey') | Where-Object {$_.Name -like "dotCover.exe"} | % { $dotcoverExe = $_.FullName};
 
-$dotnetExe = 'dotnet.exe'
+$dotnetExe = 'C:\Program Files\dotnet\dotnet.exe'
 
 $outputOpenCoverXmlFile = 'C:\projects\eagleeye\coverage-dotnet.xml'
 $outputOpenCoverXmlFile = (join-path $RootDir "coverage-dotnet.xml")
