@@ -3,8 +3,10 @@
     using System;
     using System.Threading.Tasks;
 
+    using Newtonsoft.Json.Linq;
+
     public interface IExifTool : IDisposable
     {
-        Task<dynamic> GetMetadataAsync(string filename);
+        Task<JObject> GetMetadataAsync(string filename);
     }
 }

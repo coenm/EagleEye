@@ -4,6 +4,8 @@
 
     using EagleEye.Core.Interfaces;
 
+    using Newtonsoft.Json.Linq;
+
     public class ExifToolCacheDecorator : IExifTool
     {
         private readonly IExifTool _exiftool;
@@ -15,7 +17,7 @@
             _dateTimeService = dateTimeService;
         }
 
-        public Task<dynamic> GetMetadataAsync(string filename)
+        public Task<JObject> GetMetadataAsync(string filename)
         {
             return _exiftool.GetMetadataAsync(filename);
         }

@@ -7,6 +7,7 @@
     using EagleEye.ExifToolWrapper.ExifTool;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public class ExifToolAdapter : IExifTool
     {
@@ -20,7 +21,7 @@
             _args = new List<string>();
         }
 
-        public async Task<dynamic> GetMetadataAsync(string filename)
+        public async Task<JObject> GetMetadataAsync(string filename)
         {
             var result = await _exiftoolImpl.ExecuteAsync(filename, _args).ConfigureAwait(false);
 
@@ -29,12 +30,17 @@
 
             try
             {
-                var jsonResult = (dynamic)JsonConvert.DeserializeObject(result);
+                var jsonResult = JsonConvert.DeserializeObject(result);
+                if (!(jsonResult is JArray jsonArray))
+                    return null;
 
-                var count = jsonResult.Count;
-                if (count != null && (int)count == 1)
-                    return jsonResult[0];
-                return null;
+                if (jsonArray.Count != 1)
+                    return null;
+
+                if (!(jsonArray[0] is JObject jsonObject))
+                    return null;
+
+                return jsonObject;
             }
             catch (Exception)
             {
