@@ -10,7 +10,7 @@
         {
         }
 
-        public SystemDateTimeService Instance { get; } = new SystemDateTimeService();
+        public static SystemDateTimeService Instance { get; } = new SystemDateTimeService();
 
         public DateTime Now => DateTime.Now;
 
