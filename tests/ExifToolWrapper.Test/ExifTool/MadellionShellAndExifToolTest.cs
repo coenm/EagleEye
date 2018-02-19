@@ -106,7 +106,7 @@
             }
         }
 
-        private void ProtectAgainstHangingTask(Command cmd)
+        private static void ProtectAgainstHangingTask(Command cmd)
         {
             if (cmd.Task.Wait(TimeSpan.FromSeconds(12)))
                 return;

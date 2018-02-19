@@ -29,6 +29,14 @@
             _sut = new ExifToolAdapter();
         }
 
+        [Fact]
+        public void SutCanBeDisposedTest()
+        {
+            // should not throw.
+            _sut.Dispose();
+        }
+
+
         [Fact(Skip = "Appveyor")]
         public async Task GetMetadataAsyncWithPreparedImageShouldResultInExpectedJsonObjectTest()
         {

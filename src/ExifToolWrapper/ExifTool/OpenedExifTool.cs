@@ -82,14 +82,43 @@
                 if (_disposed)
                     return;
 
+                try
+                {
+                    _cmd.StandardInput.WriteLine(ExifToolArguments.STAY_OPEN);
+                    _cmd.StandardInput.WriteLine(ExifToolArguments.BOOL_FALSE);
+                }
+                catch (Exception)
+                {
+                    // ignore for now.
+                }
+
                 _disposed = true;
 
-                _stream.Update -= StreamOnUpdate;
+                if (_stream != null)
+                    _stream.Update -= StreamOnUpdate;
 
-                if (!_cmd.Task.Wait(TimeSpan.FromSeconds(10)))
-                    _cmd.Kill();
+                if (_cmd?.Task != null)
+                {
+                    try
+                    {
+                        if (!_cmd.Task.Wait(TimeSpan.FromSeconds(10)))
+                            _cmd.Kill();
+                    }
+                    catch (Exception)
+                    {
+                        // ignore
+                    }
+                }
 
-                _stream.Dispose();
+                try
+                {
+                    _stream?.Dispose();
+                }
+                catch (Exception)
+                {
+                    // ignore for now.
+                }
+
                 _stream = null;
                 _cmd = null;
             }
