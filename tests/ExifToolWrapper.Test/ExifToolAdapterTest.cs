@@ -29,7 +29,7 @@
             _sut = new ExifToolAdapter();
         }
 
-        [Fact]
+        [Fact(Skip = "Appveyor")]
         public async Task GetMetadataAsyncWithPreparedImageShouldResultInExpectedJsonObjectTest()
         {
             // arrange
