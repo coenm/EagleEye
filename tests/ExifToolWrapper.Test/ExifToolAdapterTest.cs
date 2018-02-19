@@ -30,9 +30,10 @@
         }
 
         [Fact]
-        public void SutCanBeDisposedTest()
+        public void SutCanBeDisposedMultipleTimesTest()
         {
             // should not throw.
+            _sut.Dispose();
             _sut.Dispose();
         }
 

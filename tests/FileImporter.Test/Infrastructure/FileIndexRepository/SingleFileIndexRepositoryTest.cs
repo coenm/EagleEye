@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.FileImporter.Test.Infrastructure.FileIndexRepository
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using EagleEye.FileImporter.Indexing;
@@ -25,10 +26,10 @@
             _sut = new SingleImageDataRepository(_storage);
         }
 
-
         /// <summary>
-        /// Use real dataset with real values. the 'wa' images should be found based on the original.
+        /// Use real dataset with real values. The 'wa' images should be found based on the original.
         /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         [Theory]
         [InlineData("1.jpg", "1wa.jpg")]
         [InlineData("2.jpg", "2wa.jpg")]
@@ -46,7 +47,7 @@
             var result = _sut.FindSimilar(src).ToList();
 
             // assert
-            A.CallTo(() => _storage.Load()).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _storage.Load()).MustHaveHappenedOnceExactly();
             A.CallTo(() => _storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
             if (expectedMatch == null)
                 Assert.Empty(result);

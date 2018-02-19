@@ -48,7 +48,7 @@
             var result = sut.FindSimilar(src, 1, 2, 3, 4, 5);
 
             // assert
-            A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).MustHaveHappenedOnceExactly();
             Assert.Equal(new List<ImageData>(), result);
         }
 
