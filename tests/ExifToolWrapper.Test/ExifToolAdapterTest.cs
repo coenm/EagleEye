@@ -36,8 +36,7 @@
             _sut.Dispose();
         }
 
-
-        [Fact(Skip = "Appveyor")]
+        [Fact]
         public async Task GetMetadataAsyncWithPreparedImageShouldResultInExpectedJsonObjectTest()
         {
             // arrange
