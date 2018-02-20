@@ -14,12 +14,17 @@
         private readonly byte[] _cache;
         private readonly byte[] _endOfMessageSequenceStart;
         private readonly byte[] _endOfMessageSequenceEnd;
+        private readonly int _buferSize;
         private int _index;
 
-        public ExifToolStayOpenStream(Encoding encoding)
+        public ExifToolStayOpenStream(Encoding encoding, int bufferSize = ONE_MB)
         {
+            if (bufferSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(bufferSize));
+
+            _buferSize = bufferSize;
             _encoding = encoding ?? new UTF8Encoding();
-            _cache = new byte[ONE_MB];
+            _cache = new byte[_buferSize];
             _index = 0;
             _endOfMessageSequenceStart = _encoding.GetBytes(PREFIX);
             _endOfMessageSequenceEnd = _encoding.GetBytes(SUFFIX);
@@ -53,7 +58,7 @@
             if (offset + count > buffer.Length)
                 return;
 
-            if (count > ONE_MB - _index)
+            if (count > _buferSize - _index)
                 throw new ArgumentOutOfRangeException();
 
             Array.Copy(buffer, 0, _cache, _index, count);
