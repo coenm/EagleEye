@@ -72,7 +72,7 @@
             var result = _sut.CountSimilar(src);
 
             // assert
-            A.CallTo(() => _storage.Load()).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _storage.Load()).MustHaveHappenedOnceExactly();
             A.CallTo(() => _storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
             Assert.Equal(expectedCount, result);
         }

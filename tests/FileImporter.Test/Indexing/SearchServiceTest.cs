@@ -60,14 +60,14 @@
             // arrange
             var sut = new SearchService(_repository);
             var id = A.Dummy<string>();
-            var fileIndex = resultFound ? new ImageData("") : null;
+            var fileIndex = resultFound ? new ImageData(string.Empty) : null;
             A.CallTo(() => _repository.Get(id)).Returns(fileIndex);
 
             // act
             var result = sut.FindById(id);
 
             // assert
-            A.CallTo(() => _repository.Get(id)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _repository.Get(id)).MustHaveHappenedOnceExactly();
             Assert.Equal(fileIndex, result);
         }
 
