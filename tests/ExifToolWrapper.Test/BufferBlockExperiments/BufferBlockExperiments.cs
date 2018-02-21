@@ -145,21 +145,13 @@
         public async Task OutputAvailableAsyncReturnsFalseOnCompletion()
         {
             // arrange
-            var cts = new CancellationTokenSource(30);
 
             // act
-            var task = Task.Run(
-                                async () =>
-                                {
-                                    await Task.Delay(10).ConfigureAwait(false);
-                                    _queue.Complete();
-                                },
-                                CancellationToken.None);
-            var result = await _queue.OutputAvailableAsync(cts.Token).ConfigureAwait(false);
+            _queue.Complete();
+            var result = await _queue.OutputAvailableAsync().ConfigureAwait(false);
 
             // assert
             result.Should().Be(false);
-            await task.ConfigureAwait(false);
         }
 
 
@@ -167,21 +159,13 @@
         public async Task OutputAvailableAsyncReturnsTrueWhenItemAdded()
         {
             // arrange
-            var cts = new CancellationTokenSource(30);
 
             // act
-            var task = Task.Run(
-                                async () =>
-                                {
-                                    await Task.Delay(10).ConfigureAwait(false);
-                                    await _queue.SendAsync(1).ConfigureAwait(false);
-                                },
-                                CancellationToken.None);
-            var result = await _queue.OutputAvailableAsync(cts.Token).ConfigureAwait(false);
+            await _queue.SendAsync(1).ConfigureAwait(false);
+            var result = await _queue.OutputAvailableAsync().ConfigureAwait(false);
 
             // assert
             result.Should().Be(true);
-            await task.ConfigureAwait(false);
         }
 
         private static async Task AssertTaskReturnsAsync(Task<bool> task, bool expectedResult)
