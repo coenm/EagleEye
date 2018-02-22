@@ -9,7 +9,9 @@
     using FluentAssertions;
 
     using Xunit;
+    using Xunit.Categories;
 
+    [Exploratory]
     public class BufferBlockExperiments
     {
         private readonly CancellationTokenSource _ctsQueue;
