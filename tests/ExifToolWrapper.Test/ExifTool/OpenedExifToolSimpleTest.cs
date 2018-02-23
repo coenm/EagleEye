@@ -15,7 +15,7 @@
 
     public class OpenedExifToolSimpleTest
     {
-        private const int REPEAT = 10;
+        private const int REPEAT = 100;
         private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
         private readonly string _image;
 
