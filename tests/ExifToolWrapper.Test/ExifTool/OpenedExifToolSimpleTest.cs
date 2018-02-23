@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.ExifToolWrapper.ExifTool;
+    using EagleEye.ExifToolWrapper.ExifToolSimplified;
     using EagleEye.TestImages;
 
     using FluentAssertions;
@@ -47,6 +47,8 @@
                 // assert
                 version.Should().NotBeNullOrEmpty();
                 result.Should().NotBeNullOrEmpty();
+
+                await sut.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -56,21 +58,27 @@
             // arrange
             using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
             {
+                var sw = Stopwatch.StartNew();
                 sut.Init();
+                sw.Stop();
+                _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
                 // act
-                var sw = Stopwatch.StartNew();
+                sw.Reset();
+                sw.Start();
                 var version = string.Empty;
-                for (int i = 0; i < REPEAT; i++)
+                for (var i = 0; i < REPEAT; i++)
                     version = await sut.GetVersionAsync().ConfigureAwait(false);
                 sw.Stop();
 
                 // assert
                 _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
+                _output.WriteLine($"Version: {version}");
                 version.Should().NotBeNullOrEmpty();
+
+                await sut.DisposeAsync().ConfigureAwait(false);
             }
         }
-
 
         [Fact]
         public void RunWithoutInputStreamTest()
@@ -88,6 +96,15 @@
             // assert
             _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
             version.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void OpenDisposeTest()
+        {
+            using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
+            {
+                sut.Init();
+            }
         }
     }
 }

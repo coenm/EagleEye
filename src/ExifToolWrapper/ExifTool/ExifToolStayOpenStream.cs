@@ -49,6 +49,8 @@
             }
         }
 
+        public string CurrentValue { get; set; }
+
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (buffer == null)
