@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
 {
-    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -12,15 +11,20 @@
     using FluentAssertions;
 
     using Xunit;
+    using Xunit.Abstractions;
 
     public class OpenedExifToolSimpleTest
     {
-        private const int REPEAT = 100;
+        private const int REPEAT = 10;
         private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
         private readonly string _image;
 
-        public OpenedExifToolSimpleTest()
+        private readonly ITestOutputHelper _output;
+
+        public OpenedExifToolSimpleTest(ITestOutputHelper output)
         {
+            _output = output;
+
             _image = Directory
                 .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                 .SingleOrDefault();
@@ -62,7 +66,7 @@
                 sw.Stop();
 
                 // assert
-                Console.WriteLine(sw.Elapsed);
+                _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
                 version.Should().NotBeNullOrEmpty();
             }
         }
@@ -82,7 +86,7 @@
             sw.Stop();
 
             // assert
-            Console.WriteLine(sw.Elapsed);
+            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
             version.Should().NotBeNullOrEmpty();
         }
     }

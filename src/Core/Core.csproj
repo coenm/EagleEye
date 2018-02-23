@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.Core</RootNamespace>
 
     <!-- do not update version, this will be done using appvayor -->
