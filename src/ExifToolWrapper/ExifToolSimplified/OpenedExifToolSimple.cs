@@ -91,6 +91,7 @@
             {
                 if (_disposed)
                     return;
+
                 await Task.Delay(100).ConfigureAwait(false);
 
                 try
@@ -101,8 +102,10 @@
                     {
                         await Task.Delay(10).ConfigureAwait(false);
                         await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+
                         await Task.Delay(10).ConfigureAwait(false);
                         await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+
                         await Task.Delay(10).ConfigureAwait(false);
                         await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
                     }
@@ -131,12 +134,12 @@
                 {
                     try
                     {
-                        //                    await _cmd.Task.ConfigureAwait(false);
+                        //await _cmd.Task.ConfigureAwait(false);
                         c.KillAfter(TimeSpan.FromSeconds(5));
                         await c.Task.ConfigureAwait(false);
 
-                        //                    await c.Task.ConfigureAwait(false);
-                        //                    await c.Task.WaitAsync(ct).ConfigureAwait(false);
+                        //await c.Task.ConfigureAwait(false);
+                        //await c.Task.WaitAsync(ct).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
@@ -166,7 +169,7 @@
                     var command = new[] { ExifToolArguments.STAY_OPEN, ExifToolArguments.BOOL_FALSE }.AsEnumerable();
                     foreach (var arg in command)
                     {
-                        Thread.Sleep(1);
+                        Thread.Sleep(5);
                         _cmd.WriteLine(arg);
                     }
                 }
@@ -189,8 +192,8 @@
                 try
                 {
                     cc.Task.Wait(5000);
-                    //                c.KillAfter(TimeSpan.FromSeconds(5));
-                    //                cc.Wait();
+                    // c.KillAfter(TimeSpan.FromSeconds(5));
+                    // cc.Wait();
                 }
                 catch (Exception e)
                 {
@@ -202,10 +205,6 @@
                 _cmd = null;
                 _disposed = true;
             }
-//
-//            DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token)
-//                .GetAwaiter()
-//                .GetResult();
         }
 
         private static void Ignore(Action action)
@@ -219,7 +218,6 @@
                 // ignore
             }
         }
-
 
         public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken))
         {

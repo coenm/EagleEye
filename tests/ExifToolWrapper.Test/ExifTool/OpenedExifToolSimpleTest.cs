@@ -1,8 +1,10 @@
 ﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifToolSimplified;
@@ -32,8 +34,10 @@
             _image.Should().NotBeNullOrEmpty();
         }
 
-        [Fact]
-        public async Task RunExifToolWithThreeCommands()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task RunExifToolWithThreeCommands(bool disposeAsync)
         {
             // arrange
             using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
@@ -48,12 +52,15 @@
                 version.Should().NotBeNullOrEmpty();
                 result.Should().NotBeNullOrEmpty();
 
-                await sut.DisposeAsync().ConfigureAwait(false);
+                if (disposeAsync)
+                    await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
             }
         }
 
-        [Fact]
-        public async Task RunWithInputStreamTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task RunWithInputStreamTest(bool disposeAsync)
         {
             // arrange
             using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
@@ -76,7 +83,8 @@
                 _output.WriteLine($"Version: {version}");
                 version.Should().NotBeNullOrEmpty();
 
-                await sut.DisposeAsync().ConfigureAwait(false);
+                if (disposeAsync)
+                    await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
             }
         }
 
@@ -98,12 +106,17 @@
             version.Should().NotBeNullOrEmpty();
         }
 
-        [Fact]
-        public void OpenDisposeTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task OpenDisposeTest(bool disposeAsync)
         {
             using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
             {
                 sut.Init();
+
+                if (disposeAsync)
+                    await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
             }
         }
     }
