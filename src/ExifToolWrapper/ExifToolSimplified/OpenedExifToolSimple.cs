@@ -34,7 +34,7 @@
         private readonly List<string> _defaultArgs;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> _waitingTasks;
         private readonly ExifToolStayOpenStream _stream;
-        private IMedallionShell _cmd;
+        protected IMedallionShell _cmd;
         private int _key;
         private bool _disposed;
 
@@ -85,6 +85,9 @@
 
         public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken))
         {
+            if (!_initialized)
+                throw new Exception("Not initialized");
+
             _stopQueueCts.Token.ThrowIfCancellationRequested();
 
             var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopQueueCts.Token);

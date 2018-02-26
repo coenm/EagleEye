@@ -12,6 +12,8 @@
 
     using Xunit;
 
+    [Xunit.Categories.IntegrationTest]
+    [Xunit.Categories.Category("ExifTool")]
     public class OpenedExifToolTest
     {
         private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";

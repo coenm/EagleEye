@@ -15,7 +15,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class OpenedExifToolSimpleTest
+    public class OpenedExifToolSimpleIntegrationTest
     {
         private const int REPEAT = 100;
         private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
@@ -23,19 +23,21 @@
 
         private readonly ITestOutputHelper _output;
 
-        public OpenedExifToolSimpleTest(ITestOutputHelper output)
+        public OpenedExifToolSimpleIntegrationTest(ITestOutputHelper output)
         {
             _output = output;
 
             _image = Directory
-                .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
-                .SingleOrDefault();
+                     .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
+                     .SingleOrDefault();
 
             _image.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
-        public async Task RunExifToolWithThreeCommands()
+        [Xunit.Categories.IntegrationTest]
+        [Xunit.Categories.Category("ExifTool")]
+        public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
             var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE);
@@ -53,6 +55,9 @@
         }
 
         [Fact]
+        [Xunit.Categories.IntegrationTest]
+        [Xunit.Categories.Category("ExifTool")]
+        [Xunit.Categories.Category("Performance")]
         public async Task RunWithInputStreamTest()
         {
             // arrange
@@ -78,24 +83,8 @@
         }
 
         [Fact]
-        public void RunWithoutInputStreamTest()
-        {
-            // arrange
-            var sut = new ClosedExifToolSimple(EXIF_TOOL_EXECUTABLE);
-
-            // act
-            var sw = Stopwatch.StartNew();
-            var version = string.Empty;
-            for (var i = 0; i < REPEAT; i++)
-                version = sut.Execute(new object[] { "-ver" });
-            sw.Stop();
-
-            // assert
-            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
-            version.Should().NotBeNullOrEmpty();
-        }
-
-        [Fact]
+        [Xunit.Categories.IntegrationTest]
+        [Xunit.Categories.Category("ExifTool")]
         public async Task InitAndDisposeTest()
         {
             // arrange
@@ -106,7 +95,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // assert
-//            sut.IsClosed.Should().Be(true);
+            //            sut.IsClosed.Should().Be(true);
         }
     }
 }
