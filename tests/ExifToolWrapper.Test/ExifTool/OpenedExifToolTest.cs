@@ -26,7 +26,7 @@
             _image.Should().NotBeNullOrEmpty();
         }
 
-        [Fact(Skip = "AppVeyor")]
+       [Fact]
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange

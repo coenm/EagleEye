@@ -34,58 +34,47 @@
             _image.Should().NotBeNullOrEmpty();
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task RunExifToolWithThreeCommands(bool disposeAsync)
+        [Fact]
+        public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
-            {
-                sut.Init();
+            var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE);
+            sut.Init();
 
-                // act
-                var version = await sut.GetVersionAsync().ConfigureAwait(false);
-                var result = await sut.ExecuteAsync(_image).ConfigureAwait(false);
+            // act
+            var version = await sut.GetVersionAsync().ConfigureAwait(false);
+            var result = await sut.ExecuteAsync(_image).ConfigureAwait(false);
 
-                // assert
-                version.Should().NotBeNullOrEmpty();
-                result.Should().NotBeNullOrEmpty();
+            // assert
+            version.Should().NotBeNullOrEmpty();
+            result.Should().NotBeNullOrEmpty();
 
-                if (disposeAsync)
-                    await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
-            }
+            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task RunWithInputStreamTest(bool disposeAsync)
+        [Fact]
+        public async Task RunWithInputStreamTest()
         {
             // arrange
-            using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
-            {
-                var sw = Stopwatch.StartNew();
-                sut.Init();
-                sw.Stop();
-                _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
+            var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE);
+            var sw = Stopwatch.StartNew();
+            sut.Init();
+            sw.Stop();
+            _output.WriteLine($"It took {sw.Elapsed.ToString()} to Initialize exiftool");
 
-                // act
-                sw.Reset();
-                sw.Start();
-                var version = string.Empty;
-                for (var i = 0; i < REPEAT; i++)
-                    version = await sut.GetVersionAsync().ConfigureAwait(false);
-                sw.Stop();
+            // act
+            sw.Reset();
+            sw.Start();
+            var version = string.Empty;
+            for (var i = 0; i < REPEAT; i++)
+                version = await sut.GetVersionAsync().ConfigureAwait(false);
+            sw.Stop();
+            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
-                // assert
-                _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
-                _output.WriteLine($"Version: {version}");
-                version.Should().NotBeNullOrEmpty();
-
-                if (disposeAsync)
-                    await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
-            }
+            // assert
+            _output.WriteLine($"It took {sw.Elapsed.ToString()} to retrieve exiftool version {REPEAT} times");
+            _output.WriteLine($"Version: {version}");
+            version.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
@@ -97,7 +86,7 @@
             // act
             var sw = Stopwatch.StartNew();
             var version = string.Empty;
-            for (int i = 0; i < REPEAT; i++)
+            for (var i = 0; i < REPEAT; i++)
                 version = sut.Execute(new object[] { "-ver" });
             sw.Stop();
 
@@ -106,18 +95,18 @@
             version.Should().NotBeNullOrEmpty();
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task OpenDisposeTest(bool disposeAsync)
+        [Fact]
+        public async Task InitAndDisposeTest()
         {
-            using (var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE))
-            {
-                sut.Init();
+            // arrange
+            var sut = new OpenedExifToolSimple(EXIF_TOOL_EXECUTABLE);
 
-                if (disposeAsync)
-                    await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
-            }
+            // act
+            sut.Init();
+            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+
+            // assert
+//            sut.IsClosed.Should().Be(true);
         }
     }
 }
