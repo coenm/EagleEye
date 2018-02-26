@@ -3,32 +3,47 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
+
+    using JetBrains.Annotations;
 
     using Medallion.Shell;
 
     public class MedallionShellAdapter : IMedallionShell
     {
+        [NotNull]
         private readonly Command _cmd;
-        private readonly CancellationTokenSource _cts;
 
-        public MedallionShellAdapter(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
+        public MedallionShellAdapter(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream = null)
         {
-            _cts = new CancellationTokenSource();
-            _cmd = Command.Run(exifToolPath, defaultArgs.ToArray(), options: o => o.CancellationToken(_cts.Token).ThrowOnError())
-                          .RedirectTo(outputStream)
-                          /*.RedirectStandardErrorTo(errorStream)*/;
+            _cmd = Command.Run(exifToolPath, defaultArgs)
+                          .RedirectTo(outputStream);
+
+            if (errorStream != null)
+                _cmd = _cmd.RedirectStandardErrorTo(errorStream);
+
+
+            Task = System.Threading.Tasks.Task.Run(async () =>
+                                                   {
+                                                       try
+                                                       {
+                                                           return await _cmd.Task.ConfigureAwait(false);
+                                                       }
+                                                       finally
+                                                       {
+                                                           ProcessExited?.Invoke(this, EventArgs.Empty);
+                                                       }
+                                                   });
         }
 
-        public Task<CommandResult> Task => _cmd.Task;
 
-        public Command Command => _cmd;
 
-        public void KillAfter(TimeSpan delay)
-        {
-            _cts.CancelAfter(delay);
-        }
+        public event EventHandler ProcessExited = delegate { };
+
+        public bool Finished => Task.IsCompleted;
+
+        [NotNull]
+        public Task<CommandResult> Task { get; }
 
         public void Kill()
         {
@@ -38,11 +53,6 @@
         public Task WriteLineAsync(string text)
         {
             return _cmd.StandardInput.WriteLineAsync(text);
-        }
-
-        public void WriteLine(string s)
-        {
-            _cmd.StandardInput.WriteLine(s);
         }
     }
 }
