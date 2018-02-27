@@ -12,18 +12,21 @@
     using FluentAssertions;
 
     using Xunit;
+    using Xunit.Abstractions;
 
     [Xunit.Categories.Category("ExifTool")]
     [Xunit.Categories.IntegrationTest]
     public class MedallionShellAdapterTest : IDisposable
     {
         private const int FALLBACK_TEST_TIMEOUT = 5000;
+        private readonly ITestOutputHelper _output;
         private readonly ExifToolStayOpenStream _stream;
         private readonly ManualResetEventSlim _mreSutExited;
         private readonly MedallionShellAdapter _sut;
 
-        public MedallionShellAdapterTest()
+        public MedallionShellAdapterTest(ITestOutputHelper output)
         {
+            _output = output;
             _mreSutExited = new ManualResetEventSlim(false);
             var defaultArgs = new List<string>
                                     {
@@ -72,6 +75,10 @@
             // act
             await _sut.WriteLineAsync(ExifToolArguments.STAY_OPEN).ConfigureAwait(false);
             await _sut.WriteLineAsync(ExifToolArguments.BOOL_FALSE).ConfigureAwait(false);
+
+            _output.WriteLine("Awaiting task to finish");
+            await _sut.Task.ConfigureAwait(false);
+            _output.WriteLine("Task finished");
 
             // assert
             AssertSutFinished(FALLBACK_TEST_TIMEOUT);
