@@ -37,7 +37,7 @@
             var sw = Stopwatch.StartNew();
             var version = string.Empty;
             for (var i = 0; i < REPEAT; i++)
-                version = await sut.ExecuteAsync(new object[] { "-ver" }).ConfigureAwait(false);
+                version = await sut.ExecuteAsync(new[] { "-ver" }).ConfigureAwait(false);
             sw.Stop();
 
             // assert
@@ -54,7 +54,7 @@
             var sut = new ClosedExifToolSimple(EXIF_TOOL_EXECUTABLE);
 
             // act
-            Func<Task> act = () => sut.ExecuteAsync(new object[] { "fake" });
+            Func<Task> act = () => sut.ExecuteAsync(new[] { "fake" });
 
             // assert
             act.Should().Throw<ExiftoolException>().WithMessage("File not found: fake" + Environment.NewLine);
@@ -69,7 +69,7 @@
             var sut = new ClosedExifToolSimple(EXIF_TOOL_EXECUTABLE + "fake");
 
             // act
-            Func<Task> act = () => sut.ExecuteAsync(new object[] { "-ver" });
+            Func<Task> act = () => sut.ExecuteAsync(new[] { "-ver" });
 
             // assert
             act.Should().Throw<System.ComponentModel.Win32Exception>();

@@ -13,18 +13,7 @@
 
     using Nito.AsyncEx;
 
-    // temp interface to get things clear
-    public interface IOpenedExifToolSimple
-    {
-        // Initialize and start exiftool
-        void Init();
-
-        Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken));
-
-        Task DisposeAsync(CancellationToken ct = default(CancellationToken));
-    }
-
-    public class OpenedExifToolSimple : IOpenedExifToolSimple
+    public class OpenedExifToolSimple : IExifToolSimple
     {
         private readonly string _exifToolPath;
         private readonly AsyncLock _executeAsyncSyncLock = new AsyncLock();
