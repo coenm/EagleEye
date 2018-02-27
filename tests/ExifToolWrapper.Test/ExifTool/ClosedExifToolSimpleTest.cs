@@ -72,7 +72,7 @@
             Func<Task> act = () => sut.ExecuteAsync(new object[] { "-ver" });
 
             // assert
-            act.Should().Throw<System.ComponentModel.Win32Exception>().WithMessage("The system cannot find the file specified");
+            act.Should().Throw<System.ComponentModel.Win32Exception>();
         }
     }
 }

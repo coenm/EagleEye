@@ -17,7 +17,7 @@
     [Xunit.Categories.IntegrationTest]
     public class MedallionShellAdapterTest : IDisposable
     {
-        private const int FALLBACK_TEST_TIMEOUT = 1000;
+        private const int FALLBACK_TEST_TIMEOUT = 5000;
         private readonly ExifToolStayOpenStream _stream;
         private readonly ManualResetEventSlim _mreSutExited;
         private readonly MedallionShellAdapter _sut;

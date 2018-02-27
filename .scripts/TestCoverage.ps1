@@ -1,4 +1,4 @@
-#$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 
 # Save the current location.
 $CurrentDir = $(Get-Location).Path;

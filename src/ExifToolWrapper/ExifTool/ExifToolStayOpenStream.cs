@@ -85,7 +85,7 @@
                 if (keyStartIndex == j)
                     continue;
 
-                var keyBytes = _cache.AsSpan().Slice(start: keyStartIndex, length: j - keyStartIndex);
+                var keyLength = j - keyStartIndex;
 
                 var k = 0;
                 while (k < _endOfMessageSequenceEnd.Length && _cache[j + k] == _endOfMessageSequenceEnd[k])
@@ -97,7 +97,7 @@
                 j += k;
 
                 var content = _encoding.GetString(_cache, lastEndIndex, i - lastEndIndex);
-                var key = _encoding.GetString(keyBytes.ToArray());
+                var key = _encoding.GetString(_cache, keyStartIndex, keyLength);
                 Update(this, new DataCapturedArgs(key, content));
 
                 i = j;

@@ -33,8 +33,4 @@
     <ProjectReference Include="..\Picasa\Picasa.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="InformationRetrieval\" />
-  </ItemGroup>
-
 </Project>
