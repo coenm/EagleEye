@@ -49,8 +49,6 @@
             }
         }
 
-        public string CurrentValue { get; set; }
-
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (buffer == null)
@@ -68,11 +66,8 @@
 
             var lastEndIndex = 0;
 
-
             for (var i = 0; i < _index - 1; i++)
             {
-                var key = string.Empty;
-
                 var j = 0;
                 while (j < _endOfMessageSequenceStart.Length && _cache[i + j] == _endOfMessageSequenceStart[j])
                     j++;
@@ -80,21 +75,22 @@
                 if (j != _endOfMessageSequenceStart.Length)
                     continue;
 
-                var content = _encoding.GetString(_cache, lastEndIndex, i - lastEndIndex);
                 j = j + i;
 
                 // expect numbers as key.
+                var keyStartIndex = j;
                 while (j < _index && _cache[j] >= '0' && _cache[j] <= '9')
                 {
-                    key += (char)_cache[j];
                     j++;
                 }
 
-                if (key.Length == 0)
+                if (keyStartIndex == j)
                 {
                     // no key found.
                     continue;
                 }
+
+                var keyBytes = _cache.AsSpan().Slice(start: keyStartIndex, length: j - keyStartIndex);
 
                 var k = 0;
                 while (k < _endOfMessageSequenceEnd.Length && _cache[j + k] == _endOfMessageSequenceEnd[k])
@@ -105,6 +101,8 @@
 
                 j += k;
 
+                var content = _encoding.GetString(_cache, lastEndIndex, i - lastEndIndex);
+                var key = _encoding.GetString(keyBytes.ToArray());
                 Update(this, new DataCapturedArgs(key, content));
 
                 i = j;
@@ -139,7 +137,7 @@
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return 0;
+            throw new NotSupportedException($"{CanRead} is set to false");
         }
     }
 }

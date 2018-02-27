@@ -1,6 +1,8 @@
 ﻿namespace EagleEye.ExifToolWrapper.ExifToolSimplified
 {
-    using System;
+    using System.Threading.Tasks;
+
+    using EagleEye.ExifToolWrapper.ExifTool;
 
     using Medallion.Shell;
 
@@ -13,15 +15,15 @@
             _exifToolPath = exifToolPath;
         }
 
-        public string Execute(object[] arguments)
+        public async Task<string> ExecuteAsync(object[] arguments)
         {
             var cmd = Command.Run(_exifToolPath, arguments);
+            await cmd.Task.ConfigureAwait(false);
 
-            if (cmd.Task.Wait(TimeSpan.FromSeconds(20)))
+            if (cmd.Result.Success)
                 return cmd.Result.StandardOutput;
 
-            cmd.Kill();
-            throw new Exception("Could not close Exiftool without killing it.");
+            throw new ExiftoolException(cmd.Result.ExitCode, cmd.Result.StandardOutput, cmd.Result.StandardError);
         }
     }
 }

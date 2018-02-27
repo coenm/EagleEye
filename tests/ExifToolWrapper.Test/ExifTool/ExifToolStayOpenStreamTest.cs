@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
 
@@ -28,6 +29,93 @@
             _sut.Update -= SutOnUpdate;
             _sut?.Dispose();
         }
+
+        [Fact]
+        public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBuffersizeIsNegativeTest()
+        {
+            // arrange
+
+            // act
+            Action act = () => _ = new ExifToolStayOpenStream(null, -1);
+
+            // assert
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Fact]
+        public void DefaultPropertiesShouldNoThrowAndDoNotDoAnythingTest()
+        {
+            _sut.CanWrite.Should().BeTrue();
+            _sut.CanRead.Should().BeFalse();
+            _sut.CanSeek.Should().BeFalse();
+
+            // nothing is written yet.
+            _sut.Length.Should().Be(0);
+            _sut.Position.Should().Be(0);
+        }
+
+        [Fact]
+        public void SetPositionShouldNotDoAnythingTest()
+        {
+            // arrange
+
+            // assume
+            _sut.Position.Should().Be(0);
+
+            // act
+            _sut.Position = 100;
+
+            // assert
+            _sut.Position.Should().Be(0);
+        }
+
+        [Fact]
+        public void FlushShouldNotDoAnythingAndDefinitelyNotThrowTest()
+        {
+            _sut.Flush();
+        }
+
+        [Fact]
+        public void SeekAlwaysReturnsZeroTest()
+        {
+            // arrange
+
+            // act
+            var result = _sut.Seek(0, SeekOrigin.Begin);
+
+            // assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void SetLengthDoesntDoAnythingTest()
+        {
+            // arrange
+
+            // assume
+            _sut.Length.Should().Be(0);
+
+            // act
+            _sut.SetLength(100);
+
+            // assert
+            _sut.Length.Should().Be(0);
+        }
+
+
+        [Fact]
+        public void ReadThrowsTest()
+        {
+            // arrange
+            var buffer = new byte[100];
+
+            // act
+            Action act = () => _ = _sut.Read(buffer, 0, 100);
+
+            // assert
+            act.Should().Throw<NotSupportedException>();
+        }
+
 
         [Fact]
         public void SingleWriteShouldNotFireEvent()
