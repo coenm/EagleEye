@@ -80,15 +80,10 @@
                 // expect numbers as key.
                 var keyStartIndex = j;
                 while (j < _index && _cache[j] >= '0' && _cache[j] <= '9')
-                {
                     j++;
-                }
 
                 if (keyStartIndex == j)
-                {
-                    // no key found.
                     continue;
-                }
 
                 var keyBytes = _cache.AsSpan().Slice(start: keyStartIndex, length: j - keyStartIndex);
 

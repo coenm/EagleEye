@@ -22,13 +22,6 @@
                 .ToArray();
         }
 
-        // Convert Fullfilename to relative such that it doesn't matter what machine in what directory the sln is stored.
-        private static string ConvertToRelativeFilename(string fullFilename)
-        {
-            var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
-            return fullFilename.Remove(0, slnDirectoryLength);
-        }
-
         [Fact]
         public void CalculateIndexOfFilesTest()
         {
@@ -42,6 +35,17 @@
             // assert
             // take shortcut to assert the result.
             Assert.Equal(TestImagesIndex.IndexJson.Replace("\r\n", "\n"), JsonEncoding.Serialize(result.OrderBy(item => item.Identifier)).Replace("\r\n", "\n"));
+        }
+
+        /// <summary>
+        /// Convert Fullfilename to relative such that it doesn't matter what machine in what directory the sln is stored.
+        /// </summary>
+        /// <param name="fullFilename">absolute filename</param>
+        /// <returns>filename relative to sn file.</returns>
+        private static string ConvertToRelativeFilename(string fullFilename)
+        {
+            var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
+            return fullFilename.Remove(0, slnDirectoryLength);
         }
     }
 }
