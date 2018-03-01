@@ -18,7 +18,6 @@
     public class OpenedExifToolSimpleIntegrationTest
     {
         private const int REPEAT = 100;
-        private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
         private readonly string _image;
 
         private readonly ITestOutputHelper _output;
@@ -40,7 +39,7 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-            var sut = new OpenedExifTool(EXIF_TOOL_EXECUTABLE);
+            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
             sut.Init();
 
             // act
@@ -61,7 +60,7 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
-            var sut = new OpenedExifTool(EXIF_TOOL_EXECUTABLE);
+            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -91,7 +90,7 @@
         {
             // arrange
             var tasks = new Task<string>[REPEAT];
-            var sut = new OpenedExifTool(EXIF_TOOL_EXECUTABLE);
+            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -129,7 +128,7 @@
         public async Task InitAndDisposeTest()
         {
             // arrange
-            var sut = new OpenedExifTool(EXIF_TOOL_EXECUTABLE);
+            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
 
             // act
             sut.Init();
@@ -144,27 +143,25 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            var sut = new OpenedExifTool(EXIF_TOOL_EXECUTABLE);
-            {
-                sut.Init();
+            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            sut.Init();
 
-                // act
-                var task1 = sut.ExecuteAsync(_image);
-                var task2 = sut.ExecuteAsync(_image);
-                var task3 = sut.ExecuteAsync(_image);
+            // act
+            var task1 = sut.ExecuteAsync(_image);
+            var task2 = sut.ExecuteAsync(_image);
+            var task3 = sut.ExecuteAsync(_image);
 
-                // assert
-                var result3 = await task3.ConfigureAwait(false);
-                result3.Should().NotBeNullOrEmpty();
+            // assert
+            var result3 = await task3.ConfigureAwait(false);
+            result3.Should().NotBeNullOrEmpty();
 
-                var result2 = await task2.ConfigureAwait(false);
-                result2.Should().NotBeNullOrEmpty();
+            var result2 = await task2.ConfigureAwait(false);
+            result2.Should().NotBeNullOrEmpty();
 
-                var result1 = await task1.ConfigureAwait(false);
-                result1.Should().NotBeNullOrEmpty();
+            var result1 = await task1.ConfigureAwait(false);
+            result1.Should().NotBeNullOrEmpty();
 
-                await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
-            }
+            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
         }
     }
 }

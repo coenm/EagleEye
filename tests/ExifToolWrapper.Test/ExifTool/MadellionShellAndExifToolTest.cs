@@ -19,7 +19,6 @@
     public class MadellionShellAndExifToolTest
     {
         private const string CURRENT_EXIF_TOOL_VERSION = "10.79";
-        private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
         private readonly string _image;
 
         // These tests will only run when exiftool is available from PATH.
@@ -42,7 +41,7 @@
             };
 
             // act
-            var cmd = Command.Run(EXIF_TOOL_EXECUTABLE, args);
+            var cmd = Command.Run(ExifToolExecutable.GetExecutableName(), args);
             ProtectAgainstHangingTask(cmd);
             await cmd.Task.ConfigureAwait(false);
 
@@ -83,7 +82,7 @@
                 stream.Update += StreamOnUpdate;
 
                 // act
-                var cmd = Command.Run(EXIF_TOOL_EXECUTABLE, args).RedirectTo(stream);
+                var cmd = Command.Run(ExifToolExecutable.GetExecutableName(), args).RedirectTo(stream);
 
                 await cmd.StandardInput.WriteLineAsync(ExifToolArguments.VERSION).ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-execute0000").ConfigureAwait(false);
