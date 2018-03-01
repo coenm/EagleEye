@@ -9,8 +9,6 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.ExifToolWrapper.ExifToolSimplified;
-
     using JetBrains.Annotations;
 
     using Nito.AsyncEx;

@@ -5,8 +5,6 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.ExifToolWrapper.ExifToolSimplified;
-
     using Medallion.Shell;
 
     public class ClosedExifTool : IExifTool

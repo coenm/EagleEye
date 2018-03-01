@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifTool;
-    using EagleEye.ExifToolWrapper.ExifToolSimplified;
 
     using FluentAssertions;
 
