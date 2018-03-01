@@ -1,0 +1,23 @@
+sudo: required
+dist: trusty
+
+language: csharp
+mono: none
+dotnet: 2.1.4
+
+env:
+  global:
+  - DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+script:
+- dotnet restore
+- dotnet msbuild /p:configuration=Release 
+- dotnet test /p:configuration=Release tests/Core.Test/Core.Test.csproj
+- dotnet test /p:configuration=Release tests/ExifToolWrapper.Test/ExifToolWrapper.Test.csproj
+- dotnet test /p:configuration=Release tests/FileImporter.Test/FileImporter.Test.csproj
+- dotnet test /p:configuration=Release tests/LuceneNet.Test/LuceneNet.Test.csproj
+- dotnet test /p:configuration=Release tests/Picasa.Test/Picasa.Test.csproj
+
+cache:
+  directories:
+    - $HOME/.nuget/packages
