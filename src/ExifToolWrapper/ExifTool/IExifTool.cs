@@ -1,12 +1,11 @@
-﻿namespace EagleEye.ExifToolWrapper.ExifToolSimplified
+﻿namespace EagleEye.ExifToolWrapper.ExifTool
 {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public interface IExifToolSimple
+    public interface IExifTool
     {
-        // Initialize and start exiftool
         void Init();
 
         Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken));

@@ -1,20 +1,20 @@
-﻿namespace EagleEye.ExifToolWrapper.ExifToolSimplified
+﻿namespace EagleEye.ExifToolWrapper.ExifTool
 {
     using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.ExifToolWrapper.ExifTool;
+    using EagleEye.ExifToolWrapper.ExifToolSimplified;
 
     using Medallion.Shell;
 
-    public class ClosedExifToolSimple : IExifToolSimple
+    public class ClosedExifTool : IExifTool
     {
         private readonly string _exifToolPath;
         private bool _disposed;
 
-        public ClosedExifToolSimple(string exifToolPath)
+        public ClosedExifTool(string exifToolPath)
         {
             _exifToolPath = exifToolPath;
             _disposed = false;

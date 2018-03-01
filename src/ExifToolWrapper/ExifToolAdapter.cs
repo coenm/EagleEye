@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifTool;
@@ -11,19 +12,19 @@
 
     public class ExifToolAdapter : IExifTool
     {
-        private readonly OpenedExifTool _exiftoolImpl;
         private readonly IEnumerable<string> _args;
+        private OpenedExifTool _exiftoolImpl;
 
         public ExifToolAdapter()
         {
+            _args = new List<string>();
             _exiftoolImpl = new OpenedExifTool("exiftool.exe");
             _exiftoolImpl.Init();
-            _args = new List<string>();
         }
 
         public async Task<JObject> GetMetadataAsync(string filename)
         {
-            var result = await _exiftoolImpl.ExecuteAsync(filename, _args).ConfigureAwait(false);
+            var result = await _exiftoolImpl.ExecuteAsync(filename).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(result))
                 return null;
@@ -45,7 +46,7 @@
 
         public void Dispose()
         {
-            _exiftoolImpl?.Dispose();
+            Task.Run(() => _exiftoolImpl.DisposeAsync(CancellationToken.None));
         }
     }
 }

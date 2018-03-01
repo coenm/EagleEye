@@ -12,14 +12,14 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ClosedExifToolSimpleTest
+    public class ClosedExifToolTest
     {
         private const int REPEAT = 100;
         private const string EXIF_TOOL_EXECUTABLE = "exiftool.exe";
 
         private readonly ITestOutputHelper _output;
 
-        public ClosedExifToolSimpleTest(ITestOutputHelper output)
+        public ClosedExifToolTest(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -31,7 +31,7 @@
         public async Task RunWithoutInputStreamTest()
         {
             // arrange
-            var sut = new ClosedExifToolSimple(EXIF_TOOL_EXECUTABLE);
+            var sut = new ClosedExifTool(EXIF_TOOL_EXECUTABLE);
 
             // act
             var sw = Stopwatch.StartNew();
@@ -51,7 +51,7 @@
         public void ExecuteWithUnknownFileShouldThrowTest()
         {
             // arrange
-            var sut = new ClosedExifToolSimple(EXIF_TOOL_EXECUTABLE);
+            var sut = new ClosedExifTool(EXIF_TOOL_EXECUTABLE);
 
             // act
             Func<Task> act = () => sut.ExecuteAsync(new[] { "fake" });
@@ -66,7 +66,7 @@
         public void ExecuteWithUnknownExecutableFileShouldThrowTest()
         {
             // arrange
-            var sut = new ClosedExifToolSimple(EXIF_TOOL_EXECUTABLE + "fake");
+            var sut = new ClosedExifTool(EXIF_TOOL_EXECUTABLE + "fake");
 
             // act
             Func<Task> act = () => sut.ExecuteAsync(new[] { "-ver" });

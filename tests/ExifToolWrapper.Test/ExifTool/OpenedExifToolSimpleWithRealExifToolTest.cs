@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using EagleEye.ExifToolWrapper.ExifTool;
     using EagleEye.ExifToolWrapper.ExifToolSimplified;
 
     using FakeItEasy;
@@ -15,7 +16,7 @@
 
     public class OpenedExifToolSimpleTest
     {
-        private readonly OpenedExifToolSimple _sut;
+        private readonly OpenedExifTool _sut;
         private readonly IMedallionShell _mediallionShell;
         private List<string> _calledArguments;
 
@@ -23,7 +24,7 @@
         {
             _calledArguments = new List<string>();
             _mediallionShell = A.Fake<IMedallionShell>();
-            _sut = new TestableOpenedExifToolSimple(_mediallionShell);
+            _sut = new TestableOpenedExifTool(_mediallionShell);
         }
 
         [Fact]
@@ -32,7 +33,7 @@
             // arrange
 
             // act
-            Func<Task> act = async () => await _sut.ExecuteAsync(null);
+            Func<Task> act = async () => _ = await _sut.ExecuteAsync(null).ConfigureAwait(false);
 
             // assert
             act.Should().Throw<Exception>().WithMessage("Not initialized");
@@ -73,19 +74,19 @@
 //            act.Should().Throw<Exception>().WithMessage("Not initialized");
 //        }
 
-        private class TestableOpenedExifToolSimple : OpenedExifToolSimple
+        private class TestableOpenedExifTool : OpenedExifTool
         {
             private readonly IMedallionShell _mediallionShell;
 
-            public TestableOpenedExifToolSimple(IMedallionShell mediallionShell)
+            public TestableOpenedExifTool(IMedallionShell mediallionShell)
                 : base("doesnt matter")
             {
                 _mediallionShell = mediallionShell;
             }
 
-            protected override void CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
+            protected override IMedallionShell CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
             {
-                _cmd = _mediallionShell;
+                return _mediallionShell;
             }
         }
     }

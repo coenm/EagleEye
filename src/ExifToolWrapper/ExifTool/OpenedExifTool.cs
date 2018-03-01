@@ -3,29 +3,48 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Medallion.Shell;
+    using EagleEye.ExifToolWrapper.ExifToolSimplified;
+
+    using JetBrains.Annotations;
 
     using Nito.AsyncEx;
 
-    public class OpenedExifTool : IDisposable
+    public class OpenedExifTool : IExifTool
     {
         private readonly string _exifToolPath;
-        private readonly object _syncLock = new object();
-        private readonly AsyncLock _syncLockAddToExifTool = new AsyncLock();
+        private readonly AsyncLock _executeAsyncSyncLock = new AsyncLock();
+        private readonly AsyncLock _executeImpAsyncSyncLock = new AsyncLock();
+        private readonly AsyncLock _disposingSyncLock = new AsyncLock();
+        private readonly object _cmdExitedSubscribedSyncLock = new object();
+        private readonly object _initializedSyncLock = new object();
+        private readonly CancellationTokenSource _stopQueueCts;
+
         private readonly List<string> _defaultArgs;
         private readonly ConcurrentDictionary<string, TaskCompletionSource<string>> _waitingTasks;
-        private ExifToolStayOpenStream _stream;
-        private Command _cmd;
+        private readonly ExifToolStayOpenStream _stream;
+        private IMedallionShell _cmd;
         private int _key;
         private bool _disposed;
+        private bool _disposing;
+        private bool _cmdExited;
+        private bool _cmdExitedSubscribed;
+        private bool _initialized;
 
         public OpenedExifTool(string exifToolPath)
         {
+            _stream = new ExifToolStayOpenStream(Encoding.UTF8);
+
+            _stopQueueCts = new CancellationTokenSource();
+            _initialized = false;
             _disposed = false;
+            _disposing = false;
+            _cmdExited = false;
             _key = 0;
             _exifToolPath = exifToolPath;
             _defaultArgs = new List<string>
@@ -50,107 +69,184 @@
 
         public void Init()
         {
-            lock (_syncLock)
+            if (_initialized)
+                return;
+
+            lock (_initializedSyncLock)
             {
-                _stream = new ExifToolStayOpenStream(Encoding.UTF8);
+                if (_initialized)
+                    return;
+
                 _stream.Update += StreamOnUpdate;
 
-                _cmd = Command.Run(_exifToolPath, _defaultArgs)
-                    .RedirectTo(_stream);
+                _cmd = CreateExitToolMedallionShell(_exifToolPath, _defaultArgs, _stream, null);
+
+                _cmd.ProcessExited += CmdOnProcessExited;
+                _cmdExitedSubscribed = true;
+                _initialized = true;
             }
         }
 
-        public void CancelPendingAndStop()
+        public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken))
         {
-            lock (_syncLock)
+            if (!_initialized)
+                throw new Exception("Not initialized");
+            if (_disposed)
+                throw new Exception("Disposed");
+            if (_disposing)
+                throw new Exception("Disposing");
+
+            var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopQueueCts.Token);
+
+            using (await _executeAsyncSyncLock.LockAsync(linkedCts.Token).ConfigureAwait(false))
+            {
+                return await ExecuteImpAsync(args, ct).ConfigureAwait(false);
+            }
+        }
+
+        public async Task DisposeAsync(CancellationToken ct = default(CancellationToken))
+        {
+            if (!_initialized)
+                return;
+
+            if (_disposed)
+                return;
+
+            using (await _disposingSyncLock.LockAsync(ct).ConfigureAwait(false))
             {
                 if (_disposed)
                     return;
 
-                // cancel pending..
-                // set state
-
-                _cmd.StandardInput.WriteLine(ExifToolArguments.STAY_OPEN);
-                _cmd.StandardInput.WriteLine(ExifToolArguments.BOOL_FALSE);
-            }
-        }
-
-        public void Stop()
-        {
-            lock (_syncLock)
-            {
-                if (_disposed)
-                    return;
+                _disposing = true;
+                Ignore(() => _stopQueueCts?.Cancel());
 
                 try
                 {
-                    _cmd.StandardInput.WriteLine(ExifToolArguments.STAY_OPEN);
-                    _cmd.StandardInput.WriteLine(ExifToolArguments.BOOL_FALSE);
+                    if (!_cmdExited)
+                    {
+                        // This is really not okay. Not sure why or when the stay-open False command doesn't seem to work.
+                        // This is just a stupid 'workaround' and is okay for now.
+                        await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
+
+                        var command = new[] { ExifToolArguments.STAY_OPEN, ExifToolArguments.BOOL_FALSE };
+                        await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+
+                        if (!_cmdExited)
+                            await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
+
+                        var retry = 0;
+                        while (retry < 3 && _cmdExited == false)
+                        {
+                            try
+                            {
+                                await ExecuteOnlyAsync(command, ct).ConfigureAwait(false);
+                                if (!_cmdExited)
+                                    await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
+                            }
+                            catch (Exception)
+                            {
+                                // ignore
+                            }
+                            finally
+                            {
+                                retry++;
+                            }
+                        }
+                    }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    // ignore for now.
-                }
+                    Console.WriteLine($"Exception occurred when executing stay_open false. Msg: {e.Message}");
 
-                _disposed = true;
+                    Ignore(() => _cmd?.Kill());
 
-                if (_stream != null)
                     _stream.Update -= StreamOnUpdate;
 
-                if (_cmd?.Task != null)
+                    Ignore(() => _stream.Dispose());
+                    _cmd = null;
+
+                    return;
+                }
+
+                // else try to dispose grasefully
+                if (_cmdExited == false && _cmd?.Task != null)
                 {
+                    var sw = Stopwatch.StartNew();
                     try
                     {
-                        if (!_cmd.Task.Wait(TimeSpan.FromSeconds(10)))
-                            _cmd.Kill();
+                        _cmd.Kill();
+
+                        // why?
+                        await _cmd.Task.ConfigureAwait(false);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        // ignore
+                        sw.Stop();
+                        Console.WriteLine($"Exception occurred after {sw.Elapsed} when awaiting ExifTool task. Msg: {e.Message}");
+                        Ignore(() => _cmd.Kill());
                     }
                 }
 
-                try
-                {
-                    _stream?.Dispose();
-                }
-                catch (Exception)
-                {
-                    // ignore for now.
-                }
-
-                _stream = null;
+                _stream.Update -= StreamOnUpdate;
+                Ignore(UnsubscribeCmdOnProcessExitedOnce);
+                Ignore(() => _stream.Dispose());
                 _cmd = null;
+                _disposed = true;
+                _disposing = false;
             }
         }
 
-        public void Dispose()
+        protected virtual IMedallionShell CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
         {
-            Stop();
+            return new MedallionShellAdapter(exifToolPath, defaultArgs, outputStream, errorStream);
         }
 
-        public async Task<string> ExecuteAsync(string filename, IEnumerable<string> args)
+        private static void Ignore(Action action)
         {
-            if (_disposed)
-                throw new ObjectDisposedException($"{nameof(OpenedExifTool)} is already disposed or is disposing.");
-
-            var retries = 0;
-            var tcs = new TaskCompletionSource<string>();
-
-            while (retries < 10)
+            try
             {
-                var key = Interlocked.Increment(ref _key).ToString();
-                if (_waitingTasks.TryAdd(key, tcs))
+                action?.Invoke();
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
+        private async Task<string> ExecuteImpAsync(IEnumerable<string> args, CancellationToken ct)
+        {
+            using (await _executeImpAsyncSyncLock.LockAsync(ct).ConfigureAwait(false))
+            {
+                var tcs = new TaskCompletionSource<string>();
+                using (ct.Register(() => tcs.TrySetCanceled()))
                 {
-                    var argsWithFilename = new List<string>(args) { filename };
-                    await AddToExifToolAsync(key, argsWithFilename).ConfigureAwait(false);
+                    _key++;
+                    var key = _key.ToString();
+
+                    if (!_waitingTasks.TryAdd(key, tcs))
+                        throw new Exception("Could not execute");
+
+                    await AddToExifToolAsync(key, args).ConfigureAwait(false);
                     return await tcs.Task.ConfigureAwait(false);
                 }
-
-                retries++;
             }
+        }
 
-            throw new Exception("Could not execute");
+        private async Task ExecuteOnlyAsync(IEnumerable<string> args, CancellationToken ct)
+        {
+            using (await _executeImpAsyncSyncLock.LockAsync(ct).ConfigureAwait(false))
+            {
+                await AddToExifToolAsync(null, args).ConfigureAwait(false);
+            }
+        }
+
+        private async Task AddToExifToolAsync(string key, [NotNull] IEnumerable<string> args)
+        {
+            foreach (var arg in args)
+                await _cmd.WriteLineAsync(arg).ConfigureAwait(false);
+
+            if (!string.IsNullOrWhiteSpace(key))
+                await _cmd.WriteLineAsync($"-execute{key}").ConfigureAwait(false);
         }
 
         private void StreamOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
@@ -161,17 +257,23 @@
             }
         }
 
-        private async Task AddToExifToolAsync(string key, IEnumerable<string> args)
+        private void CmdOnProcessExited(object sender, EventArgs eventArgs)
         {
-            using (await _syncLockAddToExifTool.LockAsync().ConfigureAwait(false))
+            _cmdExited = true;
+            UnsubscribeCmdOnProcessExitedOnce();
+        }
+
+        private void UnsubscribeCmdOnProcessExitedOnce()
+        {
+            if (!_cmdExitedSubscribed)
+                return;
+
+            lock (_cmdExitedSubscribedSyncLock)
             {
-                // todo check if ExifTool is open
-                // etc etc
-
-                foreach (var arg in args)
-                    await _cmd.StandardInput.WriteLineAsync(arg).ConfigureAwait(false);
-
-                await _cmd.StandardInput.WriteLineAsync($"-execute{key}").ConfigureAwait(false);
+                if (!_cmdExitedSubscribed)
+                    return;
+                Ignore(() => _cmd.ProcessExited -= CmdOnProcessExited);
+                _cmdExitedSubscribed = false;
             }
         }
     }
