@@ -13,12 +13,12 @@
     public class ExifToolAdapter : IExifTool
     {
         private readonly IEnumerable<string> _args;
-        private OpenedExifTool _exiftoolImpl;
+        private readonly OpenedExifTool _exiftoolImpl;
 
         public ExifToolAdapter()
         {
             _args = new List<string>();
-            _exiftoolImpl = new OpenedExifTool("exiftool.exe");
+            _exiftoolImpl = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
             _exiftoolImpl.Init();
         }
 

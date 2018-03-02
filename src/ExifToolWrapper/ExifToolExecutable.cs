@@ -10,6 +10,14 @@
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 
+        public static string ConvertWindowsToOsString(this string input)
+        {
+            if (IsWindows)
+                return input;
+
+            return input.Replace("\r\n", "\n");
+        }
+
         public static string NewLine
         {
             get

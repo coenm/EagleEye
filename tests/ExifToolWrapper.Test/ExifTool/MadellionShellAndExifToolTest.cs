@@ -46,7 +46,7 @@
             await cmd.Task.ConfigureAwait(false);
 
             // assert
-            cmd.Result.StandardOutput.Should().Be($"{CURRENT_EXIF_TOOL_VERSION}\r\n");
+            cmd.Result.StandardOutput.Should().Be($"{CURRENT_EXIF_TOOL_VERSION}\r\n".ConvertWindowsToOsString());
         }
 
         [Fact]

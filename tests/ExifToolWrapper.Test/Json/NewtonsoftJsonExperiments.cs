@@ -18,11 +18,11 @@
             // arrange
 
             // act
-            JArray jsonArray = JArray.Parse(JSON_ARRAY);
+            JArray jsonArray = JArray.Parse(JSON_ARRAY.ConvertWindowsToOsString());
             var exif = jsonArray[0]["EXIF"];
 
             // assert
-            exif.ToString().Should().Be(EXPECTED_EXIF);
+            exif.ToString().Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
         }
 
         [Fact]
@@ -31,14 +31,14 @@
             // arrange
 
             // act
-            var jsonObject = JsonConvert.DeserializeObject(JSON_ARRAY);
+            var jsonObject = JsonConvert.DeserializeObject(JSON_ARRAY.ConvertWindowsToOsString());
             var jsonArray = jsonObject as JArray;
             var firtItem = jsonArray?[0] as JObject;
             var exifItem = firtItem?["EXIF"] as JObject;
             var exif = exifItem?.ToString();
 
             // assert
-            exif.Should().Be(EXPECTED_EXIF);
+            exif.Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
         }
 
         [Fact(Skip = "AppVeyor")]
