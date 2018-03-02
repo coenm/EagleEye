@@ -8,8 +8,8 @@
     public class ExifToolStayOpenStream : Stream
     {
         private const int ONE_MB = 1024 * 1024;
-        private const string PREFIX = "\r\n{ready";
-        private const string SUFFIX = "}\r\n";
+        private readonly string _prefix = ExifToolExecutable.NewLine + "{ready";
+        private readonly string _suffix = "}" + ExifToolExecutable.NewLine;
         private readonly Encoding _encoding;
         private readonly byte[] _cache;
         private readonly byte[] _endOfMessageSequenceStart;
@@ -26,8 +26,8 @@
             _encoding = encoding ?? new UTF8Encoding();
             _cache = new byte[_buferSize];
             _index = 0;
-            _endOfMessageSequenceStart = _encoding.GetBytes(PREFIX);
-            _endOfMessageSequenceEnd = _encoding.GetBytes(SUFFIX);
+            _endOfMessageSequenceStart = _encoding.GetBytes(_prefix);
+            _endOfMessageSequenceEnd = _encoding.GetBytes(_suffix);
         }
 
         public event EventHandler<DataCapturedArgs> Update = delegate { };
