@@ -8,12 +8,11 @@
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 echo "scriptpath: $SCRIPTPATH"
-EXIFTOOL_VERSION_READ=$(cat "${SCRIPTPATH}/EXIFTOOL_VERSION")
+ROOT_PATH=$(cd ${SCRIPTPATH}/../; pwd)
+EXIFTOOL_VERSION_READ=$(cat "${ROOT_PATH}/EXIFTOOL_VERSION")
 echo "Read exiftool version: ${EXIFTOOL_VERSION_READ}"
-
-EXIFTOOL_VERSION_READ2=`cat ${SCRIPTPATH}/EXIFTOOL_VERSION`
+EXIFTOOL_VERSION_READ2=`cat ${ROOT_PATH}/EXIFTOOL_VERSION`
 echo "Read exiftool version2: ${EXIFTOOL_VERSION_READ2}"
-
 
 wget https://www.sno.phy.queensu.ca/~phil/exiftool/Image-ExifTool-${EXIFTOOL_VERSION}.tar.gz
 gzip -dc Image-ExifTool-${EXIFTOOL_VERSION}.tar.gz | tar -xf -
