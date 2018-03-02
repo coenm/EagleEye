@@ -8,11 +8,9 @@ dotnet: 2.1.4
 env:
   global:
   - DOTNET_CLI_TELEMETRY_OPTOUT=1
-  - EXIFTOOL_VERSION=10.79
 
 before_install:
 - sudo apt-get -y install perl
-- pwd
 - chmod +x .scripts/InstallExiftool.sh
 - sudo ./.scripts/InstallExiftool.sh 
 - 'echo "EXIFTOOL: $(exiftool -ver)"'
