@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.InteropServices;
 
     public static class TestEnvironment
     {
@@ -12,19 +13,22 @@
         private static readonly Lazy<string> LazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
 
-
-        private static string SolutionDirectoryFullPath => LazySolutionDirectoryFullPath.Value;
-
         /// <summary>
         /// Gets a value indicating whether test execution runs on CI.
         /// </summary>
         // ReSharper disable once InconsistentNaming
         public static bool RunsOnCI => RunsOnContinuousIntegration.Value;
 
+        public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
+        public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
         /// <summary>
         /// Gets the correct full path to the Images directory.
         /// </summary>
         public static string InputImagesDirectoryFullPath => GetFullPath(INPUT_IMAGES_RELATIVE_PATH);
+
+        private static string SolutionDirectoryFullPath => LazySolutionDirectoryFullPath.Value;
 
         /// <summary>
         /// Convert relative path to full path based on solution directory (directory containing the sln file).
@@ -33,10 +37,10 @@
         /// <returns></returns>
         public static string GetFullPath(params string[] relativePath)
         {
-            var paths = new[] {SolutionDirectoryFullPath}.Concat(relativePath).ToArray();
+            var paths = new[] { SolutionDirectoryFullPath }.Concat(relativePath).ToArray();
             return Path
-                .Combine(paths)
-                .Replace('\\', Path.DirectorySeparatorChar);
+                   .Combine(paths)
+                   .Replace('\\', Path.DirectorySeparatorChar);
         }
 
         /// <summary> Read image from relative filename for testing purposes </summary>
