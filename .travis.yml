@@ -13,7 +13,8 @@ env:
 before_install:
 - sudo apt-get -y install perl
 - pwd
-- ./.scripts/InstallExiftool.sh 
+- chmod +x .scripts/InstallExiftool.sh
+- sudo ./.scripts/InstallExiftool.sh 
 - 'echo "EXIFTOOL: $(exiftool -ver)"'
 
 script:
