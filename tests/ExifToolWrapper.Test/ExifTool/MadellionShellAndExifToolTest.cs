@@ -15,18 +15,27 @@
     using Medallion.Shell;
 
     using Xunit;
+    using Xunit.Abstractions;
 
     public class MadellionShellAndExifToolTest
     {
         private const string CURRENT_EXIF_TOOL_VERSION = "10.79";
         private readonly string _image;
+        private readonly ITestOutputHelper _output;
 
         // These tests will only run when exiftool is available from PATH.
-        public MadellionShellAndExifToolTest()
+        public MadellionShellAndExifToolTest(ITestOutputHelper output)
         {
+            _output = output;
+
             _image = Directory
                 .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                 .SingleOrDefault();
+
+            _output.WriteLine($"Testfile: {_image}");
+
+            var exists = File.Exists(_image);
+            exists.Should().BeTrue("File does NOT! exists!!");
 
             _image.Should().NotBeNullOrEmpty();
         }

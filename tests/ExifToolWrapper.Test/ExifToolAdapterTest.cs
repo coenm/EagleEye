@@ -48,7 +48,7 @@
 
             // assert
             var exif = result["EXIF"] as JObject;
-            exif?.ToString().Should().Be(EXPECTED_EXIF);
+            exif?.ToString().Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
         }
 
         public void Dispose()

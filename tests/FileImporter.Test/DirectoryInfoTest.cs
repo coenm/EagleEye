@@ -24,7 +24,7 @@
         [Theory]
         [Xunit.Categories.Exploratory]
         [InlineData("/a/b/c")]
-        [InlineData("\\a\\b\\c")]
+//        [InlineData("\\a\\b\\c")]
         public void LinuxDirectoryTest(string d)
         {
             if (!TestEnvironment.IsLinux)
