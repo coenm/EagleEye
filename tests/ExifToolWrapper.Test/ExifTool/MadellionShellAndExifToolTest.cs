@@ -56,6 +56,7 @@
             await cmd.Task.ConfigureAwait(false);
 
             // assert
+            _output.WriteLine($"Received exiftool version: {cmd.Result.StandardOutput}");
             cmd.Result.StandardOutput.Should().Be($"{_currentExifToolVersion}\r\n".ConvertWindowsToOsString());
         }
 
