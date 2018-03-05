@@ -37,7 +37,7 @@
 
             _stream = new ExifToolStayOpenStream(Encoding.UTF8);
 
-            _sut = new MedallionShellAdapter(ExifToolExecutable.GetExecutableName(), defaultArgs, _stream);
+            _sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, _stream);
             _sut.ProcessExited += SutOnProcessExited;
         }
 

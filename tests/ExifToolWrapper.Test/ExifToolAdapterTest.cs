@@ -26,7 +26,7 @@
 
             _imageFilename.Should().NotBeNullOrEmpty();
 
-            _sut = new ExifToolAdapter();
+            _sut = new ExifToolAdapter(ExifToolSystemConfiguration.ExifToolExecutable);
         }
 
         [Fact]

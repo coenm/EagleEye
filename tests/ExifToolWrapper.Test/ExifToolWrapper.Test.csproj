@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\..\EXIFTOOL_VERSION" Link="EXIFTOOL_VERSION" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\ExifToolWrapper\ExifToolWrapper.csproj" />
     <ProjectReference Include="..\TestImages\TestImages.csproj" />
   </ItemGroup>

@@ -39,7 +39,7 @@
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             sut.Init();
 
             // act
@@ -60,7 +60,7 @@
         public async Task RunWithInputStreamTest()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -90,7 +90,7 @@
         {
             // arrange
             var tasks = new Task<string>[REPEAT];
-            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             var sw = Stopwatch.StartNew();
             sut.Init();
             sw.Stop();
@@ -128,7 +128,7 @@
         public async Task InitAndDisposeTest()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
             sut.Init();
@@ -143,7 +143,7 @@
         public async Task RunExifToolWithThreeCommands()
         {
             // arrange
-            var sut = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new OpenedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
             sut.Init();
 
             // act

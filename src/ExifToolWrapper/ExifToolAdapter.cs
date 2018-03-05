@@ -15,10 +15,10 @@
         private readonly IEnumerable<string> _args;
         private readonly OpenedExifTool _exiftoolImpl;
 
-        public ExifToolAdapter()
+        public ExifToolAdapter(string exiftoolExecutable)
         {
             _args = new List<string>();
-            _exiftoolImpl = new OpenedExifTool(ExifToolExecutable.GetExecutableName());
+            _exiftoolImpl = new OpenedExifTool(exiftoolExecutable);
             _exiftoolImpl.Init();
         }
 

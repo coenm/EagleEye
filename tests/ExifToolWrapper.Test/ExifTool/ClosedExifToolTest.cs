@@ -28,7 +28,7 @@
         public async Task RunWithoutInputStreamTest()
         {
             // arrange
-            var sut = new ClosedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new ClosedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
             var sw = Stopwatch.StartNew();
@@ -48,7 +48,7 @@
         public void ExecuteWithUnknownFileShouldThrowTest()
         {
             // arrange
-            var sut = new ClosedExifTool(ExifToolExecutable.GetExecutableName());
+            var sut = new ClosedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
             Func<Task> act = () => sut.ExecuteAsync(new[] { "fake" });
@@ -63,7 +63,7 @@
         public void ExecuteWithUnknownExecutableFileShouldThrowTest()
         {
             // arrange
-            var sut = new ClosedExifTool(ExifToolExecutable.GetExecutableName() + "fake");
+            var sut = new ClosedExifTool(ExifToolSystemConfiguration.ExifToolExecutable + "fake");
 
             // act
             Func<Task> act = () => sut.ExecuteAsync(new[] { "-ver" });
