@@ -32,6 +32,19 @@
             }
         }
 
+        [Fact]
+        public void InvalidSectionShouldThrowExceptionTest()
+        {
+            // arrange
+            const string CONTENT = "[Abc\r\nkey=value\r\n";
+            using (var stream = GenerateStreamFromString(CONTENT))
+            {
+                // act
+                // assert
+                Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
+            }
+        }
+
         private static MemoryStream GenerateStreamFromString(string value)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(value ?? string.Empty));

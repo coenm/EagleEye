@@ -21,4 +21,4 @@ ignore:
   - ".travis.yml"
   - "GitVersion.yml"
   - "README"
-  - "EXIFTOOL_VERSION"  
+  - "EXIFTOOL_VERSION"

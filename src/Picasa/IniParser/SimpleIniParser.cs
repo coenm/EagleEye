@@ -23,7 +23,9 @@
                 using (var reader = new StreamReader(stream))
                 {
                     var content = reader.ReadToEnd();
-                    return content.Replace("\r\n", "\n").Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    return content
+                           .Replace("\r\n", "\n")
+                           .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 }
             }
             catch (Exception e)
