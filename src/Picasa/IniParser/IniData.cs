@@ -10,9 +10,9 @@
             Content = new Dictionary<string, string>();
         }
 
-        public string Section { get; set; }
+        public string Section { get; }
 
-        public Dictionary<string, string> Content { get; set; }
+        public Dictionary<string, string> Content { get; }
 
         public void AddContentLine(string key, string value)
         {
