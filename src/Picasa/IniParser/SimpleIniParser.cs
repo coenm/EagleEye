@@ -44,6 +44,10 @@
             for (var i = 0; i < count; i++)
             {
                 var line = content[i];
+
+                if (IsCommentLine(line))
+                    continue;
+
                 if (TryGetIniSection(line, out var iniSection))
                 {
                     currentSection = new IniData(iniSection);
@@ -56,6 +60,17 @@
             }
 
             return result;
+        }
+
+        private static bool IsCommentLine(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return true;
+
+            if (line.StartsWith(";"))
+                return true;
+
+            return false;
         }
 
         private static bool TryGetIniSection(string line, out string iniSection)

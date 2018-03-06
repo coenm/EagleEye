@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Picasa.Test.IniParser
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text;
 
@@ -29,6 +30,35 @@
 
                 // assert
                 result.Should().BeEmpty();
+            }
+        }
+
+        [Fact]
+        public void CommentLinesAreIgnoredTest()
+        {
+            // arrange
+            const string CONTENT = @"
+[Section1]
+  key=value
+a = b  
+; comment
+b=c
+";
+            using (var stream = GenerateStreamFromString(CONTENT))
+            {
+                // act
+                var result = Sut.Parse(stream);
+
+                // assert
+                result.Count.Should().Be(1);
+                result[0].Section.Should().Be("Section1");
+                result[0].Content.Should()
+                         .BeEquivalentTo(new Dictionary<string, string>
+                                             {
+                                                 { "key", "value" },
+                                                 { "a", "b" },
+                                                 { "b", "c" }
+                                             });
             }
         }
 
