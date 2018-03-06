@@ -48,11 +48,23 @@ $destDirArg="-o" + $destinationDir
 
 $new = (join-path $destinationDir "exiftool.exe")
 $old = (join-path $destinationDir "exiftool`(`-k`).exe")
+
 if ( (Test-Path $old) )
 {
+	Write-Host "exiftool k exe exists"
 	if ( (Test-Path $new) )
 	{
+		Write-Host "exiftool.exe exists -> remove"
 		rm $new
 	}
+	Write-Host "rename to exiftool.exe"
 	mv $old $new
 }
+else 
+{
+	Write-Host "----------------------"
+	Write-Host "Could not find exiftool k .exe!!"
+	Write-Host "----------------------"
+}
+
+dir $destinationDir
