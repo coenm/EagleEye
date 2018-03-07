@@ -33,8 +33,22 @@ cd ..
 $testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % { $_.FullName }; # access $_.DirectoryName for the directory.
 popd
 
+
+
+
 Try
 {
+	Write-Host "----------------------------";
+
+	ForEach ($testProjectLocation in $testProjectLocations)
+	{
+		Write-Host "Run tests without coverage for project " (Resolve-Path $testProjectLocation).Path;
+		dotnet test $testProjectLocation 
+	}
+	
+	Write-Host "----------------------------";
+		
+	
 	ForEach ($testProjectLocation in $testProjectLocations)
 	{
 		Write-Host "Run tests for project " (Resolve-Path $testProjectLocation).Path;
