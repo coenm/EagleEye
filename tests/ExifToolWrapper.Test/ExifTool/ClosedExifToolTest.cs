@@ -20,7 +20,7 @@
 
         public ClosedExifToolTest(ITestOutputHelper output)
         {
-            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
             _output = output;
         }
 
@@ -31,7 +31,7 @@
         public async Task RunWithoutInputStreamTest()
         {
             // arrange
-            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(5 * REPEAT));
+            _cts = new CancellationTokenSource(TimeSpan.FromSeconds(60 * REPEAT));
             var sut = new ClosedExifTool(ExifToolSystemConfiguration.ExifToolExecutable);
 
             // act
