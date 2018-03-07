@@ -34,7 +34,7 @@
         /// Convert relative path to full path based on solution directory (directory containing the sln file).
         /// </summary>
         /// <param name="relativePath"></param>
-        /// <returns></returns>
+        /// <returns>Full path</returns>
         public static string GetFullPath(params string[] relativePath)
         {
             var paths = new[] { SolutionDirectoryFullPath }.Concat(relativePath).ToArray();

@@ -5,6 +5,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using JetBrains.Annotations;
+
     using Medallion.Shell;
 
     public class ClosedExifTool : IExifTool
@@ -29,7 +31,18 @@
                 throw new ObjectDisposedException("Disposed");
 
             var cmd = Command.Run(_exifToolPath, args);
-            await cmd.Task.ConfigureAwait(false);
+
+            try
+            {
+                await cmd.Task
+                         .WithWaitCancellation(ct)
+                         .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                Ignore(() => cmd.Kill());
+                throw;
+            }
 
             if (cmd.Result.Success)
                 return cmd.Result.StandardOutput;
@@ -41,6 +54,18 @@
         {
             _disposed = true;
             return Task.CompletedTask;
+        }
+
+        private static void Ignore([NotNull] Action action)
+        {
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
         }
     }
 }
