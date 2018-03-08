@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using EagleEye.Categories;
     using EagleEye.ExifToolWrapper.ExifTool;
 
     using FluentAssertions;
@@ -26,8 +27,9 @@
 
         [Fact(Skip = "Does not work on AppVeyor")]
         [Xunit.Categories.IntegrationTest]
-        [Categories.ExifTool]
-        [Categories.Performance]
+        [ExifTool]
+        [Performance]
+        [Skip(SkipItems.AppVeyor)]
         public async Task RunWithoutInputStreamTest()
         {
             // arrange
@@ -51,8 +53,8 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Categories.ExifTool]
-        [Categories.Performance]
+        [ExifTool]
+        [Performance]
         public async Task ExecuteAsyncToGetVersionTest()
         {
             // arrange
@@ -69,7 +71,7 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Categories.ExifTool]
+        [ExifTool]
         public void ExecuteWithUnknownFileShouldThrowTest()
         {
             // arrange
@@ -79,7 +81,7 @@
             Func<Task> act = () => sut.ExecuteAsync(new[] { "fake" }, _cts.Token);
 
             // assert
-            act.Should().Throw<ExiftoolException>().WithMessage("File not found: fake" + Environment.NewLine);
+            act.Should().Throw<ExiftoolException>();
         }
 
 
