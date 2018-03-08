@@ -25,7 +25,7 @@ Write-Host "Location opencover.exe: " $opencoverExe
 Write-Host "Location dotnet.exe: " $dotnetExe
 Write-Host "Location xml coverage result: " $outputOpenCoverXmlFile
 
-$dotnetTestArgs = '-c Debug --no-build --logger:trx' # ;LogFileName=' + $outputTrxFile
+$dotnetTestArgs = '-c Debug --no-build --filter Category!=ExifTool --logger:trx' # ;LogFileName=' + $outputTrxFile
 $opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
 
 pushd
