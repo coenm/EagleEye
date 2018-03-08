@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ExifToolWrapper\ExifToolWrapper.csproj" />
-    <ProjectReference Include="..\TestImages\TestImages.csproj" />
+    <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
 </Project>

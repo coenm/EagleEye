@@ -26,8 +26,8 @@
 
         [Fact(Skip = "Does not work on AppVeyor")]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
-        [Xunit.Categories.Category("Performance")]
+        [Categories.ExifTool]
+        [Categories.Performance]
         public async Task RunWithoutInputStreamTest()
         {
             // arrange
@@ -51,7 +51,8 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
+        [Categories.ExifTool]
+        [Categories.Performance]
         public async Task ExecuteAsyncToGetVersionTest()
         {
             // arrange
@@ -68,7 +69,7 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
+        [Categories.ExifTool]
         public void ExecuteWithUnknownFileShouldThrowTest()
         {
             // arrange

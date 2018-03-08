@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestImages\TestImages.csproj" />
+    <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
     <ProjectReference Include="..\..\src\FileImporter\FileImporter.csproj" />
   </ItemGroup>
 

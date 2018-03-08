@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     using Xunit;
 

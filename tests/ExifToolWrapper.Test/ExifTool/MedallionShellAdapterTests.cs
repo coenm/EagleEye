@@ -13,7 +13,6 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    [Xunit.Categories.Category("ExifTool")]
     [Xunit.Categories.IntegrationTest]
     public class MedallionShellAdapterTest : IDisposable
     {
@@ -48,6 +47,7 @@
         }
 
         [Fact]
+        [Categories.ExifTool]
         public async Task KillingSutShouldInvokeProcessExitedEventTest()
         {
             // arrange
@@ -64,6 +64,7 @@
         }
 
         [Fact]
+        [Categories.ExifTool]
         public async Task SettingStayOpenToFalseShouldCloseSutTest()
         {
             // arrange

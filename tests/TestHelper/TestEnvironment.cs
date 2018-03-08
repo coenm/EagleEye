@@ -1,4 +1,4 @@
-﻿namespace EagleEye.TestImages
+﻿namespace EagleEye.TestHelper
 {
     using System;
     using System.IO;
@@ -9,7 +9,6 @@
     public static class TestEnvironment
     {
         private const string SOLUTION_FILE_NAME = "EagleEye.sln";
-        private const string INPUT_IMAGES_RELATIVE_PATH = @"Images\data\";
         private static readonly Lazy<string> LazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
 
@@ -23,17 +22,12 @@
 
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-        /// <summary>
-        /// Gets the correct full path to the Images directory.
-        /// </summary>
-        public static string InputImagesDirectoryFullPath => GetFullPath(INPUT_IMAGES_RELATIVE_PATH);
-
         private static string SolutionDirectoryFullPath => LazySolutionDirectoryFullPath.Value;
 
         /// <summary>
-        /// Convert relative path to full path based on solution directory (directory containing the sln file).
+        /// Convert relative path to full path based on solution directory.
         /// </summary>
-        /// <param name="relativePath"></param>
+        /// <param name="relativePath">relative path from root directory</param>
         /// <returns>Full path</returns>
         public static string GetFullPath(params string[] relativePath)
         {
@@ -41,15 +35,6 @@
             return Path
                    .Combine(paths)
                    .Replace('\\', Path.DirectorySeparatorChar);
-        }
-
-        /// <summary> Read image from relative filename for testing purposes </summary>
-        /// <param name="relativeFilename">Filename relative to 'solution directory' + 'images/data/'. </param>
-        /// <returns>FileStream or throws exception</returns>
-        public static FileStream ReadRelativeImageFile(string relativeFilename)
-        {
-            var fullFilename = GetFullPath(INPUT_IMAGES_RELATIVE_PATH, relativeFilename);
-            return File.OpenRead(fullFilename);
         }
 
         private static bool IsContinuousIntegrationImpl()

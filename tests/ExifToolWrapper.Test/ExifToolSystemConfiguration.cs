@@ -2,10 +2,9 @@
 {
     using System;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
 
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     internal static class ExifToolSystemConfiguration
     {
@@ -44,7 +43,6 @@
 
         private static Stream OpenRead()
         {
-            var x = _assembly.GetManifestResourceNames().ToArray();
             return _assembly.GetManifestResourceStream(_embeddedResourceNs + "." + EXIFTOOL_VERSION);
         }
     }

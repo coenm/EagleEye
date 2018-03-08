@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifTool;
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     using FluentAssertions;
 
@@ -30,7 +30,7 @@
             _output = output;
 
             _image = Directory
-                .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
+                .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                 .SingleOrDefault();
 
             _output.WriteLine($"Testfile: {_image}");
@@ -42,6 +42,7 @@
         }
 
         [Fact]
+        [Categories.ExifTool]
         public async Task RunExifToolToGetVersion()
         {
             // arrange
@@ -61,6 +62,7 @@
         }
 
         [Fact]
+        [Categories.ExifTool]
         public async Task RunExifToolWithCustomStream()
         {
             // arrange

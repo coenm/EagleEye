@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     using FluentAssertions;
 
@@ -21,7 +21,7 @@
         public ExifToolAdapterTest()
         {
             _imageFilename = Directory
-                     .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
+                     .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                      .SingleOrDefault();
 
             _imageFilename.Should().NotBeNullOrEmpty();

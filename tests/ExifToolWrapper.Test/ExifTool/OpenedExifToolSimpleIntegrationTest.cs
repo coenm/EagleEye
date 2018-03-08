@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifTool;
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     using FluentAssertions;
 
@@ -27,7 +27,7 @@
             _output = output;
 
             _image = Directory
-                     .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
+                     .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                      .SingleOrDefault();
 
             _image.Should().NotBeNullOrEmpty();
@@ -35,7 +35,7 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
+        [Categories.ExifTool]
         public async Task RunExiftoolForVersionAndImageTest()
         {
             // arrange
@@ -55,8 +55,8 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
-        [Xunit.Categories.Category("Performance")]
+        [Categories.ExifTool]
+        [Categories.Performance]
         public async Task RunWithInputStreamTest()
         {
             // arrange
@@ -84,8 +84,8 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
-        [Xunit.Categories.Category("Performance")]
+        [Categories.ExifTool]
+        [Categories.Performance]
         public async Task DisposeAsyncShouldCancelAllPendingRequestsTest()
         {
             // arrange
@@ -124,7 +124,7 @@
 
         [Fact]
         [Xunit.Categories.IntegrationTest]
-        [Xunit.Categories.Category("ExifTool")]
+        [Categories.ExifTool]
         public async Task InitAndDisposeTest()
         {
             // arrange
@@ -135,7 +135,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // assert
-            //            sut.IsClosed.Should().Be(true);
+            //sut.IsClosed.Should().Be(true);
         }
 
 

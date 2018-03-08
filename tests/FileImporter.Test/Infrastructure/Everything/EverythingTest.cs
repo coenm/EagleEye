@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.FileImporter.Indexing;
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     using Xunit;
 
@@ -15,7 +15,7 @@
 
         public EverythingTest()
         {
-            _imageFilenames = Directory.GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories).ToArray();
+            _imageFilenames = Directory.GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories).ToArray();
         }
 
         [Fact(Skip = "Requires Everything.exe")]

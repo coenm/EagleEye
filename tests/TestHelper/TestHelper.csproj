@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
 	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
-    <RootNamespace>EagleEye.TestImages</RootNamespace>
+    <RootNamespace>EagleEye.TestHelper</RootNamespace>
 
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
@@ -13,6 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.analyzers" Version="0.8.0" />
+    <PackageReference Include="xunit.categories" Version="2.0.3" />
   </ItemGroup>
 
 </Project>

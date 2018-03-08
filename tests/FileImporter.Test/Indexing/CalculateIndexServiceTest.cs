@@ -6,7 +6,7 @@
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Json;
-    using EagleEye.TestImages;
+    using EagleEye.TestHelper;
 
     using Xunit;
 
@@ -17,7 +17,7 @@
         public CalculateIndexServiceTest()
         {
             _imageFilenames = Directory
-                .GetFiles(TestEnvironment.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
+                .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
@@ -26,7 +26,7 @@
         public void CalculateIndexOfFilesTest()
         {
             // arrange
-            var contentResolver = new RelativeFilesystemContentResolver(TestEnvironment.InputImagesDirectoryFullPath);
+            var contentResolver = new RelativeFilesystemContentResolver(TestImages.InputImagesDirectoryFullPath);
             var sut = new CalculateIndexService(contentResolver);
 
             // act
@@ -44,7 +44,7 @@
         /// <returns>filename relative to sn file.</returns>
         private static string ConvertToRelativeFilename(string fullFilename)
         {
-            var slnDirectoryLength = TestEnvironment.InputImagesDirectoryFullPath.Length;
+            var slnDirectoryLength = TestImages.InputImagesDirectoryFullPath.Length;
             return fullFilename.Remove(0, slnDirectoryLength);
         }
     }
