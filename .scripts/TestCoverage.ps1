@@ -43,7 +43,7 @@ Try
 	ForEach ($testProjectLocation in $testProjectLocations)
 	{
 		Write-Host "Run tests without coverage for project " (Resolve-Path $testProjectLocation).Path;
-		dotnet test $testProjectLocation 
+		dotnet test $testProjectLocation -c Debug --no-build
 	}
 	
 	Write-Host "----------------------------";
