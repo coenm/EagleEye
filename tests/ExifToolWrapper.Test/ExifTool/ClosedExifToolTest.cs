@@ -29,7 +29,6 @@
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
         [Performance]
-        [Skip(SkipItems.AppVeyor)]
         public async Task RunWithoutInputStreamTest()
         {
             // arrange
