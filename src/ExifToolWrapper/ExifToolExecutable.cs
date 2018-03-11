@@ -7,7 +7,7 @@
     {
         public const string WINDOWS_EOL = "\r\n";
 
-        public const string LINUX_EOL = "\r\n";
+        public const string LINUX_EOL = "\n";
 
         public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
