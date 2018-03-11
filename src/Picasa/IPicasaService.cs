@@ -7,6 +7,8 @@
 
     public interface IPicasaService : IDisposable
     {
+        bool CanProvideData(string filename);
+
         Task<FileWithPersons> GetDataAsync(string filename);
     }
 }

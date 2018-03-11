@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.TestHelper;
+    using EagleEye.TestHelper.Xunit.Facts;
 
     using FluentAssertions;
 
@@ -37,7 +38,7 @@
             _sut.Dispose();
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
         public async Task GetMetadataAsyncWithPreparedImageShouldResultInExpectedJsonObjectTest()
         {
             // arrange
@@ -47,6 +48,7 @@
             var result = await _sut.GetMetadataAsync(_imageFilename).ConfigureAwait(false);
 
             // assert
+            result.Should().NotBeNull("Expected result should not be null");
             var exif = result["EXIF"] as JObject;
             exif?.ToString().Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
         }

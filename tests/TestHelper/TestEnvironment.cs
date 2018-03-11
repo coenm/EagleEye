@@ -11,12 +11,18 @@
         private const string SOLUTION_FILE_NAME = "EagleEye.sln";
         private static readonly Lazy<string> LazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
+        private static readonly Lazy<bool> RunsOnContinuousIntegrationTravis = new Lazy<bool>(IsRunningOnTravisImpl);
+        private static readonly Lazy<bool> RunsOnContinuousIntegrationAppVeyor = new Lazy<bool>(IsRunningOnAppVeyorImpl);
 
         /// <summary>
         /// Gets a value indicating whether test execution runs on CI.
         /// </summary>
         // ReSharper disable once InconsistentNaming
         public static bool RunsOnCI => RunsOnContinuousIntegration.Value;
+
+        public static bool RunsOnTravis => RunsOnContinuousIntegrationTravis.Value;
+
+        public static bool RunsOnAppVeyor => RunsOnContinuousIntegrationAppVeyor.Value;
 
         public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
@@ -40,6 +46,16 @@
         private static bool IsContinuousIntegrationImpl()
         {
             return bool.TryParse(Environment.GetEnvironmentVariable("CI"), out var isCi) && isCi;
+        }
+
+        private static bool IsRunningOnAppVeyorImpl()
+        {
+            return bool.TryParse(Environment.GetEnvironmentVariable("APPVEYOR"), out var value) && value;
+        }
+
+        private static bool IsRunningOnTravisImpl()
+        {
+            return bool.TryParse(Environment.GetEnvironmentVariable("TRAVIS"), out var value) && value;
         }
 
         private static string GetSolutionDirectoryFullPathImpl()

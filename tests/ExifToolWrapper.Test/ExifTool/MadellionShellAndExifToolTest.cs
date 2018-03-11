@@ -9,6 +9,7 @@
 
     using EagleEye.ExifToolWrapper.ExifTool;
     using EagleEye.TestHelper;
+    using EagleEye.TestHelper.Xunit.Facts;
 
     using FluentAssertions;
 
@@ -61,7 +62,7 @@
             cmd.Result.StandardOutput.Should().Be($"{_currentExifToolVersion}\r\n".ConvertWindowsToOsString());
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
         [Categories.ExifTool]
         public async Task RunExifToolWithCustomStream()
         {

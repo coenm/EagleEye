@@ -18,6 +18,11 @@
             _tasks = new ConcurrentDictionary<string, Task<IEnumerable<FileWithPersons>>>();
         }
 
+        public bool CanProvideData(string filename)
+        {
+            return true;
+        }
+
         public async Task<FileWithPersons> GetDataAsync(string filename)
         {
             var picasafilename = DeterminePicasaFilename(filename);

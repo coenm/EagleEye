@@ -18,12 +18,14 @@
 
         public bool CanProvideInformation(string filename)
         {
-            // should be image extenstion.
-            return true;
+            return _picasaService.CanProvideData(filename);
         }
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
+            if (media == null)
+                return;
+
             var result = await _picasaService.GetDataAsync(filename).ConfigureAwait(false);
 
             if (result == null)

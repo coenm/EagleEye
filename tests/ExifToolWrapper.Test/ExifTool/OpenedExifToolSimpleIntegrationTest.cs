@@ -9,6 +9,7 @@
 
     using EagleEye.ExifToolWrapper.ExifTool;
     using EagleEye.TestHelper;
+    using EagleEye.TestHelper.Xunit.Facts;
 
     using FluentAssertions;
 
@@ -53,7 +54,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
         [Xunit.Categories.IntegrationTest]
         [Categories.ExifTool]
         [Categories.Performance]

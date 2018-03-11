@@ -23,6 +23,7 @@
         public string Filename { get; }
 
         public IReadOnlyList<string> Persons => _persons;
+
         public IReadOnlyList<string> Tags => _tags;
 
         public Location Location { get; }

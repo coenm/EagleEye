@@ -7,6 +7,7 @@
 
     using EagleEye.Categories;
     using EagleEye.ExifToolWrapper.ExifTool;
+    using EagleEye.TestHelper.Xunit.Facts;
 
     using FluentAssertions;
 
@@ -25,7 +26,7 @@
             _output = output;
         }
 
-        [Fact(Skip = "Does not work on AppVeyor")]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
         [Performance]
@@ -50,7 +51,7 @@
             version.Should().NotBeNullOrEmpty();
         }
 
-        [Fact(Skip = "Does not work on AppVeyor")]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
         [Performance]
@@ -68,7 +69,7 @@
             result.Should().NotBeNullOrEmpty();
         }
 
-        [Fact(Skip = "Does not work on AppVeyor")]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
         [Xunit.Categories.IntegrationTest]
         [ExifTool]
         public void ExecuteWithUnknownFileShouldThrowTest()
