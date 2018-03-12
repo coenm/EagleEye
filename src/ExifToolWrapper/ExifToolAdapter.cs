@@ -44,7 +44,10 @@
 
         public void Dispose()
         {
-            Task.Run(() => _exiftoolImpl.DisposeAsync(CancellationToken.None));
+            _exiftoolImpl
+                .DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token)
+                .GetAwaiter()
+                .GetResult();
         }
     }
 }
