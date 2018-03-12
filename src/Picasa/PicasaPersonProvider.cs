@@ -1,10 +1,11 @@
 ﻿namespace EagleEye.Picasa
 {
-    using System;
     using System.Threading.Tasks;
 
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
+
+    using JetBrains.Annotations;
 
     public class PicasaPersonProvider : IMediaInformationProvider
     {
@@ -22,11 +23,8 @@
             return _picasaService.CanProvideData(filename);
         }
 
-        public async Task ProvideAsync(string filename, MediaObject media)
+        public async Task ProvideAsync(string filename, [NotNull] MediaObject media)
         {
-            if (media == null)
-                return;
-
             var result = await _picasaService.GetDataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
