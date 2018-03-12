@@ -27,7 +27,6 @@
             exif.ToString().Should().Be(EXPECTED_EXIF.ConvertToOsString());
         }
 
-        //        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor, "Fragille on AppVeyor")]
         [Fact]
         public void DeserializeObjectAsObjectTest()
         {

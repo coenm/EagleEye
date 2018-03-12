@@ -156,7 +156,9 @@
                 {
                     Console.WriteLine($"Exception occurred when executing stay_open false. Msg: {e.Message}");
 
-                    Task.Run(() => _cmd?.Kill());
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    Task.Run(() => _cmd?.Kill(), CancellationToken.None);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                     _stream.Update -= StreamOnUpdate;
 
@@ -181,7 +183,9 @@
                     {
                         sw.Stop();
                         Console.WriteLine($"Exception occurred after {sw.Elapsed} when awaiting ExifTool task. Msg: {e.Message}");
-                        Ignore(() => _cmd.Kill());
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        Task.Run(() => _cmd?.Kill(), CancellationToken.None);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
                 }
 

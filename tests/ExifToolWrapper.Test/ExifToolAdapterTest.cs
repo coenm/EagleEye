@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.TestHelper;
-    using EagleEye.TestHelper.Xunit.Facts;
 
     using FluentAssertions;
 
@@ -38,7 +37,7 @@
             _sut.Dispose();
         }
 
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
+        [Fact]
         public async Task GetMetadataAsyncWithPreparedImageShouldResultInExpectedJsonObjectTest()
         {
             // arrange
