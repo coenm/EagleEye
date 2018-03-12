@@ -18,11 +18,11 @@
             // arrange
 
             // act
-            JArray jsonArray = JArray.Parse(JSON_ARRAY.ConvertWindowsToOsString());
+            JArray jsonArray = JArray.Parse(JSON_ARRAY.ConvertToOsString());
             var exif = jsonArray[0]["EXIF"];
 
             // assert
-            exif.ToString().Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
+            exif.ToString().Should().Be(EXPECTED_EXIF.ConvertToOsString());
         }
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor, "Fragille on AppVeyor")]
@@ -31,28 +31,28 @@
             // arrange
 
             // act
-            var jsonObject = JsonConvert.DeserializeObject(JSON_ARRAY.ConvertWindowsToOsString());
+            var jsonObject = JsonConvert.DeserializeObject(JSON_ARRAY.ConvertToOsString());
             var jsonArray = jsonObject as JArray;
             var firtItem = jsonArray?[0] as JObject;
             var exifItem = firtItem?["EXIF"] as JObject;
             var exif = exifItem?.ToString();
 
             // assert
-            exif.Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
+            exif.Should().Be(EXPECTED_EXIF.ConvertToOsString());
         }
 
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor, "Fragille on AppVeyor")]
+        [ConditionalHostFact(TestHost.Local, "Fragille on AppVeyor and Travis")]
         public void DeserializeObjectAsDynamicTest()
         {
             // arrange
 
             // act
-            dynamic jsonDynamic = JsonConvert.DeserializeObject(JSON_ARRAY);
+            dynamic jsonDynamic = JsonConvert.DeserializeObject(JSON_ARRAY.ConvertToOsString());
             var exif = jsonDynamic[0].EXIF;
 
             // assert
             var exifString = (string)exif.ToString();
-            exifString.Should().Be(EXPECTED_EXIF);
+            exifString.Should().Be(EXPECTED_EXIF.ConvertToOsString());
         }
     }
 }

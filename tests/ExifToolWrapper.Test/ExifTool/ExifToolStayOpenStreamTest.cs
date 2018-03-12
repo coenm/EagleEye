@@ -142,7 +142,7 @@
             // assert
             _capturedEvents.Should().HaveCount(1);
             _capturedEvents.First().Key.Should().Be("0");
-            _capturedEvents.First().Data.Should().Be("a b c\r\nd e f".ConvertWindowsToOsString());
+            _capturedEvents.First().Data.Should().Be("a b c\r\nd e f".ConvertToOsString());
         }
 
         [Fact]
@@ -183,13 +183,13 @@
 
             // assert
             _capturedEvents.Should().HaveCount(2)
-                           .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f".ConvertWindowsToOsString())
-                           .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl".ConvertWindowsToOsString());
+                           .And.Contain(x => x.Key == "0" && x.Data == "a b c\r\nd e f".ConvertToOsString())
+                           .And.Contain(x => x.Key == "2133" && x.Data == "ghi jkl".ConvertToOsString());
         }
 
         private void WriteMessageToSut(string message)
         {
-            var buffer = Encoding.UTF8.GetBytes(message.ConvertWindowsToOsString());
+            var buffer = Encoding.UTF8.GetBytes(message.ConvertToOsString());
             _sut.Write(buffer, 0, buffer.Length);
         }
 

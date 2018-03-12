@@ -50,7 +50,7 @@
             // assert
             result.Should().NotBeNull("Expected result should not be null");
             var exif = result["EXIF"] as JObject;
-            exif?.ToString().Should().Be(EXPECTED_EXIF.ConvertWindowsToOsString());
+            exif?.ToString().Should().Be(EXPECTED_EXIF.ConvertToOsString());
         }
 
         public void Dispose()

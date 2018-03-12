@@ -287,4 +287,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 /coverage-dotnet.xml
+tools/**
+*.patch
 exiftool-*.zip
