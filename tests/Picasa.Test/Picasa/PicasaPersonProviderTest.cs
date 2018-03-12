@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
+    using System;
     using System.Threading.Tasks;
 
     using EagleEye.Core;
@@ -51,6 +52,35 @@
 
             // assert
             mediaObject.Persons.Should().BeEquivalentTo("Alice", "Bob");
+        }
+
+        [Fact]
+        public void ProvideAsyncWithNullMediaObjectShouldNotThrowExceptionTest()
+        {
+            // arrange
+
+            // act
+            // ReSharper disable once AsyncConverter.AsyncAwaitMayBeElidedHighlighting
+            Action act = async () => await _sut.ProvideAsync(DUMMY_FILENAME, null).ConfigureAwait(false);
+
+            // assert
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public async Task ProvideAsyncShouldNotThrowWhenPicasaServiceReturnsNullTest()
+        {
+            // arrange
+            var mediaObject = new MediaObject(DUMMY_FILENAME);
+            A.CallTo(() => _picasaService.GetDataAsync(DUMMY_FILENAME))
+             .Returns(Task.FromResult(null as FileWithPersons));
+
+            // act
+            await _sut.ProvideAsync(DUMMY_FILENAME, mediaObject).ConfigureAwait(false);
+
+            // assert
+            // Todo improve assert
+            mediaObject.Should().NotBeNull();
         }
     }
 }

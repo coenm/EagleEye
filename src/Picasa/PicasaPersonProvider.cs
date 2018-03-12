@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.Picasa
 {
+    using System;
     using System.Threading.Tasks;
 
     using EagleEye.Core;
