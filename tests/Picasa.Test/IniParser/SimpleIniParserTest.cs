@@ -5,7 +5,12 @@
     using System.IO;
     using System.Text;
 
+    using EagleEye.Picasa.IniParser;
+
+    using FakeItEasy;
+
     using FluentAssertions;
+    using FluentAssertions.Primitives;
 
     using Xunit;
 
@@ -73,6 +78,22 @@ b=c
                 // assert
                 Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
             }
+        }
+
+
+        [Fact]
+        public void ParsingErrorStreamShouldThrowExceptionTest()
+        {
+            // arrange
+            var s = A.Fake<Stream>();
+            A.CallTo(() => s.Read(A<byte[]>._, A<int>._, A<int>._))
+             .Throws(new Exception("this is an exception"));
+
+            // act
+            Action act = () => Sut.Parse(s);
+
+            // assert
+            act.Should().Throw<Exception>().WithMessage("Could not parse stream");
         }
 
         private static MemoryStream GenerateStreamFromString(string value)
