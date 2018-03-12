@@ -156,7 +156,7 @@
                 {
                     Console.WriteLine($"Exception occurred when executing stay_open false. Msg: {e.Message}");
 
-                    Ignore(() => _cmd?.Kill());
+                    Task.Run(() => _cmd?.Kill());
 
                     _stream.Update -= StreamOnUpdate;
 

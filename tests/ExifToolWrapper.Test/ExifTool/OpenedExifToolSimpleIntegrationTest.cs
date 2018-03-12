@@ -103,7 +103,7 @@
             for (var i = 0; i < REPEAT; i++)
                 tasks[i] = sut.GetVersionAsync();
             sw.Stop();
-            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
+            await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token).ConfigureAwait(false);
 
             // assert
             var count = 0;
