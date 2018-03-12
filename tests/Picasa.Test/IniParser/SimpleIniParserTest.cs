@@ -47,6 +47,7 @@
   key=value
 a = b  
 ; comment
+  
 b=c
 ";
             using (var stream = GenerateStreamFromString(CONTENT))
