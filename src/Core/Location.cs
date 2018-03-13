@@ -1,5 +1,7 @@
 ﻿namespace EagleEye.Core
 {
+    using System.Drawing;
+
     public class Location
     {
         public Location()
@@ -11,13 +13,14 @@
         public string City { get; set; }
 
         public string State { get; set; }
+
         public string SubLocation { get; set; }
 
-        public Coordinates Coordinates { get; private set; }
+        public Coordinate Coordinate { get; private set; }
 
-        public void SetCoordinates(double x, double y)
+        public void SetCoordinates(float latitude, float longitude)
         {
-            Coordinates = new Coordinates(x, y);
+            Coordinate = new Coordinate(latitude, longitude);
         }
     }
 }
