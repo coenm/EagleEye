@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using JetBrains.Annotations;
+
     public class MediaObject
     {
         private readonly List<string> _persons;
@@ -40,14 +42,23 @@
             _persons.Add(name.Trim());
         }
 
+        public void AddTags(IEnumerable<string> tags)
+        {
+            foreach (var tag in tags)
+                AddTag(tag);
+        }
+
         public void AddTag(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentNullException(nameof(tag));
+                return;
 
-            // todo check if name is already in there.
+            tag = tag.Trim();
 
-            _tags.Add(tag.Trim());
+            if (_tags.Contains(tag))
+                return;
+
+            _tags.Add(tag);
         }
     }
 }
