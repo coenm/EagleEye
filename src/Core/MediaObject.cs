@@ -32,17 +32,26 @@
 
         public Camera Camera { get; }
 
+        public void AddPersons([NotNull] IEnumerable<string> persons)
+        {
+            foreach (var person in persons)
+                AddPerson(person);
+        }
+
         public void AddPerson(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException(nameof(name));
+                return;
 
-            // todo check if name is already in there.
+            name = name.Trim();
 
-            _persons.Add(name.Trim());
+            if (_tags.Contains(name))
+                return;
+
+            _persons.Add(name);
         }
 
-        public void AddTags(IEnumerable<string> tags)
+        public void AddTags([NotNull] IEnumerable<string> tags)
         {
             foreach (var tag in tags)
                 AddTag(tag);

@@ -16,45 +16,40 @@
 
     using Xunit;
 
-    public class ExifToolTagsProviderTest
+    public class ExifToolPersonsProviderTest
     {
         private const string FILENAME = "DUMMY";
 
         private const string METADATA_XMP = @"
   ""XMP"": {
-    ""Subject"": [
-      ""dog"",
-      ""New York"",
-      ""puppy""
-    ],
+    ""PersonInImage"": [
+	  ""Bob"",
+	  ""Alice"",
+	  ""Stephen Hawking"",
+	  ""Nelson Mandela""
+	]
   },";
 
-        private const string METADATA_XMP_DC = @"
-  ""XMP-dc"": {
-    ""Subject"": [
-      ""dog"",
-      ""New York"",
-      ""puppy""
-    ],
+        private const string METADATA_XMP_IPTCEXT = @"
+  ""XMP-iptcExt"": {
+    ""PersonInImage"": [
+	  ""Bob"",
+	  ""Alice"",
+	  ""Stephen Hawking"",
+	  ""Nelson Mandela""
+	]
   },";
 
-        private const string METADATA_IPTC = @"
-  ""IPTC"": {
-    ""Keywords"": [
-      ""dog"",
-      ""New York"",
-      ""puppy""
-    ],
-  }";
 
-        private readonly ExifToolTagsProvider _sut;
+
+        private readonly ExifToolPersonsProvider _sut;
         private readonly IExifTool _exiftool;
         private readonly MediaObject _media;
 
-        public ExifToolTagsProviderTest()
+        public ExifToolPersonsProviderTest()
         {
             _exiftool = A.Fake<IExifTool>();
-            _sut = new ExifToolTagsProvider(_exiftool);
+            _sut = new ExifToolPersonsProvider(_exiftool);
             _media = new MediaObject(FILENAME);
         }
 
@@ -72,18 +67,17 @@
 
         [Theory]
         [InlineData(METADATA_XMP)]
-        [InlineData(METADATA_XMP_DC)]
-        [InlineData(METADATA_IPTC)]
-        [InlineData(METADATA_XMP + METADATA_IPTC)]
-        public async Task ProvideShouldFillTagsTest(string data)
+        [InlineData(METADATA_XMP_IPTCEXT)]
+        public async Task ProvideShouldFillPersonsTest(string data)
         {
             // arrange
-            var expectedTags = new List<string>
-                                   {
-                                       "dog",
-                                       "New York",
-                                       "puppy",
-                                   };
+            var expectedPersons = new List<string>
+                                      {
+                                          "Bob",
+                                          "Alice",
+                                          "Stephen Hawking",
+                                          "Nelson Mandela"
+                                      };
             A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
@@ -91,7 +85,7 @@
             await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
 
             // assert
-            _media.Tags.Should().BeEquivalentTo(expectedTags);
+            _media.Persons.Should().BeEquivalentTo(expectedPersons);
         }
 
         private static string ConvertToJsonArray(string data)

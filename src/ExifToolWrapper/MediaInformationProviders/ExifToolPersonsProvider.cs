@@ -11,19 +11,18 @@
 
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolTagsProvider : IMediaInformationProvider
+    public class ExifToolPersonsProvider : IMediaInformationProvider
     {
         private readonly IExifTool _exiftool;
         private readonly Dictionary<string, string> _headers;
 
-        public ExifToolTagsProvider(IExifTool exiftool)
+        public ExifToolPersonsProvider(IExifTool exiftool)
         {
             _exiftool = exiftool;
             _headers = new Dictionary<string, string>
                           {
-                              { "XMP", "Subject" },
-                              { "XMP-dc", "Subject" },
-                              { "IPTC", "Keywords" },
+                              { "XMP", "PersonInImage" },
+                              { "XMP-iptcExt", "PersonInImage" }
                           };
         }
 
@@ -41,9 +40,9 @@
             if (result == null)
                 return;
 
-            var tags = GetTagsFromFullJsonObject(result);
+            var persons = GetTagsFromFullJsonObject(result);
 
-            media.AddTags(tags);
+            media.AddPersons(persons);
         }
 
         private static IEnumerable<string> GetTagsFromSingleJsonObjecty([NotNull] JObject jsonObject, [NotNull] string tagsKey)
@@ -64,7 +63,7 @@
             return result;
         }
 
-        private List<string> GetTagsFromFullJsonObject(JObject data)
+        private IEnumerable<string> GetTagsFromFullJsonObject(JObject data)
         {
             var result = new List<string>();
 
