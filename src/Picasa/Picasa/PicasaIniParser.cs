@@ -11,6 +11,7 @@
     {
         private const string CONTACTS2_SECTION = "Contacts2";
         private const string FACES_KEY = "faces";
+        private static readonly string[] _coordinatePersonSeparator = { "," };
 
         public static IEnumerable<FileWithPersons> Parse(Stream stream)
         {
@@ -38,15 +39,15 @@
                         // like: rect64(9ee42f2ee2e49bfa),4759b81b11610b7a
                         // means: <coordinate>,<person key>
 
-                        var singleCoordinateAndKey = faceCoordinateKey.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                        var singleCoordinateAndKey = faceCoordinateKey.Split(_coordinatePersonSeparator, StringSplitOptions.RemoveEmptyEntries);
 
                         // expect only two items
-                        if (singleCoordinateAndKey.Length == 2)
-                        {
-                            var personName = GetName(singleCoordinateAndKey[1], contacts);
-                            if (!string.IsNullOrWhiteSpace(personName))
-                                fileWithPersons.AddPerson(personName);
-                        }
+                        if (singleCoordinateAndKey.Length != 2)
+                            continue;
+
+                        var personName = GetName(singleCoordinateAndKey[1], contacts);
+                        if (!string.IsNullOrWhiteSpace(personName))
+                            fileWithPersons.AddPerson(personName);
                     }
                 }
 

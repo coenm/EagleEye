@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Picasa\Picasa.csproj" />
+    <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
 </Project>

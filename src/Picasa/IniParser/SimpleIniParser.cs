@@ -6,6 +6,13 @@
 
     public static class SimpleIniParser
     {
+        private static readonly string[] _keyValueSeperator;
+
+        static SimpleIniParser()
+        {
+            _keyValueSeperator = new[] { "=" };
+        }
+
         public static List<IniData> Parse(Stream input)
         {
             var content = GetContent(input);
@@ -95,14 +102,15 @@
         private static (string key, string value) GetKeyValueFromIni(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(line));
 
             line = line.Trim();
 
-            var result = line.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+            var result = line.Split(_keyValueSeperator, StringSplitOptions.RemoveEmptyEntries);
 
             if (result.Length != 2)
                 throw new ArgumentException($"Cannot parse {line}");
+
             return (result[0].Trim(), result[1].Trim());
         }
     }

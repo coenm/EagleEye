@@ -5,8 +5,6 @@
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
 
-    using JetBrains.Annotations;
-
     public class PicasaPersonProvider : IMediaInformationProvider
     {
         private readonly IPicasaService _picasaService;
@@ -23,7 +21,7 @@
             return _picasaService.CanProvideData(filename);
         }
 
-        public async Task ProvideAsync(string filename, [NotNull] MediaObject media)
+        public async Task ProvideAsync(string filename, MediaObject media)
         {
             var result = await _picasaService.GetDataAsync(filename).ConfigureAwait(false);
 

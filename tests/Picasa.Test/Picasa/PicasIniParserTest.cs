@@ -7,6 +7,8 @@
 
     using EagleEye.Picasa.Picasa;
 
+    using FluentAssertions;
+
     using Xunit;
 
     using Sut = EagleEye.Picasa.Picasa.PicasaIniParser;
@@ -39,7 +41,7 @@ backuphash=11571";
             using (var stream = GenerateStreamFromString(PICASA_INI_FILE_CONTENT))
             {
                 // act
-                var result = Sut.Parse(stream);
+                var result = Sut.Parse(stream).ToList();
 
                 // assert
                 var expectedResult = new List<FileWithPersons>
@@ -49,7 +51,7 @@ backuphash=11571";
                                              new FileWithPersons("nice photo.jpg", "Alice", "Eve Jackson"),
                                          };
 
-                Assert.Equal(expectedResult.Select(x => x.ToString()), result.Select(x => x.ToString()));
+                result.Should().BeEquivalentTo(expectedResult);
             }
         }
 
