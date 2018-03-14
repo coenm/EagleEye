@@ -71,6 +71,7 @@
         public async Task ProvideShouldFillCoordinatesTest(string data)
         {
             // arrange
+            var expectedGpsCoordinate = new Coordinate(40.736072f, -73.994293f);
             A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
@@ -78,7 +79,7 @@
             await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Coordinate.Should().BeEquivalentTo(new Coordinate(40.736072f, -73.994293f));
+            _media.Location.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
         }
 
         private static string ConvertToJsonArray(string data)

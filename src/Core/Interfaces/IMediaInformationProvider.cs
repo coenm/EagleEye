@@ -8,8 +8,8 @@
     {
         int Priority { get; }
 
-        bool CanProvideInformation(string filename);
+        bool CanProvideInformation([NotNull] string filename);
 
-        Task ProvideAsync(string filename, [NotNull] MediaObject media);
+        Task ProvideAsync([NotNull] string filename, [NotNull] MediaObject media);
     }
 }

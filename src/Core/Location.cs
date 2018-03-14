@@ -2,6 +2,8 @@
 {
     using System.Drawing;
 
+    using JetBrains.Annotations;
+
     public class Location
     {
         public Location()
@@ -21,6 +23,11 @@
         public void SetCoordinates(float latitude, float longitude)
         {
             Coordinate = new Coordinate(latitude, longitude);
+        }
+
+        public void SetCoordinate([NotNull] Coordinate coordinate)
+        {
+            Coordinate = coordinate;
         }
     }
 }
