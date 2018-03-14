@@ -64,6 +64,35 @@
             result.Should().BeTrue();
         }
 
+        [Fact]
+        public async Task ProvideCanHandleNullResponseFromExiftoolTest()
+        {
+            // arrange
+            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+             .Returns(Task.FromResult(null as JObject));
+
+            // act
+            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+
+            // assert
+            _media.Location.Coordinate.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData(@"""Composite"": {}")]
+        public async Task ProvideCanHandleIncompleteDataTest(string data)
+        {
+            // arrange
+            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+
+            // act
+            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+
+            // assert
+            _media.Location.Coordinate.Should().BeNull();
+        }
+
         [Theory]
         [InlineData(METADATA_GPS)]
         [InlineData(METADATA_XMP_EXIF)]

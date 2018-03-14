@@ -65,6 +65,35 @@
             result.Should().BeTrue();
         }
 
+        [Fact]
+        public async Task ProvideCanHandleNullResponseFromExiftoolTest()
+        {
+            // arrange
+            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+             .Returns(Task.FromResult(null as JObject));
+
+            // act
+            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+
+            // assert
+            _media.Persons.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InlineData(@"""XMP-iptcExt"": {}")]
+        public async Task ProvideCanHandleIncompleteDataTest(string data)
+        {
+            // arrange
+            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+
+            // act
+            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+
+            // assert
+            _media.Persons.Should().BeEmpty();
+        }
+
         [Theory]
         [InlineData(METADATA_XMP)]
         [InlineData(METADATA_XMP_IPTCEXT)]
