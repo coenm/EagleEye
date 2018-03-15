@@ -5,12 +5,9 @@
     using System.IO;
     using System.Text;
 
-    using EagleEye.Picasa.IniParser;
-
     using FakeItEasy;
 
     using FluentAssertions;
-    using FluentAssertions.Primitives;
 
     using Xunit;
 
@@ -50,6 +47,14 @@ a = b
   
 b=c
 ";
+
+            var expectedContent = new Dictionary<string, string>
+                                  {
+                                      { "key", "value" },
+                                      { "a", "b" },
+                                      { "b", "c" }
+                                  };
+
             using (var stream = GenerateStreamFromString(CONTENT))
             {
                 // act
@@ -58,13 +63,7 @@ b=c
                 // assert
                 result.Count.Should().Be(1);
                 result[0].Section.Should().Be("Section1");
-                result[0].Content.Should()
-                         .BeEquivalentTo(new Dictionary<string, string>
-                                             {
-                                                 { "key", "value" },
-                                                 { "a", "b" },
-                                                 { "b", "c" }
-                                             });
+                result[0].Content.Should().BeEquivalentTo(expectedContent);
             }
         }
 

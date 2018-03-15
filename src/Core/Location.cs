@@ -1,16 +1,12 @@
 ﻿namespace EagleEye.Core
 {
-    using System.Drawing;
-
     using JetBrains.Annotations;
 
     public class Location
     {
-        public Location()
-        {
-        }
+        public string CountryCode { get; set; }
 
-        public Country Country { get; set; }
+        public string CountryName { get; set; }
 
         public string City { get; set; }
 
