@@ -38,11 +38,17 @@
         {
             var picasafilename = DeterminePicasaFilename(filename);
             var results = await GetOrCreateTask(picasafilename).ConfigureAwait(false);
-            return results.FirstOrDefault(item => item.Filename.Equals(filename));
+            return results.FirstOrDefault(item => item.Filename.Equals(Path.GetFileName(filename)));
         }
 
         public void Dispose()
         {
+            // nothing to do
+        }
+
+        protected virtual IEnumerable<FileWithPersons> GetFileAndPersonData([NotNull] Stream stream)
+        {
+            return PicasaIniParser.Parse(stream);
         }
 
         private Task<IEnumerable<FileWithPersons>> GetOrCreateTask(string picasaFilename)
@@ -56,7 +62,7 @@
                                     {
                                         using (var stream = _fileService.OpenRead(picasaFilename))
                                         {
-                                            return PicasaIniParser.Parse(stream);
+                                            return GetFileAndPersonData(stream);
                                         }
                                     });
 

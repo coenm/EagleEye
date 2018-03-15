@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Picasa.Test.Picasa
+﻿namespace EagleEye.Picasa.Test
 {
     using System.Threading.Tasks;
 
