@@ -14,12 +14,14 @@
         private readonly AsyncLock _syncLock = new AsyncLock();
         private readonly IExifTool _exiftool;
         private readonly IDateTimeService _dateTimeService;
+        private readonly TimeSpan _cacheValidity;
         private DateTime _cacheTimestamp;
         private Task<JObject> _task;
         private string _cachedFilename;
 
         public ExifToolCacheDecorator(IExifTool exiftool, IDateTimeService dateTimeService)
         {
+            _cacheValidity = TimeSpan.FromMinutes(5); //todo make this configurable.
             _exiftool = exiftool;
             _dateTimeService = dateTimeService;
 
@@ -30,21 +32,22 @@
 
         public async Task<JObject> GetMetadataAsync(string filename)
         {
-            Task<JObject> tmp;
+            Task<JObject> currentTask;
 
             using (await _syncLock.LockAsync().ConfigureAwait(false))
             {
-                tmp = _task;
-
-                if (_cachedFilename == null || _cachedFilename != filename)
+                var now = _dateTimeService.Now;
+                if (_cachedFilename == null || _cachedFilename != filename || now - _cacheTimestamp > _cacheValidity)
                 {
                     _cachedFilename = filename;
-                    _cacheTimestamp = _dateTimeService.Now;
+                    _cacheTimestamp = now;
                     _task = _exiftool.GetMetadataAsync(filename);
                 }
+
+                currentTask = _task;
             }
 
-            return await tmp.ConfigureAwait(false);
+            return await currentTask.ConfigureAwait(false);
         }
 
         public void Dispose()
