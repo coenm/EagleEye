@@ -107,10 +107,15 @@
 
         [Theory]
         [InlineData("2012:01:23 22:13:25")]
+        [InlineData("2012-01-23 22:13:25")]
         [InlineData("2012:01:23 22:13:25+00:00")]
+        [InlineData("2012-01-23 22:13:25+00:00")]
         [InlineData("2012:01:23 22:13:25+01:00")]
+        [InlineData("2012-01-23 22:13:25+01:00")]
         [InlineData("2012:01:23 22:13:25+05")]
+        [InlineData("2012-01-23 22:13:25+05")]
         [InlineData("2012:01:23 22:13:25+5")]
+        [InlineData("2012-01-23 22:13:25+5")]
         public void ParseFullDate_ShouldParseMultipleFormatsTest(string timestamp)
         {
             // arrange
@@ -120,6 +125,24 @@
 
             // assert
             result.Should().Be(new DateTime(2012, 01, 23, 22, 13, 25));
+        }
+
+
+        [Theory]
+        [InlineData("2012 01 23 22:13:25")] // space between date instead of ':', or '-'.
+        [InlineData("2012:01:23 22 13 25")] // space between time instead of ':'
+        [InlineData("sdflkjsd34l*@#$ rubbish")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void ParseFullDate_ShouldReturnNullOnWrongFormat(string timestamp)
+        {
+            // arrange
+
+            // act
+            var result = ExifToolDateTakenProvider.ParseFullDate(timestamp);
+
+            // assert
+            result.Should().BeNull();
         }
 
         private static string ConvertToJsonArray(string data)

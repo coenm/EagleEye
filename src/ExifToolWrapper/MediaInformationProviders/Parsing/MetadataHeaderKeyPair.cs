@@ -1,10 +1,10 @@
 ﻿namespace EagleEye.ExifToolWrapper.MediaInformationProviders.Parsing
 {
-    using System.Security.Cryptography;
+    using JetBrains.Annotations;
 
     internal struct MetadataHeaderKeyPair
     {
-        public MetadataHeaderKeyPair(string header1, string header2, string key)
+        public MetadataHeaderKeyPair([NotNull] string header1, [NotNull] string header2, [NotNull] string key)
         {
             Header1 = header1;
             Header2 = header2;
