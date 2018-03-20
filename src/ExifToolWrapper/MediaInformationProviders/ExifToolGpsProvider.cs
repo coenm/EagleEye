@@ -63,13 +63,13 @@
             return null;
         }
 
-        private Coordinate GetGpsCoordinatesFromSingleJsonObject([NotNull] JObject exif, [NotNull] string latitudeKey, [NotNull] string longitudeKey, [CanBeNull] string latitudeRefKey = null, [CanBeNull] string longitudeRefKey = null)
+        private Coordinate GetGpsCoordinatesFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string latitudeKey, [NotNull] string longitudeKey, [CanBeNull] string latitudeRefKey = null, [CanBeNull] string longitudeRefKey = null)
         {
-            var latitude = GetLongitudeOrLatitude(exif, latitudeKey, latitudeRefKey);
+            var latitude = GetLongitudeOrLatitude(jsonObject, latitudeKey, latitudeRefKey);
             if (float.IsNaN(latitude))
                 return null;
 
-            var longitude = GetLongitudeOrLatitude(exif, longitudeKey, longitudeRefKey);
+            var longitude = GetLongitudeOrLatitude(jsonObject, longitudeKey, longitudeRefKey);
             if (float.IsNaN(longitude))
                 return null;
 

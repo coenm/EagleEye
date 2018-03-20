@@ -17,7 +17,6 @@
 
             Filename = filename;
             Location = new Location();
-            Camera = new Camera();
             _persons = new List<string>();
             _tags = new List<string>();
         }
@@ -30,7 +29,23 @@
 
         public Location Location { get; }
 
-        public Camera Camera { get; }
+        [CanBeNull]
+        public Timestamp DateTimeTaken { get; private set; }
+
+        public void SetDateTimeTaken(int year, int month = -1, int day = -1, int hour = -1, int minutes = -1, int seconds = -1)
+        {
+            DateTimeTaken = new Timestamp(year, month, day, hour, minutes, seconds);
+        }
+
+        public void SetDateTimeTaken([NotNull] Timestamp value)
+        {
+            DateTimeTaken = value;
+        }
+
+        public void ClearDateTimeTaken()
+        {
+            DateTimeTaken = null;
+        }
 
         public void AddPersons([NotNull] IEnumerable<string> persons)
         {
