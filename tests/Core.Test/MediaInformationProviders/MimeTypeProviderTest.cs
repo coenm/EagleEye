@@ -19,6 +19,18 @@
             _media = new MediaObject("a.jpg");
         }
 
+        [Fact]
+        public void CanProvideInformation_ReturnsTrueTest()
+        {
+            // arrange
+
+            // act
+            var result = _sut.CanProvideInformation("dummy");
+
+            // assert
+            result.Should().BeTrue();
+        }
+
         [Theory]
         [InlineData("a.jpg", "image/jpeg")]
         [InlineData("a.JPg", "image/jpeg")]

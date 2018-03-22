@@ -52,26 +52,10 @@
             Assert.Equal(expected, result);
         }
 
-        private void IndexStaticDocuments()
+        private static IEnumerable<DocumentDto> GetDocuments()
         {
-            using (var writer = new IndexWriter(_directory, _indexWriterConfig))
-            {
-                foreach (var item in Documents)
-                {
-                    IndexDocs(writer, item);
-                }
-
-                writer.ForceMerge(1);
-            }
-        }
-
-        private static IEnumerable<DocumentDto> Documents
-        {
-            get
-            {
-                for (var i = 0; i < 100000; i++)
-                    yield return new DocumentDto($"item {i}", i);
-            }
+            for (var i = 0; i < 100000; i++)
+                yield return new DocumentDto($"item {i}", i);
         }
 
         private static void IndexDocs(IndexWriter writer, DocumentDto dto)
@@ -93,6 +77,19 @@
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
                 writer.UpdateDocument(new Term(nameof(dto.Name), dto.Name), doc);
+            }
+        }
+
+        private void IndexStaticDocuments()
+        {
+            using (var writer = new IndexWriter(_directory, _indexWriterConfig))
+            {
+                foreach (var item in GetDocuments())
+                {
+                    IndexDocs(writer, item);
+                }
+
+                writer.ForceMerge(1);
             }
         }
 
