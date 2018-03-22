@@ -15,13 +15,13 @@
             if (string.IsNullOrWhiteSpace(filename))
                 throw new ArgumentNullException(nameof(filename));
 
-            Filename = filename;
+            FileInformation = new FileInformation(filename);
             Location = new Location();
             _persons = new List<string>();
             _tags = new List<string>();
         }
 
-        public string Filename { get; }
+        public FileInformation FileInformation { get; }
 
         public IReadOnlyList<string> Persons => _persons;
 
