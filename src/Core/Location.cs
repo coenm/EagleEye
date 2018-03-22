@@ -16,11 +16,6 @@
 
         public Coordinate Coordinate { get; private set; }
 
-        public void SetCoordinates(float latitude, float longitude)
-        {
-            Coordinate = new Coordinate(latitude, longitude);
-        }
-
         public void SetCoordinate([NotNull] Coordinate coordinate)
         {
             Coordinate = coordinate;

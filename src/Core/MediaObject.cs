@@ -32,11 +32,6 @@
         [CanBeNull]
         public Timestamp DateTimeTaken { get; private set; }
 
-        public void SetDateTimeTaken(int year, int month = -1, int day = -1, int hour = -1, int minutes = -1, int seconds = -1)
-        {
-            DateTimeTaken = new Timestamp(year, month, day, hour, minutes, seconds);
-        }
-
         public void SetDateTimeTaken([NotNull] Timestamp value)
         {
             DateTimeTaken = value;

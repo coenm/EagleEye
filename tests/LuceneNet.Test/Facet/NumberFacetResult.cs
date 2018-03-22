@@ -11,6 +11,7 @@
             }
 
             public string Label { get; }
+
             public float Value { get; }
 
             protected bool Equals(NumberFacetResult other)
