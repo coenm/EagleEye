@@ -5,6 +5,8 @@
 
     using EagleEye.Core.Interfaces;
 
+    using JetBrains.Annotations;
+
     using Newtonsoft.Json.Linq;
 
     using Nito.AsyncEx;
@@ -19,7 +21,7 @@
         private Task<JObject> _task;
         private string _cachedFilename;
 
-        public ExifToolCacheDecorator(IExifTool exiftool, IDateTimeService dateTimeService)
+        public ExifToolCacheDecorator([NotNull] IExifTool exiftool, [NotNull] IDateTimeService dateTimeService)
         {
             _cacheValidity = TimeSpan.FromMinutes(5); //todo make this configurable.
             _exiftool = exiftool;
@@ -47,12 +49,14 @@
                 currentTask = _task;
             }
 
+            //todo what if the result is an exception, should we cache that one too?
+
             return await currentTask.ConfigureAwait(false);
         }
 
         public void Dispose()
         {
-            _exiftool?.Dispose();
+            _exiftool.Dispose();
         }
     }
 }
