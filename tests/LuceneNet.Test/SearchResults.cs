@@ -9,6 +9,7 @@
         }
 
         public T Data { get; }
+
         public float Score { get; }
     }
 }

@@ -16,6 +16,7 @@
         }
 
         public string Filename { get; set; }
+
         public List<string> Persons { get; set; }
     }
 }

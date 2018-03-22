@@ -72,7 +72,6 @@
             Assert.Equal(expectedFilenames, result.Select(x => x.Data.Filename));
         }
 
-
         [Fact]
         public void DeleteFromIndexTest()
         {
@@ -139,7 +138,6 @@
                 writer.ForceMerge(1);
             }
         }
-
 
         private void DeleteFromIndex(Term term)
         {
