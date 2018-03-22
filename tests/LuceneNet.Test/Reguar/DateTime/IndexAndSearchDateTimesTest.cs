@@ -45,10 +45,8 @@
 
             // assert
             var names = result.Select(x => x.Data.Name).ToList();
-            Assert.Equal(new [] {"alice", "eve"}, names);
+            Assert.Equal(new[] { "alice", "eve" }, names);
         }
-
-
 
         [Fact]
         public void ChainedDateRangeFilterTest()
@@ -57,7 +55,7 @@
             // query all persons born in 2000, 2001, or 2004 .. 2007-07-01
             var filterA = TermRangeFilter.NewStringRange(nameof(PersonDto.DateOfBirth), "2000", "2002", true, true);
             var filterB = TermRangeFilter.NewStringRange(nameof(PersonDto.DateOfBirth), "2004", "20070701", true, true);
-            var filter = new ChainedFilter(new Filter[] {filterA, filterB}, ChainedFilter.OR);
+            var filter = new ChainedFilter(new Filter[] { filterA, filterB }, ChainedFilter.OR);
 
             IndexStaticDocuments();
 
@@ -79,6 +77,47 @@
                 }
 
                 writer.ForceMerge(1);
+            }
+        }
+
+        private static IEnumerable<PersonDto> Persons
+        {
+            get
+            {
+                yield return new PersonDto("alice", new DateTime(2000, 1, 2));
+                yield return new PersonDto("bob", new DateTime(2002, 1, 12));
+                yield return new PersonDto("calvin", new DateTime(2007, 6, 2));
+                yield return new PersonDto("dwane", new DateTime(2007, 11, 2));
+                yield return new PersonDto("eve", new DateTime(2001, 6, 2));
+                yield return new PersonDto("fred", new DateTime(1999, 12, 2));
+            }
+        }
+
+        private static void IndexDocs(IndexWriter writer, PersonDto person)
+        {
+            var doc = new Document();
+
+            var fieldFilename = new TextField(nameof(PersonDto.Name), person.Name, Field.Store.YES);
+            doc.Add(fieldFilename);
+
+            var fieldDateOfBirth = new StringField(
+                                                   nameof(PersonDto.DateOfBirth),
+                                                   DateTools.DateToString(person.DateOfBirth, DateTools.Resolution.DAY),
+                                                   Field.Store.YES);
+
+            doc.Add(fieldDateOfBirth);
+
+            if (writer.Config.OpenMode == OpenMode.CREATE)
+            {
+                // New index, so we just add the document (no old document can be there):
+                writer.AddDocument(doc);
+            }
+            else
+            {
+                // Existing index (an old copy of this document may have been indexed) so
+                // we use updateDocument instead to replace the old one matching the exact
+                // path, if present:
+                writer.UpdateDocument(new Term(nameof(PersonDto.Name), person.Name), doc);
             }
         }
 
@@ -117,45 +156,6 @@
             }
 
             return results;
-        }
-
-        private static IEnumerable<PersonDto> Persons
-        {
-            get
-            {
-                yield return new PersonDto("alice", new DateTime(2000, 1, 2));
-                yield return new PersonDto("bob", new DateTime(2002, 1, 12));
-                yield return new PersonDto("calvin", new DateTime(2007, 6, 2));
-                yield return new PersonDto("dwane", new DateTime(2007, 11, 2));
-                yield return new PersonDto("eve", new DateTime(2001, 6, 2));
-                yield return new PersonDto("fred", new DateTime(1999, 12, 2));
-            }
-        }
-
-        private static void IndexDocs(IndexWriter writer, PersonDto person)
-        {
-            var doc = new Document();
-
-            var fieldFilename = new TextField(nameof(PersonDto.Name), person.Name, Field.Store.YES);
-            doc.Add(fieldFilename);
-
-            var fieldDateOfBirth = new StringField(nameof(PersonDto.DateOfBirth),
-                DateTools.DateToString(person.DateOfBirth, DateTools.Resolution.DAY), Field.Store.YES);
-
-            doc.Add(fieldDateOfBirth);
-
-            if (writer.Config.OpenMode == OpenMode.CREATE)
-            {
-                // New index, so we just add the document (no old document can be there):
-                writer.AddDocument(doc);
-            }
-            else
-            {
-                // Existing index (an old copy of this document may have been indexed) so
-                // we use updateDocument instead to replace the old one matching the exact
-                // path, if present:
-                writer.UpdateDocument(new Term(nameof(PersonDto.Name), person.Name), doc);
-            }
         }
     }
 }

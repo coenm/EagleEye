@@ -19,6 +19,9 @@
 
         public void AddPerson(string person)
         {
+            if (_persons.Contains(person))
+                return;
+
             _persons.Add(person);
         }
 

@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -13,7 +14,7 @@
 
     using Sut = EagleEye.Picasa.Picasa.PicasaIniParser;
 
-    public class PicasIniParserTest
+    public class PicasaIniParserTest
     {
         private const string PICASA_INI_FILE_CONTENT = @"
 [pica 1.jpg]
@@ -54,6 +55,24 @@ backuphash=11571";
                 result.Should().BeEquivalentTo(expectedResult);
             }
         }
+
+        [Fact]
+        public void Parse_ContentWithoutContacts2Section_ShouldThrowTest()
+        {
+            // arrange
+            var removedContacts2SectionContent = PICASA_INI_FILE_CONTENT.Replace("[Contacts2]", "[Contacts.jpg]");
+
+            using (var stream = GenerateStreamFromString(removedContacts2SectionContent))
+            {
+                // act
+                // ReSharper disable once AccessToDisposedClosure
+                Action act = () => _ = Sut.Parse(stream);
+
+                // assert
+                act.Should().Throw<Exception>().WithMessage("Contacts2 not found");
+            }
+        }
+
 
         private static MemoryStream GenerateStreamFromString(string value)
         {
