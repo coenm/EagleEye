@@ -14,13 +14,18 @@ The easy solution just find 100% matches. When an original photo is send over us
 Originally, this project is a quick (commandline) tool to build an index with filename and hash for first and easy comparison. 
 
 #  Experimenting with frameworks, tooling and patterns - Check
-[] dotnet core / standard;
-[] DI: SimpleInjector;
-[] Test frameworks: xUnit; FakeItEasy;
-[] Misc: NLog;
-[] CI: AppVeyor (windows CI); Travis (Linux CI);
-[] Coverage: openCover (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
-[] Coverage portal: [CodeCov](https://codecov.io); [Coveralls](https://coveralls.io)
+- [x]  [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/);
+- [x] [GitVersion](https://gitversion.readthedocs.io/en/latest/) for automatic versioning;
+- [x] dotnet core / standard;
+- [ ] DI: SimpleInjector;
+- [x] Test frameworks: xUnit; FakeItEasy;
+- [ ] Misc: NLog;
+- [x] CI: AppVeyor (windows CI); Travis (Linux CI);
+- [x] Coverage: OpenCover (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
+- [x] Coverage Report: [CodeCov](https://codecov.io); [Coveralls](https://coveralls.io)
+- [ ] Docker;
+- [ ] Lucene.NET;
+- [ ] SonarQube
 
 
 
