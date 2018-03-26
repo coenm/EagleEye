@@ -23,16 +23,17 @@ script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/Core.Test/Core.Test.csproj
-- # npm run coveralls tests/Core.Test/coverage.info
-- # npm run coveralls --help
-- cat tests/Core.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- # ./node_modules/coveralls/bin/coveralls.js tests/Core.Test/coverage.info
-- # sudo coveralls --data_file tests/Core.Test/coverage.info
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/ExifToolWrapper.Test/ExifToolWrapper.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/FileImporter.Test/FileImporter.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/LuceneNet.Test/LuceneNet.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/Picasa.Test/Picasa.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/NetMq.Test/NetMq.Test.csproj
+- cat tests/Core.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- cat tests/ExifToolWrapper.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- cat tests/FileImporter.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- cat tests/LuceneNet.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- cat tests/Picasa.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- cat tests/NetMq.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
 
 cache:
   directories:
