@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-    <PackageReference Include="NLog" Version="4.5.0-rc07" />
+    <PackageReference Include="NLog" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.categories" Version="2.0.3" />
