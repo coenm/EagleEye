@@ -22,6 +22,7 @@ before_install:
 script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
+- ./src/packages/coveralls.io/1.4.2/tools/coveralls.net.exe --version
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/Core.Test/Core.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/ExifToolWrapper.Test/ExifToolWrapper.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/FileImporter.Test/FileImporter.Test.csproj

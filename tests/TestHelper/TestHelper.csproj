@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coveralls.io" Version="1.4.2" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="NLog" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
