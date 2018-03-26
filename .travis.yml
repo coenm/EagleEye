@@ -13,8 +13,6 @@ env:
 before_install:
 - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
 - sudo apt-get -y install perl
-- sudo apt-get -y install coveralls
-- coveralls --version
 - chmod +x .scripts/InstallExiftool.sh
 - sudo ./.scripts/InstallExiftool.sh 
 - 'echo "EXIFTOOL: $(exiftool -ver)"'
