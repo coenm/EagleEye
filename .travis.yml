@@ -12,7 +12,7 @@ env:
 
 before_install:
 - # sudo pip install python-coveralls
-- sudo npm install coveralls --save-dev
+- npm install coveralls --save-dev
 - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
 - sudo apt-get -y install perl
 - chmod +x .scripts/InstallExiftool.sh
