@@ -31,9 +31,9 @@ script:
 - cat tests/Core.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
 - cat tests/ExifToolWrapper.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
 - cat tests/FileImporter.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- cat tests/LuceneNet.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- # cat tests/LuceneNet.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
 - cat tests/Picasa.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- cat tests/NetMq.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- # cat tests/NetMq.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
 
 cache:
   directories:
