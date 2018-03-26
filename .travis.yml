@@ -11,8 +11,7 @@ env:
   - DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 
 before_install:
-- npm install --save-dev coveralls
-- ./node_modules/.bin/coveralls.js --version
+- pip install python-coveralls
 - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
 - sudo apt-get -y install perl
 - chmod +x .scripts/InstallExiftool.sh
@@ -23,6 +22,7 @@ script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/Core.Test/Core.Test.csproj
+- ./coveralls
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/ExifToolWrapper.Test/ExifToolWrapper.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/FileImporter.Test/FileImporter.Test.csproj
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/LuceneNet.Test/LuceneNet.Test.csproj
