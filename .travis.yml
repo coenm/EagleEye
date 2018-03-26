@@ -12,7 +12,7 @@ env:
 
 before_install:
 - npm install --save-dev coveralls
-- ./node_modules/.bin/coveralls.js
+- ./node_modules/.bin/coveralls.js --version
 - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
 - sudo apt-get -y install perl
 - chmod +x .scripts/InstallExiftool.sh
