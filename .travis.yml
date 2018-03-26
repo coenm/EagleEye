@@ -23,8 +23,9 @@ script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/Core.Test/Core.Test.csproj
-- npm run coveralls tests/Core.Test/coverage.info
-- npm run coveralls --help
+- # npm run coveralls tests/Core.Test/coverage.info
+- # npm run coveralls --help
+- cat tests/Core.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
 - # ./node_modules/coveralls/bin/coveralls.js tests/Core.Test/coverage.info
 - # sudo coveralls --data_file tests/Core.Test/coverage.info
 - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:configuration=Release tests/ExifToolWrapper.Test/ExifToolWrapper.Test.csproj
