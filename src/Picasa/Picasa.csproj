@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-    <PackageReference Include="NLog" Version="4.5.0-rc07" />
+    <PackageReference Include="NLog" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
