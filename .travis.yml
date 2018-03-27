@@ -15,32 +15,13 @@ before_install:
 - npm install --save-dev coveralls
 - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
 - sudo apt-get -y install perl
-- chmod +x .scripts/InstallExiftool.sh
-- sudo ./.scripts/InstallExiftool.sh 
+- chmod +x .scripts/InstallExiftool.sh && sudo ./.scripts/InstallExiftool.sh 
 - 'echo "EXIFTOOL: $(exiftool -ver)"'
 
 script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
-- dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/Core.Test/Core.Test.csproj
-- dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/ExifToolWrapper.Test/ExifToolWrapper.Test.csproj
-- dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/FileImporter.Test/FileImporter.Test.csproj
-- dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/LuceneNet.Test/LuceneNet.Test.csproj
-- dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/Picasa.Test/Picasa.Test.csproj
-- dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:configuration=Release tests/NetMq.Test/NetMq.Test.csproj
-- cp tests/Core.Test/coverage.info merge.info
-- echo '\n' >> merge.info && cat tests/ExifToolWrapper.Test/coverage.info >> merge.info
-- echo '\n' >> merge.info && cat tests/FileImporter.Test/coverage.info >> merge.info
-- # echo '\n' >> merge.info && cat tests/LuceneNet.Test/coverage.info >> merge.info
-- echo '\n' >> merge.info && cat tests/Picasa.Test/coverage.info >> merge.info
-- # echo '\n' >> merge.info && cat tests/NetMq.Test/coverage.info >> merge.info
-- cat merge.info | ./node_modules/coveralls/bin/coveralls.js
-- # #cat tests/Core.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- # #cat tests/ExifToolWrapper.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- # #cat tests/FileImporter.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- # ## cat tests/LuceneNet.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- # #cat tests/Picasa.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
-- ## cat tests/NetMq.Test/coverage.info | ./node_modules/coveralls/bin/coveralls.js
+- chmod +x .scripts/TestCoverage.sh && ./.scripts/TestCoverage.sh 
 
 cache:
   directories:

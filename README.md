@@ -11,33 +11,55 @@ Just build an index containing hashes (sha256) of all photos and movies already 
 The easy solution just find 100% matches. When an original photo is send over using Whatsapp (or something similar) it is scaled to save bandwidth. In such case it would be nice to detect similarity. The more complicated solution is to not only compare by file hash but also by comparing raw images, exif data etc. etc.
 
 # This project
-Originally, this project is a quick (commandline) tool to build an index with filename and hash for first and easy comparison. 
+Originally, this project is a quick (commandline) tool to build an index with filename and hash for first and easy comparison. Now, this project is trying to make photo's (and movies) searchable based on their metadata.
 
-#  Experimenting with frameworks, tooling and patterns - Check
-- [x]  [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/);
-- [x] [GitVersion](https://gitversion.readthedocs.io/en/latest/) for automatic versioning;
+
+#  Experimenting with frameworks, tooling and patterns
+
+- [x] [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/);
+- [x] [GitVersion](https://gitversion.readthedocs.io/en/latest/) for automatic versioning; 
 - [x] dotnet core / standard;
-- [ ] DI: SimpleInjector;
-- [x] Test frameworks: xUnit; FakeItEasy;
-- [ ] Misc: NLog;
+- [ ] DI: [SimpleInjector](https://simpleinjector.org/);
+- [x] Test frameworks: [xUnit](https://github.com/xunit), FakeItEasy, FluentAssertions;
+- [x] Jetbrains Annotations, Maybe use Code Contract?
 - [x] CI: AppVeyor (windows CI); Travis (Linux CI);
 - [x] Coverage: OpenCover (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
-- [x] Coverage Report: [CodeCov](https://codecov.io); [Coveralls](https://coveralls.io)
+- [x] Coverage Report: [CodeCov](https://codecov.io), [Coveralls](https://coveralls.io);
 - [ ] Docker;
-- [ ] Lucene.NET;
-- [ ] SonarQube
+- [ ] SonarQube;
+- [ ] Misc: NLog, Humanizer, Lucene.NET, NetMq (ZeroMq).
 
+## AppVeyor
+- Download tooling (GitVersion; ExifTool);
+- Run [GitVersion](https://gitversion.readthedocs.io/en/latest/);
+- Patches assembly versions according to found version;
+- Build project;
+- Run unittests measuring using OpenCover;
+- Push coverage results to [CodeCov](https://codecov.io)
 
+## Travis
+- Download ExifTool;
+- Build project;
+- Run unittests measuring coverage with [Coverlet](https://github.com/tonerdo/coverlet/);
+- Push coverage results to [Coveralls](https://coveralls.io)
+
+Todo: 
+- Run GitVersion (using mono);
+- Patch version information;
+- Remove Coverlet package from test projects and download it only in Travis.
 
 
 # The badges
-| Branch | Status |
-| :--- | :--- |
-| Develop | [![Build status](https://ci.appveyor.com/api/projects/status/ner6290e44akpvuw/branch/develop?svg=true)](https://ci.appveyor.com/project/coenm/eagleeye/branch/develop) [![Build Status](https://travis-ci.org/coenm/EagleEye.svg?branch=develop)](https://travis-ci.org/coenm/EagleEye) [![Coverage](https://codecov.io/gh/coenm/eagleeye/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/eagleeye/branch/develop) |
+| Branch | AppVeyor | Travis |
+| :--- | :--- | :--- |
+| Develop | [![Build status](https://ci.appveyor.com/api/projects/status/ner6290e44akpvuw/branch/develop?svg=true)](https://ci.appveyor.com/project/coenm/eagleeye/branch/develop) [![Coverage](https://codecov.io/gh/coenm/eagleeye/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/eagleeye/branch/develop) | [![Build Status](https://travis-ci.org/coenm/EagleEye.svg?branch=develop)](https://travis-ci.org/coenm/EagleEye) [![Coverage Status](https://coveralls.io/repos/github/coenm/EagleEye/badge.svg?branch=develop)](https://coveralls.io/github/coenm/EagleEye?branch=develop) |
 
 
-# Download
+# Checkout and build
 ```
 git clone https://github.com/coenm/EagleEye.git
 git submodule update --init --recursive
+
+dotnet restore
+dotnet build
 ```
