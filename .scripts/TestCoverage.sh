@@ -13,8 +13,10 @@ TMP_LCOV=${ROOT_PATH}/single_coverage_results.info
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
 touch $MERGED_LCOV
 
+find . -type f -name *Test.csproj
+
 TEST_PROJECTS=`find . -type f -name *Test.csproj`
-for TEST_PROJECT in "${TEST_PROJECTS[@]}"
+for TEST_PROJECT in ${TEST_PROJECTS[@]}
 do
 	echo Testing project: ${TEST_PROJECT}
 	

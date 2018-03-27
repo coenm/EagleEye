@@ -21,7 +21,8 @@ before_install:
 script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
-- chmod +x .scripts/TestCoverage.sh && ./.scripts/TestCoverage.sh 
+- chmod +x .scripts/TestCoverage.sh
+- ./.scripts/TestCoverage.sh 
 
 cache:
   directories:
