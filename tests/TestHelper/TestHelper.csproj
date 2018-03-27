@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
+	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.TestHelper</RootNamespace>
 
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <!--<DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>-->
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
