@@ -44,8 +44,9 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - Push coverage results to [Coveralls](https://coveralls.io)
 
 Todo: 
-- Run GitVersion (using mono)
+- Run GitVersion (using mono);
 - Patch version information;
+- Remove Coverlet package from test projects and download it only in Travis.
 
 
 # The badges
