@@ -15,8 +15,15 @@ touch $MERGED_LCOV
 
 find . -type f -name *Test.csproj
 
-TEST_PROJECTS=`find . -type f -name *Test.csproj`
-for TEST_PROJECT in ${TEST_PROJECTS[@]}
+TEST_PROJECTS=$(find . -type f -name *Test.csproj)
+
+echo ${#TEST_PROJECTS[@]}
+
+# for i in $(find -name \*.txt); do # Not recommended, will break on whitespace
+    # process "$i"
+# done
+
+for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
 	
