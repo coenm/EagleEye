@@ -15,14 +15,13 @@ before_install:
 - npm install --save-dev coveralls
 - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
 - sudo apt-get -y install perl
-- chmod +x .scripts/InstallExiftool.sh
-- sudo ./.scripts/InstallExiftool.sh 
+- chmod +x .scripts/InstallExiftool.sh && sudo ./.scripts/InstallExiftool.sh 
 - 'echo "EXIFTOOL: $(exiftool -ver)"'
 
 script:
 - dotnet restore
 - dotnet msbuild /p:configuration=Release 
-- ./.scripts/TestCoverage.sh
+- chmod +x .scripts/TestCoverage.sh && ./.scripts/TestCoverage.sh 
 
 cache:
   directories:
