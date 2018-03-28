@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+# $ErrorActionPreference = "Stop"
 
 # Save the current location.
 $CurrentDir = $(Get-Location).Path;
@@ -34,22 +34,9 @@ $testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Te
 popd
 
 
-
-
 Try
 {
-	Write-Host "----------------------------";
 
-	ForEach ($testProjectLocation in $testProjectLocations)
-	{
-		Write-Host "Run tests without coverage for project " (Resolve-Path $testProjectLocation).Path;
-		dotnet test $testProjectLocation -c Debug --no-build --verbosity normal
-		# dotnet test $testProjectLocation -c Debug --no-build --verbosity detailed
-	}
-	
-	Write-Host "----------------------------";
-		
-	
 	ForEach ($testProjectLocation in $testProjectLocations)
 	{
 		Write-Host "Run tests for project " (Resolve-Path $testProjectLocation).Path;
@@ -61,24 +48,6 @@ Try
 		iex $command
 		
 		Write-Host "Command finished, ready for the next one"
-	}
-
-	# Either display or publish the results
-	If ($env:CI -eq 'True')
-	{
-		Write-Output "Running from CI"
-#		$command = (Get-ChildItem ($env:USERPROFILE + '\.nuget\packages\coveralls.io'))[0].FullName + '\tools\coveralls.net.exe' + ' --opencover "' + $outputFile + '" --full-sources'
-#		Write-Output $command
-#		iex $command
-	}
-	Else
-	{
-		Write-Output "Running local"
-#		$command = (Get-ChildItem ($env:USERPROFILE + '\.nuget\packages\ReportGenerator'))[0].FullName + '\tools\ReportGenerator.exe -reports:"' + $outputFile + '" -targetdir:"' + $outputPath + '"'
-#		Write-Output $command
-#		iex $command
-#		cd $outputPath
-#		./index.htm
 	}
 }
 Finally
