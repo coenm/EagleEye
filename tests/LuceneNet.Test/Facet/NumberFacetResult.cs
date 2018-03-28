@@ -30,7 +30,7 @@
                 if (obj.GetType() != GetType())
                     return false;
 
-                return Equals((NumberFacetResult) obj);
+                return Equals((NumberFacetResult)obj);
             }
 
             public override int GetHashCode()

@@ -20,13 +20,13 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - [x] [GitVersion](https://gitversion.readthedocs.io/en/latest/) for automatic versioning; 
 - [x] dotnet core / standard;
 - [ ] DI: [SimpleInjector](https://simpleinjector.org/);
-- [x] Test frameworks: [xUnit](https://github.com/xunit), FakeItEasy, FluentAssertions;
-- [x] Jetbrains Annotations, Maybe use Code Contract?
-- [x] CI: AppVeyor (windows CI); Travis (Linux CI);
-- [x] Coverage: OpenCover (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
+- [x] Test frameworks: [xUnit](https://github.com/xunit), [FakeItEasy](https://fakeiteasy.github.io/), [FluentAssertions](https://fluentassertions.com/);
+- [x] [Jetbrains Annotations](https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html), Maybe use [Code Contract](https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/code-contracts)?
+- [x] CI: [AppVeyor](https://www.appveyor.com/) (windows CI); [Travis](https://travis-ci.org/) (Linux CI);
+- [x] Coverage: [OpenCover](https://github.com/OpenCover/opencover) (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
 - [x] Coverage Report: [CodeCov](https://codecov.io), [Coveralls](https://coveralls.io);
 - [ ] Docker;
-- [ ] SonarQube;
+- [ ] [SonarQube](https://about.sonarcloud.io/);
 - [ ] Misc: NLog, Humanizer, Lucene.NET, NetMq (ZeroMq).
 
 ## AppVeyor

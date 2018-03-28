@@ -4,12 +4,12 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <IsPackable>false</IsPackable>
-    <RootNamespace>EagleEye.FileImporter.Test</RootNamespace>
-    
+    <RootNamespace>SearchEngine.Lucene.Core.Test</RootNamespace>
+
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>	
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
-    <ProjectReference Include="..\..\src\FileImporter\FileImporter.csproj" />
   </ItemGroup>
 
 </Project>
