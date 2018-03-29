@@ -265,7 +265,7 @@
                     var fileInfo = new FileInfo(index.Identifier);
                     var dirIndex = fileInfo.Directory.FullName;
 
-                    var filenameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
+                    // var filenameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
                     var duplicatesInSameDirectory = duplicates
                         .Where(f =>
                         {
@@ -274,12 +274,11 @@
                                 return false;
 
                             return true;
-                            var filenameWithoutExt = info.Name.Substring(0, info.Name.Length - info.Extension.Length);
-                            if (filenameWithoutExt.StartsWith(filenameWithoutExtension))
-                                return true;
-
-                            return false;
-
+                            // var filenameWithoutExt = info.Name.Substring(0, info.Name.Length - info.Extension.Length);
+                            // if (filenameWithoutExt.StartsWith(filenameWithoutExtension))
+                            //     return true;
+                            //
+                            // return false;
                         })
                         .ToList();
 
