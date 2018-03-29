@@ -10,7 +10,7 @@
 
         public List<string> Tags { get; set; }
 
-        public Location Location { get; }
+        public Location Location { get; set; }
 
         public Timestamp DateTimeTaken { get; set; }
     }

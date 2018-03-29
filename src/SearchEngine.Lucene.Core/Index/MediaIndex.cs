@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using JetBrains.Annotations;
@@ -81,13 +82,31 @@
         {
             var doc = new Document
                           {
-                              new StringField("url", string.Empty, Field.Store.YES),
-                              new TextField("name", string.Empty, Field.Store.YES),
-                              new TextField("description", string.Empty, Field.Store.YES),
-                              new TextField("readme", string.Empty, Field.Store.NO),
-                              new TextField("owner", string.Empty, Field.Store.YES),
+                              // fileinformation
+                              new StringField("filename", data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
+                              new StringField("filetype", data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
+
+                              // location data
+                              // todo GPS
+                              new TextField("city", data.Location?.City ?? string.Empty, Field.Store.YES),
+                              new TextField("countrycode", data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
+                              new TextField("country", data.Location?.CountryName ?? string.Empty, Field.Store.YES),
+                              new TextField("state", data.Location?.State ?? string.Empty, Field.Store.YES),
+                              new TextField("sublocation", data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
                           };
 
+            var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
+            doc.Add(new StringField("date", dateString, Field.Store.YES));
+
+            foreach (var person in data.Persons ?? new List<string>())
+            {
+                doc.Add(new TextField("person", person, Field.Store.YES));
+            }
+
+            foreach (var tag in data.Tags ?? new List<string>())
+            {
+                doc.Add(new TextField("tag", tag, Field.Store.YES));
+            }
 
             if (_indexWriter.Config.OpenMode == OpenMode.CREATE)
             {
@@ -107,7 +126,6 @@
 
             // expensive
             // _indexWriter.ForceMerge(1);
-
             return Task.FromResult(true);
         }
 
@@ -144,17 +162,37 @@
                     var doc = searcher.Doc(result.Doc);
 
                     // Results are automatically sorted by relevance
-                    results.Add(new MediaResult(result.Score)
-                                    {
-                                        DateTimeTaken = new Timestamp(),
-                                        Persons = new List<string>
-                                                      {
-                                                          doc.GetField("persons")?.GetStringValue()
-                                                      },
+                    var item = new MediaResult(result.Score)
+                                   {
+                                       FileInformation = new FileInformation
+                                                             {
+                                                                 Filename = doc.GetField("filename")?.GetStringValue(),
+                                                                 Type = doc.GetField("filetype")?.GetStringValue()
+                                                             },
+                                       Location =
+                                           {
+                                               CountryName = doc.GetField("country")?.GetStringValue(),
+                                               State = doc.GetField("state")?.GetStringValue(),
+                                               City = doc.GetField("city")?.GetStringValue(),
+                                               SubLocation = doc.GetField("sublocation")?.GetStringValue(),
+                                               CountryCode = doc.GetField("countrycode")?.GetStringValue(),
 
-                                        // Name = doc.GetField("name")?.GetStringValue(),
-                                    });
+                                               // todo GPS
+                                           },
+                                       DateTimeTaken = new Timestamp
+                                                           {
+                                                               Precision = TimestampPrecision.Day, //todo
+                                                               Value = DateTools.StringToDate(doc.Get("date")),
+                                                           },
+                                       Persons = doc.GetValues("person")?.ToList() ?? new List<string>(),
+                                       Tags = doc.GetValues("tag")?.ToList() ?? new List<string>(),
+                                   };
+
+                    results.Add(item);
                 }
+
+                // var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
+                // doc.Add(new StringField("date", dateString, Field.Store.YES));
             }
             catch (Exception)
             {
@@ -175,6 +213,27 @@
             _indexWriter?.Dispose();
             _searcherManager?.Dispose();
             _indexDirectory?.Dispose();
+        }
+
+        private DateTools.Resolution PrecisionToResolution(TimestampPrecision precision)
+        {
+            switch (precision)
+            {
+                case TimestampPrecision.Year:
+                    return DateTools.Resolution.YEAR;
+                case TimestampPrecision.Month:
+                    return DateTools.Resolution.MONTH;
+                case TimestampPrecision.Day:
+                    return DateTools.Resolution.DAY;
+                case TimestampPrecision.Hour:
+                    return DateTools.Resolution.HOUR;
+                case TimestampPrecision.Minute:
+                    return DateTools.Resolution.MINUTE;
+                case TimestampPrecision.Second:
+                    return DateTools.Resolution.SECOND;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(precision), precision, null);
+            }
         }
     }
 }
