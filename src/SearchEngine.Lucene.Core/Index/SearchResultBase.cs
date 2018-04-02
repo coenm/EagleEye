@@ -7,6 +7,6 @@
             Score = score;
         }
 
-        public float Score { get; }
+        public float Score { get; set; }
     }
 }

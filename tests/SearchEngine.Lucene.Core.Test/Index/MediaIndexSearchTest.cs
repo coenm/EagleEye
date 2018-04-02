@@ -1,6 +1,7 @@
 ﻿namespace SearchEngine.LuceneCore.Test.Index
 {
     using System;
+    using System.Collections.Generic;
 
     using FluentAssertions;
 
@@ -40,20 +41,47 @@
 
             // assert
             totalCount.Should().Be(1);
-            result.Should().BeEquivalentTo(Datastore.MediaResult001);
+            result.Should().BeEquivalentTo(Datastore.MediaResult001(1));
         }
 
-        [Fact]
-        public void Search_UsingWildcard_ShouldReturnEmpty_WhenNothingIsIndexedTest()
+        [Theory]
+        [InlineData("new")] // Should match "New York" in city.
+        [InlineData("city:new")] // Should match "New York" in city.
+        [InlineData("date:[2001 TO 2002]")] // date is within range
+        [InlineData("city:new AND date:[2001 TO 2002]")] // date is within range
+        [InlineData("city:new OR date:[200110 TO 2002]")] // date is NOT within range but city:new is true
+        public void Search_ShouldReturnDataTest(string searchQuery)
         {
             // arrange
 
             // act
-            var result = _sut.Search("a*", out var totalCount);
+            var result = _sut.Search(searchQuery, out var totalCount);
+            RemoveScore(result);
+
+            // assert
+            totalCount.Should().Be(1);
+            result.Should().BeEquivalentTo(Datastore.MediaResult001(0));
+        }
+
+        [Theory]
+        [InlineData("date:[20010401 TO 2002]")] // date (2001-04-00) is not witin range
+        [InlineData("city:N* AND date:[20010401 TO 2002]")] // date is not within range
+        public void Search_WithinWrongeDateRange_ShouldReturnEmptyTest(string searchQuery)
+        {
+            // arrange
+
+            // act
+            var result = _sut.Search(searchQuery, out var totalCount);
 
             // assert
             totalCount.Should().Be(0);
             result.Should().BeEmpty();
+        }
+
+
+        private static void RemoveScore(List<MediaResult> result)
+        {
+            result.ForEach(x => x.Score = 0);
         }
     }
 }

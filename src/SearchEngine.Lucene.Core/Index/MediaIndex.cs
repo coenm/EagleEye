@@ -30,15 +30,6 @@
 
     public class MediaIndex : IDisposable
     {
-        private readonly Analyzer _analyzer;
-        private readonly IndexWriter _indexWriter;
-        private readonly SearcherManager _searcherManager;
-        private readonly QueryParser _queryParser;
-        private readonly Directory _indexDirectory;
-
-        private SpatialContext _spatialContext;
-        private SpatialStrategy _spatialStrategy;
-
         private const string KEY_FILENAME = "filename";
         private const string KEY_FILETYPE = "filetype";
         private const string KEY_LOC_CITY = "city";
@@ -48,13 +39,19 @@
         private const string KEY_LOC_SUBLOCATION = "sublocation";
         private const string KEY_LOC_LONGITUDE = "longitude";
         private const string KEY_LOC_LATITUDE = "latitude";
-
         private const string KEY_DATE_TAKEN = "date";
         private const string KEY_PERSON = "person";
         private const string KEY_TAG = "tag";
-
         private const string KEY_LOC_GPS = "gps";
 
+        private readonly Analyzer _analyzer;
+        private readonly IndexWriter _indexWriter;
+        private readonly SearcherManager _searcherManager;
+        private readonly QueryParser _queryParser;
+        private readonly Directory _indexDirectory;
+
+        private SpatialContext _spatialContext;
+        private SpatialStrategy _spatialStrategy;
 
         public MediaIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
@@ -91,7 +88,7 @@
 
             _queryParser = new MultiFieldQueryParser(
                                                      LuceneNetVersion.VERSION,
-                                                     new[] { "name", "description", "readme" },
+                                                     new[] { KEY_LOC_CITY, KEY_LOC_COUNTRY }, //todo define fields
                                                      _analyzer);
 
             var indexWriterConfig = new IndexWriterConfig(LuceneNetVersion.VERSION, _analyzer)
@@ -130,7 +127,6 @@
                               new TextField(KEY_LOC_COUNTRY, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
                               new TextField(KEY_LOC_STATE, data.Location?.State ?? string.Empty, Field.Store.YES),
                               new TextField(KEY_LOC_SUBLOCATION, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
-
                               new StoredField(KEY_LOC_LONGITUDE, data.Location?.Coordinate?.Longitude ?? 0),
                               new StoredField(KEY_LOC_LATITUDE, data.Location?.Coordinate?.Latitude ?? 0),
                           };
@@ -180,7 +176,7 @@
                 // Existing index (an old copy of this document may have been indexed) so
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
-                _indexWriter.UpdateDocument(new Term(nameof(data.FileInformation.Filename), data.FileInformation.Filename), doc);
+                _indexWriter.UpdateDocument(new Term(KEY_FILENAME, data.FileInformation.Filename), doc);
             }
 
             _indexWriter.Flush(true, true);
@@ -283,9 +279,6 @@
 
                     results.Add(item);
                 }
-
-                // var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
-                // doc.Add(new StringField("date", dateString, Field.Store.YES));
             }
             catch (Exception e)
             {
@@ -371,7 +364,7 @@
             _spatialContext = SpatialContext.GEO;
 
             // Results in sub-meter precision for geohash
-            int maxLevels = 11;
+            var maxLevels = 11;
 
             // This can also be constructed from SpatialPrefixTreeFactory
             SpatialPrefixTree grid = new GeohashPrefixTree(_spatialContext, maxLevels);
