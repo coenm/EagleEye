@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -16,9 +17,15 @@
     using Lucene.Net.Index;
     using Lucene.Net.QueryParsers.Classic;
     using Lucene.Net.Search;
+    using Lucene.Net.Spatial;
+    using Lucene.Net.Spatial.Prefix;
+    using Lucene.Net.Spatial.Prefix.Tree;
+    using Lucene.Net.Support;
 
     using SearchEngine.LuceneNet.Core.Commands.UpdateIndex;
     using SearchEngine.LuceneNet.Core.Internals;
+
+    using Spatial4n.Core.Context;
 
     using Directory = Lucene.Net.Store.Directory;
 
@@ -30,9 +37,14 @@
         private readonly QueryParser _queryParser;
         private readonly Directory _indexDirectory;
 
+        private SpatialContext _spatialContext;
+        private SpatialStrategy _spatialStrategy;
+
         public MediaIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
             _indexDirectory = indexDirectoryFactory.Create();
+
+            InitSpatial();
 
             _analyzer = new PerFieldAnalyzerWrapper(
                                                     new HtmlStripAnalyzer(LuceneNetVersion.VERSION),
@@ -80,6 +92,16 @@
         [PublicAPI]
         public Task<bool> IndexMediaFileAsync([NotNull] MediaObject data)
         {
+            // todo verification of data object
+            if (data.FileInformation == null)
+                throw new ArgumentNullException(nameof(data.FileInformation));
+
+            if (string.IsNullOrWhiteSpace(data.FileInformation.Filename))
+                throw new ArgumentNullException(nameof(data.FileInformation.Filename));
+
+            // todo lock?!
+
+            RemoveFromIndexByFilename(data.FileInformation.Filename);
             var doc = new Document
                           {
                               // fileinformation
@@ -87,13 +109,37 @@
                               new StringField("filetype", data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
 
                               // location data
-                              // todo GPS
                               new TextField("city", data.Location?.City ?? string.Empty, Field.Store.YES),
                               new TextField("countrycode", data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
                               new TextField("country", data.Location?.CountryName ?? string.Empty, Field.Store.YES),
                               new TextField("state", data.Location?.State ?? string.Empty, Field.Store.YES),
                               new TextField("sublocation", data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
+
+                              new StoredField("longitude", data.Location?.Coordinate?.Longitude ?? 0),
+                              new StoredField("latitude", data.Location?.Coordinate?.Latitude ?? 0),
                           };
+
+            // index coordinate
+            {
+                var x = data.Location?.Coordinate?.Longitude;
+                var y = data.Location?.Coordinate?.Latitude;
+
+                if (x != null)
+                {
+                    var p = _spatialContext.MakePoint(x.Value, y.Value);
+
+                    foreach (var shape in new[] { p })
+                    {
+                        foreach (var field in _spatialStrategy.CreateIndexableFields(shape))
+                        {
+                            doc.Add(field);
+                        }
+                        // var pt = (IPoint)shape;
+                        // doc.Add(new StoredField(_strategy.FieldName, pt.X.ToString(CultureInfo.InvariantCulture) + " " + pt.Y.ToString(CultureInfo.InvariantCulture)));
+                    }
+                }
+            }
+
 
             var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
             doc.Add(new StringField("date", dateString, Field.Store.YES));
@@ -130,7 +176,39 @@
         }
 
         [PublicAPI]
-        public List<SearchResultBase> Search(string queryString, out int totalHits)
+        public int Count([CanBeNull] Query query = null, [CanBeNull] Filter filter = null)
+        {
+            // Execute the search with a fresh indexSearcher
+            _searcherManager.MaybeRefreshBlocking();
+
+            var searcher = _searcherManager.Acquire();
+
+            try
+            {
+                if (query == null)
+                    query = new MatchAllDocsQuery();
+
+                var topDocs = filter == null
+                                  ? searcher.Search(query, 1)
+                                  : searcher.Search(query, filter, 1);
+
+                return topDocs.TotalHits;
+            }
+            catch (Exception)
+            {
+                // do nothing
+            }
+            finally
+            {
+                _searcherManager.Release(searcher);
+                searcher = null; // Don't use searcher after this point!
+            }
+
+            throw new Exception("No items found.");
+        }
+
+        [PublicAPI]
+        public List<MediaResult> Search(string queryString, out int totalHits)
         {
             // Parse the query - assuming it's not a single term but an actual query string
             // the QueryParser used is using the same analyzer used for indexing
@@ -139,9 +217,9 @@
         }
 
         [PublicAPI]
-        public List<SearchResultBase> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
+        public List<MediaResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {
-            var results = new List<SearchResultBase>();
+            var results = new List<MediaResult>();
             totalHits = 0;
 
             // Execute the search with a fresh indexSearcher
@@ -169,21 +247,20 @@
                                                                  Filename = doc.GetField("filename")?.GetStringValue(),
                                                                  Type = doc.GetField("filetype")?.GetStringValue()
                                                              },
-                                       Location =
+                                       Location = new Location
                                            {
                                                CountryName = doc.GetField("country")?.GetStringValue(),
                                                State = doc.GetField("state")?.GetStringValue(),
                                                City = doc.GetField("city")?.GetStringValue(),
                                                SubLocation = doc.GetField("sublocation")?.GetStringValue(),
                                                CountryCode = doc.GetField("countrycode")?.GetStringValue(),
-
-                                               // todo GPS
-                                           },
-                                       DateTimeTaken = new Timestamp
-                                                           {
-                                                               Precision = TimestampPrecision.Day, //todo
-                                                               Value = DateTools.StringToDate(doc.Get("date")),
-                                                           },
+                                               Coordinate = new Coordinate
+                                                                {
+                                                                    Latitude = doc.GetField("latitude")?.GetSingleValue() ?? 0,
+                                                                    Longitude = doc.GetField("longitude")?.GetSingleValue() ?? 0,
+                                                                }
+                                            },
+                                       DateTimeTaken = StringToTimestamp(doc.Get("date")),
                                        Persons = doc.GetValues("person")?.ToList() ?? new List<string>(),
                                        Tags = doc.GetValues("tag")?.ToList() ?? new List<string>(),
                                    };
@@ -194,8 +271,9 @@
                 // var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
                 // doc.Add(new StringField("date", dateString, Field.Store.YES));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                var y = e.Message;
                 // do nothing
             }
             finally
@@ -213,6 +291,76 @@
             _indexWriter?.Dispose();
             _searcherManager?.Dispose();
             _indexDirectory?.Dispose();
+        }
+
+        private static Timestamp StringToTimestamp(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+                return new Timestamp();
+
+            var result = new Timestamp
+                             {
+                                 Value = DateTools.StringToDate(dateString),
+                             };
+
+            switch (dateString.Length)
+            {
+                case 4:
+                    result.Precision = TimestampPrecision.Year;
+                    break;
+                case 6:
+                    result.Precision = TimestampPrecision.Month;
+                    break;
+                case 8:
+                    result.Precision = TimestampPrecision.Day;
+                    break;
+                case 10:
+                    result.Precision = TimestampPrecision.Hour;
+                    break;
+                case 12:
+                    result.Precision = TimestampPrecision.Minute;
+                    break;
+                case 14:
+                    result.Precision = TimestampPrecision.Second;
+                    break;
+                default:
+                    result.Precision = TimestampPrecision.Second;
+                    break;
+            }
+
+            return result;
+        }
+
+        private void RemoveFromIndexByFilename([NotNull] string filename)
+        {
+            Debug.Assert(!string.IsNullOrWhiteSpace(filename), "Filename should be filled in.");
+
+            var term = new Term("filename", filename);
+
+            try
+            {
+                _indexWriter.DeleteDocuments(term);
+                _indexWriter.Flush(true, true);
+                _indexWriter.Commit();
+            }
+            catch (OutOfMemoryException)
+            {
+                _indexWriter.Dispose();
+                throw;
+            }
+        }
+
+        private void InitSpatial()
+        {
+            _spatialContext = SpatialContext.GEO;
+
+            // Results in sub-meter precision for geohash
+            int maxLevels = 11;
+
+            // This can also be constructed from SpatialPrefixTreeFactory
+            SpatialPrefixTree grid = new GeohashPrefixTree(_spatialContext, maxLevels);
+
+            _spatialStrategy = new RecursivePrefixTreeStrategy(grid, "gps");
         }
 
         private DateTools.Resolution PrecisionToResolution(TimestampPrecision precision)

@@ -27,6 +27,7 @@
     <PackageReference Include="Lucene.Net.Misc" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
     <PackageReference Include="NLog" Version="4.5.0" />

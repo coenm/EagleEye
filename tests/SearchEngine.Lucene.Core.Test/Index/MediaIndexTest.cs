@@ -1,15 +1,14 @@
 ﻿namespace SearchEngine.LuceneCore.Test.Index
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Lucene.Net.Search;
 
+    using SearchEngine.LuceneCore.Test.Data;
     using SearchEngine.LuceneNet.Core;
-    using SearchEngine.LuceneNet.Core.Commands.UpdateIndex;
     using SearchEngine.LuceneNet.Core.Index;
 
     using Xunit;
@@ -61,49 +60,34 @@
             result.Should().BeEmpty();
         }
 
-
         [Fact]
         public async Task Index_ValidMediaObject_ShouldReturnTrueTest()
         {
             // arrange
-            var data = new MediaObject
-                           {
-                               DateTimeTaken = new Timestamp
-                                                   {
-                                                       Value = new DateTime(2001, 4, 6, 12, 0, 0),
-                                                       Precision = TimestampPrecision.Month,
-                                                   },
-                               Location = new Location
-                                   {
-                                       City = "New York",
-                                       State = "New York",
-                                       CountryName = "United States of America",
-                                       SubLocation = "Ground zero",
-                                       CountryCode = "USA",
-                                       Coordinate = new Coordinate()
-                                   },
-                               Persons = new List<string>
-                                             {
-                                                 "Alice",
-                                                 "Bob"
-                                             },
-                               Tags = new List<string>
-                                          {
-                                              "Vacation",
-                                              "Summer"
-                                          },
-                               FileInformation = new FileInformation
-                                                     {
-                                                         Type = "image/jpeg",
-                                                         Filename = "a/b/c/file.jpg"
-                                                     }
-                           };
+            var data = Datastore.File001;
 
             // act
             var result = await _sut.IndexMediaFileAsync(data).ConfigureAwait(false);
 
             // assert
             result.Should().BeTrue();
+            _sut.Count().Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Index_ValidMediaObjectTwice_ShouldOnlyIndexLastTest()
+        {
+            // arrange
+            var data = Datastore.File001;
+
+            // act
+            var result1 = await _sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+            var result2 = await _sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+
+            // assert
+            result1.Should().BeTrue();
+            result2.Should().BeTrue();
+            _sut.Count().Should().Be(1);
         }
     }
 }
