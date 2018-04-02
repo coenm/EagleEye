@@ -20,7 +20,6 @@
     using Lucene.Net.Spatial;
     using Lucene.Net.Spatial.Prefix;
     using Lucene.Net.Spatial.Prefix.Tree;
-    using Lucene.Net.Support;
 
     using SearchEngine.LuceneNet.Core.Commands.UpdateIndex;
     using SearchEngine.LuceneNet.Core.Internals;
@@ -39,6 +38,23 @@
 
         private SpatialContext _spatialContext;
         private SpatialStrategy _spatialStrategy;
+
+        private const string KEY_FILENAME = "filename";
+        private const string KEY_FILETYPE = "filetype";
+        private const string KEY_LOC_CITY = "city";
+        private const string KEY_LOC_COUNTRY_CODE = "countrycode";
+        private const string KEY_LOC_COUNTRY = "country";
+        private const string KEY_LOC_STATE = "state";
+        private const string KEY_LOC_SUBLOCATION = "sublocation";
+        private const string KEY_LOC_LONGITUDE = "longitude";
+        private const string KEY_LOC_LATITUDE = "latitude";
+
+        private const string KEY_DATE_TAKEN = "date";
+        private const string KEY_PERSON = "person";
+        private const string KEY_TAG = "tag";
+
+        private const string KEY_LOC_GPS = "gps";
+
 
         public MediaIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
@@ -105,18 +121,18 @@
             var doc = new Document
                           {
                               // fileinformation
-                              new StringField("filename", data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
-                              new StringField("filetype", data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
+                              new StringField(KEY_FILENAME, data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
+                              new StringField(KEY_FILETYPE, data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
 
                               // location data
-                              new TextField("city", data.Location?.City ?? string.Empty, Field.Store.YES),
-                              new TextField("countrycode", data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
-                              new TextField("country", data.Location?.CountryName ?? string.Empty, Field.Store.YES),
-                              new TextField("state", data.Location?.State ?? string.Empty, Field.Store.YES),
-                              new TextField("sublocation", data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
+                              new TextField(KEY_LOC_CITY, data.Location?.City ?? string.Empty, Field.Store.YES),
+                              new TextField(KEY_LOC_COUNTRY_CODE, data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
+                              new TextField(KEY_LOC_COUNTRY, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
+                              new TextField(KEY_LOC_STATE, data.Location?.State ?? string.Empty, Field.Store.YES),
+                              new TextField(KEY_LOC_SUBLOCATION, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
 
-                              new StoredField("longitude", data.Location?.Coordinate?.Longitude ?? 0),
-                              new StoredField("latitude", data.Location?.Coordinate?.Latitude ?? 0),
+                              new StoredField(KEY_LOC_LONGITUDE, data.Location?.Coordinate?.Longitude ?? 0),
+                              new StoredField(KEY_LOC_LATITUDE, data.Location?.Coordinate?.Latitude ?? 0),
                           };
 
             // index coordinate
@@ -142,16 +158,16 @@
 
 
             var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
-            doc.Add(new StringField("date", dateString, Field.Store.YES));
+            doc.Add(new StringField(KEY_DATE_TAKEN, dateString, Field.Store.YES));
 
             foreach (var person in data.Persons ?? new List<string>())
             {
-                doc.Add(new TextField("person", person, Field.Store.YES));
+                doc.Add(new TextField(KEY_PERSON, person, Field.Store.YES));
             }
 
             foreach (var tag in data.Tags ?? new List<string>())
             {
-                doc.Add(new TextField("tag", tag, Field.Store.YES));
+                doc.Add(new TextField(KEY_TAG, tag, Field.Store.YES));
             }
 
             if (_indexWriter.Config.OpenMode == OpenMode.CREATE)
@@ -244,25 +260,25 @@
                                    {
                                        FileInformation = new FileInformation
                                                              {
-                                                                 Filename = doc.GetField("filename")?.GetStringValue(),
-                                                                 Type = doc.GetField("filetype")?.GetStringValue()
+                                                                 Filename = doc.GetField(KEY_FILENAME)?.GetStringValue(),
+                                                                 Type = doc.GetField(KEY_FILETYPE)?.GetStringValue()
                                                              },
                                        Location = new Location
                                            {
-                                               CountryName = doc.GetField("country")?.GetStringValue(),
-                                               State = doc.GetField("state")?.GetStringValue(),
-                                               City = doc.GetField("city")?.GetStringValue(),
-                                               SubLocation = doc.GetField("sublocation")?.GetStringValue(),
-                                               CountryCode = doc.GetField("countrycode")?.GetStringValue(),
+                                               CountryName = doc.GetField(KEY_LOC_COUNTRY)?.GetStringValue(),
+                                               State = doc.GetField(KEY_LOC_STATE)?.GetStringValue(),
+                                               City = doc.GetField(KEY_LOC_CITY)?.GetStringValue(),
+                                               SubLocation = doc.GetField(KEY_LOC_SUBLOCATION)?.GetStringValue(),
+                                               CountryCode = doc.GetField(KEY_LOC_COUNTRY_CODE)?.GetStringValue(),
                                                Coordinate = new Coordinate
                                                                 {
-                                                                    Latitude = doc.GetField("latitude")?.GetSingleValue() ?? 0,
-                                                                    Longitude = doc.GetField("longitude")?.GetSingleValue() ?? 0,
+                                                                    Latitude = doc.GetField(KEY_LOC_LATITUDE)?.GetSingleValue() ?? 0,
+                                                                    Longitude = doc.GetField(KEY_LOC_LONGITUDE)?.GetSingleValue() ?? 0,
                                                                 }
                                             },
-                                       DateTimeTaken = StringToTimestamp(doc.Get("date")),
-                                       Persons = doc.GetValues("person")?.ToList() ?? new List<string>(),
-                                       Tags = doc.GetValues("tag")?.ToList() ?? new List<string>(),
+                                       DateTimeTaken = StringToTimestamp(doc.Get(KEY_DATE_TAKEN)),
+                                       Persons = doc.GetValues(KEY_PERSON)?.ToList() ?? new List<string>(),
+                                       Tags = doc.GetValues(KEY_TAG)?.ToList() ?? new List<string>(),
                                    };
 
                     results.Add(item);
@@ -273,7 +289,7 @@
             }
             catch (Exception e)
             {
-                var y = e.Message;
+                Debug.Fail("Should not happen" + e.Message);
                 // do nothing
             }
             finally
@@ -335,7 +351,7 @@
         {
             Debug.Assert(!string.IsNullOrWhiteSpace(filename), "Filename should be filled in.");
 
-            var term = new Term("filename", filename);
+            var term = new Term(KEY_FILENAME, filename);
 
             try
             {
@@ -360,7 +376,7 @@
             // This can also be constructed from SpatialPrefixTreeFactory
             SpatialPrefixTree grid = new GeohashPrefixTree(_spatialContext, maxLevels);
 
-            _spatialStrategy = new RecursivePrefixTreeStrategy(grid, "gps");
+            _spatialStrategy = new RecursivePrefixTreeStrategy(grid, KEY_LOC_GPS);
         }
 
         private DateTools.Resolution PrecisionToResolution(TimestampPrecision precision)
