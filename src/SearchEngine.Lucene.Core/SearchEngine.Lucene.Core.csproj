@@ -22,4 +22,8 @@
     <PackageReference Include="NLog" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SearchEngine.Interface\SearchEngine.Interface.csproj" />
+  </ItemGroup>
+
 </Project>

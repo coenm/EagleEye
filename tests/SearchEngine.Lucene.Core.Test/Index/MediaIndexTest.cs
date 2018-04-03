@@ -19,7 +19,7 @@
 
         public MediaIndexTest()
         {
-            ILuceneDirectoryFactory indexDirectoryFactory = new RamDirectoryFactory();
+            ILuceneDirectoryFactory indexDirectoryFactory = new RamLuceneDirectoryFactory();
             _sut = new MediaIndex(indexDirectoryFactory);
         }
 

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using SearchEngine.LuceneNet.Core.Commands.UpdateIndex;
+    using SearchEngine.Interface.Commands.ParameterObjects;
     using SearchEngine.LuceneNet.Core.Index;
 
     public static class Datastore

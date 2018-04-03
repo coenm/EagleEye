@@ -2,14 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
+
     <IsPackable>false</IsPackable>
-    <RootNamespace>EagleEye.FileImporter.Test</RootNamespace>
-    
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>	
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,20 +11,19 @@
     <PackageReference Include="FakeItEasy" Version="4.5.1" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.5.1" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
-    <PackageReference Include="NLog" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.categories" Version="2.0.3" />
     <PackageReference Include="xunit.runner.console" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-	<DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
-    <ProjectReference Include="..\..\src\FileImporter\FileImporter.csproj" />
+    <ProjectReference Include="..\..\src\SearchEngine.Interface\SearchEngine.Interface.csproj" />
+    <ProjectReference Include="..\..\src\SearchEngine.Lucene.Bootstrap\SearchEngine.Lucene.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\src\SearchEngine.Lucene.Core\SearchEngine.Lucene.Core.csproj" />
   </ItemGroup>
 
 </Project>

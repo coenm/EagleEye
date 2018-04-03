@@ -1,4 +1,4 @@
-﻿namespace SearchEngine.LuceneNet.Core.Commands.UpdateIndex
+﻿namespace SearchEngine.Interface.Commands.ParameterObjects
 {
     public class Location
     {

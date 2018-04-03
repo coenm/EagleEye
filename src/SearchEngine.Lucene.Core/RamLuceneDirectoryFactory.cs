@@ -4,7 +4,7 @@
 
     using Directory = Lucene.Net.Store.Directory;
 
-    public class RamDirectoryFactory : ILuceneDirectoryFactory
+    public class RamLuceneDirectoryFactory : ILuceneDirectoryFactory
     {
         public Directory Create()
         {

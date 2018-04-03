@@ -9,10 +9,7 @@
     using JetBrains.Annotations;
 
     using Lucene.Net.Analysis;
-    using Lucene.Net.Analysis.Core;
-    using Lucene.Net.Analysis.Miscellaneous;
     using Lucene.Net.Analysis.Standard;
-    using Lucene.Net.Analysis.Util;
     using Lucene.Net.Documents;
     using Lucene.Net.Index;
     using Lucene.Net.QueryParsers.Classic;
@@ -21,7 +18,7 @@
     using Lucene.Net.Spatial.Prefix;
     using Lucene.Net.Spatial.Prefix.Tree;
 
-    using SearchEngine.LuceneNet.Core.Commands.UpdateIndex;
+    using SearchEngine.Interface.Commands.ParameterObjects;
     using SearchEngine.LuceneNet.Core.Internals;
 
     using Spatial4n.Core.Context;
@@ -58,33 +55,33 @@
             _indexDirectory = indexDirectoryFactory.Create();
 
             InitSpatial();
-
-            _analyzer = new PerFieldAnalyzerWrapper(
-                                                    new HtmlStripAnalyzer(LuceneNetVersion.VERSION),
-                                                    new Dictionary<string, Analyzer>
-                                                        {
-                                                            {
-                                                                "owner",
-                                                                Analyzer.NewAnonymous((fieldName, reader) =>
-                                                                                      {
-                                                                                          var source = new KeywordTokenizer(reader);
-                                                                                          TokenStream result = new ASCIIFoldingFilter(source);
-                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
-                                                                                          return new TokenStreamComponents(source, result);
-                                                                                      })
-                                                            },
-                                                            {
-                                                                "name",
-                                                                Analyzer.NewAnonymous((fieldName, reader) =>
-                                                                                      {
-                                                                                          var source = new StandardTokenizer(LuceneNetVersion.VERSION, reader);
-                                                                                          TokenStream result = new WordDelimiterFilter(LuceneNetVersion.VERSION, source, ~WordDelimiterFlags.STEM_ENGLISH_POSSESSIVE, CharArraySet.EMPTY_SET);
-                                                                                          result = new ASCIIFoldingFilter(result);
-                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
-                                                                                          return new TokenStreamComponents(source, result);
-                                                                                      })
-                                                            }
-                                                        });
+            _analyzer = new StandardAnalyzer(LuceneNetVersion.VERSION);
+//            _analyzer = new PerFieldAnalyzerWrapper(
+//                                                    new HtmlStripAnalyzer(LuceneNetVersion.VERSION),
+//                                                    new Dictionary<string, Analyzer>
+//                                                        {
+//                                                            {
+//                                                                "owner",
+//                                                                Analyzer.NewAnonymous((fieldName, reader) =>
+//                                                                                      {
+//                                                                                          var source = new KeywordTokenizer(reader);
+//                                                                                          TokenStream result = new ASCIIFoldingFilter(source);
+//                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
+//                                                                                          return new TokenStreamComponents(source, result);
+//                                                                                      })
+//                                                            },
+//                                                            {
+//                                                                "name",
+//                                                                Analyzer.NewAnonymous((fieldName, reader) =>
+//                                                                                      {
+//                                                                                          var source = new StandardTokenizer(LuceneNetVersion.VERSION, reader);
+//                                                                                          TokenStream result = new WordDelimiterFilter(LuceneNetVersion.VERSION, source, ~WordDelimiterFlags.STEM_ENGLISH_POSSESSIVE, CharArraySet.EMPTY_SET);
+//                                                                                          result = new ASCIIFoldingFilter(result);
+//                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
+//                                                                                          return new TokenStreamComponents(source, result);
+//                                                                                      })
+//                                                            }
+//                                                        });
 
             _queryParser = new MultiFieldQueryParser(
                                                      LuceneNetVersion.VERSION,
@@ -112,9 +109,8 @@
             if (string.IsNullOrWhiteSpace(data.FileInformation.Filename))
                 throw new ArgumentNullException(nameof(data.FileInformation.Filename));
 
-            // todo lock?!
-
             RemoveFromIndexByFilename(data.FileInformation.Filename);
+
             var doc = new Document
                           {
                               // fileinformation

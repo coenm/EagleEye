@@ -14,7 +14,7 @@ namespace SearchEngine.LuceneCore.Test
         public void Create_ReturnsRAMDirectoryTest()
         {
             // arrange
-            var sut = new RamDirectoryFactory();
+            var sut = new RamLuceneDirectoryFactory();
 
             // act
             var result = sut.Create();
