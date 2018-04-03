@@ -6,10 +6,7 @@
     using System.Linq;
     using System.Reflection;
 
-    using NLog.Internal;
-
     using SearchEngine.Interface;
-    using SearchEngine.Interface.Queries;
     using SearchEngine.LuceneNet.Core;
     using SearchEngine.LuceneNet.Core.Commands;
     using SearchEngine.LuceneNet.Core.Index;

@@ -9,6 +9,8 @@
     using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
     using EagleEye.FileImporter.Similarity;
 
+    using SearchEngine.Lucene.Bootstrap;
+
     using SimpleInjector;
 
     public static class Startup
@@ -22,7 +24,16 @@
             container.RegisterSingleton<IImageDataRepository>(() => new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
             container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
 
+
+            RegisterSearchEngine(container);
+
             container.Verify(VerificationOption.VerifyAndDiagnose);
+        }
+
+
+        private static void RegisterSearchEngine(Container container)
+        {
+            SearchEngineLuceneBootstrapper.Bootstrap(container);
         }
     }
 }
