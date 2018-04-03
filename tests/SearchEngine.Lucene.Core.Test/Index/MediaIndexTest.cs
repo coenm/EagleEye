@@ -1,4 +1,4 @@
-﻿namespace SearchEngine.LuceneCore.Test.Index
+﻿namespace SearchEngine.LuceneNet.Core.Test.Index
 {
     using System;
     using System.Threading.Tasks;
@@ -7,9 +7,8 @@
 
     using Lucene.Net.Search;
 
-    using SearchEngine.LuceneCore.Test.Data;
-    using SearchEngine.LuceneNet.Core;
     using SearchEngine.LuceneNet.Core.Index;
+    using SearchEngine.LuceneNet.Core.Test.Data;
 
     using Xunit;
 

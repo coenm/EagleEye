@@ -8,6 +8,7 @@
 
     using SearchEngine.Interface.Queries;
     using SearchEngine.LuceneNet.Core.Index;
+    using SearchEngine.LuceneNet.Core.Queries;
 
     public class WildcardSearchQueryHandler : IQueryHandler<WildcardSearchQuery, SearchResult>
     {

@@ -1,10 +1,8 @@
-namespace SearchEngine.LuceneCore.Test
+namespace SearchEngine.LuceneNet.Core.Test
 {
     using FluentAssertions;
 
     using Lucene.Net.Store;
-
-    using SearchEngine.LuceneNet.Core;
 
     using Xunit;
 

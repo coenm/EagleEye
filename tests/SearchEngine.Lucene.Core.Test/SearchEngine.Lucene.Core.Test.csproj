@@ -4,12 +4,13 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <IsPackable>false</IsPackable>
-    <RootNamespace>SearchEngine.LuceneCore.Test</RootNamespace>
+    <RootNamespace>SearchEngine.LuceneNet.Core.Test</RootNamespace>
 
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <AssemblyName>SearchEngine.LuceneNet.Core.Test</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,16 +19,12 @@
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.5.1" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-    <PackageReference Include="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
     <PackageReference Include="NLog" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.categories" Version="2.0.3" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />	
 	<DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 

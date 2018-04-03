@@ -2,16 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
+	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <RootNamespace>SearchEngine.LuceneNet.Core</RootNamespace>
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
-
+    
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <AssemblyName>SearchEngine.LuceneNet.Core</AssemblyName>    
   </PropertyGroup>
 
   <ItemGroup>

@@ -35,9 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.Core.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.Bootstrap", "src\SearchEngine.Lucene.Bootstrap\SearchEngine.Lucene.Bootstrap.csproj", "{8EB042F8-2D4D-4265-B6AE-17871A1ED3C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.Interface", "src\SearchEngine.Interface\SearchEngine.Interface.csproj", "{6B6356F3-361D-4783-8526-0AC1C34D04CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Interface", "src\SearchEngine.Interface\SearchEngine.Interface.csproj", "{6B6356F3-361D-4783-8526-0AC1C34D04CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.Lucene.Bootstrap.Test", "tests\SearchEngine.Lucene.Bootstrap.Test\SearchEngine.Lucene.Bootstrap.Test.csproj", "{516C14E6-5377-4FC6-B0DC-052A520890A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.Bootstrap.Test", "tests\SearchEngine.Lucene.Bootstrap.Test\SearchEngine.Lucene.Bootstrap.Test.csproj", "{516C14E6-5377-4FC6-B0DC-052A520890A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
