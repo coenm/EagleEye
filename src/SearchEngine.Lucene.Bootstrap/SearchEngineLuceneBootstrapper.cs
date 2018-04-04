@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
@@ -47,6 +46,18 @@
             // container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(AuthorizationQueryHandlerDecorator<,>));
         }
 
+        public static IEnumerable<Type> GetCommandTypes() =>
+            from assembly in _contractAssemblies
+            from type in assembly.GetExportedTypes()
+            where type.Name.EndsWith("Command")
+            select type;
+
+        public static IEnumerable<QueryInfo> GetQueryTypes() =>
+            from assembly in _contractAssemblies
+            from type in assembly.GetExportedTypes()
+            where QueryInfo.IsQuery(type)
+            select new QueryInfo(type);
+
         private static void RegisterLuceneDirectoryFactory(Container container, bool useInMemoryIndex)
         {
             if (useInMemoryIndex)
@@ -63,38 +74,5 @@
                 container.RegisterSingleton<ILuceneDirectoryFactory, FileSystemLuceneDirectoryFactory>();
             }
         }
-
-        public static IEnumerable<Type> GetCommandTypes() =>
-            from assembly in _contractAssemblies
-            from type in assembly.GetExportedTypes()
-            where type.Name.EndsWith("Command")
-            select type;
-
-        public static IEnumerable<QueryInfo> GetQueryTypes() =>
-            from assembly in _contractAssemblies
-            from type in assembly.GetExportedTypes()
-            where QueryInfo.IsQuery(type)
-            select new QueryInfo(type);
-    }
-
-    [DebuggerDisplay("{QueryType.Name,nq}")]
-    public sealed class QueryInfo
-    {
-        public readonly Type QueryType;
-        public readonly Type ResultType;
-
-        public QueryInfo(Type queryType)
-        {
-            QueryType = queryType;
-            ResultType = DetermineResultTypes(queryType).Single();
-        }
-
-        public static bool IsQuery(Type type) => DetermineResultTypes(type).Any();
-
-        private static IEnumerable<Type> DetermineResultTypes(Type type) =>
-            from interfaceType in type.GetInterfaces()
-            where interfaceType.IsGenericType
-            where interfaceType.GetGenericTypeDefinition() == typeof(ISearchEngineQuery<>)
-            select interfaceType.GetGenericArguments()[0];
     }
 }
