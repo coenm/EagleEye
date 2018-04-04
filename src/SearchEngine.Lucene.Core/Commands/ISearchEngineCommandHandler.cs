@@ -1,7 +1,9 @@
 ﻿namespace SearchEngine.LuceneNet.Core.Commands
 {
+    using System.Threading.Tasks;
+
     public interface ICommandHandler<TCommand>
     {
-        void Handle(TCommand command);
+        Task HandleAsync(TCommand command);
     }
 }

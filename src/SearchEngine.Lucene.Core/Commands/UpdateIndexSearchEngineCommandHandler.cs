@@ -1,12 +1,22 @@
 ﻿namespace SearchEngine.LuceneNet.Core.Commands
 {
+    using System.Threading.Tasks;
+
     using SearchEngine.Interface.Commands;
+    using SearchEngine.LuceneNet.Core.Index;
 
     public class UpdateIndexSearchEngineCommandHandler : ICommandHandler<UpdateIndexCommand>
     {
-        public void Handle(UpdateIndexCommand command)
+        private readonly MediaIndex _mediaIndex;
+
+        public UpdateIndexSearchEngineCommandHandler(MediaIndex mediaIndex)
         {
-            throw new System.NotImplementedException();
+            _mediaIndex = mediaIndex;
+        }
+
+        public Task HandleAsync(UpdateIndexCommand command)
+        {
+            return _mediaIndex.IndexMediaFileAsync(command.Data);
         }
     }
 }

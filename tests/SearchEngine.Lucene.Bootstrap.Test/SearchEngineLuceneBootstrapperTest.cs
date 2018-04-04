@@ -53,7 +53,6 @@ namespace SearchEngine.Lucene.Bootstrap.Test
 
             // assert
             act.Should().NotThrow();
-
         }
     }
 }
