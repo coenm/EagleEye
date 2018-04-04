@@ -45,9 +45,9 @@
             // container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(AuthorizationQueryHandlerDecorator<,>));
         }
 
-        private static void RegisterLuceneDirectoryFactory(Container container, bool usInMemoryIndex)
+        private static void RegisterLuceneDirectoryFactory(Container container, bool useInMemoryIndex)
         {
-            if (usInMemoryIndex)
+            if (useInMemoryIndex)
             {
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();
             }
