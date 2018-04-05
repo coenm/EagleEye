@@ -1,14 +1,14 @@
-﻿namespace CQRSlite.Test.WriteModel.Commands
+﻿namespace EagleEye.Core.Domain.Commands
 {
     using System;
 
     using CQRSlite.Commands;
 
-    public class CreateInventoryItem : ICommand
-	{
+    public class CreateMediaItemCommand : ICommand
+    {
         public readonly string Name;
 
-        public CreateInventoryItem(Guid id, string name)
+        public CreateMediaItemCommand(Guid id, string name)
         {
             Id = id;
             Name = name;
@@ -17,5 +17,5 @@
         public Guid Id { get; set; }
 
         public int ExpectedVersion { get; set; }
-	}
+    }
 }
