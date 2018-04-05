@@ -14,7 +14,7 @@ namespace NetMq.Test
         public void RequestResponseSocketTest()
         {
             // arrange
-            const string ADDRESS = "inproc://inproc-address";
+            const string ADDRESS = "inproc://inproc-address"; 
 
             // act
             using (var server = new ResponseSocket())
