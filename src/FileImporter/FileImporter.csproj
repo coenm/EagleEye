@@ -23,7 +23,7 @@
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
     <PackageReference Include="NetMQ" Version="4.0.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NLog" Version="4.5.0" />
+    <PackageReference Include="NLog" Version="4.5.1" />
     <PackageReference Include="ShellProgressBar" Version="4.0.0" />
     <PackageReference Include="SimpleInjector" Version="4.1.0" />
   </ItemGroup>
