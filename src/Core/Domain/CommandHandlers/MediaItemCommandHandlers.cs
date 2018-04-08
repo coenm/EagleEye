@@ -8,7 +8,9 @@
     using EagleEye.Core.Domain.Commands;
     using EagleEye.Core.Domain.Entities;
 
-    public class MediaItemCommandHandlers : /*ICancellable*/ICommandHandler<CreateMediaItemCommand>
+    public class MediaItemCommandHandlers : /*ICancellable*/ICommandHandler<CreateMediaItemCommand>,
+                                                            ICommandHandler<AddTagsToMediaItemCommand>,
+                                                            ICommandHandler<RemoveTagsFromMediaItemCommand>
     {
         private readonly ISession _session;
 
@@ -31,6 +33,20 @@
 //            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
 //            item.Remove(message.Count);
 //            await _session.Commit(token);
+        }
+
+        public async Task Handle(AddTagsToMediaItemCommand message)
+        {
+            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            item.AddTags(message.Tags);
+            await _session.Commit().ConfigureAwait(false);
+        }
+
+        public async Task Handle(RemoveTagsFromMediaItemCommand message)
+        {
+            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            item.RemoveTags(message.Tags);
+            await _session.Commit().ConfigureAwait(false);
         }
     }
 }

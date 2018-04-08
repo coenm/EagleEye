@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Domain;
+    using CQRSlite.Events;
     using CQRSlite.Routing;
 
     using EagleEye.Core.Domain;
@@ -26,8 +27,13 @@
             var respository = new Repository(new InMemoryEventStore(publisher));
             var session = new Session(respository);
             var handler = new MediaItemCommandHandlers(session);
-            var events = new List<MediaItemCreated>();
+            var events = new List<IEvent>();
             publisher.RegisterHandler<MediaItemCreated>((evt, ct) =>
+                                                        {
+                                                            events.Add(evt);
+                                                            return Task.CompletedTask;
+                                                        });
+            publisher.RegisterHandler<TagsAddedToMediaItem>((evt, ct) =>
                                                         {
                                                             events.Add(evt);
                                                             return Task.CompletedTask;
@@ -38,8 +44,17 @@
             var command = new CreateMediaItemCommand(guid, "aap");
             await handler.Handle(command).ConfigureAwait(false);
 
+            var addTagsCommand = new AddTagsToMediaItemCommand(guid, "summer", "holiday");
+            await handler.Handle(addTagsCommand).ConfigureAwait(false);
+
+            addTagsCommand = new AddTagsToMediaItemCommand(guid, "summer", "soccer");
+            await handler.Handle(addTagsCommand).ConfigureAwait(false);
+
+            var removeTagsCommand = new RemoveTagsFromMediaItemCommand(guid, "summer");
+            await handler.Handle(removeTagsCommand).ConfigureAwait(false);
+
             // assert
-            events.Should().HaveCount(1);
+            events.Should().HaveCount(3);
         }
     }
 }
