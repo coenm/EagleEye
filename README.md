@@ -27,7 +27,10 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - [x] Coverage Report: [CodeCov](https://codecov.io), [Coveralls](https://coveralls.io);
 - [ ] Docker;
 - [ ] [SonarQube](https://about.sonarcloud.io/);
+- [ ] CQRS ES (using CQRSlite);
+- [ ] Entity framework. Now, it is placed in Core library (as read-model). Should have its own project.
 - [ ] Misc: NLog, Humanizer, Lucene.NET, NetMq (ZeroMq).
+
 
 ## AppVeyor
 - Download tooling (GitVersion; ExifTool);

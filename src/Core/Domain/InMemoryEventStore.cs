@@ -28,6 +28,7 @@
                     list = new List<IEvent>();
                     _inMemoryDb.Add(@event.Id, list);
                 }
+
                 list.Add(@event);
                 await _publisher.Publish(@event, cancellationToken).ConfigureAwait(false);
             }
