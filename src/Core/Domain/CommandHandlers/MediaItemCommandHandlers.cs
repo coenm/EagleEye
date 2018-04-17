@@ -21,7 +21,7 @@
 
         public async Task Handle(CreateMediaItemCommand message)
         {
-            var item = new MediaItem(message.Id, message.Name);
+            var item = new MediaItem(message.Id, message.Name, message.Tags, message.Persons);
             await _session.Add(item).ConfigureAwait(false);
             await _session.Commit().ConfigureAwait(false);
 

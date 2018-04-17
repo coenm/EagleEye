@@ -17,5 +17,4 @@
 
         Task<int> SaveAsync(MediaItemDb item);
     }
-
 }

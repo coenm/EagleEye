@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Core.Domain.Events
 {
     using System;
+    using System.Diagnostics;
 
     using CQRSlite.Events;
 
@@ -8,13 +9,20 @@
     {
         public readonly string Name;
 
-        public MediaItemCreated(Guid id, string name)
+        [DebuggerStepThrough]
+        public MediaItemCreated(Guid id, string name, string[] tags, string[] persons )
         {
             Id = id;
+            Tags = tags;
+            Persons = persons;
             Name = name;
         }
 
         public Guid Id { get; set; }
+
+        public string[] Tags { get; }
+
+        public string[] Persons { get; }
 
         public int Version { get; set; }
 

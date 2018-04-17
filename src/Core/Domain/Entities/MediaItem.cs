@@ -15,16 +15,20 @@
         private bool _created;
 
         private readonly List<string> _tags;
+        private readonly List<string> _persons;
 
-        public MediaItem(Guid id, string name) : this()
+        public MediaItem(Guid id, string name, string[] tags, string[] persons)
+            : this()
         {
             Id = id;
-            ApplyChange(new MediaItemCreated(id, name));
+
+            ApplyChange(new MediaItemCreated(id, name, tags ?? new string[0], persons ?? new string[0]));
         }
 
         private MediaItem()
         {
             _tags = new List<string>();
+            _persons = new List<string>();
         }
 
         public void AddTags(params string[] tags)
@@ -61,10 +65,67 @@
                 ApplyChange(new TagsRemovedFromMediaItem(Id, tagsRemoved.ToArray()));
         }
 
+        public void AddPersons(params string[] persons)
+        {
+            if (persons == null)
+                return;
+
+            var added = new List<string>(persons.Length);
+
+            foreach (var item in persons.Distinct())
+            {
+                if (!_persons.Contains(item))
+                    added.Add(item);
+            }
+
+            if (added.Any())
+                ApplyChange(new PersonsAddedToMediaItem(Id, added.ToArray()));
+        }
+
+        public void RemovePersons(params string[] persons)
+        {
+            if (persons == null)
+                return;
+
+            if (persons.Length == 0)
+                return;
+
+            var removed = new List<string>(persons.Length);
+
+            foreach (var item in persons.Distinct())
+            {
+                if (_persons.Contains(item))
+                    removed.Add(item);
+            }
+
+            if (removed.Any())
+                ApplyChange(new PersonsRemovedFromMediaItem(Id, removed.ToArray()));
+        }
+
+
+
         [UsedImplicitly]
         private void Apply(MediaItemCreated e)
         {
             _created = true;
+            _tags.AddRange(e.Tags);
+            _persons.AddRange(e.Persons);
+        }
+
+        [UsedImplicitly]
+        private void Apply(PersonsAddedToMediaItem e)
+        {
+            _persons.AddRange(e.Persons ?? new string[0]);
+        }
+
+        [UsedImplicitly]
+        private void Apply(PersonsRemovedFromMediaItem e)
+        {
+            if (e.Persons == null)
+                return;
+
+            foreach (var t in e.Persons)
+                _persons.Remove(t);
         }
 
         [UsedImplicitly]

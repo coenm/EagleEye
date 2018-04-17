@@ -71,7 +71,7 @@
                        };
         }
 
-        private class InMemoryMediaItemDbContextFactory : MediaItemDbContextFactory
+        internal class InMemoryMediaItemDbContextFactory : MediaItemDbContextFactory
         {
             public InMemoryMediaItemDbContextFactory()
                 : base(new DbContextOptionsBuilder<MediaItemDbContext>()
