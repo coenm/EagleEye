@@ -20,7 +20,7 @@
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
-    <PackageReference Include="NLog" Version="4.5.1" />
+    <PackageReference Include="NLog" Version="4.5.3" />
   </ItemGroup>
 
   <ItemGroup>

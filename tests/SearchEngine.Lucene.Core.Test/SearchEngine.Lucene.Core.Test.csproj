@@ -4,23 +4,22 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
     <IsPackable>false</IsPackable>
-    <RootNamespace>SearchEngine.LuceneNet.Core.Test</RootNamespace>
+    <RootNamespace>SearchEngine.Lucene.Core.Test</RootNamespace>
 
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
-    <AssemblyName>SearchEngine.LuceneNet.Core.Test</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="1.0.2" />
+    <PackageReference Include="coverlet.msbuild" Version="1.1.1" />
     <PackageReference Include="FakeItEasy" Version="4.5.1" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.5.1" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
-    <PackageReference Include="NLog" Version="4.5.1" />
+    <PackageReference Include="NLog" Version="4.5.3" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.categories" Version="2.0.3" />
@@ -29,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SearchEngine.Lucene.Core\SearchEngine.Lucene.Core.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
