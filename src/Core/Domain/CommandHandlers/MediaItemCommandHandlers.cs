@@ -10,7 +10,9 @@
 
     public class MediaItemCommandHandlers : /*ICancellable*/ICommandHandler<CreateMediaItemCommand>,
                                                             ICommandHandler<AddTagsToMediaItemCommand>,
-                                                            ICommandHandler<RemoveTagsFromMediaItemCommand>
+                                                            ICommandHandler<AddPersonsToMediaItemCommand>,
+                                                            ICommandHandler<RemoveTagsFromMediaItemCommand>,
+                                                            ICommandHandler<RemovePersonsFromMediaItemCommand>
     {
         private readonly ISession _session;
 
@@ -46,6 +48,20 @@
         {
             var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.RemoveTags(message.Tags);
+            await _session.Commit().ConfigureAwait(false);
+        }
+
+        public async Task Handle(AddPersonsToMediaItemCommand message)
+        {
+            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            item.AddPersons(message.Persons);
+            await _session.Commit().ConfigureAwait(false);
+        }
+
+        public async Task Handle(RemovePersonsFromMediaItemCommand message)
+        {
+            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            item.RemovePersons(message.Persons);
             await _session.Commit().ConfigureAwait(false);
         }
     }

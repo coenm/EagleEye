@@ -22,7 +22,7 @@
         {
             Id = id;
 
-            ApplyChange(new MediaItemCreated(id, name, tags ?? new string[0], persons ?? new string[0]));
+            ApplyChange(new MediaItemCreated(id, name, tags, persons));
         }
 
         private MediaItem()

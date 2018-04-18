@@ -13,8 +13,8 @@
         public MediaItemCreated(Guid id, string name, string[] tags, string[] persons )
         {
             Id = id;
-            Tags = tags;
-            Persons = persons;
+            Tags = tags ?? new string[0];
+            Persons = persons ?? new string[0];
             Name = name;
         }
 
