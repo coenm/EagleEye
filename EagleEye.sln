@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SearchEngine", "SearchEngin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.Core.Test", "tests\SearchEngine.Lucene.Core.Test\SearchEngine.Lucene.Core.Test.csproj", "{3E96CD8A-C800-46FB-B559-CBF879C4E86A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Test", "tests\CQRSlite.Test\CQRSlite.Test.csproj", "{4372D252-35EB-427C-99AF-1F759C9350CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite.Test", "tests\CQRSlite.Test\CQRSlite.Test.csproj", "{4372D252-35EB-427C-99AF-1F759C9350CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
