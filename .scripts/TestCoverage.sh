@@ -9,7 +9,7 @@ ROOT_PATH=$(cd ${SCRIPTPATH}/../; pwd)
 
 cd ${ROOT_PATH}
 
-TMP_LCOV=${ROOT_PATH}/single_coverage_results.info
+TMP_LCOV=${ROOT_PATH}/single_coverage_results.xml
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
 touch $MERGED_LCOV
 
