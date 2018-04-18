@@ -1,14 +1,15 @@
-﻿namespace SearchEngine.LuceneNet.Core.Test.Index
+﻿namespace SearchEngine.Lucene.Core.Test.Index
 {
     using System;
     using System.Threading.Tasks;
 
     using FluentAssertions;
 
-    using Lucene.Net.Search;
+    using global::Lucene.Net.Search;
 
+    using SearchEngine.Lucene.Core.Test.Data;
+    using SearchEngine.LuceneNet.Core;
     using SearchEngine.LuceneNet.Core.Index;
-    using SearchEngine.LuceneNet.Core.Test.Data;
 
     using Xunit;
 

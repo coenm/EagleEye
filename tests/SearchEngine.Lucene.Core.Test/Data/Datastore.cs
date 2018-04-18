@@ -1,4 +1,4 @@
-﻿namespace SearchEngine.LuceneNet.Core.Test.Data
+﻿namespace SearchEngine.Lucene.Core.Test.Data
 {
     using System;
     using System.Collections.Generic;
