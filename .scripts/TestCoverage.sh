@@ -9,7 +9,10 @@ ROOT_PATH=$(cd ${SCRIPTPATH}/../; pwd)
 
 cd ${ROOT_PATH}
 
-TMP_LCOV=${ROOT_PATH}/single_coverage_results.xml
+#remove extension from filename as coverlet will add the extension
+TMP_LCOV=${ROOT_PATH}/single_coverage_results
+TMP_LCOV_EXT=${TMP_LCOV}.xml
+
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
 touch $MERGED_LCOV
 
@@ -22,16 +25,16 @@ do
 	
 	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:configuration=Release $TEST_PROJECT
 	
-	if [ -f "$TMP_LCOV" ]
+	if [ -f "$TMP_LCOV_EXT" ]
 	then
-		cat ${TMP_LCOV}
+		cat ${TMP_LCOV_EXT}
 		echo Upload coverage results to coverall
-		cat ${TMP_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+		cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
 	
 		echo Coverage file exists.. merge into final merge results.
-		cat ${TMP_LCOV} >> ${MERGED_LCOV}
+		cat ${TMP_LCOV_EXT} >> ${MERGED_LCOV}
 		echo '\n' >> ${MERGED_LCOV}
-		rm $TMP_LCOV
+		rm $TMP_LCOV_EXT
 	fi
 done
 
