@@ -20,10 +20,14 @@ for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
 	
-	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:configuration=Release $TEST_PROJECT
+	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:configuration=Release $TEST_PROJECT
 	
 	if [ -f "$TMP_LCOV" ]
 	then
+		cat ${TMP_LCOV}
+		echo Upload coverage results to coverall
+		cat ${TMP_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+	
 		echo Coverage file exists.. merge into final merge results.
 		cat ${TMP_LCOV} >> ${MERGED_LCOV}
 		echo '\n' >> ${MERGED_LCOV}
@@ -31,5 +35,5 @@ do
 	fi
 done
 
-echo Upload coverage results to coverall
-cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+# echo Upload coverage results to coverall
+# cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
