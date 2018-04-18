@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="1.0.2" />
+    <PackageReference Include="coverlet.msbuild" Version="1.1.1" />
     <PackageReference Include="FakeItEasy" Version="4.5.1" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.5.1" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
@@ -29,7 +29,7 @@
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
-    <PackageReference Include="NLog" Version="4.5.1" />
+    <PackageReference Include="NLog" Version="4.5.3" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.analyzers" Version="0.8.0" />
     <PackageReference Include="xunit.categories" Version="2.0.3" />
