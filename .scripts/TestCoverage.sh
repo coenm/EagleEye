@@ -11,7 +11,8 @@ cd ${ROOT_PATH}
 
 #remove extension from filename as coverlet will add the extension
 TMP_LCOV=${ROOT_PATH}/single_coverage_results
-TMP_LCOV_EXT=${TMP_LCOV}.xml
+TMP_LCOV_EXT=${TMP_LCOV}.info
+
 
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
 touch $MERGED_LCOV
@@ -28,8 +29,8 @@ for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
 	
-	echo dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
-	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
+	echo dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
+	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
 	
 	if [ -f "$TMP_LCOV_EXT" ]
 	then
