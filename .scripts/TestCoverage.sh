@@ -15,7 +15,6 @@ TMP_LCOV_EXT=${TMP_LCOV}.info
 
 
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
-touch $MERGED_LCOV
 
 # exclude the Testhelper project:  [TestHelper]*
 # exclude all tests projects:      [*.Test]EagleEye.*
@@ -35,12 +34,24 @@ do
 	if [ -f "$TMP_LCOV_EXT" ]
 	then
 		#cat ${TMP_LCOV_EXT}
-		echo Upload coverage results to coverall
-		cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
+		#echo Upload coverage results to coverall
+		#cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
 	
 		echo Coverage file exists.. merge into final merge results.
+		
+		if [ -f "$MERGED_LCOV" ]
+		then
+			echo '\n' >> ${MERGED_LCOV}
+			
+		else
+			touch $MERGED_LCOV
+		fi
+		
 		cat ${TMP_LCOV_EXT} >> ${MERGED_LCOV}
-		echo '\n' >> ${MERGED_LCOV}
+		#echo '\n' >> ${MERGED_LCOV}
 		rm $TMP_LCOV_EXT
 	fi
 done
+
+echo Upload coverage results to coverall
+cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
