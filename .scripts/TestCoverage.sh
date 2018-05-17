@@ -18,7 +18,7 @@ touch $MERGED_LCOV
 
 # exclude the Testhelper project:  [TestHelper]*
 # exclude all tests projects:      [*.Test]EagleEye.*
-COVERLET_EXCLUDE_FILTER="[TestHelper]*,[*.Test]EagleEye.*"
+COVERLET_EXCLUDE_FILTER=[TestHelper]*,[*.Test]EagleEye.*
 
 
 TEST_PROJECTS=$(find . -type f -name *Test.csproj)
@@ -28,7 +28,8 @@ for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
 	
-	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:Exclude=$COVERLET_EXCLUDE_FILTER /p:configuration=Release $TEST_PROJECT
+	echo dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
+	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
 	
 	if [ -f "$TMP_LCOV_EXT" ]
 	then
