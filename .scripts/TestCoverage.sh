@@ -16,6 +16,11 @@ TMP_LCOV_EXT=${TMP_LCOV}.xml
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
 touch $MERGED_LCOV
 
+# exclude the Testhelper project:  [TestHelper]*
+# exclude all tests projects:      [*.Test]EagleEye.*
+COVERLET_EXCLUDE_FILTER="[TestHelper]*,[*.Test]EagleEye.*"
+
+
 TEST_PROJECTS=$(find . -type f -name *Test.csproj)
 
 # this for loop only works if the path doesn't contain any spaces!
@@ -23,11 +28,11 @@ for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
 	
-	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:configuration=Release $TEST_PROJECT
+	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:Exclude=$COVERLET_EXCLUDE_FILTER /p:configuration=Release $TEST_PROJECT
 	
 	if [ -f "$TMP_LCOV_EXT" ]
 	then
-		cat ${TMP_LCOV_EXT}
+		#cat ${TMP_LCOV_EXT}
 		echo Upload coverage results to coverall
 		cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
 	
@@ -37,6 +42,3 @@ do
 		rm $TMP_LCOV_EXT
 	fi
 done
-
-# echo Upload coverage results to coverall
-# cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
