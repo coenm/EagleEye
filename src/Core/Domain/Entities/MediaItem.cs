@@ -16,11 +16,13 @@
 
         private readonly List<string> _tags;
         private readonly List<string> _persons;
+        private Location _location;
 
         public MediaItem(Guid id, string name, string[] tags, string[] persons)
             : this()
         {
             Id = id;
+            _location = null;
 
             ApplyChange(new MediaItemCreated(id, name, tags, persons));
         }
@@ -102,7 +104,41 @@
                 ApplyChange(new PersonsRemovedFromMediaItem(Id, removed.ToArray()));
         }
 
+        public void SetLocation(
+            string countryCode,
+            string countryName,
+            string state,
+            string city,
+            string subLocation,
+            float? longitude,
+            float? latitude)
+        {
 
+            var location = new Location(countryCode, countryName, state, city, subLocation, longitude, latitude);
+
+
+            ApplyChange(new LocationSetToMediaItem(Id, location));
+        }
+
+        public void ClearLocationData()
+        {
+            if (_location == null)
+                return;
+
+            ApplyChange(new LocationClearedFromMediaItem(Id/*, _location*/));
+        }
+
+        [UsedImplicitly]
+        private void Apply(LocationClearedFromMediaItem e)
+        {
+            _location = null;
+        }
+
+        [UsedImplicitly]
+        private void Apply(LocationSetToMediaItem e)
+        {
+            _location = e.Location;
+        }
 
         [UsedImplicitly]
         private void Apply(MediaItemCreated e)

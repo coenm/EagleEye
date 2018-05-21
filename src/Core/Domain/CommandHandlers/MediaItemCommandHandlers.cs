@@ -12,7 +12,9 @@
                                                             ICommandHandler<AddTagsToMediaItemCommand>,
                                                             ICommandHandler<AddPersonsToMediaItemCommand>,
                                                             ICommandHandler<RemoveTagsFromMediaItemCommand>,
-                                                            ICommandHandler<RemovePersonsFromMediaItemCommand>
+                                                            ICommandHandler<RemovePersonsFromMediaItemCommand>,
+                                                            ICommandHandler<SetLocationToMediaItemCommand>,
+                                                            ICommandHandler<ClearLocationFromMediaItemCommand>
     {
         private readonly ISession _session;
 
@@ -62,6 +64,28 @@
         {
             var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.RemovePersons(message.Persons);
+            await _session.Commit().ConfigureAwait(false);
+        }
+
+        public async Task Handle(SetLocationToMediaItemCommand message)
+        {
+            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            item.SetLocation(
+                             message.CountryCode,
+                             message.CountryName,
+                             message.State,
+                             message.City,
+                             message.SubLocation,
+                             message.Longitude,
+                             message.Latitude);
+
+            await _session.Commit().ConfigureAwait(false);
+        }
+
+        public async Task Handle(ClearLocationFromMediaItemCommand message)
+        {
+            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            item.ClearLocationData();
             await _session.Commit().ConfigureAwait(false);
         }
     }

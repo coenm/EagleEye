@@ -17,7 +17,9 @@
         ICancellableEventHandler<TagsAddedToMediaItem>,
         ICancellableEventHandler<TagsRemovedFromMediaItem>,
         ICancellableEventHandler<PersonsAddedToMediaItem>,
-        ICancellableEventHandler<PersonsRemovedFromMediaItem>
+        ICancellableEventHandler<PersonsRemovedFromMediaItem>,
+        ICancellableEventHandler<LocationClearedFromMediaItem>,
+        ICancellableEventHandler<LocationSetToMediaItem>
     {
         private readonly IMediaItemRepository _repository;
 
@@ -26,7 +28,7 @@
             _repository = repository;
         }
 
-        public async Task Handle(MediaItemCreated message, CancellationToken token = new CancellationToken())
+        public async Task Handle(MediaItemCreated message, CancellationToken token = default(CancellationToken))
         {
             var mediaItemDto = new MediaItemDto();
             if (message.Tags != null)
@@ -47,7 +49,7 @@
             await _repository.SaveAsync(item).ConfigureAwait(false);
         }
 
-        public async Task Handle(TagsAddedToMediaItem message, CancellationToken token = new CancellationToken())
+        public async Task Handle(TagsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
             var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -73,7 +75,7 @@
         }
 
 
-        public async Task Handle(PersonsAddedToMediaItem message, CancellationToken token = new CancellationToken())
+        public async Task Handle(PersonsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
             var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -98,7 +100,7 @@
             await _repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
-        public async Task Handle(TagsRemovedFromMediaItem message, CancellationToken token = new CancellationToken())
+        public async Task Handle(TagsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
             var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -126,7 +128,7 @@
             await _repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
-        public async Task Handle(PersonsRemovedFromMediaItem message, CancellationToken token = new CancellationToken())
+        public async Task Handle(PersonsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
             var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -152,6 +154,62 @@
             item.TimeStampUtc = message.TimeStamp;
 
             await _repository.UpdateAsync(item).ConfigureAwait(false);
+        }
+
+        public async Task Handle(LocationClearedFromMediaItem message, CancellationToken token = default(CancellationToken))
+        {
+            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (item == null)
+                return; // throw??
+
+            // check versions?
+
+            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+
+            if (mediaItemDto.Location == null)
+                return; // throw?
+
+            mediaItemDto.Location = null;
+
+            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+
+            // update tags
+            item.Version = message.Version;
+            item.TimeStampUtc = message.TimeStamp;
+
+            await _repository.UpdateAsync(item).ConfigureAwait(false);
+        }
+
+        public async Task Handle(LocationSetToMediaItem message, CancellationToken token = default(CancellationToken))
+        {
+            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (item == null)
+                return; // throw??
+
+            // check versions?
+
+            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+
+            mediaItemDto.Location = new LocationDto
+                                        {
+                                            CountryName = message.Location.CountryName,
+                                            CountryCode = message.Location.CountryCode,
+                                            City = message.Location.City,
+                                            State = message.Location.State,
+                                            SubLocation = message.Location.SubLocation,
+                                            Latitude = message.Location.Latitude,
+                                            Longitude = message.Location.Longitude,
+                                        };
+
+            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+
+            // update tags
+            item.Version = message.Version;
+            item.TimeStampUtc = message.TimeStamp;
+
+            await _repository.UpdateAsync(item).ConfigureAwait(false); ;
         }
     }
 }
