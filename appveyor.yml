@@ -49,5 +49,6 @@ build:
   
 test_script:
 - cmd: powershell .\.scripts\TestCoverage.ps1
-# .scripts\TestCoverage.DotCover.ps1
-- cmd: codecov -f coverage-dotnet.xml    
+
+after_test:
+- cmd: powershell .scripts\Codecov.ps1
