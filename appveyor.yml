@@ -1,5 +1,25 @@
-version: 1.0.{build}
-image: Visual Studio 2017
+image:
+  - Visual Studio 2017
+#  - Ubuntu
+
+configuration: Release	
+#platform: Any CPU
+
+environment:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  github_oauth_token:
+    secure: H1vW5fnfAOt5/c5f1qnaatUjFVAPc2oZnxDBFutJZL58LxAyJNRLtfIBrcHnSg8y
+  
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '%GitVersion_NuGetVersion%'
+  package_version: '%GitVersion_NuGetVersion%'
+  #version: '{version}'
+  #package_version: '{version}'
+  # assembly_version: '{version}'
+  # file_version: '{version}'
+  informational_version: '%GitVersion_InformationalVersion%'
 
 install:
 - cmd: >-
