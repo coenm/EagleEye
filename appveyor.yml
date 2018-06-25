@@ -1,0 +1,29 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+
+install:
+- cmd: >-
+    choco install gitversion.portable -pre -y
+
+    choco install opencover.portable
+
+    REM choco install dotcover -y
+
+    choco install codecov -y
+
+    powershell .\.scripts\InstallExiftool.ps1
+
+    C:\ProgramData\chocolatey\lib/gitversion.portable/tools/gitversion.exe /l console /output buildserver
+
+    git submodule update --init --recursive
+before_build:
+- cmd: dotnet restore
+build:
+  verbosity: minimal
+test_script:
+- ps: >-
+    # .scripts\TestCoverage.DotCover.ps1
+
+    .scripts\TestCoverage.ps1
+
+    codecov -f coverage-dotnet.xml
