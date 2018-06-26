@@ -31,8 +31,9 @@ install:
 # install opencover (windows)
 - cmd: choco install opencover.portable -y
 
-# install latest codecov (choco is behind of nuget)
+# install latest codecov (choco is behind of nuget) and coveralls in linux.
 - cmd: nuget install Codecov -OutputDirectory C:\NuGetTools\
+- sh: npm install --save-dev coveralls
 
 # Install Exiftool	
 - cmd: powershell .\.scripts\InstallExiftool.ps1

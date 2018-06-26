@@ -42,7 +42,6 @@ do
 		if [ -f "$MERGED_LCOV" ]
 		then
 			echo '\n' >> ${MERGED_LCOV}
-			
 		else
 			touch $MERGED_LCOV
 		fi
@@ -54,4 +53,4 @@ do
 done
 
 echo Upload coverage results to coverall
-# cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
