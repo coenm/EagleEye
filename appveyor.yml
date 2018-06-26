@@ -2,7 +2,7 @@ image:
 - Visual Studio 2017
 - Ubuntu
 
-#configuration: Release	
+configuration: Debug	
 #platform: Any CPU
 
 environment:
