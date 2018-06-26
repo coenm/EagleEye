@@ -54,4 +54,5 @@ do
 done
 
 echo Upload coverage results to coverall
-cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+# cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+cat ${MERGED_LCOV}

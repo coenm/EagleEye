@@ -49,6 +49,7 @@ build:
   
 test_script:
 - cmd: powershell .\.scripts\TestCoverage.ps1
+- sh: chmod +x .scripts/TestCoverage.sh && .scripts/TestCoverage.sh
 
 after_test:
 - cmd: powershell .scripts\Codecov.ps1
