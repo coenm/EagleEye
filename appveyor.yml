@@ -26,9 +26,10 @@ dotnet_csproj:
 
 install:
 # Install and run gitversion. (use param "/l console" to show debug info)
-- cmd echo $env:APPVEYOR_REPO_COMMIT
+- cmd: echo $env:APPVEYOR_REPO_COMMIT
 - cmd: choco install gitversion.portable -pre -y
 - cmd: C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
+- sh: echo $env:APPVEYOR_REPO_COMMIT
 - sh: chmod +x .scripts/InstallGitVersion.sh && .scripts/InstallGitVersion.sh
 - sh: mono .scripts/GitVersion/GitVersion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
 
