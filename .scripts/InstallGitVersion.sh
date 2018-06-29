@@ -15,4 +15,5 @@ sudo apt-get install libcurl3
 wget https://github.com/GitTools/GitVersion/releases/download/v4.0.0-beta.12/GitVersion_4.0.0-beta0012.zip
 unzip GitVersion_4.0.0-beta0012.zip -d ${SCRIPTPATH}/GitVersion
 
-mono ${SCRIPTPATH}/GitVersion/GitVersion.exe
+echo "commit ${APPVEYOR_REPO_COMMIT}"
+mono ${SCRIPTPATH}/GitVersion/GitVersion.exe /l console /output buildserver /c ${APPVEYOR_REPO_COMMIT}
