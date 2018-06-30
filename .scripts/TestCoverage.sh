@@ -42,7 +42,6 @@ do
 		if [ -f "$MERGED_LCOV" ]
 		then
 			echo '\n' >> ${MERGED_LCOV}
-			
 		else
 			touch $MERGED_LCOV
 		fi
