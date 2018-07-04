@@ -6,7 +6,7 @@
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 ROOT_PATH=$(cd ${SCRIPTPATH}/../; pwd)
-EXIFTOOL_VERSION=$(cat "${ROOT_PATH}/EXIFTOOL_VERSION")
+EXIFTOOL_VERSION=$(cat "${ROOT_PATH}/EXIFTOOL_VERSION" | tr -d ' \n' | tr -d ' \r')
 echo "Exiftool version to install: ${EXIFTOOL_VERSION}"
 
 wget https://www.sno.phy.queensu.ca/~phil/exiftool/Image-ExifTool-${EXIFTOOL_VERSION}.tar.gz
