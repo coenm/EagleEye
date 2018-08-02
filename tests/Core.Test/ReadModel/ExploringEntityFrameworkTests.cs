@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
     using EagleEye.Core.ReadModel.EntityFramework;
@@ -73,9 +74,9 @@
 
         internal class InMemoryMediaItemDbContextFactory : MediaItemDbContextFactory
         {
-            public InMemoryMediaItemDbContextFactory()
+            public InMemoryMediaItemDbContextFactory([CallerMemberName] string name = "dummy")
                 : base(new DbContextOptionsBuilder<MediaItemDbContext>()
-                       .UseInMemoryDatabase("blaBlieBlow")
+                       .UseInMemoryDatabase(name)
                        .Options)
             {
             }
