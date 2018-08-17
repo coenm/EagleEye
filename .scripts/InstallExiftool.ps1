@@ -13,6 +13,7 @@ Write-Host "ROOT: " $RootDir
 
 
 $exiftoolversion = [IO.File]::ReadAllText( (join-path $RootDir "EXIFTOOL_VERSION") )
+$exiftoolversion = $exiftoolversion.Trim()
 Write-Host "EXIFTOOL VERSION: " $exiftoolversion
 
 $exiftoolZipFilename = "exiftool-" + $exiftoolversion + ".zip"

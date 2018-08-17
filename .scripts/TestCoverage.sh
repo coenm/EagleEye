@@ -11,10 +11,15 @@ cd ${ROOT_PATH}
 
 #remove extension from filename as coverlet will add the extension
 TMP_LCOV=${ROOT_PATH}/single_coverage_results
-TMP_LCOV_EXT=${TMP_LCOV}.xml
+TMP_LCOV_EXT=${TMP_LCOV}.info
+
 
 MERGED_LCOV=${ROOT_PATH}/coverage_results.info
-touch $MERGED_LCOV
+
+# exclude the Testhelper project:  [TestHelper]*
+# exclude all tests projects:      [*.Test]EagleEye.*
+COVERLET_EXCLUDE_FILTER=[TestHelper]*,[*.Test]EagleEye.*
+
 
 TEST_PROJECTS=$(find . -type f -name *Test.csproj)
 
@@ -23,20 +28,29 @@ for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
 	
-	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$TMP_LCOV /p:configuration=Release $TEST_PROJECT
+	echo dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
+	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
 	
 	if [ -f "$TMP_LCOV_EXT" ]
 	then
-		cat ${TMP_LCOV_EXT}
-		echo Upload coverage results to coverall
-		cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
+		#cat ${TMP_LCOV_EXT}
+		#echo Upload coverage results to coverall
+		#cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
 	
 		echo Coverage file exists.. merge into final merge results.
+		
+		if [ -f "$MERGED_LCOV" ]
+		then
+			echo '\n' >> ${MERGED_LCOV}
+		else
+			touch $MERGED_LCOV
+		fi
+		
 		cat ${TMP_LCOV_EXT} >> ${MERGED_LCOV}
-		echo '\n' >> ${MERGED_LCOV}
+		#echo '\n' >> ${MERGED_LCOV}
 		rm $TMP_LCOV_EXT
 	fi
 done
 
-# echo Upload coverage results to coverall
-# cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+echo Upload coverage results to coverall
+cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js

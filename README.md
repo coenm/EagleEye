@@ -22,7 +22,7 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - [ ] DI: [SimpleInjector](https://simpleinjector.org/);
 - [x] Test frameworks: [xUnit](https://github.com/xunit), [FakeItEasy](https://fakeiteasy.github.io/), [FluentAssertions](https://fluentassertions.com/);
 - [x] [Jetbrains Annotations](https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html), Maybe use [Code Contract](https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/code-contracts)?
-- [x] CI: [AppVeyor](https://www.appveyor.com/) (windows CI); [Travis](https://travis-ci.org/) (Linux CI);
+- [x] CI: [AppVeyor](https://www.appveyor.com/) (windows CI and Ubuntu); ~~[Travis](https://travis-ci.org/) (Linux CI);~~
 - [x] Coverage: [OpenCover](https://github.com/OpenCover/opencover) (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
 - [x] Coverage Report: [CodeCov](https://codecov.io), [Coveralls](https://coveralls.io);
 - [ ] Docker;
@@ -33,29 +33,24 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 
 
 ## AppVeyor
-- Download tooling (GitVersion; ExifTool);
-- Run [GitVersion](https://gitversion.readthedocs.io/en/latest/);
+- Download and run [GitVersion](https://gitversion.readthedocs.io/en/latest/);
+- Download OpenCover (Windows only) (Coverlet, the coverage tool used in Ubuntu is fetched using Nuget);
+- Download CodeCov (Windows) and Coveralls (Ubuntu) to publish the coverage result to the web services;
+- Download Exiftool;
 - Patches assembly versions according to found version;
-- Build project;
-- Run unittests measuring using OpenCover;
-- Push coverage results to [CodeCov](https://codecov.io)
-
-## Travis
-- Download ExifTool;
-- Build project;
-- Run unittests measuring coverage with [Coverlet](https://github.com/tonerdo/coverlet/);
-- Push coverage results to [Coveralls](https://coveralls.io)
+- Restore packages;
+- Build solution;
+- Run unittests measuring using OpenCover (Windows) and [Coverlet](https://github.com/tonerdo/coverlet/) (Ubuntu);
+- Push coverage results to [CodeCov](https://codecov.io) or to [Coveralls](https://coveralls.io)
 
 Todo: 
-- Run GitVersion (using mono);
-- Patch version information;
-- Remove Coverlet package from test projects and download it only in Travis.
+- Remove Coverlet package from test projects and download it only in ~~Travis~~ Appveyor/Ubuntu.
 
 
 # The badges
-| Branch | AppVeyor | Travis |
-| :--- | :--- | :--- |
-| Develop | [![Build status](https://ci.appveyor.com/api/projects/status/ner6290e44akpvuw/branch/develop?svg=true)](https://ci.appveyor.com/project/coenm/eagleeye/branch/develop) [![Coverage](https://codecov.io/gh/coenm/eagleeye/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/eagleeye/branch/develop) | [![Build Status](https://travis-ci.org/coenm/EagleEye.svg?branch=develop)](https://travis-ci.org/coenm/EagleEye) [![Coverage Status](https://coveralls.io/repos/github/coenm/EagleEye/badge.svg?branch=develop)](https://coveralls.io/github/coenm/EagleEye?branch=develop) |
+| Branch | AppVeyor | Windows coverage | Ubuntu coverage |
+| :--- | :--- | :--- | :--- |
+| Develop | [![Build status](https://ci.appveyor.com/api/projects/status/ner6290e44akpvuw/branch/develop?svg=true)](https://ci.appveyor.com/project/coenm/eagleeye/branch/develop) | [![Coverage](https://codecov.io/gh/coenm/eagleeye/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/eagleeye/branch/develop) | [![Coverage Status](https://coveralls.io/repos/github/coenm/EagleEye/badge.svg?branch=develop)](https://coveralls.io/github/coenm/EagleEye?branch=develop) |
 
 
 # Checkout and build

@@ -37,7 +37,7 @@
             using (var stream = OpenRead())
             using (var streamReader = new StreamReader(stream))
             {
-                return streamReader.ReadToEnd();
+                return streamReader.ReadToEnd().Trim();
             }
         }
 
