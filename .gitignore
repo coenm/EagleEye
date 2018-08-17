@@ -290,3 +290,4 @@ __pycache__/
 tools/**
 *.patch
 exiftool-*.zip
+*.diff
