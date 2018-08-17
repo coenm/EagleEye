@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
     <PackageReference Include="MimeTypes" Version="1.0.6" />
-    <PackageReference Include="NLog" Version="4.5.7" />
+    <PackageReference Include="NLog" Version="4.5.8" />
   </ItemGroup>
 
 </Project>
