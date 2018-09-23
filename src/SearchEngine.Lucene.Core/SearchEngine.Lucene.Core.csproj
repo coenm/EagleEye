@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-	<RuntimeFrameworkVersion>2.0.5</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.4</RuntimeFrameworkVersion>
     <RootNamespace>SearchEngine.Lucene.Core</RootNamespace>
 
     <!-- do not update version, this will be done using appvayor -->

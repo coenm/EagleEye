@@ -38,7 +38,7 @@
         }
 
         /// <summary>
-        /// Convert Fullfilename to relative such that it doesn't matter what machine in what directory the sln is stored.
+        /// Convert fullFilename to relative such that it doesn't matter what machine in what directory the sln is stored.
         /// </summary>
         /// <param name="fullFilename">absolute filename</param>
         /// <returns>filename relative to sn file.</returns>
