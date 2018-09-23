@@ -1,12 +1,16 @@
 ﻿namespace EagleEye.FileImporter.Imaging
 {
+    using System;
     using System.IO;
+    using System.Runtime.InteropServices;
     using System.Security.Cryptography;
 
     using CoenM.ImageSharp;
     using CoenM.ImageSharp.HashAlgorithms;
 
     using SixLabors.ImageSharp;
+    using SixLabors.ImageSharp.Advanced;
+    using SixLabors.ImageSharp.PixelFormats;
 
     public static class ImageHashing
     {
@@ -57,7 +61,7 @@
 
         private static byte[] CalculateImageHash(Image<Rgba32> img)
         {
-            var data = img.SavePixelData();
+            var data = MemoryMarshal.AsBytes(img.GetPixelSpan()).ToArray();
 
             using (var sha256 = SHA256.Create())
                 return sha256.ComputeHash(data);
