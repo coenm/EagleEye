@@ -13,8 +13,8 @@
     ""Hashes"": {
       ""FileHash"": ""++w{S2[kj437J2P(i{waAoqjvk1S)wE%vL3@fv0O"",
       ""ImageHash"": ""+]JP}/TH1-hP/ax&a)iqy%H<Ze>cpbBhph)ggipp"",
-      ""AverageHash"": 18446717683803819524,
-      ""DifferenceHash"": 3573764261290621052,
+      ""AverageHash"": 18442214084176449028,
+      ""DifferenceHash"": 3573764330010097788,
       ""PerceptualHash"": 15585629762494286247
     }
   },
@@ -22,9 +22,9 @@
     ""Identifier"": ""1wa.jpg"",
     ""Hashes"": {
       ""FileHash"": ""qtX]SB9l<WOiqsA-QV%w:x#*TG?Z^Z<{&(hN2.D&"",
-      ""ImageHash"": ""B)}t0Hj5h<bx6G&popv-H1SGDfe%IZlY*iNlF.Q:"",
-      ""AverageHash"": 18446717683803819524,
-      ""DifferenceHash"": 3573764261290621052,
+      ""ImageHash"": ""]+:uJ=I=5{etSH@U3orh6g3YYtL%K*FIpSyjDH%Z"",
+      ""AverageHash"": 18442214084176449028,
+      ""DifferenceHash"": 3573764330010097788,
       ""PerceptualHash"": 15585629762494286247
     }
   },
@@ -34,7 +34,7 @@
       ""FileHash"": ""]{1kaSsfj*uo6Wv0c[-*Nb/wQ:kGT2Pr/8@4{ZM$"",
       ""ImageHash"": ""M:c%N?8U3h^#bL]8iYmANd<AQ4l$mTgf1wzhOM>x"",
       ""AverageHash"": 4093965717081112447,
-      ""DifferenceHash"": 17340674709071853308,
+      ""DifferenceHash"": 16187753204465006332,
       ""PerceptualHash"": 11979645924150615927
     }
   },
@@ -42,9 +42,9 @@
     ""Identifier"": ""2wa.jpg"",
     ""Hashes"": {
       ""FileHash"": ""cwWMITr}>e4%3K2M&#i:eL75fFWcfA5^t>QkE)jQ"",
-      ""ImageHash"": ""U7DFb)YE.6qdW!d?Gd+jCWt:MZYYloquS}T3TjhJ"",
+      ""ImageHash"": ""ds=T!^*c*gVR^IEe2t9kF34xtvt[aYQE&3rXL-cS"",
       ""AverageHash"": 4093965717081112447,
-      ""DifferenceHash"": 17340674709073950462,
+      ""DifferenceHash"": 17628905085225662206,
       ""PerceptualHash"": 11979645924150615927
     }
   },
@@ -52,7 +52,7 @@
     ""Identifier"": ""3.jpg"",
     ""Hashes"": {
       ""FileHash"": ""^o0*buZsr?<}J8LrZWAtLNB#ZJ+w@h?0bCZq3Azh"",
-      ""ImageHash"": ""AHbguvVf]$li1$@0[vPy&&m{OPhH%7liQE{PzyM?"",
+      ""ImageHash"": ""Vgm-Kw0bWG*d*O(LG2IkIfWCK)zP8QSwp^*yfrS("",
       ""AverageHash"": 1746901995957518336,
       ""DifferenceHash"": 17327732025059362952,
       ""PerceptualHash"": 13994443045429955730
@@ -62,9 +62,9 @@
     ""Identifier"": ""3wa.jpg"",
     ""Hashes"": {
       ""FileHash"": ""}LI4>A*eQ&y2KAwzOs^/MfG=(WY[H?2Ld%(IxfZ@"",
-      ""ImageHash"": ""+MkKRaZ*<}:rdIr8w1<il8E*D{[BxBFJB-7?u:+x"",
+      ""ImageHash"": ""mRD=z^f7NG0.}^VrGox:UkwJA.eRtzBhl%(pz]]S"",
       ""AverageHash"": 1746901995957518336,
-      ""DifferenceHash"": 17327872762547718296,
+      ""DifferenceHash"": 17363901559566682248,
       ""PerceptualHash"": 13994443045429955730
     }
   },
@@ -74,18 +74,18 @@
       ""FileHash"": ""-!VJQj34vHI!aXB6@iU14$E}jf:rV<s#6btzfvqh"",
       ""ImageHash"": ""?txyvr6FtM-#1wSRX*LW}VYjwN$zT??0=k)JR7#c"",
       ""AverageHash"": 3474298655623479295,
-      ""DifferenceHash"": 7477312801918790912,
-      ""PerceptualHash"": 11839175152576027866
+      ""DifferenceHash"": 7477875751872212224,
+      ""PerceptualHash"": 12415618312693406938
     }
   },
   {
     ""Identifier"": ""4wa.jpg"",
     ""Hashes"": {
       ""FileHash"": ""}6FemJ<HHc@>B.eGks^=iWxbe[/W}z3dlcNPPy2u"",
-      ""ImageHash"": ""-qOvW[ol6Zwo9go*umUX]k?Y5/fdlP?HW+No:Ceh"",
+      ""ImageHash"": ""{*w4paqPoAZNbdg?krEe]7Z=n4I8no4UFqMSm)@y"",
       ""AverageHash"": 3474298655623479295,
       ""DifferenceHash"": 7477875751872211200,
-      ""PerceptualHash"": 11839175152576027866
+      ""PerceptualHash"": 12415618312693406938
     }
   },
   {
@@ -93,19 +93,19 @@
     ""Hashes"": {
       ""FileHash"": ""Y4Y8aa-Cwe):!?eGPV%&W*Hl./iq?opwu}gHbgl&"",
       ""ImageHash"": ""0viV^gr2<h)f(^O:3FG#q=C%[+4ujyD6kKH1l}YL"",
-      ""AverageHash"": 4608497811455,
+      ""AverageHash"": 210451300351,
       ""DifferenceHash"": 130174362314118373,
-      ""PerceptualHash"": 9456493324026014833
+      ""PerceptualHash"": 9456493324026080337
     }
   },
   {
     ""Identifier"": ""6wa.jpg"",
     ""Hashes"": {
       ""FileHash"": ""lx9y(@oZemtcI6a3-P!4@K)!$f(!&Pl4dKN2MGZ9"",
-      ""ImageHash"": "":U4D}})-noD/gX-5UKHl)@4aeR(2b=Aczhy3j6&/"",
-      ""AverageHash"": 4608497811455,
+      ""ImageHash"": ""@fTPqlxQVK{T5@.(*:9<ir19({[+#GzfgOn+2bgt"",
+      ""AverageHash"": 210451300351,
       ""DifferenceHash"": 130174362314118885,
-      ""PerceptualHash"": 9456493324026014833
+      ""PerceptualHash"": 9456493324026080337
     }
   },
   {
@@ -115,17 +115,17 @@
       ""ImageHash"": ""><*>7N<.hpT2o13(Q@6kZT8=msafB-b0A![G)8CZ"",
       ""AverageHash"": 4453327437823,
       ""DifferenceHash"": 421364555712865764,
-      ""PerceptualHash"": 9456493632260892232
+      ""PerceptualHash"": 9456489234212284012
     }
   },
   {
     ""Identifier"": ""7wa.jpg"",
     ""Hashes"": {
       ""FileHash"": "":qke.<P2<(=62Ng(RKnyCqAyEAjL8]e]lw}qUn^7"",
-      ""ImageHash"": ""hbYr540F9e8S:oy+@?=B6sEE}2qcj*d}<Yzvqht?"",
+      ""ImageHash"": ""spuPWeDQ13F*dpWwqXlB+cFXIEvY!]QV}DQ9RKdK"",
       ""AverageHash"": 4453327437823,
       ""DifferenceHash"": 421364555712882148,
-      ""PerceptualHash"": 9456493632260892232
+      ""PerceptualHash"": 9456489234212284012
     }
   },
   {
@@ -134,7 +134,7 @@
       ""FileHash"": ""dWHP5sX<p@Mc4a93y.W]Bw[epBbq$%{T8rV(Y=)!"",
       ""ImageHash"": ""7&yEPhk(r&.gUetd@oQquZNPC:qVs^gMQkKtSIYz"",
       ""AverageHash"": 18012702927131052843,
-      ""DifferenceHash"": 11790867287640325097,
+      ""DifferenceHash"": 11790867279050390505,
       ""PerceptualHash"": 17998763484001462542
     }
   }
