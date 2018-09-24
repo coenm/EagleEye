@@ -17,48 +17,21 @@
     public class ExploringEntityFrameworkTests
     {
         [Fact, Xunit.Categories.Exploratory]
-        public async Task SelectUsingPredicateTest()
+        public async Task SelectUsingPredicateFromEmptyDatabaseShouldReturnNothingTest()
         {
             // arrange
             var sut = new InMemoryMediaItemDbContextFactory();
 
             using (var db = sut.CreateMediaItemDbContext())
             {
+                // act
                 var result = await db.MediaItems
                                      .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
                                      .ToListAsync()
                                      .ConfigureAwait(false);
 
+                // assert
                 result.Should().BeEmpty();
-            }
-        }
-
-        [Fact, Xunit.Categories.Exploratory]
-        public async Task SelectUsingPredicateTesta()
-        {
-            var sut = new InMemoryMediaItemDbContextFactory();
-
-            using (var db = sut.CreateMediaItemDbContext())
-            {
-                var items = new[]
-                                {
-                                    Create(1, DateTimeOffset.UtcNow),
-                                    Create(1, DateTimeOffset.UtcNow),
-                                };
-                await db.MediaItems.AddRangeAsync(items).ConfigureAwait(false);
-
-                // item does not match predicate
-                await db.MediaItems.AddAsync(Create(1, DateTimeOffset.UtcNow.AddDays(1)))
-                        .ConfigureAwait(false);
-
-                await db.SaveChangesAsync().ConfigureAwait(false);
-
-                var result = await db.MediaItems
-                                     .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
-                                     .ToListAsync()
-                                     .ConfigureAwait(false);
-
-                result.Should().BeEquivalentTo(items.AsEnumerable());
             }
         }
 
@@ -70,6 +43,32 @@
                            Version = version,
                            TimeStampUtc = timestamp
                        };
+        }
+
+        [Fact, Xunit.Categories.Exploratory]
+        public async Task SelectUsingPredicateShouldReturnAskedItemTest()
+        {
+            // arrange
+            var item1 = Create(1, DateTimeOffset.UtcNow); // should match predicate
+            var item2 = Create(2, DateTimeOffset.UtcNow); // should match predicate
+            var item3 = Create(3, DateTimeOffset.UtcNow.AddDays(1)); // should NOT match predicate
+
+            var sut = new InMemoryMediaItemDbContextFactory();
+
+            using (var db = sut.CreateMediaItemDbContext())
+            {
+                await db.MediaItems.AddRangeAsync(item1, item2, item3).ConfigureAwait(false);
+                await db.SaveChangesAsync().ConfigureAwait(false);
+
+                // act
+                var result = await db.MediaItems
+                                     .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
+                                     .ToListAsync()
+                                     .ConfigureAwait(false);
+
+                // assert
+                result.Should().BeEquivalentTo(new[] { item1, item2 }.AsEnumerable());
+            }
         }
 
         internal class InMemoryMediaItemDbContextFactory : MediaItemDbContextFactory
