@@ -8,7 +8,7 @@
     using CQRSlite.Test.WriteModel.Commands;
     using CQRSlite.Test.WriteModel.Domain;
 
-    public class InventoryCommandHandlers : ICommandHandler<CreateInventoryItem> ,
+    public class InventoryCommandHandlers : ICancellableCommandHandler<CreateInventoryItem> ,
 //                                            ICancellableCommandHandler<DeactivateInventoryItem>,
                                             ICancellableCommandHandler<RemoveItemsFromInventory>
 //                                            ICancellableCommandHandler<CheckInItemsToInventory>,
@@ -21,11 +21,11 @@
             _session = session;
         }
 
-        public async Task Handle(CreateInventoryItem message)
+        public async Task Handle(CreateInventoryItem message, CancellationToken token = new CancellationToken())
         {
             var item = new InventoryItem(message.Id, message.Name);
-            await _session.Add(item).ConfigureAwait(false);
-            await _session.Commit().ConfigureAwait(false);
+            await _session.Add(item, token).ConfigureAwait(false);
+            await _session.Commit(token).ConfigureAwait(false);
         }
 
 //        public async Task Handle(DeactivateInventoryItem message, CancellationToken token)
