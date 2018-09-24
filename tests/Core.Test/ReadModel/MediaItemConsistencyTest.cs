@@ -15,16 +15,16 @@
 
     using Xunit;
 
-    public class MediaItemConsistancyTest
+    public class MediaItemConsistencyTest
     {
-        private readonly MediaItemConsistancy _sut;
+        private readonly MediaItemConsistency _sut;
         private readonly IMediaItemRepository _mediaItemRepository;
 
-        public MediaItemConsistancyTest()
+        public MediaItemConsistencyTest()
         {
             IMediaItemDbContextFactory mediaItemDbContextFactory = new ExploringEntityFrameworkTests.InMemoryMediaItemDbContextFactory();
             _mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
-            _sut = new MediaItemConsistancy(_mediaItemRepository);
+            _sut = new MediaItemConsistency(_mediaItemRepository);
         }
 
         [Fact]

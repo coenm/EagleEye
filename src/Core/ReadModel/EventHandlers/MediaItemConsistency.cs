@@ -12,7 +12,7 @@
 
     using Newtonsoft.Json;
 
-    public class MediaItemConsistancy :
+    public class MediaItemConsistency :
         ICancellableEventHandler<MediaItemCreated>,
         ICancellableEventHandler<TagsAddedToMediaItem>,
         ICancellableEventHandler<TagsRemovedFromMediaItem>,
@@ -23,7 +23,7 @@
     {
         private readonly IMediaItemRepository _repository;
 
-        public MediaItemConsistancy(IMediaItemRepository repository)
+        public MediaItemConsistency(IMediaItemRepository repository)
         {
             _repository = repository;
         }
@@ -39,7 +39,7 @@
 
             var item = new MediaItemDb
                            {
-                               Filename = message.Name,
+                               Filename = message.FileName,
                                Id = message.Id,
                                Version = message.Version,
                                TimeStampUtc = message.TimeStamp,
@@ -73,7 +73,6 @@
 
             await _repository.UpdateAsync(item).ConfigureAwait(false);
         }
-
 
         public async Task Handle(PersonsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
@@ -209,7 +208,7 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false); ;
+            await _repository.UpdateAsync(item).ConfigureAwait(false);
         }
     }
 }

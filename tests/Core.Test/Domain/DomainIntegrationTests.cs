@@ -24,8 +24,8 @@
         {
             // arrange
             var publisher = new Router();
-            var respository = new Repository(new InMemoryEventStore(publisher));
-            var session = new Session(respository);
+            var repository = new Repository(new InMemoryEventStore(publisher));
+            var session = new Session(repository);
             var handler = new MediaItemCommandHandlers(session);
             var events = new List<IEvent>();
             publisher.RegisterHandler<MediaItemCreated>((evt, ct) =>

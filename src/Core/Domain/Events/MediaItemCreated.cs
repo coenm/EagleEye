@@ -7,15 +7,15 @@
 
     public class MediaItemCreated : IEvent
     {
-        public readonly string Name;
+        public readonly string FileName;
 
         [DebuggerStepThrough]
-        public MediaItemCreated(Guid id, string name, string[] tags, string[] persons )
+        public MediaItemCreated(Guid id, string filename, string[] tags, string[] persons )
         {
             Id = id;
             Tags = tags ?? new string[0];
             Persons = persons ?? new string[0];
-            Name = name;
+            FileName = filename;
         }
 
         public Guid Id { get; set; }
