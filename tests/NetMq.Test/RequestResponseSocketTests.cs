@@ -14,7 +14,7 @@ namespace NetMq.Test
         public void RequestResponseSocketTest()
         {
             // arrange
-            const string ADDRESS = "inproc://inproc-address"; 
+            const string ADDRESS = "inproc://inproc-address";
 
             // act
             using (var server = new ResponseSocket())
@@ -24,13 +24,13 @@ namespace NetMq.Test
                 client.Connect(ADDRESS);
 
                 client.SendFrame("Hello");
-                var reveivedFromClient = server.ReceiveFrameString();
+                var receivedFromClient = server.ReceiveFrameString();
 
                 server.SendFrame("Hi Back");
                 var receivedFromServer = client.ReceiveFrameString();
 
                 // assert
-                reveivedFromClient.Should().Be("Hello");
+                receivedFromClient.Should().Be("Hello");
                 receivedFromServer.Should().Be("Hi Back");
             }
         }
