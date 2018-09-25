@@ -20,6 +20,7 @@
     <PackageReference Include="FakeItEasy" Version="4.8.1" />
     <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="4.8.1" />
     <PackageReference Include="FluentAssertions" Version="5.4.2" />
+    <PackageReference Include="FluentAssertions.Analyzers" Version="0.11.4" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
