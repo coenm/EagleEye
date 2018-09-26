@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Core.ReadModel.EntityFramework
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -31,6 +32,15 @@
             using (var db = _contextFactory.CreateMediaItemDbContext())
             {
                 var result = db.MediaItems.FirstOrDefault(x => x.Id.Equals(id));
+                return Task.FromResult(result);
+            }
+        }
+
+        public Task<IEnumerable<MediaItemDb>> GetAllAsync()
+        {
+            using (var db = _contextFactory.CreateMediaItemDbContext())
+            {
+                var result = db.MediaItems.AsEnumerable(); // not sure
                 return Task.FromResult(result);
             }
         }

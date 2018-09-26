@@ -22,6 +22,7 @@
 
     using EagleEye.Core.Domain;
     using EagleEye.Core.Domain.CommandHandlers;
+    using EagleEye.Core.ReadModel;
     using EagleEye.Core.ReadModel.EntityFramework;
 
     using JetBrains.Annotations;
@@ -57,6 +58,8 @@
             container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>())); // Repository has two public constructors (why??)
             container.RegisterDecorator<IRepository, CacheRepository>();
             container.Register<ISession, Session>();
+
+            container.Register<IReadModelFacade, ReadModel>();
 
             // Scan and register command handlers and event handlers
             var coreAssembly = typeof(MediaItemCommandHandlers).Assembly;
