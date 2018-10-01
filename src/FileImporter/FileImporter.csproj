@@ -34,6 +34,7 @@
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\ExifToolWrapper\ExifToolWrapper.csproj" />
     <ProjectReference Include="..\Picasa\Picasa.csproj" />
+    <ProjectReference Include="..\SearchEngine.Lucene.Bootstrap\SearchEngine.Lucene.Bootstrap.csproj" />
   </ItemGroup>
 
 </Project>

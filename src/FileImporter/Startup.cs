@@ -14,6 +14,8 @@
     using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
     using EagleEye.FileImporter.Similarity;
 
+    using SearchEngine.Lucene.Bootstrap;
+
     using SimpleInjector;
 
     using CQRSlite.Events;
@@ -73,6 +75,8 @@
                                                                                                .UseInMemoryDatabase("Dummy")
                                                                                                .Options));
 
+            RegisterSearchEngine(container);
+
         }
 
         public static void VerifyContainer([NotNull] Container container)
@@ -81,6 +85,12 @@
                 throw new ArgumentNullException(nameof(container));
 
             container.Verify(VerificationOption.VerifyAndDiagnose);
+        }
+
+
+        private static void RegisterSearchEngine(Container container)
+        {
+            SearchEngineLuceneBootstrapper.Bootstrap(container);
         }
     }
 }
