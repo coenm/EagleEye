@@ -39,6 +39,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Interface", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.Bootstrap.Test", "tests\SearchEngine.Lucene.Bootstrap.Test\SearchEngine.Lucene.Bootstrap.Test.csproj", "{516C14E6-5377-4FC6-B0DC-052A520890A0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite.Test", "tests\CQRSlite.Test\CQRSlite.Test.csproj", "{4372D252-35EB-427C-99AF-1F759C9350CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{516C14E6-5377-4FC6-B0DC-052A520890A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{516C14E6-5377-4FC6-B0DC-052A520890A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{516C14E6-5377-4FC6-B0DC-052A520890A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4372D252-35EB-427C-99AF-1F759C9350CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4372D252-35EB-427C-99AF-1F759C9350CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4372D252-35EB-427C-99AF-1F759C9350CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4372D252-35EB-427C-99AF-1F759C9350CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +131,7 @@ Global
 		{8EB042F8-2D4D-4265-B6AE-17871A1ED3C2} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 		{6B6356F3-361D-4783-8526-0AC1C34D04CD} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 		{516C14E6-5377-4FC6-B0DC-052A520890A0} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
+		{4372D252-35EB-427C-99AF-1F759C9350CA} = {0F1A8088-DA52-4A07-8500-A0FB7168A83D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7C2606B-F2C8-4C33-8571-8D27AC814D68}

@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.FileImporter.Test.Indexing
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -7,6 +8,8 @@
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Json;
     using EagleEye.TestHelper;
+
+    using FluentAssertions;
 
     using Xunit;
 
@@ -26,6 +29,7 @@
         public void CalculateIndexOfFilesTest()
         {
             // arrange
+            var expectedResult = JsonEncoding.Deserialize<List<ImageData>>(TestImagesIndex.IndexJson).Select(MapThis);
             var contentResolver = new RelativeFilesystemContentResolver(TestImages.InputImagesDirectoryFullPath);
             var sut = new CalculateIndexService(contentResolver);
 
@@ -33,8 +37,20 @@
             var result = sut.CalculateIndex(_imageFilenames);
 
             // assert
-            // take shortcut to assert the result.
-            Assert.Equal(TestImagesIndex.IndexJson.Replace("\r\n", "\n"), JsonEncoding.Serialize(result.OrderBy(item => item.Identifier)).Replace("\r\n", "\n"));
+            var preparedResult = result.Select(MapThis);
+            preparedResult.Should().BeEquivalentTo(expectedResult);
+        }
+
+        private static dynamic MapThis(ImageData data)
+        {
+            return new
+                       {
+                           MapedIdentifier = data.Identifier,
+                           MapedAverageHash = data.Hashes.AverageHash,
+                           MapedDifferenceHash = data.Hashes.DifferenceHash,
+                           MapedFileHash = data.Hashes.FileHash,
+                           MapedPerceptualHash = data.Hashes.PerceptualHash,
+                       };
         }
 
         /// <summary>
