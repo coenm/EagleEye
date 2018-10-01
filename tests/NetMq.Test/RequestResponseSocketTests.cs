@@ -24,13 +24,13 @@ namespace NetMq.Test
                 client.Connect(ADDRESS);
 
                 client.SendFrame("Hello");
-                var reveivedFromClient = server.ReceiveFrameString();
+                var receivedFromClient = server.ReceiveFrameString();
 
                 server.SendFrame("Hi Back");
                 var receivedFromServer = client.ReceiveFrameString();
 
                 // assert
-                reveivedFromClient.Should().Be("Hello");
+                receivedFromClient.Should().Be("Hello");
                 receivedFromServer.Should().Be("Hi Back");
             }
         }
