@@ -57,9 +57,9 @@
                 var similarityResult = new SimilarityResult
                 {
                     OtherImageHash = i.Hashes.ImageHash,
-                    AverageHash = CoenM.ImageSharp.CompareHash.Similarity(image.Hashes.AverageHash, i.Hashes.AverageHash),
-                    DifferenceHash = CoenM.ImageSharp.CompareHash.Similarity(image.Hashes.DifferenceHash, i.Hashes.DifferenceHash),
-                    PerceptualHash = CoenM.ImageSharp.CompareHash.Similarity(image.Hashes.PerceptualHash, i.Hashes.PerceptualHash)
+                    AverageHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.AverageHash, i.Hashes.AverageHash),
+                    DifferenceHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.DifferenceHash, i.Hashes.DifferenceHash),
+                    PerceptualHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.PerceptualHash, i.Hashes.PerceptualHash)
                 };
 
                 _similarityRepository.AddOrUpdate(image.Hashes.ImageHash, similarityResult);
