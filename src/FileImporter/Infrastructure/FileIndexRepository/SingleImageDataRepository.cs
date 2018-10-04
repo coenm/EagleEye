@@ -67,21 +67,21 @@
 
                     if (minAvgHash >= 0 && minAvgHash <= 100)
                     {
-                        value = CoenM.ImageSharp.CompareHash.Similarity(index.Hashes.AverageHash, src.Hashes.AverageHash);
+                        value = CoenM.ImageHash.CompareHash.Similarity(index.Hashes.AverageHash, src.Hashes.AverageHash);
                         if (value >= minAvgHash)
                             return true;
                     }
 
                     if (minDiffHash >= 0 && minDiffHash <= 100)
                     {
-                        value = CoenM.ImageSharp.CompareHash.Similarity(index.Hashes.DifferenceHash, src.Hashes.DifferenceHash);
+                        value = CoenM.ImageHash.CompareHash.Similarity(index.Hashes.DifferenceHash, src.Hashes.DifferenceHash);
                         if (value >= minDiffHash)
                             return true;
                     }
 
                     if (minPerHash >= 0 && minPerHash <= 100)
                     {
-                        value = CoenM.ImageSharp.CompareHash.Similarity(index.Hashes.PerceptualHash, src.Hashes.PerceptualHash);
+                        value = CoenM.ImageHash.CompareHash.Similarity(index.Hashes.PerceptualHash, src.Hashes.PerceptualHash);
                         if (value >= minPerHash)
                             return true;
                     }

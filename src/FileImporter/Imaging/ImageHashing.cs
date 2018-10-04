@@ -1,12 +1,11 @@
 ﻿namespace EagleEye.FileImporter.Imaging
 {
-    using System;
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
 
-    using CoenM.ImageSharp;
-    using CoenM.ImageSharp.HashAlgorithms;
+    using CoenM.ImageHash;
+    using CoenM.ImageHash.HashAlgorithms;
 
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Advanced;
