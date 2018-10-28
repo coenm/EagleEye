@@ -7,10 +7,10 @@ namespace EagleEye.Categories
     using Xunit.Abstractions;
     using Xunit.Sdk;
 
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Xunit")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "XUnit")]
     public class ExifToolDiscoverer : ITraitDiscoverer
     {
-        public const string DISCOVERER_TYPE_NAME = TestHelperSettings.NAMESPACE + nameof(ExifToolDiscoverer);
+        public const string DiscovererTypeName = TestHelperSettings.Namespace + nameof(ExifToolDiscoverer);
 
         public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
         {

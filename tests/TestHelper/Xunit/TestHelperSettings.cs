@@ -3,8 +3,8 @@ namespace EagleEye.Categories
 {
     public static class TestHelperSettings
     {
-        public const string ASSEMBLY_NAME = "TestHelper";
+        public const string AssemblyName = "TestHelper";
 
-        public const string NAMESPACE = "EagleEye.Categories.";
+        public const string Namespace = "EagleEye.Categories.";
     }
 }

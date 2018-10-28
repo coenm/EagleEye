@@ -10,7 +10,7 @@ namespace EagleEye.Categories
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Xunit")]
     public class PerformanceDiscoverer : ITraitDiscoverer
     {
-        public const string DISCOVERER_TYPE_NAME = TestHelperSettings.NAMESPACE + nameof(PerformanceDiscoverer);
+        public const string DISCOVERER_TYPE_NAME = TestHelperSettings.Namespace + nameof(PerformanceDiscoverer);
 
         public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
         {
