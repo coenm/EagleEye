@@ -13,17 +13,17 @@
 
     public class SingleFileIndexRepositoryTest
     {
-        private readonly SingleImageDataRepository _sut;
-        private readonly List<ImageData> _fileIndex;
-        private readonly IPersistantSerializer<List<ImageData>> _storage;
+        private readonly SingleImageDataRepository sut;
+        private readonly List<ImageData> fileIndex;
+        private readonly IPersistantSerializer<List<ImageData>> storage;
 
         public SingleFileIndexRepositoryTest()
         {
-            _fileIndex = TestImagesIndex.Index;
-            _storage = A.Fake<IPersistantSerializer<List<ImageData>>>();
-            A.CallTo(() => _storage.Load()).Returns(_fileIndex);
+            fileIndex = TestImagesIndex.Index;
+            storage = A.Fake<IPersistantSerializer<List<ImageData>>>();
+            A.CallTo(() => storage.Load()).Returns(fileIndex);
 
-            _sut = new SingleImageDataRepository(_storage);
+            sut = new SingleImageDataRepository(storage);
         }
 
         /// <summary>
@@ -41,14 +41,14 @@
         public void FindSimilarImageTest(string identifier, string expectedMatch)
         {
             // arrange
-            var src = _fileIndex.Single(index => index.Identifier == identifier);
+            var src = fileIndex.Single(index => index.Identifier == identifier);
 
             // act
-            var result = _sut.FindSimilar(src).ToList();
+            var result = sut.FindSimilar(src).ToList();
 
             // assert
-            A.CallTo(() => _storage.Load()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => _storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
+            A.CallTo(() => storage.Load()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
             if (expectedMatch == null)
                 Assert.Empty(result);
             else
@@ -66,14 +66,14 @@
         public void CountSimilarTest(string identifier, int expectedCount)
         {
             // arrange
-            var src = _fileIndex.Single(index => index.Identifier == identifier);
+            var src = fileIndex.Single(index => index.Identifier == identifier);
 
             // act
-            var result = _sut.CountSimilar(src);
+            var result = sut.CountSimilar(src);
 
             // assert
-            A.CallTo(() => _storage.Load()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => _storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
+            A.CallTo(() => storage.Load()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
             Assert.Equal(expectedCount, result);
         }
     }

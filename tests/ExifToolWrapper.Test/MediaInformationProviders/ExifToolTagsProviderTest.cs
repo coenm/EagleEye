@@ -18,9 +18,9 @@
 
     public class ExifToolTagsProviderTest
     {
-        private const string FILENAME = "DUMMY";
+        private const string Filename = "DUMMY";
 
-        private const string METADATA_XMP = @"
+        private const string MetadataXmp = @"
   ""XMP"": {
     ""Subject"": [
       ""dog"",
@@ -29,7 +29,7 @@
     ],
   },";
 
-        private const string METADATA_XMP_DC = @"
+        private const string MetadataXmpDc = @"
   ""XMP-dc"": {
     ""Subject"": [
       ""dog"",
@@ -38,7 +38,7 @@
     ],
   },";
 
-        private const string METADATA_IPTC = @"
+        private const string MetadataIptc = @"
   ""IPTC"": {
     ""Keywords"": [
       ""dog"",
@@ -47,15 +47,15 @@
     ],
   }";
 
-        private readonly ExifToolTagsProvider _sut;
-        private readonly IExifTool _exiftool;
-        private readonly MediaObject _media;
+        private readonly ExifToolTagsProvider sut;
+        private readonly IExifTool exiftool;
+        private readonly MediaObject media;
 
         public ExifToolTagsProviderTest()
         {
-            _exiftool = A.Fake<IExifTool>();
-            _sut = new ExifToolTagsProvider(_exiftool);
-            _media = new MediaObject(FILENAME);
+            exiftool = A.Fake<IExifTool>();
+            sut = new ExifToolTagsProvider(exiftool);
+            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -64,7 +64,7 @@
             // arrange
 
             // act
-            var result = _sut.CanProvideInformation(FILENAME);
+            var result = sut.CanProvideInformation(Filename);
 
             // assert
             result.Should().BeTrue();
@@ -74,14 +74,14 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Tags.Should().BeEmpty();
+            media.Tags.Should().BeEmpty();
         }
 
         [Theory]
@@ -89,21 +89,21 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Tags.Should().BeEmpty();
+            media.Tags.Should().BeEmpty();
         }
 
         [Theory]
-        [InlineData(METADATA_XMP)]
-        [InlineData(METADATA_XMP_DC)]
-        [InlineData(METADATA_IPTC)]
-        [InlineData(METADATA_XMP + METADATA_IPTC)]
+        [InlineData(MetadataXmp)]
+        [InlineData(MetadataXmpDc)]
+        [InlineData(MetadataIptc)]
+        [InlineData(MetadataXmp + MetadataIptc)]
         public async Task ProvideShouldFillTagsTest(string data)
         {
             // arrange
@@ -113,14 +113,14 @@
                                        "New York",
                                        "puppy",
                                    };
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Tags.Should().BeEquivalentTo(expectedTags);
+            media.Tags.Should().BeEquivalentTo(expectedTags);
         }
 
         private static string ConvertToJsonArray(string data)

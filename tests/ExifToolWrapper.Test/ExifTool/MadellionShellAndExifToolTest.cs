@@ -20,26 +20,26 @@
 
     public class MadellionShellAndExifToolTest
     {
-        private readonly string _image;
-        private readonly ITestOutputHelper _output;
-        private readonly string _currentExifToolVersion;
+        private readonly string image;
+        private readonly ITestOutputHelper output;
+        private readonly string currentExifToolVersion;
 
         // These tests will only run when exiftool is available from PATH.
         public MadellionShellAndExifToolTest(ITestOutputHelper output)
         {
-            _currentExifToolVersion = ExifToolSystemConfiguration.ConfiguredVersion;
-            _output = output;
+            currentExifToolVersion = ExifToolSystemConfiguration.ConfiguredVersion;
+            this.output = output;
 
-            _image = Directory
+            image = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "1.jpg", SearchOption.AllDirectories)
                 .SingleOrDefault();
 
-            _output.WriteLine($"Testfile: {_image}");
+            this.output.WriteLine($"Testfile: {image}");
 
-            var exists = File.Exists(_image);
+            var exists = File.Exists(image);
             exists.Should().BeTrue("File does NOT! exists!!");
 
-            _image.Should().NotBeNullOrEmpty();
+            image.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
@@ -58,8 +58,8 @@
             await cmd.Task.ConfigureAwait(false);
 
             // assert
-            _output.WriteLine($"Received exiftool version: {cmd.Result.StandardOutput}");
-            cmd.Result.StandardOutput.Should().Be($"{_currentExifToolVersion}\r\n".ConvertToOsString());
+            output.WriteLine($"Received exiftool version: {cmd.Result.StandardOutput}");
+            cmd.Result.StandardOutput.Should().Be($"{currentExifToolVersion}\r\n".ConvertToOsString());
         }
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
@@ -100,9 +100,9 @@
 
                 await cmd.StandardInput.WriteLineAsync(ExifToolArguments.VERSION).ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-execute0000").ConfigureAwait(false);
-                await cmd.StandardInput.WriteLineAsync(_image).ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync(image).ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-execute0005").ConfigureAwait(false);
-                await cmd.StandardInput.WriteLineAsync(_image).ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync(image).ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-execute0008").ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-stay_open").ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("False").ConfigureAwait(false);

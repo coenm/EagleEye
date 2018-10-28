@@ -88,8 +88,8 @@
         }
 
         [Theory]
-        [InlineData(2016, false)] //leap year
-        [InlineData(2017, true)] //regular year
+        [InlineData(2016, false)] // leap year
+        [InlineData(2017, true)] // regular year
         public void SetLeapYearTest(int year, bool errorExpected)
         {
             // arrange

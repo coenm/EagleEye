@@ -21,7 +21,7 @@
 
     public static class Program
     {
-        private static Container _container;
+        private static Container container;
 
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
@@ -40,7 +40,7 @@
 
         public static void Main(string[] args)
         {
-            _container = new Container();
+            container = new Container();
 //            Startup.ConfigureContainer(_container, rootPath, indexFilename);
             Run(args);
         }
@@ -74,13 +74,13 @@
                 return;
             }
 
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var indexService = _container.GetInstance<CalculateIndexService>();
-            var similarityRepository = _container.GetInstance<SimilarityService>();
+            var searchService = container.GetInstance<SearchService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
+            var similarityRepository = container.GetInstance<SimilarityService>();
 
-            var contentResolver = _container.GetInstance<IContentResolver>();
+            var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -177,10 +177,10 @@
 //            }
 
 
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var indexService = _container.GetInstance<CalculateIndexService>();
+            var searchService = container.GetInstance<SearchService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
             var everything = new Everything();
             var show = false;
 
@@ -235,10 +235,10 @@
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
         {
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var contentResolver = _container.GetInstance<IContentResolver>();
+            var searchService = container.GetInstance<SearchService>();
+            var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -368,9 +368,9 @@
 
         private static void Search(SearchOptions options)
         {
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
+            var searchService = container.GetInstance<SearchService>();
             var everything = new Everything();
 
             if (string.IsNullOrWhiteSpace(options.DirectoryToIndex))
@@ -420,7 +420,7 @@
                 .ToArray();
 
 
-            var indexService = _container.GetInstance<CalculateIndexService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
@@ -459,11 +459,11 @@
 //            var diRoot = new DirectoryInfo(RootPath).FullName;
 //            var rp = RootPath;
 
-            Startup.ConfigureContainer(_container, options.OutputFile);
+            Startup.ConfigureContainer(container, options.OutputFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var persistantService = _container.GetInstance<PersistantFileIndexService>();
-            var contentResolver = _container.GetInstance<IContentResolver>();
+            var searchService = container.GetInstance<SearchService>();
+            var persistantService = container.GetInstance<PersistantFileIndexService>();
+            var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -500,7 +500,7 @@
 //                rp = RootPath;
 //            }
 
-            Startup.ConfigureContainer(_container, options.OutputFile);
+            Startup.ConfigureContainer(container, options.OutputFile);
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
@@ -508,9 +508,9 @@
                 .ToArray();
 
 
-            var searchService = _container.GetInstance<SearchService>();
-            var indexService = _container.GetInstance<CalculateIndexService>();
-            var persistantService = _container.GetInstance<PersistantFileIndexService>();
+            var searchService = container.GetInstance<SearchService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
+            var persistantService = container.GetInstance<PersistantFileIndexService>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {

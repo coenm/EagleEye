@@ -7,11 +7,11 @@
 
     public class RelativeFilesystemContentResolver : IContentResolver
     {
-        private readonly string _baseDirectory;
+        private readonly string baseDirectory;
 
         public RelativeFilesystemContentResolver(string baseDirectory)
         {
-            _baseDirectory = baseDirectory ?? throw new ArgumentNullException(nameof(baseDirectory));
+            this.baseDirectory = baseDirectory ?? throw new ArgumentNullException(nameof(baseDirectory));
         }
 
         public bool Exist(string identifier)
@@ -26,7 +26,7 @@
 
         private string FullPath(string identifier)
         {
-            return Path.Combine(_baseDirectory, identifier);
+            return Path.Combine(baseDirectory, identifier);
         }
     }
 }

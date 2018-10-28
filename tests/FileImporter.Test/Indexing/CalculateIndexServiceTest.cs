@@ -15,11 +15,11 @@
 
     public class CalculateIndexServiceTest
     {
-        private readonly string[] _imageFilenames;
+        private readonly string[] imageFilenames;
 
         public CalculateIndexServiceTest()
         {
-            _imageFilenames = Directory
+            imageFilenames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
@@ -34,7 +34,7 @@
             var sut = new CalculateIndexService(contentResolver);
 
             // act
-            var result = sut.CalculateIndex(_imageFilenames);
+            var result = sut.CalculateIndex(imageFilenames);
 
             // assert
             var preparedResult = result.Select(MapThis);

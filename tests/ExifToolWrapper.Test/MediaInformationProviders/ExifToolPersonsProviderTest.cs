@@ -18,9 +18,9 @@
 
     public class ExifToolPersonsProviderTest
     {
-        private const string FILENAME = "DUMMY";
+        private const string Filename = "DUMMY";
 
-        private const string METADATA_XMP = @"
+        private const string MetadataXmp = @"
   ""XMP"": {
     ""PersonInImage"": [
 	  ""Bob"",
@@ -30,7 +30,7 @@
 	]
   },";
 
-        private const string METADATA_XMP_IPTCEXT = @"
+        private const string MetadataXmpIptcext = @"
   ""XMP-iptcExt"": {
     ""PersonInImage"": [
 	  ""Bob"",
@@ -42,15 +42,15 @@
 
 
 
-        private readonly ExifToolPersonsProvider _sut;
-        private readonly IExifTool _exiftool;
-        private readonly MediaObject _media;
+        private readonly ExifToolPersonsProvider sut;
+        private readonly IExifTool exiftool;
+        private readonly MediaObject media;
 
         public ExifToolPersonsProviderTest()
         {
-            _exiftool = A.Fake<IExifTool>();
-            _sut = new ExifToolPersonsProvider(_exiftool);
-            _media = new MediaObject(FILENAME);
+            exiftool = A.Fake<IExifTool>();
+            sut = new ExifToolPersonsProvider(exiftool);
+            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -59,7 +59,7 @@
             // arrange
 
             // act
-            var result = _sut.CanProvideInformation(FILENAME);
+            var result = sut.CanProvideInformation(Filename);
 
             // assert
             result.Should().BeTrue();
@@ -69,14 +69,14 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Persons.Should().BeEmpty();
+            media.Persons.Should().BeEmpty();
         }
 
         [Theory]
@@ -84,19 +84,19 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Persons.Should().BeEmpty();
+            media.Persons.Should().BeEmpty();
         }
 
         [Theory]
-        [InlineData(METADATA_XMP)]
-        [InlineData(METADATA_XMP_IPTCEXT)]
+        [InlineData(MetadataXmp)]
+        [InlineData(MetadataXmpIptcext)]
         public async Task ProvideShouldFillPersonsTest(string data)
         {
             // arrange
@@ -107,14 +107,14 @@
                                           "Stephen Hawking",
                                           "Nelson Mandela"
                                       };
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Persons.Should().BeEquivalentTo(expectedPersons);
+            media.Persons.Should().BeEquivalentTo(expectedPersons);
         }
 
         private static string ConvertToJsonArray(string data)

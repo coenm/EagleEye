@@ -17,16 +17,16 @@
 
     public class ExifToolDateTakenProviderTest
     {
-        private const string FILENAME = "DUMMY";
+        private const string Filename = "DUMMY";
 
-        private const string METADATA_EXIF = @"
+        private const string MetadataExif = @"
   ""EXIF"": {
     ""ModifyDate"": ""2018:01:04 23:32:50"",
     ""DateTimeOriginal"": ""2018:01:01 18:05:20"",
     ""CreateDate"": ""2018:01:01 18:05:18""
   }";
 
-        private const string METADATA_XMP = @"
+        private const string MetadataXmp = @"
   ""XMP"": {
     ""DateTimeOriginal"": ""2018:01:01 15:05:27+01:00"",
     ""GPSDateTime"": ""2018:01:01 17:05:18Z"",
@@ -35,15 +35,15 @@
     ""ModifyDate"": ""2018:01:04 23:32:50+01:00""
   },";
 
-        private readonly ExifToolDateTakenProvider _sut;
-        private readonly IExifTool _exiftool;
-        private readonly MediaObject _media;
+        private readonly ExifToolDateTakenProvider sut;
+        private readonly IExifTool exiftool;
+        private readonly MediaObject media;
 
         public ExifToolDateTakenProviderTest()
         {
-            _exiftool = A.Fake<IExifTool>();
-            _sut = new ExifToolDateTakenProvider(_exiftool);
-            _media = new MediaObject(FILENAME);
+            exiftool = A.Fake<IExifTool>();
+            sut = new ExifToolDateTakenProvider(exiftool);
+            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -52,7 +52,7 @@
             // arrange
 
             // act
-            var result = _sut.CanProvideInformation(FILENAME);
+            var result = sut.CanProvideInformation(Filename);
 
             // assert
             result.Should().BeTrue();
@@ -62,14 +62,14 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.DateTimeTaken.Should().BeNull();
+            media.DateTimeTaken.Should().BeNull();
         }
 
         [Theory]
@@ -77,31 +77,31 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.DateTimeTaken.Should().BeNull();
+            media.DateTimeTaken.Should().BeNull();
         }
 
         [Theory]
-        [InlineData(METADATA_EXIF, 2018, 01, 01, 18, 05, 20)]
-        [InlineData(METADATA_XMP, 2018, 01, 01, 15, 05, 27)]
+        [InlineData(MetadataExif, 2018, 01, 01, 18, 05, 20)]
+        [InlineData(MetadataXmp, 2018, 01, 01, 15, 05, 27)]
         public async Task ProvideShouldFillCoordinatesTest(string data, int year, int month, int day, int hour, int minute, int second)
         {
             // arrange
             var expectedResult = new Timestamp(year, month, day, hour, minute, second);
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
+            media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
         }
 
 

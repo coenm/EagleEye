@@ -7,11 +7,11 @@
 
     public class CalculateIndexService
     {
-        private readonly IContentResolver _contentResolver;
+        private readonly IContentResolver contentResolver;
 
         public CalculateIndexService(IContentResolver contentResolver)
         {
-            _contentResolver = contentResolver ?? throw new ArgumentNullException(nameof(contentResolver));
+            this.contentResolver = contentResolver ?? throw new ArgumentNullException(nameof(contentResolver));
         }
 
         public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
@@ -23,7 +23,7 @@
 
             for (var index = 0; index < fileIdentifiers.Count; index++)
             {
-                using (var stream = _contentResolver.Read(fileIdentifiers[index]))
+                using (var stream = contentResolver.Read(fileIdentifiers[index]))
                 {
                     result[index] = new ImageData(fileIdentifiers[index])
                     {

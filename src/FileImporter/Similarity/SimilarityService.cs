@@ -8,31 +8,30 @@
 
     public class SimilarityService
     {
-        private readonly ISimilarityRepository _similarityRepository;
-        private readonly IImageDataRepository _imageRepository;
+        private readonly ISimilarityRepository similarityRepository;
+        private readonly IImageDataRepository imageRepository;
 
         public SimilarityService(ISimilarityRepository similarityRepository, IImageDataRepository imageRepository)
         {
-            _imageRepository = imageRepository;
-            _similarityRepository = similarityRepository;
+            this.imageRepository = imageRepository;
+            this.similarityRepository = similarityRepository;
         }
 
         public void Update(ImageData image, IProgress<FilenameProgressData> progress)
         {
-
             if (image == null)
                 throw new ArgumentNullException(nameof(image));
 
             if (progress == null)
                 progress = new Progress<FilenameProgressData>(i => { });
 
-            var allKnownImageHashes = _similarityRepository.FindAllRecordedMatches(image.Hashes.ImageHash);
-            var allKnownImages = _imageRepository.Find(img => img.Identifier != image.Identifier && !allKnownImageHashes.Contains(img.Hashes.ImageHash)).ToArray();
+            var allKnownImageHashes = similarityRepository.FindAllRecordedMatches(image.Hashes.ImageHash);
+            var allKnownImages = imageRepository.Find(img => img.Identifier != image.Identifier && !allKnownImageHashes.Contains(img.Hashes.ImageHash)).ToArray();
 
             progress.Report(new FilenameProgressData(0, allKnownImages.Length, ""));
             int index = 0;
 
-            _similarityRepository.AutoSave(false);
+            similarityRepository.AutoSave(false);
 
             Parallel.ForEach(allKnownImages, i =>
             {
@@ -43,16 +42,15 @@
                     OtherImageHash = i.Hashes.ImageHash,
                     AverageHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.AverageHash, i.Hashes.AverageHash),
                     DifferenceHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.DifferenceHash, i.Hashes.DifferenceHash),
-                    PerceptualHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.PerceptualHash, i.Hashes.PerceptualHash)
+                    PerceptualHash = CoenM.ImageHash.CompareHash.Similarity(image.Hashes.PerceptualHash, i.Hashes.PerceptualHash),
                 };
 
-                _similarityRepository.AddOrUpdate(image.Hashes.ImageHash, similarityResult);
+                similarityRepository.AddOrUpdate(image.Hashes.ImageHash, similarityResult);
             });
 
+            similarityRepository.SaveChanges();
 
-            _similarityRepository.SaveChanges();
-
-            _similarityRepository.AutoSave(true);
+            similarityRepository.AutoSave(true);
         }
     }
 }

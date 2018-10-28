@@ -13,14 +13,14 @@
 
     public class PicasaPersonProviderTest
     {
-        private const string DUMMY_FILENAME = "dummy";
-        private readonly PicasaPersonProvider _sut;
-        private readonly IPicasaService _picasaService;
+        private const string DummyFilename = "dummy";
+        private readonly PicasaPersonProvider sut;
+        private readonly IPicasaService picasaService;
 
         public PicasaPersonProviderTest()
         {
-            _picasaService = A.Fake<IPicasaService>();
-            _sut = new PicasaPersonProvider(_picasaService);
+            picasaService = A.Fake<IPicasaService>();
+            sut = new PicasaPersonProvider(picasaService);
         }
 
         [Theory]
@@ -29,10 +29,10 @@
         public void CanProvideInformationUsesPicasaProviderTest(bool picasaServiceCanProvide)
         {
             // arrange
-            A.CallTo(() => _picasaService.CanProvideData(DUMMY_FILENAME)).Returns(picasaServiceCanProvide);
+            A.CallTo(() => picasaService.CanProvideData(DummyFilename)).Returns(picasaServiceCanProvide);
 
             // act
-            var result = _sut.CanProvideInformation(DUMMY_FILENAME);
+            var result = sut.CanProvideInformation(DummyFilename);
 
             // assert
             result.Should().Be(picasaServiceCanProvide);
@@ -42,12 +42,12 @@
         public async Task ProvideAsyncShouldAddPersonsToMediaObjectTest()
         {
             // arrange
-            var mediaObject = new MediaObject(DUMMY_FILENAME);
-            A.CallTo(() => _picasaService.GetDataAsync(DUMMY_FILENAME))
-             .Returns(Task.FromResult(new FileWithPersons(DUMMY_FILENAME, "Alice", "Bob")));
+            var mediaObject = new MediaObject(DummyFilename);
+            A.CallTo(() => picasaService.GetDataAsync(DummyFilename))
+             .Returns(Task.FromResult(new FileWithPersons(DummyFilename, "Alice", "Bob")));
 
             // act
-            await _sut.ProvideAsync(DUMMY_FILENAME, mediaObject).ConfigureAwait(false);
+            await sut.ProvideAsync(DummyFilename, mediaObject).ConfigureAwait(false);
 
             // assert
             mediaObject.Persons.Should().BeEquivalentTo("Alice", "Bob");
@@ -57,12 +57,12 @@
         public async Task ProvideAsyncShouldNotThrowWhenPicasaServiceReturnsNullTest()
         {
             // arrange
-            var mediaObject = new MediaObject(DUMMY_FILENAME);
-            A.CallTo(() => _picasaService.GetDataAsync(DUMMY_FILENAME))
+            var mediaObject = new MediaObject(DummyFilename);
+            A.CallTo(() => picasaService.GetDataAsync(DummyFilename))
              .Returns(Task.FromResult(null as FileWithPersons));
 
             // act
-            await _sut.ProvideAsync(DUMMY_FILENAME, mediaObject).ConfigureAwait(false);
+            await sut.ProvideAsync(DummyFilename, mediaObject).ConfigureAwait(false);
 
             // assert
             // Todo improve assert

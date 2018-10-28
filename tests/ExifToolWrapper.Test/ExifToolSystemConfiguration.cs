@@ -8,9 +8,9 @@
 
     internal static class ExifToolSystemConfiguration
     {
-        private const string EXIFTOOL_VERSION = "EXIFTOOL_VERSION";
-        private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
-        private static readonly string _embeddedResourceNs = typeof(ExifToolSystemConfiguration).Namespace;
+        private const string ExiftoolVersion = "EXIFTOOL_VERSION";
+        private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
+        private static readonly string EmbeddedResourceNs = typeof(ExifToolSystemConfiguration).Namespace;
         private static readonly Lazy<string> GetConfigExiftoolVersionImpl = new Lazy<string>(GetConfiguredExiftoolVersion);
         private static readonly Lazy<string> GetExifToolExecutableImpl = new Lazy<string>(GetExifToolExecutable);
 
@@ -43,7 +43,7 @@
 
         private static Stream OpenRead()
         {
-            return _assembly.GetManifestResourceStream(_embeddedResourceNs + "." + EXIFTOOL_VERSION);
+            return Assembly.GetManifestResourceStream(EmbeddedResourceNs + "." + ExiftoolVersion);
         }
     }
 }

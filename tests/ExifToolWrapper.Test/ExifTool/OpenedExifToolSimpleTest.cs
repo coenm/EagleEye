@@ -15,15 +15,15 @@
 
     public class OpenedExifToolSimpleTest
     {
-        private readonly OpenedExifTool _sut;
-        private readonly IMedallionShell _mediallionShell;
-        private List<string> _calledArguments;
+        private readonly OpenedExifTool sut;
+        private readonly IMedallionShell mediallionShell;
+        private List<string> calledArguments;
 
         public OpenedExifToolSimpleTest()
         {
-            _calledArguments = new List<string>();
-            _mediallionShell = A.Fake<IMedallionShell>();
-            _sut = new TestableOpenedExifTool(_mediallionShell);
+            calledArguments = new List<string>();
+            mediallionShell = A.Fake<IMedallionShell>();
+            sut = new TestableOpenedExifTool(mediallionShell);
         }
 
         [Fact]
@@ -32,7 +32,7 @@
             // arrange
 
             // act
-            Func<Task> act = async () => _ = await _sut.ExecuteAsync(null).ConfigureAwait(false);
+            Func<Task> act = async () => _ = await sut.ExecuteAsync(null).ConfigureAwait(false);
 
             // assert
             act.Should().Throw<Exception>().WithMessage("Not initialized");
@@ -75,17 +75,17 @@
 
         private class TestableOpenedExifTool : OpenedExifTool
         {
-            private readonly IMedallionShell _mediallionShell;
+            private readonly IMedallionShell mediallionShell;
 
             public TestableOpenedExifTool(IMedallionShell mediallionShell)
                 : base("doesnt matter")
             {
-                _mediallionShell = mediallionShell;
+                this.mediallionShell = mediallionShell;
             }
 
             protected override IMedallionShell CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
             {
-                return _mediallionShell;
+                return mediallionShell;
             }
         }
     }

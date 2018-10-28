@@ -11,14 +11,14 @@
     /// </summary>
     public class SingleImageDataRepository : IImageDataRepository
     {
-        private readonly IPersistantSerializer<List<ImageData>> _storage;
-        private readonly List<ImageData> _data;
-        private readonly object _syncLock = new object();
+        private readonly IPersistantSerializer<List<ImageData>> storage;
+        private readonly List<ImageData> data;
+        private readonly object syncLock = new object();
 
         public SingleImageDataRepository(IPersistantSerializer<List<ImageData>> storage)
         {
-            _storage = storage ?? throw new ArgumentNullException(nameof(_storage));
-            _data = _storage.Load();
+            this.storage = storage ?? throw new ArgumentNullException(nameof(this.storage));
+            data = this.storage.Load();
         }
 
         public ImageData Get(string identifier)
@@ -26,7 +26,7 @@
             if (string.IsNullOrWhiteSpace(identifier))
                 throw new ArgumentException(nameof(identifier));
 
-            return _data.FirstOrDefault(i => i.Identifier.Equals(identifier, StringComparison.InvariantCulture));
+            return data.FirstOrDefault(i => i.Identifier.Equals(identifier, StringComparison.InvariantCulture));
         }
 
         public IEnumerable<ImageData> Find(Predicate<ImageData> predicate, int take = 0, int skip = 0)
@@ -34,7 +34,7 @@
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            var result = _data.Where(index => predicate(index));
+            var result = data.Where(index => predicate(index));
 
             if (skip > 0)
                 result = result.Skip(skip);
@@ -52,7 +52,7 @@
                 throw new ArgumentNullException(nameof(src));
 
 
-            var result = _data.Where(index =>
+            var result = data.Where(index =>
                 {
                     if (index.Identifier.Equals(src.Identifier, StringComparison.InvariantCulture))
                         return false;
@@ -124,7 +124,7 @@
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return _data.Count(index => predicate(index));
+            return data.Count(index => predicate(index));
         }
 
         public int CountSimilar(ImageData src, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95)
@@ -137,15 +137,15 @@
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            lock (_syncLock)
+            lock (syncLock)
             {
-                var existingItem = _data.FirstOrDefault(index => index.Identifier.Equals(item.Identifier, StringComparison.InvariantCulture));
+                var existingItem = data.FirstOrDefault(index => index.Identifier.Equals(item.Identifier, StringComparison.InvariantCulture));
 
                 if (existingItem == null)
                     return;
 
-                _data.Remove(existingItem);
-                _storage.Save(_data);
+                data.Remove(existingItem);
+                storage.Save(data);
             }
         }
 
@@ -154,15 +154,15 @@
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            lock (_syncLock)
+            lock (syncLock)
             {
-                var existingItem = _data.FirstOrDefault(index => index.Identifier.Equals(item.Identifier, StringComparison.InvariantCulture));
+                var existingItem = data.FirstOrDefault(index => index.Identifier.Equals(item.Identifier, StringComparison.InvariantCulture));
 
                 if (existingItem != null)
-                    _data.Remove(existingItem);
+                    data.Remove(existingItem);
 
-                _data.Add(item);
-                _storage.Save(_data);
+                data.Add(item);
+                storage.Save(data);
             }
         }
     }

@@ -17,14 +17,14 @@
 
     public class MediaItemConsistencyTest
     {
-        private readonly MediaItemConsistency _sut;
-        private readonly IMediaItemRepository _mediaItemRepository;
+        private readonly MediaItemConsistency sut;
+        private readonly IMediaItemRepository mediaItemRepository;
 
         public MediaItemConsistencyTest()
         {
             IMediaItemDbContextFactory mediaItemDbContextFactory = new ExploringEntityFrameworkTests.InMemoryMediaItemDbContextFactory();
-            _mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
-            _sut = new MediaItemConsistency(_mediaItemRepository);
+            mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
+            sut = new MediaItemConsistency(mediaItemRepository);
         }
 
         [Fact]
@@ -37,13 +37,13 @@
             var initTimestamp = DateTimeOffset.UtcNow;
 
             // act
-            await _sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
+            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
                                   {
                                       TimeStamp = initTimestamp
                                   }).ConfigureAwait(false);
 
             // assert
-            var result = await _mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
+            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
             result.Should().BeEquivalentTo(new MediaItemDb
                                                {
                                                    Id = guid,
@@ -69,24 +69,24 @@
             var initTimestamp = DateTimeOffset.UtcNow;
 
             // act
-            await _sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
+            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
                                   {
                                       Version = 1,
                                       TimeStamp = initTimestamp
                                   });
-            await _sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
+            await sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
                                   {
                                       Version = 2,
                                       TimeStamp = initTimestamp.AddHours(2)
             });
-            await _sut.Handle(new PersonsRemovedFromMediaItem(guid, "Darion", "alice")
+            await sut.Handle(new PersonsRemovedFromMediaItem(guid, "Darion", "alice")
                                   {
                                       Version = 3,
                                       TimeStamp = initTimestamp.AddHours(3)
                                   });
 
             // assert
-            var result = await _mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
+            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
             result.Should().BeEquivalentTo(new MediaItemDb
                                                {
                                                    Id = guid,

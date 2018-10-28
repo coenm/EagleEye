@@ -17,22 +17,22 @@
 
     public class ExifToolLocationProviderTest
     {
-        private const string FILENAME = "DUMMY";
+        private const string Filename = "DUMMY";
 
-        private const string METADATA_IPTC_CORE = @"
+        private const string MetadataIptcCore = @"
 ""XMP-iptcCore"": {
     ""CountryCode"": ""USA"",
     ""Location"": ""Union Square""
 }";
 
-        private const string METADATA_PHOTOSHOP = @"
+        private const string MetadataPhotoshop = @"
 ""XMP-photoshop"": {
     ""City"": ""New-York"",
     ""Country"": ""United States"",
     ""State"": ""New York""
 }";
 
-        private const string METADATA_XMP = @"
+        private const string MetadataXmp = @"
 ""XMP"": {
     ""CountryCode"": ""USA"",
     ""Location"": ""Union Square"",
@@ -41,15 +41,15 @@
     ""State"": ""New York""
 }";
 
-        private readonly ExifToolLocationProvider _sut;
-        private readonly IExifTool _exiftool;
-        private readonly MediaObject _media;
+        private readonly ExifToolLocationProvider sut;
+        private readonly IExifTool exiftool;
+        private readonly MediaObject media;
 
         public ExifToolLocationProviderTest()
         {
-            _exiftool = A.Fake<IExifTool>();
-            _sut = new ExifToolLocationProvider(_exiftool);
-            _media = new MediaObject(FILENAME);
+            exiftool = A.Fake<IExifTool>();
+            sut = new ExifToolLocationProvider(exiftool);
+            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -58,7 +58,7 @@
             // arrange
 
             // act
-            var result = _sut.CanProvideInformation(FILENAME);
+            var result = sut.CanProvideInformation(Filename);
 
             // assert
             result.Should().BeTrue();
@@ -68,14 +68,14 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Should().BeEquivalentTo(new Location());
+            media.Location.Should().BeEquivalentTo(new Location());
         }
 
         [Theory]
@@ -83,60 +83,60 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Should().BeEquivalentTo(new Location());
+            media.Location.Should().BeEquivalentTo(new Location());
         }
 
         [Fact]
         public async Task ProvideShouldHandleXmpPhotoshopMetadataTest()
         {
             // arrange
-            var data = METADATA_PHOTOSHOP;
+            var data = MetadataPhotoshop;
             var expectedLocation = new Location
                                        {
                                            City = "New-York",
                                            State = "New York",
                                            CountryName = "United States"
                                        };
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Should().BeEquivalentTo(expectedLocation);
+            media.Location.Should().BeEquivalentTo(expectedLocation);
         }
 
         [Fact]
         public async Task ProvideShouldHandleXmpIptcCoreMetadataTest()
         {
             // arrange
-            var data = METADATA_IPTC_CORE;
+            var data = MetadataIptcCore;
             var expectedLocation = new Location
                                        {
                                            SubLocation = "Union Square",
                                            CountryCode = "USA",
                                        };
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Should().BeEquivalentTo(expectedLocation);
+            media.Location.Should().BeEquivalentTo(expectedLocation);
         }
 
         [Theory]
-        [InlineData(METADATA_XMP)]
-        [InlineData(METADATA_IPTC_CORE + ", " + METADATA_PHOTOSHOP + ", " + METADATA_XMP)]
+        [InlineData(MetadataXmp)]
+        [InlineData(MetadataIptcCore + ", " + MetadataPhotoshop + ", " + MetadataXmp)]
         public async Task ProvideShouldHanldeXmpMetadataTest(string data)
         {
             // arrange
@@ -148,14 +148,14 @@
                                            SubLocation = "Union Square",
                                            CountryCode = "USA"
                                        };
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Should().BeEquivalentTo(expectedLocation);
+            media.Location.Should().BeEquivalentTo(expectedLocation);
         }
 
 
