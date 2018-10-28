@@ -102,7 +102,6 @@
             sut.Length.Should().Be(0);
         }
 
-
         [Fact]
         public void ReadThrowsTest()
         {
@@ -115,7 +114,6 @@
             // assert
             act.Should().Throw<NotSupportedException>();
         }
-
 
         [Fact]
         public void SingleWriteShouldNotFireEvent()

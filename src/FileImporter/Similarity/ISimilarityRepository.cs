@@ -13,7 +13,9 @@
         void Delete(byte[] contentHash);
 
         void AddOrUpdate(byte[] contentHash, SimilarityResult similarity);
+
         void SaveChanges();
+
         void AutoSave(bool value);
     }
 }

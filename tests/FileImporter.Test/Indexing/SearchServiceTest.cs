@@ -70,6 +70,5 @@
             A.CallTo(() => repository.Get(id)).MustHaveHappenedOnceExactly();
             Assert.Equal(fileIndex, result);
         }
-
     }
 }

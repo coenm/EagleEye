@@ -40,8 +40,6 @@
 	]
   },";
 
-
-
         private readonly ExifToolPersonsProvider sut;
         private readonly IExifTool exiftool;
         private readonly MediaObject media;

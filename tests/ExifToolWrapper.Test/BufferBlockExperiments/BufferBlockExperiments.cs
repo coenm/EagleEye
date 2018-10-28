@@ -22,18 +22,18 @@
         {
             ctsQueue = new CancellationTokenSource();
             queue = new BufferBlock<int>(new DataflowBlockOptions
-                                              {
-                                                  BoundedCapacity = 1,
-                                                  CancellationToken = ctsQueue.Token,
-                                                  EnsureOrdered = true,
-                                                  TaskScheduler = TaskScheduler.Current
-                                              });
+            {
+                BoundedCapacity = 1,
+                CancellationToken = ctsQueue.Token,
+                EnsureOrdered = true,
+                TaskScheduler = TaskScheduler.Current,
+            });
 
             ctsSources = new List<CancellationTokenSource>();
         }
 
         [Fact]
-        public async Task CancelQueueWillResultInFinshedTasksWithoutProcessingThemTest()
+        public async Task CancelQueueWillResultInFinishedTasksWithoutProcessingThemTest()
         {
             // arrange
             InitCancellationTokens(3);
@@ -48,11 +48,10 @@
             // the first was already in the queue and is therefore true?!
             await AssertTaskReturnsAsync(task1, true).ConfigureAwait(false);
 
-            // the other two were posponed and therefore return false!?
+            // the other two were postponed and therefore return false!?
             await AssertTaskReturnsAsync(task2, false).ConfigureAwait(false);
             await AssertTaskReturnsAsync(task3, false).ConfigureAwait(false);
         }
-
 
         [Fact]
         public async Task BufferBlockWithBoundedCapacityOfOneShouldRespectOrderTest()
@@ -156,7 +155,6 @@
             result.Should().Be(false);
         }
 
-
         [Fact]
         public async Task OutputAvailableAsyncReturnsTrueWhenItemAdded()
         {
@@ -187,7 +185,7 @@
                 return;
             }
 
-            throw new Exception("Task wasnt cancelled.");
+            throw new Exception("Task wasn't cancelled.");
         }
 
         private void InitCancellationTokens(int count)

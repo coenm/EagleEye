@@ -76,7 +76,6 @@
                                                                                                .Options));
 
             RegisterSearchEngine(container);
-
         }
 
         public static void VerifyContainer([NotNull] Container container)
@@ -86,7 +85,6 @@
 
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
-
 
         private static void RegisterSearchEngine(Container container)
         {

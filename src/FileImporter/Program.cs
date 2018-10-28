@@ -35,7 +35,7 @@
         {
             ForegroundColor = ConsoleColor.Green,
             BackgroundColor = ConsoleColor.DarkGreen,
-            ProgressCharacter = '─'
+            ProgressCharacter = '─',
         };
 
         public static void Main(string[] args)
@@ -114,6 +114,7 @@
                 Console.WriteLine("Image file cannot be empty.");
                 return;
             }
+
             if (string.IsNullOrWhiteSpace(options.IndexFile))
             {
                 Console.WriteLine("IndexFile file cannot be empty.");
@@ -176,7 +177,6 @@
 //                    };
 //            }
 
-
             Startup.ConfigureContainer(container, options.IndexFile);
 
             var searchService = container.GetInstance<SearchService>();
@@ -213,7 +213,6 @@
                         found = similar.Count;
                         matchValue++;
                     }
-
 
                     if (!similar.Any())
                         similar = lastSimilar;
@@ -351,7 +350,6 @@
                         continue;
                     }
 
-
                     try
                     {
                         var fi = new FileInfo(file);
@@ -407,7 +405,6 @@
                 return;
             }
 
-
             if (!Directory.Exists(options.DirectoryToIndex))
             {
                 Console.WriteLine("Directory does not exist.");
@@ -418,7 +415,6 @@
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
                 .ToArray();
-
 
             var indexService = container.GetInstance<CalculateIndexService>();
 
@@ -507,10 +503,9 @@
 //                .Select(f => ConvertToRelativeFilename(rp, f))
                 .ToArray();
 
-
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
-            var persistantService = container.GetInstance<PersistantFileIndexService>();
+            var persistentService = container.GetInstance<PersistantFileIndexService>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
@@ -525,7 +520,7 @@
                         // index and add
                         progressBar.Message = $"Processing '{file}' ";
                         var index = indexService.CalculateIndex(items);
-                        persistantService.AddOrUpdate(index.Single());
+                        persistentService.AddOrUpdate(index.Single());
                     }
                     else
                     {
@@ -536,11 +531,12 @@
                         // index and add
                         progressBar.Message = $"Processing '{file}' ";
                         var index = indexService.CalculateIndex(items);
-                        persistantService.AddOrUpdate(index.Single());
+                        persistentService.AddOrUpdate(index.Single());
                     }
                 }
             }
-//            Console.ReadKey();
+
+            // Console.ReadKey();
         }
 
         private static string ConvertToRelativeFilename(string rootPath, string fullFilename)

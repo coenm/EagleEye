@@ -104,7 +104,6 @@
             media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
         }
 
-
         [Theory]
         [InlineData("2012:01:23 22:13:25")]
         [InlineData("2012-01-23 22:13:25")]
@@ -126,7 +125,6 @@
             // assert
             result.Should().Be(new DateTime(2012, 01, 23, 22, 13, 25));
         }
-
 
         [Theory]
         [InlineData("2012 01 23 22:13:25")] // space between date instead of ':', or '-'.

@@ -27,7 +27,6 @@
             return data
                    .Where(index => index.ImageHash.Contains(contentHash))
                    .Select(index => index.ImageHash.Single(y => y.SequenceEqual(contentHash) == false));
-
         }
 
         public IEnumerable<SimilarityResult> FindSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95, int take = 0, int skip = 0)
@@ -59,7 +58,7 @@
                                                   DifferenceHash = match.DifferenceHash,
                                                   AverageHash = match.AverageHash,
                                                   PerceptualHash = match.PerceptualHash,
-                                                  OtherImageHash = match.ImageHash.Single(y => y.SequenceEqual(contentHash) == false)
+                                                  OtherImageHash = match.ImageHash.Single(y => y.SequenceEqual(contentHash) == false),
                                               });
         }
 
@@ -112,8 +111,8 @@
                                   ImageHash = new List<byte[]>(2)
                                                   {
                                                       contentHash,
-                                                      similarity.OtherImageHash
-                                                  }
+                                                      similarity.OtherImageHash,
+                                                  },
                               });
 
                 if (autoSave)

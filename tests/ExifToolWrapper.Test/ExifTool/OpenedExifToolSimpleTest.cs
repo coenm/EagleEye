@@ -17,7 +17,7 @@
     {
         private readonly OpenedExifTool sut;
         private readonly IMedallionShell mediallionShell;
-        private List<string> calledArguments;
+        private readonly List<string> calledArguments;
 
         public OpenedExifToolSimpleTest()
         {
@@ -78,7 +78,7 @@
             private readonly IMedallionShell mediallionShell;
 
             public TestableOpenedExifTool(IMedallionShell mediallionShell)
-                : base("doesnt matter")
+                : base("doesn't matter")
             {
                 this.mediallionShell = mediallionShell;
             }

@@ -82,7 +82,6 @@
             version.Should().NotBeNullOrEmpty();
         }
 
-
         [Fact]
         [Xunit.Categories.IntegrationTest]
         [Categories.ExifTool]
@@ -138,7 +137,6 @@
             // assert
             //sut.IsClosed.Should().Be(true);
         }
-
 
         [Fact]
         public async Task RunExifToolWithThreeCommands()

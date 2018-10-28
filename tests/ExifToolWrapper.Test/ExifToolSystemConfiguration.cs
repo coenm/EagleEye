@@ -14,11 +14,9 @@
         private static readonly Lazy<string> GetConfigExiftoolVersionImpl = new Lazy<string>(GetConfiguredExiftoolVersion);
         private static readonly Lazy<string> GetExifToolExecutableImpl = new Lazy<string>(GetExifToolExecutable);
 
-
         public static string ConfiguredVersion => GetConfigExiftoolVersionImpl.Value;
 
         public static string ExifToolExecutable => GetExifToolExecutableImpl.Value;
-
 
         private static string GetExifToolExecutable()
         {

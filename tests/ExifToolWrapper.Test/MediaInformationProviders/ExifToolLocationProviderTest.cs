@@ -84,7 +84,7 @@
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -99,13 +99,13 @@
             // arrange
             var data = MetadataPhotoshop;
             var expectedLocation = new Location
-                                       {
-                                           City = "New-York",
-                                           State = "New York",
-                                           CountryName = "United States"
-                                       };
+            {
+                City = "New-York",
+                State = "New York",
+                CountryName = "United States",
+            };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -125,7 +125,7 @@
                                            CountryCode = "USA",
                                        };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -137,19 +137,19 @@
         [Theory]
         [InlineData(MetadataXmp)]
         [InlineData(MetadataIptcCore + ", " + MetadataPhotoshop + ", " + MetadataXmp)]
-        public async Task ProvideShouldHanldeXmpMetadataTest(string data)
+        public async Task ProvideShouldHandleXmpMetadataTest(string data)
         {
             // arrange
             var expectedLocation = new Location
-                                       {
-                                           City = "New-York",
-                                           State = "New York",
-                                           CountryName = "United States",
-                                           SubLocation = "Union Square",
-                                           CountryCode = "USA"
-                                       };
+            {
+                City = "New-York",
+                State = "New York",
+                CountryName = "United States",
+                SubLocation = "Union Square",
+                CountryCode = "USA",
+            };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -158,13 +158,12 @@
             media.Location.Should().BeEquivalentTo(expectedLocation);
         }
 
-
         private static string ConvertToJsonArray(string data)
         {
             return "[{ " + data + " }]";
         }
 
-        private static JObject ConvertToJobject(string data)
+        private static JObject ConvertToJObject(string data)
         {
             try
             {

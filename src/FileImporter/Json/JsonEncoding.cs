@@ -39,6 +39,7 @@
             {
                 result = (T)Serializer.Deserialize(file, typeof(T));
             }
+
             return result;
         }
 

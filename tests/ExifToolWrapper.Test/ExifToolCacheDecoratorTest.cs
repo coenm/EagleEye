@@ -42,7 +42,6 @@
 
             dateTimeService = A.Fake<IDateTimeService>();
 
-
             sut = new ExifToolCacheDecorator(decoratee, dateTimeService);
         }
 

@@ -28,7 +28,7 @@
             var allKnownImageHashes = similarityRepository.FindAllRecordedMatches(image.Hashes.ImageHash);
             var allKnownImages = imageRepository.Find(img => img.Identifier != image.Identifier && !allKnownImageHashes.Contains(img.Hashes.ImageHash)).ToArray();
 
-            progress.Report(new FilenameProgressData(0, allKnownImages.Length, ""));
+            progress.Report(new FilenameProgressData(0, allKnownImages.Length, string.Empty));
             int index = 0;
 
             similarityRepository.AutoSave(false);

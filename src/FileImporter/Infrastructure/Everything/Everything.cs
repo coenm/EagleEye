@@ -14,7 +14,6 @@
         private const string Escape = "\"";
         private const string StartEnd = "\"\"\"";
 
-
         public Task Show(IEnumerable<ImageData> files)
         {
             var files2 = files.Select(f => f.Identifier);

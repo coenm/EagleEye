@@ -45,12 +45,16 @@
             return result;
         }
 
-        public IEnumerable<ImageData> FindSimilar(ImageData src, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95,
-            int take = 0, int skip = 0)
+        public IEnumerable<ImageData> FindSimilar(
+            ImageData src,
+            double minAvgHash = 95,
+            double minDiffHash = 95,
+            double minPerHash = 95,
+            int take = 0,
+            int skip = 0)
         {
             if (src == null)
                 throw new ArgumentNullException(nameof(src));
-
 
             var result = data.Where(index =>
                 {
