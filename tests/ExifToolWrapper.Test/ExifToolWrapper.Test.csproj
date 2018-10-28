@@ -14,11 +14,16 @@
   
   <PropertyGroup>
     <!-- https://stackoverflow.com/questions/45469143/net-core-msb3277-found-conflicts-between-different-versions -->
-	<!-- Found conflicts between different versions of "System.Numerics.Vectors" that could not be resolved. -->
+    <!-- Found conflicts between different versions of "System.Numerics.Vectors" that could not be resolved. -->
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>

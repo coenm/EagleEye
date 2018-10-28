@@ -12,7 +12,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SearchEngine.Interface\SearchEngine.Interface.csproj" />
     <ProjectReference Include="..\SearchEngine.Lucene.Core\SearchEngine.Lucene.Core.csproj" />

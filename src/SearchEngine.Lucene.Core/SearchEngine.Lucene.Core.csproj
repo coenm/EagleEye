@@ -14,7 +14,12 @@
     <DebugSymbols>True</DebugSymbols>
     <AssemblyName>SearchEngine.LuceneNet.Core</AssemblyName>    
   </PropertyGroup>
-
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />

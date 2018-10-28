@@ -11,7 +11,12 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
