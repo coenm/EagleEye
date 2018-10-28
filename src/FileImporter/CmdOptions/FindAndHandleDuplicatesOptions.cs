@@ -1,9 +1,10 @@
 ﻿namespace EagleEye.FileImporter.CmdOptions
 {
     using CommandLine;
+    using JetBrains.Annotations;
 
     [Verb("handle-duplicates", HelpText = "Remove duplicate files (based on hash)")]
-    // ReSharper disable once ClassNeverInstantiated.Global
+    [UsedImplicitly]
     internal class FindAndHandleDuplicatesOptions
     {
         [Option("index", HelpText = "Index to compare to", Required = true)]

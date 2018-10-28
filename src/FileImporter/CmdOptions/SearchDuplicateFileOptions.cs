@@ -1,9 +1,10 @@
 ﻿namespace EagleEye.FileImporter.CmdOptions
 {
     using CommandLine;
+    using JetBrains.Annotations;
 
     [Verb("search-file")]
-    // ReSharper disable once ClassNeverInstantiated.Global
+    [UsedImplicitly]
     internal class SearchDuplicateFileOptions
     {
         [Option('f', "File", HelpText = "Original image", Required = true)]

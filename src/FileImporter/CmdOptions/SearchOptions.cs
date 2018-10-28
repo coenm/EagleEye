@@ -1,9 +1,10 @@
 ﻿namespace EagleEye.FileImporter.CmdOptions
 {
     using CommandLine;
+    using JetBrains.Annotations;
 
     [Verb("search")]
-    // ReSharper disable once ClassNeverInstantiated.Global
+    [UsedImplicitly]
     internal class SearchOptions
     {
         [Option('d', "directory", HelpText = "Directory to process", Required = false)]

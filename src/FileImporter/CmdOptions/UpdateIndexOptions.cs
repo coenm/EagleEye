@@ -1,9 +1,10 @@
 ﻿namespace EagleEye.FileImporter.CmdOptions
 {
     using CommandLine;
+    using JetBrains.Annotations;
 
     [Verb("update", HelpText = "Update index files")]
-    // ReSharper disable once ClassNeverInstantiated.Global
+    [UsedImplicitly]
     internal class UpdateIndexOptions
     {
         [Option('d', "directory", HelpText = "Directory to process", Required = true)]
