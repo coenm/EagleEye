@@ -31,7 +31,7 @@
         }
 
         [Fact]
-        public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBuffersizeIsNegativeTest()
+        public void ExifToolStayOpenStreamCtorThrowsArgumentOutOfRangeWhenBufferSizeIsNegativeTest()
         {
             // arrange
 
@@ -88,7 +88,7 @@
         }
 
         [Fact]
-        public void SetLengthDoesntDoAnythingTest()
+        public void SetLengthDoesNotDoAnythingTest()
         {
             // arrange
 
@@ -119,7 +119,7 @@
         public void SingleWriteShouldNotFireEvent()
         {
             // arrange
-            const string msg = "dummy data without delimitor";
+            const string msg = "dummy data without delimiter";
 
             // act
             WriteMessageToSut(msg);
@@ -138,7 +138,7 @@
             WriteMessageToSut(msg);
 
             // assert
-            capturedEvents.Should().HaveCount(1);
+            capturedEvents.Should().ContainSingle();
             capturedEvents.First().Key.Should().Be("0");
             capturedEvents.First().Data.Should().Be("a b c\r\nd e f".ConvertToOsString());
         }

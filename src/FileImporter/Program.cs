@@ -6,17 +6,14 @@
     using System.Linq;
 
     using CommandLine;
-
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
     using EagleEye.FileImporter.Infrastructure.Everything;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-    using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
+    using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
-
     using ShellProgressBar;
-
     using SimpleInjector;
 
     public static class Program
@@ -86,7 +83,7 @@
 
             using (var progressBar = new ProgressBar(allIndexes.Length, "Search duplicates", ProgressOptions))
             {
-                using (var subProgressBar = progressBar.Spawn(allIndexes.Length, "", ChildOptions))
+                using (var subProgressBar = progressBar.Spawn(allIndexes.Length, string.Empty, ChildOptions))
                 {
                     foreach (var indexedFile in allIndexes)
                     {
@@ -165,7 +162,7 @@
                 matchYear |= fi.Identifier.Contains("2018");
                 return matchYear;
 
-                //return fi.Identifier.StartsWith(options.PathPrefix);
+                // return fi.Identifier.StartsWith(options.PathPrefix);
             };
 
 //            if (string.IsNullOrWhiteSpace(options.PathPrefix))
@@ -203,7 +200,7 @@
                     while (found > 10 && matchValue <= 100)
                     {
                         lastSimilar = similar;
-                        similar  = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
+                        similar = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
                             .Where(f => f.Identifier != index.Identifier
                                         &&
                                         File.Exists(f.Identifier)
@@ -489,7 +486,7 @@
 
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
 //            var diRoot = new DirectoryInfo(RootPath).FullName;
-//
+
             var rp = string.Empty;
 //            if (diDirToIndex.StartsWith(diRoot))
 //            {
@@ -571,7 +568,6 @@
                     Directory.CreateDirectory(opts.DuplicateDir);
             }
 
-//
 //            var index = ReadInputFile(opts.IndexFile);
 //            var filesToProcess = ReadInputFile(opts.ProcessingFile);
 //

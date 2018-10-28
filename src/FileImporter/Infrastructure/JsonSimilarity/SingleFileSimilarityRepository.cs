@@ -8,12 +8,12 @@
 
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
-        private readonly IPersistantSerializer<List<SimilarityResultStorage>> storage;
+        private readonly IPersistentSerializer<List<SimilarityResultStorage>> storage;
         private readonly List<SimilarityResultStorage> data;
         private readonly object syncLock = new object();
         private bool autoSave = true;
 
-        public SingleFileSimilarityRepository(IPersistantSerializer<List<SimilarityResultStorage>> storage)
+        public SingleFileSimilarityRepository(IPersistentSerializer<List<SimilarityResultStorage>> storage)
         {
             this.storage = storage ?? throw new ArgumentNullException(nameof(this.storage));
             data = this.storage.Load();

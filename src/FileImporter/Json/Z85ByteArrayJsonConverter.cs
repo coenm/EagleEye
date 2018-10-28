@@ -7,7 +7,7 @@
     /// <summary>
     /// JsonConverter to convert byte[] to arrays containing the integer value for each byte.
     /// </summary>
-    /// <remarks>http://stackoverflow.com/questions/15226921/how-to-serialize-byte-as-simple-json-array-and-not-as-base64-in-json-net</remarks>
+    /// <remarks>See <see href="http://stackoverflow.com/questions/15226921/how-to-serialize-byte-as-simple-json-array-and-not-as-base64-in-json-net"/>.</remarks>
     public sealed class Z85ByteArrayJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -44,7 +44,8 @@
                     default:
                         throw new Exception($"Unexpected token when reading bytes: {reader.TokenType}");
                 }
-            } while (reader.Read());
+            }
+            while (reader.Read());
 
             throw new Exception("Unexpected end when reading bytes.");
         }

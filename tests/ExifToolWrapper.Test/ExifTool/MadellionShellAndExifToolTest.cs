@@ -49,7 +49,7 @@
             // arrange
             var args = new List<string>
             {
-                ExifToolArguments.VERSION
+                ExifToolArguments.VERSION,
             };
 
             // act

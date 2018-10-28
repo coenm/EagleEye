@@ -22,7 +22,7 @@
 
             var p = new Process
             {
-                StartInfo = new ProcessStartInfo(EverythingExe, args)
+                StartInfo = new ProcessStartInfo(EverythingExe, args),
             };
             p.Start();
 

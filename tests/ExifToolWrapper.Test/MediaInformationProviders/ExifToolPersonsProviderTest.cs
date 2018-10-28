@@ -30,7 +30,7 @@
 	]
   },";
 
-        private const string MetadataXmpIptcext = @"
+        private const string MetadataXmpIptcExt = @"
   ""XMP-iptcExt"": {
     ""PersonInImage"": [
 	  ""Bob"",
@@ -83,7 +83,7 @@
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -94,19 +94,19 @@
 
         [Theory]
         [InlineData(MetadataXmp)]
-        [InlineData(MetadataXmpIptcext)]
+        [InlineData(MetadataXmpIptcExt)]
         public async Task ProvideShouldFillPersonsTest(string data)
         {
             // arrange
             var expectedPersons = new List<string>
-                                      {
-                                          "Bob",
-                                          "Alice",
-                                          "Stephen Hawking",
-                                          "Nelson Mandela"
-                                      };
+            {
+                "Bob",
+                "Alice",
+                "Stephen Hawking",
+                "Nelson Mandela",
+            };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -120,7 +120,7 @@
             return "[{ " + data + " }]";
         }
 
-        private static JObject ConvertToJobject(string data)
+        private static JObject ConvertToJObject(string data)
         {
             try
             {

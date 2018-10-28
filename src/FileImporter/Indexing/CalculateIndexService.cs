@@ -27,7 +27,7 @@
                 {
                     result[index] = new ImageData(fileIdentifiers[index])
                     {
-                        Hashes = ImageHashing.Calculate(stream)
+                        Hashes = ImageHashing.Calculate(stream),
                     };
                 }
             }

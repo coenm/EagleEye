@@ -6,30 +6,23 @@
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
-
-    using EagleEye.FileImporter.Indexing;
-    using EagleEye.FileImporter.Infrastructure.ContentResolver;
-    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-    using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
-    using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
-    using EagleEye.FileImporter.Similarity;
-
-    using SearchEngine.Lucene.Bootstrap;
-
-    using SimpleInjector;
-
     using CQRSlite.Events;
     using CQRSlite.Messages;
     using CQRSlite.Routing;
-
     using EagleEye.Core.Domain;
     using EagleEye.Core.Domain.CommandHandlers;
     using EagleEye.Core.ReadModel;
     using EagleEye.Core.ReadModel.EntityFramework;
-
+    using EagleEye.FileImporter.Indexing;
+    using EagleEye.FileImporter.Infrastructure.ContentResolver;
+    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
+    using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
+    using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
+    using EagleEye.FileImporter.Similarity;
     using JetBrains.Annotations;
-
     using Microsoft.EntityFrameworkCore;
+    using SearchEngine.Lucene.Bootstrap;
+    using SimpleInjector;
 
     public static class Startup
     {

@@ -3,6 +3,6 @@
     internal enum FileAction
     {
         Delete,
-        Move
+        Move,
     }
 }

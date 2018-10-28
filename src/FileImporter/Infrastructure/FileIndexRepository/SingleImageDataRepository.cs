@@ -11,11 +11,11 @@
     /// </summary>
     public class SingleImageDataRepository : IImageDataRepository
     {
-        private readonly IPersistantSerializer<List<ImageData>> storage;
+        private readonly IPersistentSerializer<List<ImageData>> storage;
         private readonly List<ImageData> data;
         private readonly object syncLock = new object();
 
-        public SingleImageDataRepository(IPersistantSerializer<List<ImageData>> storage)
+        public SingleImageDataRepository(IPersistentSerializer<List<ImageData>> storage)
         {
             this.storage = storage ?? throw new ArgumentNullException(nameof(this.storage));
             data = this.storage.Load();

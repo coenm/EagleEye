@@ -49,7 +49,8 @@
             // assert
             result.Should().NotBeNull("Expected result should not be null");
             var exif = result["EXIF"] as JObject;
-            exif?.ToString().Should().Be(expectedExif.ConvertToOsString());
+            exif.Should().NotBeNull();
+            exif.ToString().Should().Be(expectedExif.ConvertToOsString());
         }
 
         public void Dispose()

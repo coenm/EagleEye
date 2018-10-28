@@ -15,12 +15,12 @@
     {
         private readonly SingleImageDataRepository sut;
         private readonly List<ImageData> fileIndex;
-        private readonly IPersistantSerializer<List<ImageData>> storage;
+        private readonly IPersistentSerializer<List<ImageData>> storage;
 
         public SingleFileIndexRepositoryTest()
         {
             fileIndex = TestImagesIndex.Index;
-            storage = A.Fake<IPersistantSerializer<List<ImageData>>>();
+            storage = A.Fake<IPersistentSerializer<List<ImageData>>>();
             A.CallTo(() => storage.Load()).Returns(fileIndex);
 
             sut = new SingleImageDataRepository(storage);
