@@ -12,7 +12,7 @@
 
     using Xunit;
 
-    using Sut = SearchEngineLuceneBootstrapper;
+    using Sut = Bootstrap.SearchEngineLuceneBootstrapper;
 
     public class SearchEngineLuceneBootstrapperTest
     {

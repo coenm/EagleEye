@@ -14,11 +14,6 @@
 
             public float Value { get; }
 
-            protected bool Equals(NumberFacetResult other)
-            {
-                return string.Equals(Label, other.Label) && Value.Equals(other.Value);
-            }
-
             public override bool Equals(object obj)
             {
                 if (obj is null)
@@ -39,6 +34,11 @@
                 {
                     return ((Label != null ? Label.GetHashCode() : 0) * 397) ^ Value.GetHashCode();
                 }
+            }
+
+            protected bool Equals(NumberFacetResult other)
+            {
+                return string.Equals(Label, other.Label) && Value.Equals(other.Value);
             }
         }
     }

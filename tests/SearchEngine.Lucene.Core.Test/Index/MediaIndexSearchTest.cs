@@ -78,7 +78,6 @@
             result.Should().BeEmpty();
         }
 
-
         private static void RemoveScore(List<MediaResult> result)
         {
             result.ForEach(x => x.Score = 0);

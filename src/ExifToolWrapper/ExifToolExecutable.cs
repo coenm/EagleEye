@@ -32,7 +32,7 @@
         public static byte[] NewLineBytes => Encoding.ASCII.GetBytes(NewLine);
 
         /// <summary>
-        /// Convert a string with either Linux or Windows line-endings to the OS specific line-endings
+        /// Convert a string with either Linux or Windows line-endings to the OS specific line-endings.
         /// </summary>
         /// <param name="input">string with or without line endings.</param>
         /// <returns>Input string with all line-endings sanitized to the OS default line-ending.</returns>

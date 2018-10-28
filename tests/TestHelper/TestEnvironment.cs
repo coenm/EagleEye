@@ -34,7 +34,7 @@
         /// Convert relative path to full path based on solution directory.
         /// </summary>
         /// <param name="relativePath">relative path from root directory.</param>
-        /// <returns>Full path</returns>
+        /// <returns>Full path.</returns>
         public static string GetFullPath(params string[] relativePath)
         {
             var paths = new[] { SolutionDirectoryFullPath }.Concat(relativePath).ToArray();
@@ -77,7 +77,7 @@
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"Unable to find solution directory from '{assemblyLocation}' because of {ex.GetType().Name}!",ex);
+                    throw new Exception($"Unable to find solution directory from '{assemblyLocation}' because of {ex.GetType().Name}!", ex);
                 }
 
                 if (directory == null)

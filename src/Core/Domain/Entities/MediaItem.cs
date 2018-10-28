@@ -12,10 +12,9 @@
 
     public class MediaItem : AggregateRoot
     {
-        private bool created;
-
         private readonly List<string> tags;
         private readonly List<string> persons;
+        private bool created;
         private Location location;
         private string filename;
 
@@ -78,7 +77,6 @@
 
             if (persons.Length == 0)
                 return;
-
 
             var removed = persons.Distinct()
                                  .Where(item => this.persons.Contains(item))

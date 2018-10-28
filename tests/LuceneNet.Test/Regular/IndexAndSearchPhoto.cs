@@ -29,7 +29,7 @@
             indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
-                RAMBufferSizeMB = 256.0
+                RAMBufferSizeMB = 256.0,
             };
         }
 
@@ -50,16 +50,16 @@
             var result = Search(search).ToArray();
 
             // assert
-            var resultsFilenames = result.Select(x => x.Data.Filename).ToArray();
-            var originalFilenames = StaticDocuments.Photos.Select(x => x.Filename).ToArray();
-            Assert.Equal(originalFilenames, resultsFilenames);
+            var resultsFileNames = result.Select(x => x.Data.Filename).ToArray();
+            var originalFileNames = StaticDocuments.Photos.Select(x => x.Filename).ToArray();
+            Assert.Equal(originalFileNames, resultsFileNames);
         }
 
         [Theory]
         [InlineData("\"Robin van Persie\"", "file5", "file6")]
         [InlineData("\"Robin van Persie\" -ruud", "file6")]
         [InlineData("+person:\"Persie\" -person:ruud", "file6", "file8")]
-        public void SearchPersonsShouldReturnAllFilesTest(string search, params string[] expectedFilenames)
+        public void SearchPersonsShouldReturnAllFilesTest(string search, params string[] expectedFileNames)
         {
             // arrange
             IndexStaticDocuments();
@@ -68,7 +68,7 @@
             var result = SearchPersons(search).ToArray();
 
             // assert
-            Assert.Equal(expectedFilenames, result.Select(x => x.Data.Filename));
+            Assert.Equal(expectedFileNames, result.Select(x => x.Data.Filename));
         }
 
         [Fact]
@@ -87,6 +87,38 @@
 
             // assert
             Assert.Empty(results);
+        }
+
+        private static void IndexDocs(IndexWriter writer, PhotoMetadataDto photo)
+        {
+            var doc = new Document();
+
+            Field fieldFilename = new TextField(Filename, photo.Filename, Field.Store.YES);
+            doc.Add(fieldFilename);
+
+            var persons = photo.Persons
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .Select(p => p.Trim())
+                .ToArray();
+
+            foreach (var person in persons)
+            {
+                Field fieldPerson = new TextField(Person, person, Field.Store.YES);
+                doc.Add(fieldPerson);
+            }
+
+            if (writer.Config.OpenMode == OpenMode.CREATE)
+            {
+                // New index, so we just add the document (no old document can be there):
+                writer.AddDocument(doc);
+            }
+            else
+            {
+                // Existing index (an old copy of this document may have been indexed) so
+                // we use updateDocument instead to replace the old one matching the exact
+                // path, if present:
+                writer.UpdateDocument(new Term(Filename, photo.Filename), doc);
+            }
         }
 
         private IEnumerable<SearchResults<PhotoMetadataDto>> SearchPersons(string query)
@@ -143,46 +175,13 @@
             var indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
                                      {
                                          OpenMode = OpenMode.CREATE_OR_APPEND,
-                                         RAMBufferSizeMB = 256.0
+                                         RAMBufferSizeMB = 256.0,
                                      };
 
             using (var writer = new IndexWriter(directory, indexWriterConfig))
             {
                 writer.DeleteDocuments(term);
                 writer.ForceMerge(1);
-            }
-        }
-
-        private static void IndexDocs(IndexWriter writer, PhotoMetadataDto photo)
-        {
-            var doc = new Document();
-
-            Field fieldFilename = new TextField(Filename, photo.Filename, Field.Store.YES);
-            doc.Add(fieldFilename);
-
-            var persons = photo.Persons
-                .Where(p => !string.IsNullOrWhiteSpace(p))
-                .Select(p => p.Trim())
-                .ToArray();
-
-            foreach (var person in persons)
-            {
-                Field fieldPerson = new TextField(Person, person, Field.Store.YES);
-                doc.Add(fieldPerson);
-            }
-
-
-            if (writer.Config.OpenMode == OpenMode.CREATE)
-            {
-                // New index, so we just add the document (no old document can be there):
-                writer.AddDocument(doc);
-            }
-            else
-            {
-                // Existing index (an old copy of this document may have been indexed) so
-                // we use updateDocument instead to replace the old one matching the exact
-                // path, if present:
-                writer.UpdateDocument(new Term(Filename, photo.Filename), doc);
             }
         }
     }

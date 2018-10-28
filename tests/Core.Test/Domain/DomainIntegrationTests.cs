@@ -41,7 +41,7 @@
 
             // act
             var guid = Guid.NewGuid();
-            var command = new CreateMediaItemCommand(guid, "aap", new [] {"zoo", "holiday"}, null);
+            var command = new CreateMediaItemCommand(guid, "aap", new[] { "zoo", "holiday" }, null);
             await handler.Handle(command).ConfigureAwait(false);
 
             var addTagsCommand = new AddTagsToMediaItemCommand(guid, "summer", "holiday");

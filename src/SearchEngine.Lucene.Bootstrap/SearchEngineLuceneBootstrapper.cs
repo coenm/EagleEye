@@ -17,7 +17,7 @@
     /// <summary>
     /// This class allows registering all types that are defined in the SearchEngine.Lucene.Core, and are shared across
     /// all applications that use this layer.
-    /// Inspired by dotnetjunkie/solidservices
+    /// Inspired by <see href="https://github.com/dotnetjunkie/solidservices"/>.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
     public static class SearchEngineLuceneBootstrapper

@@ -7,6 +7,6 @@
         Day,
         Hour,
         Minute,
-        Second
+        Second,
     }
 }

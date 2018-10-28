@@ -34,7 +34,7 @@
             if (message.Tags != null)
                 mediaItemDto.Tags = new List<string>(message.Tags);
 
-            if (message.Persons!= null)
+            if (message.Persons != null)
                 mediaItemDto.Persons = new List<string>(message.Persons);
 
             var item = new MediaItemDb
@@ -43,7 +43,7 @@
                                Id = message.Id,
                                Version = message.Version,
                                TimeStampUtc = message.TimeStamp,
-                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto)
+                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto),
                            };
 
             await repository.SaveAsync(item).ConfigureAwait(false);

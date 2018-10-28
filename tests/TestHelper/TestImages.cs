@@ -11,7 +11,7 @@
         /// </summary>
         public static string InputImagesDirectoryFullPath => TestEnvironment.GetFullPath(InputImagesRelativePath);
 
-        /// <summary> Read image from relative filename for testing purposes </summary>
+        /// <summary>Read image from relative filename for testing purposes.</summary>
         /// <param name="relativeFilename">Filename relative to 'solution directory' + 'images/data/'. </param>
         /// <returns>FileStream or throws exception.</returns>
         public static FileStream ReadRelativeImageFile(string relativeFilename)

@@ -52,7 +52,7 @@ b=c
                                   {
                                       { "key", "value" },
                                       { "a", "b" },
-                                      { "b", "c" }
+                                      { "b", "c" },
                                   };
 
             using (var stream = GenerateStreamFromString(content))
@@ -79,7 +79,6 @@ b=c
                 Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
             }
         }
-
 
         [Fact]
         public void ParsingErrorStreamShouldThrowExceptionTest()

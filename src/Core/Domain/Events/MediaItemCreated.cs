@@ -10,7 +10,7 @@
         public readonly string FileName;
 
         [DebuggerStepThrough]
-        public MediaItemCreated(Guid id, string filename, string[] tags, string[] persons )
+        public MediaItemCreated(Guid id, string filename, string[] tags, string[] persons)
         {
             Id = id;
             Tags = tags ?? new string[0];

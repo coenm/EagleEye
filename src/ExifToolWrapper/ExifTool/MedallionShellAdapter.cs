@@ -35,8 +35,6 @@
                                                    });
         }
 
-
-
         public event EventHandler ProcessExited = delegate { };
 
         public bool Finished => Task.IsCompleted;

@@ -142,12 +142,12 @@
                         {
                             doc.Add(field);
                         }
+
                         // var pt = (IPoint)shape;
                         // doc.Add(new StoredField(_strategy.FieldName, pt.X.ToString(CultureInfo.InvariantCulture) + " " + pt.Y.ToString(CultureInfo.InvariantCulture)));
                     }
                 }
             }
-
 
             var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
             doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));

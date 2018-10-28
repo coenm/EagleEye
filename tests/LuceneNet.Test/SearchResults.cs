@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.LuceneNet.Test
 {
-    internal class SearchResults<T> where T : class, new()
+    internal class SearchResults<T>
+        where T : class, new()
     {
         public SearchResults(T data, float score)
         {

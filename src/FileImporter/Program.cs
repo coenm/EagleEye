@@ -37,7 +37,6 @@
         public static void Main(string[] args)
         {
             container = new Container();
-            // Startup.ConfigureContainer(_container, rootPath, indexFilename);
             Run(args);
         }
 
@@ -264,7 +263,7 @@
                         .Where(f =>
                         {
                             var info = new FileInfo(f.Identifier);
-                            if (info.Directory.FullName != dirIndex)
+                            if (info.Directory != null && info.Directory.FullName != dirIndex)
                                 return false;
 
                             return true;
@@ -424,15 +423,15 @@
                     items[0] = index;
 
                     var result = indexService.CalculateIndex(items).Single();
-                    var similars = searchService.FindSimilar(result).ToList();
+                    var similarItems = searchService.FindSimilar(result).ToList();
 
-                    similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
+                    similarItems = similarItems.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
 
-                    if (similars.Any())
+                    if (similarItems.Any())
                         continue;
 
-                    similars.Add(result);
-                    everything.Show(similars);
+                    similarItems.Add(result);
+                    everything.Show(similarItems);
                     Console.WriteLine("Press enter for next");
                     Console.ReadKey();
                 }
