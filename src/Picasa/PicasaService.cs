@@ -14,20 +14,20 @@
 
     public class PicasaService : IPicasaService
     {
-        private static readonly string[] _picasaFilenames = { ".picasa.ini", "Picasa.ini" };
-        private readonly IFileService _fileService;
-        private readonly ConcurrentDictionary<string, Task<IEnumerable<FileWithPersons>>> _tasks;
-        private readonly object _syncLock = new object();
+        private static readonly string[] PicasaFileNames = { ".picasa.ini", "Picasa.ini" };
+        private readonly IFileService fileService;
+        private readonly ConcurrentDictionary<string, Task<IEnumerable<FileWithPersons>>> tasks;
+        private readonly object syncLock = new object();
 
         public PicasaService([NotNull] IFileService fileService)
         {
-            _fileService = fileService;
-            _tasks = new ConcurrentDictionary<string, Task<IEnumerable<FileWithPersons>>>();
+            this.fileService = fileService;
+            tasks = new ConcurrentDictionary<string, Task<IEnumerable<FileWithPersons>>>();
         }
 
         public bool CanProvideData(string filename)
         {
-            if (!_fileService.FileExists(filename))
+            if (!fileService.FileExists(filename))
                 return false;
 
             var picasaFilename = DeterminePicasaFilename(filename);
@@ -36,8 +36,8 @@
 
         public async Task<FileWithPersons> GetDataAsync(string filename)
         {
-            var picasafilename = DeterminePicasaFilename(filename);
-            var results = await GetOrCreateTask(picasafilename).ConfigureAwait(false);
+            var picasaFilename = DeterminePicasaFilename(filename);
+            var results = await GetOrCreateTask(picasaFilename).ConfigureAwait(false);
             return results.FirstOrDefault(item => item.Filename.Equals(Path.GetFileName(filename)));
         }
 
@@ -53,20 +53,20 @@
 
         private Task<IEnumerable<FileWithPersons>> GetOrCreateTask(string picasaFilename)
         {
-            lock (_syncLock)
+            lock (syncLock)
             {
-                if (_tasks.TryGetValue(picasaFilename, out var cachedTask))
+                if (tasks.TryGetValue(picasaFilename, out var cachedTask))
                     return cachedTask;
 
                 var task = Task.Run(() =>
                                     {
-                                        using (var stream = _fileService.OpenRead(picasaFilename))
+                                        using (var stream = fileService.OpenRead(picasaFilename))
                                         {
                                             return GetFileAndPersonData(stream);
                                         }
                                     });
 
-                _tasks.TryAdd(picasaFilename, task);
+                tasks.TryAdd(picasaFilename, task);
 
                 return task;
             }
@@ -82,11 +82,11 @@
             {
                 var dirname = new FileInfo(mediaFilename).Directory.FullName;
 
-                foreach (var filename in _picasaFilenames)
+                foreach (var filename in PicasaFileNames)
                 {
                     // Path.GetDirectoryName(path)
                     var picasaIniFilename = Path.Combine(dirname, filename);
-                    if (_fileService.FileExists(picasaIniFilename))
+                    if (fileService.FileExists(picasaIniFilename))
                         return picasaIniFilename;
                 }
 

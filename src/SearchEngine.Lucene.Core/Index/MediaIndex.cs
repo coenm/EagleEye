@@ -27,35 +27,35 @@
 
     public class MediaIndex : IDisposable
     {
-        private const string KEY_FILENAME = "filename";
-        private const string KEY_FILETYPE = "filetype";
-        private const string KEY_LOC_CITY = "city";
-        private const string KEY_LOC_COUNTRY_CODE = "countrycode";
-        private const string KEY_LOC_COUNTRY = "country";
-        private const string KEY_LOC_STATE = "state";
-        private const string KEY_LOC_SUBLOCATION = "sublocation";
-        private const string KEY_LOC_LONGITUDE = "longitude";
-        private const string KEY_LOC_LATITUDE = "latitude";
-        private const string KEY_DATE_TAKEN = "date";
-        private const string KEY_PERSON = "person";
-        private const string KEY_TAG = "tag";
-        private const string KEY_LOC_GPS = "gps";
+        private const string KeyFilename = "filename";
+        private const string KeyFileType = "filetype";
+        private const string KeyLocCity = "city";
+        private const string KeyLocCountryCode = "countrycode";
+        private const string KeyLocCountry = "country";
+        private const string KeyLocState = "state";
+        private const string KeyLocSubLocation = "sublocation";
+        private const string KeyLocLongitude = "longitude";
+        private const string KeyLocLatitude = "latitude";
+        private const string KeyDateTaken = "date";
+        private const string KeyPerson = "person";
+        private const string KeyTag = "tag";
+        private const string KeyLocGps = "gps";
 
-        private readonly Analyzer _analyzer;
-        private readonly IndexWriter _indexWriter;
-        private readonly SearcherManager _searcherManager;
-        private readonly QueryParser _queryParser;
-        private readonly Directory _indexDirectory;
+        private readonly Analyzer analyzer;
+        private readonly IndexWriter indexWriter;
+        private readonly SearcherManager searcherManager;
+        private readonly QueryParser queryParser;
+        private readonly Directory indexDirectory;
 
-        private SpatialContext _spatialContext;
-        private SpatialStrategy _spatialStrategy;
+        private SpatialContext spatialContext;
+        private SpatialStrategy spatialStrategy;
 
         public MediaIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
-            _indexDirectory = indexDirectoryFactory.Create();
+            indexDirectory = indexDirectoryFactory.Create();
 
             InitSpatial();
-            _analyzer = new StandardAnalyzer(LuceneNetVersion.VERSION);
+            analyzer = new StandardAnalyzer(LuceneNetVersion.Version);
 //            _analyzer = new PerFieldAnalyzerWrapper(
 //                                                    new HtmlStripAnalyzer(LuceneNetVersion.VERSION),
 //                                                    new Dictionary<string, Analyzer>
@@ -83,20 +83,20 @@
 //                                                            }
 //                                                        });
 
-            _queryParser = new MultiFieldQueryParser(
-                                                     LuceneNetVersion.VERSION,
-                                                     new[] { KEY_LOC_CITY, KEY_LOC_COUNTRY }, //todo define fields
-                                                     _analyzer);
+            queryParser = new MultiFieldQueryParser(
+                                                     LuceneNetVersion.Version,
+                                                     new[] { KeyLocCity, KeyLocCountry }, //todo define fields
+                                                     analyzer);
 
-            var indexWriterConfig = new IndexWriterConfig(LuceneNetVersion.VERSION, _analyzer)
+            var indexWriterConfig = new IndexWriterConfig(LuceneNetVersion.Version, analyzer)
                                         {
                                             OpenMode = OpenMode.CREATE_OR_APPEND,
-                                            RAMBufferSizeMB = 256.0
+                                            RAMBufferSizeMB = 256.0,
                                         };
 
-            _indexWriter = new IndexWriter(_indexDirectory, indexWriterConfig);
+            indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
 
-            _searcherManager = new SearcherManager(_indexWriter, true, null);
+            searcherManager = new SearcherManager(indexWriter, true, null);
         }
 
         [PublicAPI]
@@ -113,18 +113,18 @@
 
             var doc = new Document
                           {
-                              // fileinformation
-                              new StringField(KEY_FILENAME, data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
-                              new StringField(KEY_FILETYPE, data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
+                              // file information
+                              new StringField(KeyFilename, data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
+                              new StringField(KeyFileType, data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
 
                               // location data
-                              new TextField(KEY_LOC_CITY, data.Location?.City ?? string.Empty, Field.Store.YES),
-                              new TextField(KEY_LOC_COUNTRY_CODE, data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
-                              new TextField(KEY_LOC_COUNTRY, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
-                              new TextField(KEY_LOC_STATE, data.Location?.State ?? string.Empty, Field.Store.YES),
-                              new TextField(KEY_LOC_SUBLOCATION, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
-                              new StoredField(KEY_LOC_LONGITUDE, data.Location?.Coordinate?.Longitude ?? 0),
-                              new StoredField(KEY_LOC_LATITUDE, data.Location?.Coordinate?.Latitude ?? 0),
+                              new TextField(KeyLocCity, data.Location?.City ?? string.Empty, Field.Store.YES),
+                              new TextField(KeyLocCountryCode, data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
+                              new TextField(KeyLocCountry, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
+                              new TextField(KeyLocState, data.Location?.State ?? string.Empty, Field.Store.YES),
+                              new TextField(KeyLocSubLocation, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
+                              new StoredField(KeyLocLongitude, data.Location?.Coordinate?.Longitude ?? 0),
+                              new StoredField(KeyLocLatitude, data.Location?.Coordinate?.Latitude ?? 0),
                           };
 
             // index coordinate
@@ -134,11 +134,11 @@
 
                 if (x != null)
                 {
-                    var p = _spatialContext.MakePoint(x.Value, y.Value);
+                    var p = spatialContext.MakePoint(x.Value, y.Value);
 
                     foreach (var shape in new[] { p })
                     {
-                        foreach (var field in _spatialStrategy.CreateIndexableFields(shape))
+                        foreach (var field in spatialStrategy.CreateIndexableFields(shape))
                         {
                             doc.Add(field);
                         }
@@ -150,33 +150,33 @@
 
 
             var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
-            doc.Add(new StringField(KEY_DATE_TAKEN, dateString, Field.Store.YES));
+            doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));
 
             foreach (var person in data.Persons ?? new List<string>())
             {
-                doc.Add(new TextField(KEY_PERSON, person, Field.Store.YES));
+                doc.Add(new TextField(KeyPerson, person, Field.Store.YES));
             }
 
             foreach (var tag in data.Tags ?? new List<string>())
             {
-                doc.Add(new TextField(KEY_TAG, tag, Field.Store.YES));
+                doc.Add(new TextField(KeyTag, tag, Field.Store.YES));
             }
 
-            if (_indexWriter.Config.OpenMode == OpenMode.CREATE)
+            if (indexWriter.Config.OpenMode == OpenMode.CREATE)
             {
                 // New index, so we just add the document (no old document can be there):
-                _indexWriter.AddDocument(doc);
+                indexWriter.AddDocument(doc);
             }
             else
             {
                 // Existing index (an old copy of this document may have been indexed) so
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
-                _indexWriter.UpdateDocument(new Term(KEY_FILENAME, data.FileInformation.Filename), doc);
+                indexWriter.UpdateDocument(new Term(KeyFilename, data.FileInformation.Filename), doc);
             }
 
-            _indexWriter.Flush(true, true);
-            _indexWriter.Commit();
+            indexWriter.Flush(true, true);
+            indexWriter.Commit();
 
             // expensive
             // _indexWriter.ForceMerge(1);
@@ -187,9 +187,9 @@
         public int Count([CanBeNull] Query query = null, [CanBeNull] Filter filter = null)
         {
             // Execute the search with a fresh indexSearcher
-            _searcherManager.MaybeRefreshBlocking();
+            searcherManager.MaybeRefreshBlocking();
 
-            var searcher = _searcherManager.Acquire();
+            var searcher = searcherManager.Acquire();
 
             try
             {
@@ -208,7 +208,7 @@
             }
             finally
             {
-                _searcherManager.Release(searcher);
+                searcherManager.Release(searcher);
                 searcher = null; // Don't use searcher after this point!
             }
 
@@ -220,7 +220,7 @@
         {
             // Parse the query - assuming it's not a single term but an actual query string
             // the QueryParser used is using the same analyzer used for indexing
-            var query = _queryParser.Parse(queryString);
+            var query = queryParser.Parse(queryString);
             return Search(query, null, out totalHits);
         }
 
@@ -231,9 +231,9 @@
             totalHits = 0;
 
             // Execute the search with a fresh indexSearcher
-            _searcherManager.MaybeRefreshBlocking();
+            searcherManager.MaybeRefreshBlocking();
 
-            var searcher = _searcherManager.Acquire();
+            var searcher = searcherManager.Acquire();
 
             try
             {
@@ -252,25 +252,25 @@
                                    {
                                        FileInformation = new FileInformation
                                                              {
-                                                                 Filename = doc.GetField(KEY_FILENAME)?.GetStringValue(),
-                                                                 Type = doc.GetField(KEY_FILETYPE)?.GetStringValue()
+                                                                 Filename = doc.GetField(KeyFilename)?.GetStringValue(),
+                                                                 Type = doc.GetField(KeyFileType)?.GetStringValue(),
                                                              },
                                        Location = new Location
                                            {
-                                               CountryName = doc.GetField(KEY_LOC_COUNTRY)?.GetStringValue(),
-                                               State = doc.GetField(KEY_LOC_STATE)?.GetStringValue(),
-                                               City = doc.GetField(KEY_LOC_CITY)?.GetStringValue(),
-                                               SubLocation = doc.GetField(KEY_LOC_SUBLOCATION)?.GetStringValue(),
-                                               CountryCode = doc.GetField(KEY_LOC_COUNTRY_CODE)?.GetStringValue(),
+                                               CountryName = doc.GetField(KeyLocCountry)?.GetStringValue(),
+                                               State = doc.GetField(KeyLocState)?.GetStringValue(),
+                                               City = doc.GetField(KeyLocCity)?.GetStringValue(),
+                                               SubLocation = doc.GetField(KeyLocSubLocation)?.GetStringValue(),
+                                               CountryCode = doc.GetField(KeyLocCountryCode)?.GetStringValue(),
                                                Coordinate = new Coordinate
                                                                 {
-                                                                    Latitude = doc.GetField(KEY_LOC_LATITUDE)?.GetSingleValue() ?? 0,
-                                                                    Longitude = doc.GetField(KEY_LOC_LONGITUDE)?.GetSingleValue() ?? 0,
-                                                                }
-                                            },
-                                       DateTimeTaken = StringToTimestamp(doc.Get(KEY_DATE_TAKEN)),
-                                       Persons = doc.GetValues(KEY_PERSON)?.ToList() ?? new List<string>(),
-                                       Tags = doc.GetValues(KEY_TAG)?.ToList() ?? new List<string>(),
+                                                                    Latitude = doc.GetField(KeyLocLatitude)?.GetSingleValue() ?? 0,
+                                                                    Longitude = doc.GetField(KeyLocLongitude)?.GetSingleValue() ?? 0,
+                                                                },
+                                           },
+                                       DateTimeTaken = StringToTimestamp(doc.Get(KeyDateTaken)),
+                                       Persons = doc.GetValues(KeyPerson)?.ToList() ?? new List<string>(),
+                                       Tags = doc.GetValues(KeyTag)?.ToList() ?? new List<string>(),
                                    };
 
                     results.Add(item);
@@ -278,12 +278,12 @@
             }
             catch (Exception e)
             {
-                Debug.Fail("Should not happen" + e.Message);
                 // do nothing
+                Debug.Fail("Should not happen" + e.Message);
             }
             finally
             {
-                _searcherManager.Release(searcher);
+                searcherManager.Release(searcher);
                 searcher = null; // Don't use searcher after this point!
             }
 
@@ -292,10 +292,10 @@
 
         public void Dispose()
         {
-            _analyzer?.Dispose();
-            _indexWriter?.Dispose();
-            _searcherManager?.Dispose();
-            _indexDirectory?.Dispose();
+            analyzer?.Dispose();
+            indexWriter?.Dispose();
+            searcherManager?.Dispose();
+            indexDirectory?.Dispose();
         }
 
         private static Timestamp StringToTimestamp(string dateString)
@@ -340,32 +340,32 @@
         {
             Debug.Assert(!string.IsNullOrWhiteSpace(filename), "Filename should be filled in.");
 
-            var term = new Term(KEY_FILENAME, filename);
+            var term = new Term(KeyFilename, filename);
 
             try
             {
-                _indexWriter.DeleteDocuments(term);
-                _indexWriter.Flush(true, true);
-                _indexWriter.Commit();
+                indexWriter.DeleteDocuments(term);
+                indexWriter.Flush(true, true);
+                indexWriter.Commit();
             }
             catch (OutOfMemoryException)
             {
-                _indexWriter.Dispose();
+                indexWriter.Dispose();
                 throw;
             }
         }
 
         private void InitSpatial()
         {
-            _spatialContext = SpatialContext.GEO;
+            spatialContext = SpatialContext.GEO;
 
             // Results in sub-meter precision for geohash
             var maxLevels = 11;
 
             // This can also be constructed from SpatialPrefixTreeFactory
-            SpatialPrefixTree grid = new GeohashPrefixTree(_spatialContext, maxLevels);
+            SpatialPrefixTree grid = new GeohashPrefixTree(spatialContext, maxLevels);
 
-            _spatialStrategy = new RecursivePrefixTreeStrategy(grid, KEY_LOC_GPS);
+            spatialStrategy = new RecursivePrefixTreeStrategy(grid, KeyLocGps);
         }
 
         private DateTools.Resolution PrecisionToResolution(TimestampPrecision precision)

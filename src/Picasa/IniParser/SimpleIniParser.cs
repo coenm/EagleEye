@@ -6,11 +6,11 @@
 
     public static class SimpleIniParser
     {
-        private static readonly string[] _keyValueSeperator;
+        private static readonly string[] KeyValueSeparator;
 
         static SimpleIniParser()
         {
-            _keyValueSeperator = new[] { "=" };
+            KeyValueSeparator = new[] { "=" };
         }
 
         public static List<IniData> Parse(Stream input)
@@ -106,7 +106,7 @@
 
             line = line.Trim();
 
-            var result = line.Split(_keyValueSeperator, StringSplitOptions.RemoveEmptyEntries);
+            var result = line.Split(KeyValueSeparator, StringSplitOptions.RemoveEmptyEntries);
 
             if (result.Length != 2)
                 throw new ArgumentException($"Cannot parse {line}");

@@ -90,7 +90,7 @@
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -114,7 +114,7 @@
                                        "puppy",
                                    };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -128,7 +128,7 @@
             return "[{ " + data + " }]";
         }
 
-        private static JObject ConvertToJobject(string data)
+        private static JObject ConvertToJObject(string data)
         {
             try
             {

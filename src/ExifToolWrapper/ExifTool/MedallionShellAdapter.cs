@@ -12,22 +12,21 @@
     public class MedallionShellAdapter : IMedallionShell
     {
         [NotNull]
-        private readonly Command _cmd;
+        private readonly Command cmd;
 
         public MedallionShellAdapter(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream = null)
         {
-            _cmd = Command.Run(exifToolPath, defaultArgs)
+            cmd = Command.Run(exifToolPath, defaultArgs)
                           .RedirectTo(outputStream);
 
             if (errorStream != null)
-                _cmd = _cmd.RedirectStandardErrorTo(errorStream);
-
+                cmd = cmd.RedirectStandardErrorTo(errorStream);
 
             Task = System.Threading.Tasks.Task.Run(async () =>
                                                    {
                                                        try
                                                        {
-                                                           return await _cmd.Task.ConfigureAwait(false);
+                                                           return await cmd.Task.ConfigureAwait(false);
                                                        }
                                                        finally
                                                        {
@@ -47,12 +46,12 @@
 
         public void Kill()
         {
-            _cmd.Kill();
+            cmd.Kill();
         }
 
         public Task WriteLineAsync(string text)
         {
-            return _cmd.StandardInput.WriteLineAsync(text);
+            return cmd.StandardInput.WriteLineAsync(text);
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace SearchEngine.Lucene.Bootstrap.Test
+﻿namespace SearchEngine.Lucene.Bootstrap.Test
 {
     using System;
     using System.Linq;
@@ -29,7 +29,7 @@ namespace SearchEngine.Lucene.Bootstrap.Test
         }
 
         [Fact]
-        public void GetQueryTypess_ShouldReturnExpectedQueriesTests()
+        public void GetQueryTypes_ShouldReturnExpectedQueriesTests()
         {
             // arrange
             var expectedQueryTypes = new[] { typeof(WildcardSearchQuery) };

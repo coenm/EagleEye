@@ -28,8 +28,8 @@
             mreSutExited = new ManualResetEventSlim(false);
             var defaultArgs = new List<string>
                                     {
-                                        ExifToolArguments.STAY_OPEN,
-                                        ExifToolArguments.BOOL_TRUE,
+                                        ExifToolArguments.StayOpen,
+                                        ExifToolArguments.BoolTrue,
                                         "-@",
                                         "-",
                                     };
@@ -73,8 +73,8 @@
             sut.Finished.Should().BeFalse();
 
             // act
-            await sut.WriteLineAsync(ExifToolArguments.STAY_OPEN).ConfigureAwait(false);
-            await sut.WriteLineAsync(ExifToolArguments.BOOL_FALSE).ConfigureAwait(false);
+            await sut.WriteLineAsync(ExifToolArguments.StayOpen).ConfigureAwait(false);
+            await sut.WriteLineAsync(ExifToolArguments.BoolFalse).ConfigureAwait(false);
 
             output.WriteLine("Awaiting task to finish");
             await sut.Task.ConfigureAwait(false);

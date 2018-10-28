@@ -16,14 +16,14 @@
     public class OpenedExifToolSimpleTest
     {
         private readonly OpenedExifTool sut;
-        private readonly IMedallionShell mediallionShell;
+        private readonly IMedallionShell medallionShell;
         private readonly List<string> calledArguments;
 
         public OpenedExifToolSimpleTest()
         {
             calledArguments = new List<string>();
-            mediallionShell = A.Fake<IMedallionShell>();
-            sut = new TestableOpenedExifTool(mediallionShell);
+            medallionShell = A.Fake<IMedallionShell>();
+            sut = new TestableOpenedExifTool(medallionShell);
         }
 
         [Fact]
@@ -75,17 +75,17 @@
 
         private class TestableOpenedExifTool : OpenedExifTool
         {
-            private readonly IMedallionShell mediallionShell;
+            private readonly IMedallionShell medallionShell;
 
-            public TestableOpenedExifTool(IMedallionShell mediallionShell)
+            public TestableOpenedExifTool(IMedallionShell medallionShell)
                 : base("doesn't matter")
             {
-                this.mediallionShell = mediallionShell;
+                this.medallionShell = medallionShell;
             }
 
             protected override IMedallionShell CreateExitToolMedallionShell(string exifToolPath, List<string> defaultArgs, Stream outputStream, Stream errorStream)
             {
-                return mediallionShell;
+                return medallionShell;
             }
         }
     }

@@ -6,13 +6,13 @@
 
     public class MediaItemDbContextFactory : IMediaItemDbContextFactory
     {
-        private readonly DbContextOptions<MediaItemDbContext> _options;
+        private readonly DbContextOptions<MediaItemDbContext> options;
 
         public MediaItemDbContextFactory(DbContextOptions<MediaItemDbContext> options)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public MediaItemDbContext CreateMediaItemDbContext() => new MediaItemDbContext(_options);
+        public MediaItemDbContext CreateMediaItemDbContext() => new MediaItemDbContext(options);
     }
 }

@@ -5,24 +5,24 @@
 
     public class FileWithPersons
     {
-        private readonly List<string> _persons;
+        private readonly List<string> persons;
 
         public FileWithPersons(string filename, params string[] persons)
         {
             Filename = filename;
-            _persons = persons.ToList();
+            this.persons = persons.ToList();
         }
 
         public string Filename { get; }
 
-        public IEnumerable<string> Persons => _persons.AsReadOnly();
+        public IEnumerable<string> Persons => persons.AsReadOnly();
 
         public void AddPerson(string person)
         {
-            if (_persons.Contains(person))
+            if (persons.Contains(person))
                 return;
 
-            _persons.Add(person);
+            persons.Add(person);
         }
 
         public override string ToString()

@@ -4,6 +4,6 @@
 
     internal static class TestHelper
     {
-        public const LuceneVersion LUCENE_VERSION = LuceneVersion.LUCENE_48;
+        public const LuceneVersion LuceneVersion = Lucene.Net.Util.LuceneVersion.LUCENE_48;
     }
 }

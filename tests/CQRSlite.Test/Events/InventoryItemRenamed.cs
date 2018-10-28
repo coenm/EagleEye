@@ -6,8 +6,6 @@
 
     public class InventoryItemRenamed : IEvent
     {
-        public readonly string NewName;
- 
         public InventoryItemRenamed(Guid id, string newName)
         {
             Id = id;
@@ -15,7 +13,11 @@
         }
 
         public Guid Id { get; set; }
+
+        public string NewName { get; }
+
         public int Version { get; set; }
+
         public DateTimeOffset TimeStamp { get; set; }
     }
 }

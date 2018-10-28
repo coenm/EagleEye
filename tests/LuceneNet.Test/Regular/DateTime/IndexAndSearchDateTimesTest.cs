@@ -1,4 +1,4 @@
-﻿namespace EagleEye.LuceneNet.Test.Reguar.DateTime
+﻿namespace EagleEye.LuceneNet.Test.Regular.DateTime
 {
     using System;
     using System.Collections.Generic;
@@ -11,24 +11,23 @@
     using Lucene.Net.Queries;
     using Lucene.Net.Search;
     using Lucene.Net.Store;
-
     using Xunit;
 
     public class IndexAndSearchDateTimesTest
     {
-        private readonly Directory _directory;
-        private readonly IndexWriterConfig _indexWriterConfig;
+        private readonly Directory directory;
+        private readonly IndexWriterConfig indexWriterConfig;
 
         public IndexAndSearchDateTimesTest()
         {
-            _directory = new RAMDirectory();
+            directory = new RAMDirectory();
 
-            Analyzer analyzer = new StandardAnalyzer(TestHelper.LUCENE_VERSION);
+            Analyzer analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
-            _indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, analyzer)
+            indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
-                RAMBufferSizeMB = 256.0
+                RAMBufferSizeMB = 256.0,
             };
         }
 
@@ -69,7 +68,7 @@
 
         private void IndexStaticDocuments()
         {
-            using (var writer = new IndexWriter(_directory, _indexWriterConfig))
+            using (var writer = new IndexWriter(directory, indexWriterConfig))
             {
                 foreach (var person in Persons)
                 {
@@ -84,12 +83,12 @@
         {
             get
             {
-                yield return new PersonDto("alice", new DateTime(2000, 1, 2));
-                yield return new PersonDto("bob", new DateTime(2002, 1, 12));
-                yield return new PersonDto("calvin", new DateTime(2007, 6, 2));
-                yield return new PersonDto("dwane", new DateTime(2007, 11, 2));
-                yield return new PersonDto("eve", new DateTime(2001, 6, 2));
-                yield return new PersonDto("fred", new DateTime(1999, 12, 2));
+                yield return new PersonDto("alice", new System.DateTime(2000, 1, 2));
+                yield return new PersonDto("bob", new System.DateTime(2002, 1, 12));
+                yield return new PersonDto("calvin", new System.DateTime(2007, 6, 2));
+                yield return new PersonDto("dwane", new System.DateTime(2007, 11, 2));
+                yield return new PersonDto("eve", new System.DateTime(2001, 6, 2));
+                yield return new PersonDto("fred", new System.DateTime(1999, 12, 2));
             }
         }
 
@@ -133,7 +132,7 @@
 
             var results = new List<SearchResults<PersonDto>>();
 
-            using (var reader = DirectoryReader.Open(_directory))
+            using (var reader = DirectoryReader.Open(directory))
             {
                 var searcher = new IndexSearcher(reader);
 

@@ -36,16 +36,16 @@
 
             // ReSharper disable once InconsistentlySynchronizedField
             IEnumerable<SimilarityResultStorage> result = data.Where(index =>
-                                                                          index.ImageHash.Contains(contentHash)
-                                                                          &&
-                                                                          index.AverageHash >= minAvgHash
-                                                                          &&
-                                                                          index.DifferenceHash >= minDiffHash
-                                                                          &&
-                                                                          index.PerceptualHash >= minPerHash)
-                                                               .OrderBy(x => x.DifferenceHash)
-                                                               .ThenBy(x => x.PerceptualHash)
-                                                               .ThenBy(x => x.AverageHash);
+                    index.ImageHash.Contains(contentHash)
+                    &&
+                    index.AverageHash >= minAvgHash
+                    &&
+                    index.DifferenceHash >= minDiffHash
+                    &&
+                    index.PerceptualHash >= minPerHash)
+                .OrderBy(x => x.DifferenceHash)
+                .ThenBy(x => x.PerceptualHash)
+                .ThenBy(x => x.AverageHash);
 
             if (skip > 0)
                 result = result.Skip(skip);
@@ -54,12 +54,12 @@
                 result = result.Take(take);
 
             return result.Select(match => new SimilarityResult
-                                              {
-                                                  DifferenceHash = match.DifferenceHash,
-                                                  AverageHash = match.AverageHash,
-                                                  PerceptualHash = match.PerceptualHash,
-                                                  OtherImageHash = match.ImageHash.Single(y => y.SequenceEqual(contentHash) == false),
-                                              });
+            {
+                DifferenceHash = match.DifferenceHash,
+                AverageHash = match.AverageHash,
+                PerceptualHash = match.PerceptualHash,
+                OtherImageHash = match.ImageHash.Single(y => y.SequenceEqual(contentHash) == false),
+            });
         }
 
         public int CountSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95)
@@ -97,8 +97,8 @@
             lock (syncLock)
             {
                 var existingItem = data.FirstOrDefault(index => index.ImageHash.Contains(contentHash)
-                                                                 &&
-                                                                 index.ImageHash.Contains(similarity.OtherImageHash));
+                                                                &&
+                                                                index.ImageHash.Contains(similarity.OtherImageHash));
 
                 if (existingItem != null)
                     data.Remove(existingItem);

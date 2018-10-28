@@ -6,8 +6,6 @@
 
     public class RenameInventoryItem : ICommand
     {
-        public readonly string NewName;
-
         public RenameInventoryItem(Guid id, string newName, int originalVersion)
         {
             Id = id;
@@ -16,6 +14,8 @@
         }
 
         public Guid Id { get; set; }
+
+        public string NewName { get; }
 
         public int ExpectedVersion { get; set; }
     }

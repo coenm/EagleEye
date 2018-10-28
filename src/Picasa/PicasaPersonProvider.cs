@@ -7,23 +7,23 @@
 
     public class PicasaPersonProvider : IMediaInformationProvider
     {
-        private readonly IPicasaService _picasaService;
+        private readonly IPicasaService picasaService;
 
         public PicasaPersonProvider(IPicasaService picasaService)
         {
-            _picasaService = picasaService;
+            this.picasaService = picasaService;
         }
 
         public int Priority { get; } = 10;
 
         public bool CanProvideInformation(string filename)
         {
-            return _picasaService.CanProvideData(filename);
+            return picasaService.CanProvideData(filename);
         }
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
-            var result = await _picasaService.GetDataAsync(filename).ConfigureAwait(false);
+            var result = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
                 return;

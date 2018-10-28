@@ -14,18 +14,18 @@
 //                                            ICancellableCommandHandler<CheckInItemsToInventory>,
 //                                            ICancellableCommandHandler<RenameInventoryItem>
     {
-        private readonly ISession _session;
+        private readonly ISession session;
 
         public InventoryCommandHandlers(ISession session)
         {
-            _session = session;
+            this.session = session;
         }
 
         public async Task Handle(CreateInventoryItem message, CancellationToken token = new CancellationToken())
         {
             var item = new InventoryItem(message.Id, message.Name);
-            await _session.Add(item, token).ConfigureAwait(false);
-            await _session.Commit(token).ConfigureAwait(false);
+            await session.Add(item, token).ConfigureAwait(false);
+            await session.Commit(token).ConfigureAwait(false);
         }
 
 //        public async Task Handle(DeactivateInventoryItem message, CancellationToken token)
@@ -37,9 +37,9 @@
 //
         public async Task Handle(RemoveItemsFromInventory message, CancellationToken token)
         {
-            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
+            var item = await session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
             item.Remove(message.Count);
-            await _session.Commit(token);
+            await session.Commit(token);
         }
 //
 //        public async Task Handle(CheckInItemsToInventory message, CancellationToken token)

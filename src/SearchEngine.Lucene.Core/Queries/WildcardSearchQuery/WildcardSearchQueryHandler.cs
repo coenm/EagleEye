@@ -12,11 +12,11 @@
 
     public class WildcardSearchQueryHandler : IQueryHandler<WildcardSearchQuery, SearchResult>
     {
-        private readonly MediaIndex _index;
+        private readonly MediaIndex index;
 
         public WildcardSearchQueryHandler([NotNull] MediaIndex index)
         {
-            _index = index;
+            this.index = index;
         }
 
         public Task<SearchResult> HandleAsync(WildcardSearchQuery query)
@@ -24,21 +24,21 @@
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
-            var searchResult = _index.Search(query.Query, out var hitsCount);
+            var searchResult = index.Search(query.Query, out var hitsCount);
 
             var result = new SearchResult
-                             {
-                                 Count = hitsCount,
-                                 Items = searchResult
-                                         .Select(item =>
-                                                     new SearchItem
-                                                         {
-                                                             Filename = item.FileInformation?.Filename,
-                                                             Score = item.Score,
-                                                             Guid = Guid.NewGuid(),
-                                                         })
-                                         .ToArray()
-                             };
+            {
+                Count = hitsCount,
+                Items = searchResult
+                    .Select(item =>
+                        new SearchItem
+                        {
+                            Filename = item.FileInformation?.Filename,
+                            Score = item.Score,
+                            Guid = Guid.NewGuid(),
+                        })
+                    .ToArray(),
+            };
 
             return Task.FromResult(result);
         }

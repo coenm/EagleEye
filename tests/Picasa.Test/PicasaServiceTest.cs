@@ -47,7 +47,7 @@
         [InlineData(true, false, false)]
         [InlineData(false, true, false)]
         [InlineData(false, false, false)]
-        public void CanProvideDataChecksImageAndPicasaFileExistanceTest(bool imageExists, bool picasaFileExists, bool expectedResult)
+        public void CanProvideDataChecksImageAndPicasaFileExistenceTest(bool imageExists, bool picasaFileExists, bool expectedResult)
         {
             // arrange
             A.CallTo(() => fileService.FileExists(imageFilename)).Returns(imageExists);
@@ -64,12 +64,12 @@
         public async Task GetDataShouldUsePicasaIniFileToGetPersonDataTest()
         {
             // arrange
-            var expectedRestult = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
+            var expectedResult = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
             var fileWithPersonsList = new[]
                                           {
                                               new FileWithPersons("imageA.jpg", "Alice", "Bob"),
                                               new FileWithPersons("imageC.jpg", "Stephen Hawking", "Alice", "Bob"),
-                                              expectedRestult,
+                                              expectedResult,
                                           };
             sut.SetGetFileAndPersonDataImplementation(stream =>
                                                        {
@@ -82,7 +82,7 @@
             var result = await sut.GetDataAsync(GetFilename("image.jpg")).ConfigureAwait(false);
 
             // assert
-            result.Should().Be(expectedRestult);
+            result.Should().Be(expectedResult);
         }
 
         [Fact]

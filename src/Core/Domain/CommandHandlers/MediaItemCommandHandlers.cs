@@ -16,18 +16,18 @@
                                                             ICommandHandler<SetLocationToMediaItemCommand>,
                                                             ICommandHandler<ClearLocationFromMediaItemCommand>
     {
-        private readonly ISession _session;
+        private readonly ISession session;
 
         public MediaItemCommandHandlers(ISession session)
         {
-            _session = session;
+            this.session = session;
         }
 
         public async Task Handle(CreateMediaItemCommand message)
         {
             var item = new MediaItem(message.Id, message.Name, message.Tags, message.Persons);
-            await _session.Add(item).ConfigureAwait(false);
-            await _session.Commit().ConfigureAwait(false);
+            await session.Add(item).ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
 
 //            var item = new MediaItem(message.Id, message.Name);
 //
@@ -41,35 +41,35 @@
 
         public async Task Handle(AddTagsToMediaItemCommand message)
         {
-            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.AddTags(message.Tags);
-            await _session.Commit().ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
         }
 
         public async Task Handle(RemoveTagsFromMediaItemCommand message)
         {
-            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.RemoveTags(message.Tags);
-            await _session.Commit().ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
         }
 
         public async Task Handle(AddPersonsToMediaItemCommand message)
         {
-            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.AddPersons(message.Persons);
-            await _session.Commit().ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
         }
 
         public async Task Handle(RemovePersonsFromMediaItemCommand message)
         {
-            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.RemovePersons(message.Persons);
-            await _session.Commit().ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
         }
 
         public async Task Handle(SetLocationToMediaItemCommand message)
         {
-            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.SetLocation(
                              message.CountryCode,
                              message.CountryName,
@@ -79,14 +79,14 @@
                              message.Longitude,
                              message.Latitude);
 
-            await _session.Commit().ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
         }
 
         public async Task Handle(ClearLocationFromMediaItemCommand message)
         {
-            var item = await _session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
             item.ClearLocationData();
-            await _session.Commit().ConfigureAwait(false);
+            await session.Commit().ConfigureAwait(false);
         }
     }
 }

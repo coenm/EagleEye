@@ -10,19 +10,19 @@
 
     internal class HtmlStripAnalyzer : Analyzer
     {
-        private readonly LuceneVersion _luceneVersion;
+        private readonly LuceneVersion luceneVersion;
 
         public HtmlStripAnalyzer(LuceneVersion luceneVersion)
         {
-            _luceneVersion = luceneVersion;
+            this.luceneVersion = luceneVersion;
         }
 
         protected override TokenStreamComponents CreateComponents(string fieldName, TextReader reader)
         {
-            StandardTokenizer standardTokenizer = new StandardTokenizer(_luceneVersion, reader);
-            TokenStream stream = new StandardFilter(_luceneVersion, standardTokenizer);
-            stream = new LowerCaseFilter(_luceneVersion, stream);
-            stream = new StopFilter(_luceneVersion, stream, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
+            StandardTokenizer standardTokenizer = new StandardTokenizer(luceneVersion, reader);
+            TokenStream stream = new StandardFilter(luceneVersion, standardTokenizer);
+            stream = new LowerCaseFilter(luceneVersion, stream);
+            stream = new StopFilter(luceneVersion, stream, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
             return new TokenStreamComponents(standardTokenizer, stream);
         }
 

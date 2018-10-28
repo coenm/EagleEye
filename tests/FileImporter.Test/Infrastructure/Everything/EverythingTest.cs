@@ -11,11 +11,11 @@
 
     public class EverythingTest
     {
-        private readonly string[] imageFilenames;
+        private readonly string[] imageFileNames;
 
         public EverythingTest()
         {
-            imageFilenames = Directory.GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories).ToArray();
+            imageFileNames = Directory.GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories).ToArray();
         }
 
         [Fact(Skip = "Requires Everything.exe")]
@@ -23,7 +23,7 @@
         {
             // arrange
             var sut = new FileImporter.Infrastructure.Everything.Everything();
-            var fileIndexes = imageFilenames.Select(p => new ImageData(p)).ToList();
+            var fileIndexes = imageFileNames.Select(p => new ImageData(p)).ToList();
 
             // act
             await sut.Show(fileIndexes);

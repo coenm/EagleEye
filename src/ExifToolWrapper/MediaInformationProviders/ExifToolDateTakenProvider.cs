@@ -17,20 +17,20 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
 
     public class ExifToolDateTakenProvider : IMediaInformationProvider
     {
-        private static readonly List<MetadataHeaderKeyPair> _keys = new List<MetadataHeaderKeyPair>
+        private static readonly List<MetadataHeaderKeyPair> Keys = new List<MetadataHeaderKeyPair>
                                                                         {
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.EXIF, MetadataHeaderKeyPair.Keys.EXIF_IFD, "DateTimeOriginal"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.XMP, MetadataHeaderKeyPair.Keys.XMP_EXIF, "DateTimeOriginal"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.COMPOSITE, MetadataHeaderKeyPair.Keys.COMPOSITE, "SubSecDateTimeOriginal"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.XMP, MetadataHeaderKeyPair.Keys.XMP_EXIF, "DateTimeDigitized"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.COMPOSITE, MetadataHeaderKeyPair.Keys.COMPOSITE, "SubSecCreateDate"),
+                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Exif, MetadataHeaderKeyPair.Keys.ExifIfd, "DateTimeOriginal"),
+                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Xmp, MetadataHeaderKeyPair.Keys.XmpExif, "DateTimeOriginal"),
+                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecDateTimeOriginal"),
+                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Xmp, MetadataHeaderKeyPair.Keys.XmpExif, "DateTimeDigitized"),
+                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecCreateDate"),
                                                                         };
 
-        private readonly IExifTool _exiftool;
+        private readonly IExifTool exiftool;
 
         public ExifToolDateTakenProvider(IExifTool exiftool)
         {
-            _exiftool = exiftool;
+            this.exiftool = exiftool;
         }
 
         public int Priority { get; } = 100;
@@ -42,7 +42,7 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
-            var result = await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
                 return;
@@ -53,10 +53,9 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
                 media.SetDateTimeTaken(dateTimeTaken);
         }
 
-
         // ReSharper disable once MemberCanBePrivate.Global
         // Method is public for unittest purposes.
-        // Improvment by extracting to new (static?) class
+        // Improvement by extracting to new (static?) class
         [Pure]
         internal static DateTime? ParseFullDate(string data)
         {
@@ -87,10 +86,11 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
             return null;
         }
 
-        [CanBeNull, Pure]
+        [CanBeNull]
+        [Pure]
         private static Timestamp GetDateTimeFromFullJsonObject(JObject data)
         {
-            foreach (var header in _keys)
+            foreach (var header in Keys)
             {
                 var result = GetDateTimeFromKeyKeyPair(data, header.Header1, header.Key);
                 if (result != null)
@@ -104,7 +104,8 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
             return null;
         }
 
-        [CanBeNull, Pure]
+        [CanBeNull]
+        [Pure]
         private static Timestamp GetDateTimeFromKeyKeyPair([NotNull] JObject data, [NotNull] string header, [NotNull] string key)
         {
             if (!(data[header] is JObject headerObject))
@@ -116,7 +117,8 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
             return GetDateTimeFromJToken(token);
         }
 
-        [CanBeNull, Pure]
+        [CanBeNull]
+        [Pure]
         private static Timestamp GetDateTimeFromJToken(JToken token)
         {
             switch (token.Type)

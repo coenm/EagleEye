@@ -35,15 +35,15 @@
             // act
             var jsonObject = JsonConvert.DeserializeObject(JsonArray.ConvertToOsString());
             var jsonArray = jsonObject as JArray;
-            var firtItem = jsonArray?[0] as JObject;
-            var exifItem = firtItem?["EXIF"] as JObject;
+            var firstItem = jsonArray?[0] as JObject;
+            var exifItem = firstItem?["EXIF"] as JObject;
             var exif = exifItem?.ToString();
 
             // assert
             exif.Should().Be(ExpectedExif.ConvertToOsString());
         }
 
-        [ConditionalHostFact(TestHost.Local, "Fragille on AppVeyor and Travis")]
+        [ConditionalHostFact(TestHost.Local, "Fragile on AppVeyor and Travis")]
         public void DeserializeObjectAsDynamicTest()
         {
             // arrange

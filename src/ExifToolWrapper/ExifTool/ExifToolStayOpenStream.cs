@@ -7,27 +7,27 @@
 
     public class ExifToolStayOpenStream : Stream
     {
-        private const int ONE_MB = 1024 * 1024;
-        private readonly string _prefix = ExifToolExecutable.NewLine + "{ready";
-        private readonly string _suffix = "}" + ExifToolExecutable.NewLine;
-        private readonly Encoding _encoding;
-        private readonly byte[] _cache;
-        private readonly byte[] _endOfMessageSequenceStart;
-        private readonly byte[] _endOfMessageSequenceEnd;
-        private readonly int _buferSize;
-        private int _index;
+        private const int OneMb = 1024 * 1024;
+        private readonly string prefix = ExifToolExecutable.NewLine + "{ready";
+        private readonly string suffix = "}" + ExifToolExecutable.NewLine;
+        private readonly Encoding encoding;
+        private readonly byte[] cache;
+        private readonly byte[] endOfMessageSequenceStart;
+        private readonly byte[] endOfMessageSequenceEnd;
+        private readonly int bufferSize;
+        private int index;
 
-        public ExifToolStayOpenStream(Encoding encoding, int bufferSize = ONE_MB)
+        public ExifToolStayOpenStream(Encoding encoding, int bufferSize = OneMb)
         {
             if (bufferSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(bufferSize));
 
-            _buferSize = bufferSize;
-            _encoding = encoding ?? new UTF8Encoding();
-            _cache = new byte[_buferSize];
-            _index = 0;
-            _endOfMessageSequenceStart = _encoding.GetBytes(_prefix);
-            _endOfMessageSequenceEnd = _encoding.GetBytes(_suffix);
+            this.bufferSize = bufferSize;
+            this.encoding = encoding ?? new UTF8Encoding();
+            cache = new byte[this.bufferSize];
+            index = 0;
+            endOfMessageSequenceStart = this.encoding.GetBytes(prefix);
+            endOfMessageSequenceEnd = this.encoding.GetBytes(suffix);
         }
 
         public event EventHandler<DataCapturedArgs> Update = delegate { };
@@ -38,14 +38,14 @@
 
         public override bool CanWrite => true;
 
-        public override long Length => _index;
+        public override long Length => index;
 
         public override long Position
         {
-            get => _index;
+            get => index;
             set
             {
-                // do nothing but also don't throw an excpetion.
+                // do nothing but also don't throw an exception.
             }
         }
 
@@ -58,28 +58,28 @@
             if (offset + count > buffer.Length)
                 return;
 
-            if (count > _buferSize - _index)
+            if (count > bufferSize - index)
                 throw new ArgumentOutOfRangeException();
 
-            Array.Copy(buffer, 0, _cache, _index, count);
-            _index += count;
+            Array.Copy(buffer, 0, cache, index, count);
+            index += count;
 
             var lastEndIndex = 0;
 
-            for (var i = 0; i < _index - 1; i++)
+            for (var i = 0; i < index - 1; i++)
             {
                 var j = 0;
-                while (j < _endOfMessageSequenceStart.Length && _cache[i + j] == _endOfMessageSequenceStart[j])
+                while (j < endOfMessageSequenceStart.Length && cache[i + j] == endOfMessageSequenceStart[j])
                     j++;
 
-                if (j != _endOfMessageSequenceStart.Length)
+                if (j != endOfMessageSequenceStart.Length)
                     continue;
 
                 j = j + i;
 
                 // expect numbers as key.
                 var keyStartIndex = j;
-                while (j < _index && _cache[j] >= '0' && _cache[j] <= '9')
+                while (j < index && cache[j] >= '0' && cache[j] <= '9')
                     j++;
 
                 if (keyStartIndex == j)
@@ -88,31 +88,31 @@
                 var keyLength = j - keyStartIndex;
 
                 var k = 0;
-                while (k < _endOfMessageSequenceEnd.Length && _cache[j + k] == _endOfMessageSequenceEnd[k])
+                while (k < endOfMessageSequenceEnd.Length && cache[j + k] == endOfMessageSequenceEnd[k])
                     k++;
 
-                if (k != _endOfMessageSequenceEnd.Length)
+                if (k != endOfMessageSequenceEnd.Length)
                     continue;
 
                 j += k;
 
-                var content = _encoding.GetString(_cache, lastEndIndex, i - lastEndIndex);
-                var key = _encoding.GetString(_cache, keyStartIndex, keyLength);
+                var content = encoding.GetString(cache, lastEndIndex, i - lastEndIndex);
+                var key = encoding.GetString(cache, keyStartIndex, keyLength);
                 Update(this, new DataCapturedArgs(key, content));
 
                 i = j;
                 lastEndIndex = j;
             }
 
-            Debug.Assert(lastEndIndex <= _index, "Expect that lastEndindex is less then index");
+            Debug.Assert(lastEndIndex <= index, "Expect that lastEndindex is less then index");
 
             if (lastEndIndex == 0)
                 return;
 
-            if (_index > lastEndIndex)
-                Array.Copy(_cache, lastEndIndex, _cache, 0, _index - lastEndIndex);
+            if (index > lastEndIndex)
+                Array.Copy(cache, lastEndIndex, cache, 0, index - lastEndIndex);
 
-            _index -= lastEndIndex;
+            index -= lastEndIndex;
         }
 
         public override void Flush()

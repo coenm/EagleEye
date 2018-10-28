@@ -8,7 +8,7 @@
 
     public static class TestEnvironment
     {
-        private const string SOLUTION_FILE_NAME = "EagleEye.sln";
+        private const string SolutionFileName = "EagleEye.sln";
         private static readonly Lazy<string> LazySolutionDirectoryFullPath = new Lazy<string>(GetSolutionDirectoryFullPathImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegration = new Lazy<bool>(IsContinuousIntegrationImpl);
         private static readonly Lazy<bool> RunsOnContinuousIntegrationTravis = new Lazy<bool>(IsRunningOnTravisImpl);
@@ -33,7 +33,7 @@
         /// <summary>
         /// Convert relative path to full path based on solution directory.
         /// </summary>
-        /// <param name="relativePath">relative path from root directory</param>
+        /// <param name="relativePath">relative path from root directory.</param>
         /// <returns>Full path</returns>
         public static string GetFullPath(params string[] relativePath)
         {
@@ -69,7 +69,7 @@
             if (directory == null)
                 throw new Exception($"Unable to find solution directory from '{assemblyLocation}'!");
 
-            while (!directory.EnumerateFiles(SOLUTION_FILE_NAME).Any())
+            while (!directory.EnumerateFiles(SolutionFileName).Any())
             {
                 try
                 {

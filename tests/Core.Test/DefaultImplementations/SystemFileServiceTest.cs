@@ -36,10 +36,10 @@
         public void OpenReadTest()
         {
             // arrange
-            var filename = Path.Combine(this.filename);
+            var fileName = Path.Combine(filename);
 
             // act
-            using (var result = sut.OpenRead(filename))
+            using (var result = sut.OpenRead(fileName))
             {
                 // assert
                 result.Should().NotBeNull();

@@ -20,7 +20,7 @@
                                                                    CountryName = "United States",
                                                                    CountryCode = "USA",
                                                                    SubLocation = "Union Square",
-                                                                   City = "New York"
+                                                                   City = "New York",
                                                                },
                                                            Tags = new List<string>
                                                                       {
@@ -35,12 +35,12 @@
                                                            DateTimeTaken = new Timestamp
                                                                                {
                                                                                    Precision = TimestampPrecision.Month,
-                                                                                   Value = new DateTime(2010, 3, 1, 1, 1, 1, 1)
+                                                                                   Value = new DateTime(2010, 3, 1, 1, 1, 1, 1),
                                                                                },
                                                            FileInformation = new FileInformation
                                                                                  {
                                                                                      Type = "image/jpeg",
-                                                                                     Filename = "file1.jpg"
+                                                                                     Filename = "file1.jpg",
                                                                                  },
                                                        };
     }

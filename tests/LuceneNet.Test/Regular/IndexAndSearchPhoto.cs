@@ -1,4 +1,4 @@
-﻿namespace EagleEye.LuceneNet.Test.Reguar
+﻿namespace EagleEye.LuceneNet.Test.Regular
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -10,24 +10,23 @@
     using Lucene.Net.QueryParsers.Classic;
     using Lucene.Net.Search;
     using Lucene.Net.Store;
-
     using Xunit;
 
     public class IndexAndSearchPhoto
     {
-        private const string PERSON = "person";
-        private const string FILENAME = "filename";
+        private const string Person = "person";
+        private const string Filename = "filename";
 
-        private readonly Directory _directory;
-        private readonly Analyzer _analyzer;
-        private readonly IndexWriterConfig _indexWriterConfig;
+        private readonly Directory directory;
+        private readonly Analyzer analyzer;
+        private readonly IndexWriterConfig indexWriterConfig;
 
         public IndexAndSearchPhoto()
         {
-            _directory = new RAMDirectory();
-            _analyzer = new StandardAnalyzer(TestHelper.LUCENE_VERSION);
+            directory = new RAMDirectory();
+            analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
-            _indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, _analyzer)
+            indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
                 RAMBufferSizeMB = 256.0
@@ -92,13 +91,13 @@
 
         private IEnumerable<SearchResults<PhotoMetadataDto>> SearchPersons(string query)
         {
-            return Search(query, PERSON);
+            return Search(query, Person);
         }
 
         private IEnumerable<SearchResults<PhotoMetadataDto>> Search(Query query)
         {
             var results = new List<SearchResults<PhotoMetadataDto>>();
-            using (var reader = DirectoryReader.Open(_directory))
+            using (var reader = DirectoryReader.Open(directory))
             {
                 var searcher = new IndexSearcher(reader);
 
@@ -107,8 +106,8 @@
                 foreach (var t in hitsFound.ScoreDocs)
                 {
                     var doc = searcher.Doc(t.Doc);
-                    var filename = doc.Get(FILENAME);
-                    var persons = doc.GetValues(PERSON);
+                    var filename = doc.Get(Filename);
+                    var persons = doc.GetValues(Person);
                     var score = t.Score;
 
                     var searchResultDto = new SearchResults<PhotoMetadataDto>(new PhotoMetadataDto(filename, persons), score);
@@ -120,15 +119,15 @@
             return results;
         }
 
-        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = FILENAME)
+        private IEnumerable<SearchResults<PhotoMetadataDto>> Search(string query, string defaultSearchField = Filename)
         {
-            var parser = new QueryParser(TestHelper.LUCENE_VERSION, defaultSearchField, _analyzer);
+            var parser = new QueryParser(TestHelper.LuceneVersion, defaultSearchField, analyzer);
             return Search(parser.Parse(query));
         }
 
         private void IndexStaticDocuments()
         {
-            using (var writer = new IndexWriter(_directory, _indexWriterConfig))
+            using (var writer = new IndexWriter(directory, indexWriterConfig))
             {
                 foreach (var photo in StaticDocuments.Photos)
                 {
@@ -141,13 +140,13 @@
 
         private void DeleteFromIndex(Term term)
         {
-            var indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, _analyzer)
+            var indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
                                      {
                                          OpenMode = OpenMode.CREATE_OR_APPEND,
                                          RAMBufferSizeMB = 256.0
                                      };
 
-            using (var writer = new IndexWriter(_directory, indexWriterConfig))
+            using (var writer = new IndexWriter(directory, indexWriterConfig))
             {
                 writer.DeleteDocuments(term);
                 writer.ForceMerge(1);
@@ -158,7 +157,7 @@
         {
             var doc = new Document();
 
-            Field fieldFilename = new TextField(FILENAME, photo.Filename, Field.Store.YES);
+            Field fieldFilename = new TextField(Filename, photo.Filename, Field.Store.YES);
             doc.Add(fieldFilename);
 
             var persons = photo.Persons
@@ -168,7 +167,7 @@
 
             foreach (var person in persons)
             {
-                Field fieldPerson = new TextField(PERSON, person, Field.Store.YES);
+                Field fieldPerson = new TextField(Person, person, Field.Store.YES);
                 doc.Add(fieldPerson);
             }
 
@@ -183,7 +182,7 @@
                 // Existing index (an old copy of this document may have been indexed) so
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
-                writer.UpdateDocument(new Term(FILENAME, photo.Filename), doc);
+                writer.UpdateDocument(new Term(Filename, photo.Filename), doc);
             }
         }
     }

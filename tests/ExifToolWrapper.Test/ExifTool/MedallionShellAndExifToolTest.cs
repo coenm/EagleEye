@@ -18,14 +18,14 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class MadellionShellAndExifToolTest
+    public class MedallionShellAndExifToolTest
     {
         private readonly string image;
         private readonly ITestOutputHelper output;
         private readonly string currentExifToolVersion;
 
         // These tests will only run when exiftool is available from PATH.
-        public MadellionShellAndExifToolTest(ITestOutputHelper output)
+        public MedallionShellAndExifToolTest(ITestOutputHelper output)
         {
             currentExifToolVersion = ExifToolSystemConfiguration.ConfiguredVersion;
             this.output = output;
@@ -49,7 +49,7 @@
             // arrange
             var args = new List<string>
             {
-                ExifToolArguments.VERSION,
+                ExifToolArguments.Version,
             };
 
             // act
@@ -69,12 +69,12 @@
             // arrange
             IEnumerable<string> args = new List<string>
             {
-                ExifToolArguments.STAY_OPEN,
-                ExifToolArguments.BOOL_TRUE,
+                ExifToolArguments.StayOpen,
+                ExifToolArguments.BoolTrue,
                 "-@",
                 "-",
                 "-common_args",
-                ExifToolArguments.JSON_OUTPUT,
+                ExifToolArguments.JsonOutput,
 
                 // format coordinates as signed decimals.
                 "-c",
@@ -98,7 +98,7 @@
                 // act
                 var cmd = Command.Run(ExifToolSystemConfiguration.ExifToolExecutable, args).RedirectTo(stream);
 
-                await cmd.StandardInput.WriteLineAsync(ExifToolArguments.VERSION).ConfigureAwait(false);
+                await cmd.StandardInput.WriteLineAsync(ExifToolArguments.Version).ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-execute0000").ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync(image).ConfigureAwait(false);
                 await cmd.StandardInput.WriteLineAsync("-execute0005").ConfigureAwait(false);

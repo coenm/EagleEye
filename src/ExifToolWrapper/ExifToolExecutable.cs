@@ -7,9 +7,9 @@
 
     public static class ExifToolExecutable
     {
-        private const string WINDOWS_EOL = "\r\n";
+        private const string WindowsEol = "\r\n";
 
-        private const string LINUX_EOL = "\n";
+        private const string LinuxEol = "\n";
 
         [PublicAPI]
         public static bool IsLinuxOrMacOsx => !IsWindows;
@@ -23,14 +23,13 @@
             get
             {
                 if (IsWindows)
-                    return WINDOWS_EOL;
-                return LINUX_EOL;
+                    return WindowsEol;
+                return LinuxEol;
             }
         }
 
         [PublicAPI]
         public static byte[] NewLineBytes => Encoding.ASCII.GetBytes(NewLine);
-
 
         /// <summary>
         /// Convert a string with either Linux or Windows line-endings to the OS specific line-endings
@@ -43,12 +42,12 @@
             if (string.IsNullOrWhiteSpace(input))
                 return input;
 
-            var linuxSanitized = input.Replace(WINDOWS_EOL, LINUX_EOL);
+            var linuxSanitized = input.Replace(WindowsEol, LinuxEol);
 
             if (!IsWindows)
                 return linuxSanitized;
 
-            return linuxSanitized.Replace(LINUX_EOL, WINDOWS_EOL);
+            return linuxSanitized.Replace(LinuxEol, WindowsEol);
         }
 
         [PublicAPI]

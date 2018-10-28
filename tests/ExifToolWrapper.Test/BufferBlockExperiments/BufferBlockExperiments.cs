@@ -108,7 +108,7 @@
         }
 
         [Fact]
-        public async Task CompletingQueueWillNotStopProcessingAddedAndPosponedItemsInQueue()
+        public async Task CompletingQueueWillNotStopProcessingAddedAndPostponedItemsInQueue()
         {
             // arrange
             InitCancellationTokens(2);

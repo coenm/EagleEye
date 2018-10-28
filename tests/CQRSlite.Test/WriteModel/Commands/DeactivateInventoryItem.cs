@@ -4,8 +4,8 @@
 
     using CQRSlite.Commands;
 
-    public class DeactivateInventoryItem : ICommand 
-	{
+    public class DeactivateInventoryItem : ICommand
+    {
         public DeactivateInventoryItem(Guid id, int originalVersion)
         {
             Id = id;
@@ -13,6 +13,7 @@
         }
 
         public Guid Id { get; set; }
+
         public int ExpectedVersion { get; set; }
-	}
+    }
 }

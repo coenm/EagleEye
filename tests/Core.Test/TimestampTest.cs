@@ -192,7 +192,7 @@
         [InlineData(2018, 11, 22, 15, null, null, "20181122150000")]
         [InlineData(2018, 11, 22, 15, 16, null, "20181122151600")]
         [InlineData(2018, 11, 22, 15, 16, 17, "20181122151617")]
-        public void ToString_ShouldRespectPrecisonTest(int year, int? month, int? day, int? hour, int? minute, int? seconds, string expectedResult)
+        public void ToString_ShouldRespectPrecisionTest(int year, int? month, int? day, int? hour, int? minute, int? seconds, string expectedResult)
         {
             // arrange
             var sut = new Timestamp(year, month, day, hour, minute, seconds);

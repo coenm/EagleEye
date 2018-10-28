@@ -18,12 +18,9 @@
 
     public static class Program
     {
-        private static Container container;
-
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
-            // ProgressBarOnBottom = true,
             ForegroundColor = ConsoleColor.Yellow,
             BackgroundColor = ConsoleColor.DarkYellow,
         };
@@ -35,10 +32,12 @@
             ProgressCharacter = '─',
         };
 
+        private static Container container;
+
         public static void Main(string[] args)
         {
             container = new Container();
-//            Startup.ConfigureContainer(_container, rootPath, indexFilename);
+            // Startup.ConfigureContainer(_container, rootPath, indexFilename);
             Run(args);
         }
 
@@ -59,8 +58,8 @@
                 });
 
             Console.WriteLine("Done.");
-//            Console.WriteLine("Done. Press enter to exit.");
-//            Console.ReadLine();
+            // Console.WriteLine("Done. Press enter to exit.");
+            // Console.ReadLine();
         }
 
         private static void UpdateSimilarity(UpdateSimilarityOptions options)
@@ -455,7 +454,7 @@
             Startup.ConfigureContainer(container, options.OutputFile);
 
             var searchService = container.GetInstance<SearchService>();
-            var persistantService = container.GetInstance<PersistantFileIndexService>();
+            var persistentService = container.GetInstance<PersistentFileIndexService>();
             var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
@@ -469,7 +468,7 @@
                     // check if file exists.
                     if (!contentResolver.Exist(index.Identifier))
                     {
-                        persistantService.Delete(index.Identifier);
+                        persistentService.Delete(index.Identifier);
                     }
                 }
             }
@@ -485,7 +484,6 @@
             }
 
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
-//            var diRoot = new DirectoryInfo(RootPath).FullName;
 
             var rp = string.Empty;
 //            if (diDirToIndex.StartsWith(diRoot))
@@ -502,7 +500,7 @@
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
-            var persistentService = container.GetInstance<PersistantFileIndexService>();
+            var persistentService = container.GetInstance<PersistentFileIndexService>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {

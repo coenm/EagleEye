@@ -1,4 +1,4 @@
-namespace CQRSlite.Test.WriteModel.Commands
+﻿namespace CQRSlite.Test.WriteModel.Commands
 {
     using System;
 
@@ -6,8 +6,6 @@ namespace CQRSlite.Test.WriteModel.Commands
 
     public class RemoveItemsFromInventory : ICommand
     {
-        public readonly int Count;
-
         public RemoveItemsFromInventory(Guid id, int count, int originalVersion)
         {
             Id = id;
@@ -16,6 +14,8 @@ namespace CQRSlite.Test.WriteModel.Commands
         }
 
         public Guid Id { get; set; }
+
+        public int Count { get; }
 
         public int ExpectedVersion { get; set; }
     }

@@ -2,15 +2,15 @@
 {
     public static class ExifToolArguments
     {
-        public const string VERSION = "-ver";
-        public const string IGNORE_MINOR_ERRORS_AND_WARNINGS = "-m";
-        public const string JSON_OUTPUT = "-j";
-        public const string QUIET = "-q";
-        public const string FAST = "-fast";
-        public const string SUPERFAST = "-fast2";
-        public const string STAY_OPEN = "-stay_open";
-        public const string BOOL_TRUE = "True";
-        public const string BOOL_FALSE = "False";
-        public const string COMMON_ARGS = "-common_args";
+        public const string Version = "-ver";
+        public const string IgnoreMinorErrorsAndWarnings = "-m";
+        public const string JsonOutput = "-j";
+        public const string Quiet = "-q";
+        public const string Fast = "-fast";
+        public const string Superfast = "-fast2";
+        public const string StayOpen = "-stay_open";
+        public const string BoolTrue = "True";
+        public const string BoolFalse = "False";
+        public const string CommonArgs = "-common_args";
     }
 }

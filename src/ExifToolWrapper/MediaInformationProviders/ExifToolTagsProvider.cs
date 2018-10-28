@@ -13,13 +13,13 @@
 
     public class ExifToolTagsProvider : IMediaInformationProvider
     {
-        private readonly IExifTool _exiftool;
-        private readonly Dictionary<string, string> _headers;
+        private readonly IExifTool exiftool;
+        private readonly Dictionary<string, string> headers;
 
         public ExifToolTagsProvider(IExifTool exiftool)
         {
-            _exiftool = exiftool;
-            _headers = new Dictionary<string, string>
+            this.exiftool = exiftool;
+            headers = new Dictionary<string, string>
                           {
                               { "XMP", "Subject" },
                               { "XMP-dc", "Subject" },
@@ -36,7 +36,7 @@
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
-            var result = await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
                 return;
@@ -46,7 +46,7 @@
             media.AddTags(tags);
         }
 
-        private static IEnumerable<string> GetTagsFromSingleJsonObjecty([NotNull] JObject jsonObject, [NotNull] string tagsKey)
+        private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
         {
             if (!(jsonObject[tagsKey] is JToken tagsToken))
                 return Enumerable.Empty<string>();
@@ -68,12 +68,12 @@
         {
             var result = new List<string>();
 
-            foreach (var header in _headers)
+            foreach (var header in headers)
             {
                 if (!(data[header.Key] is JObject headerObject))
                     continue;
 
-                result.AddRange(GetTagsFromSingleJsonObjecty(headerObject, header.Value));
+                result.AddRange(GetTagsFromSingleJsonObject(headerObject, header.Value));
             }
 
             return result;

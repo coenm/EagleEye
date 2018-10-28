@@ -13,13 +13,13 @@
 
     public class ExifToolGpsProvider : IMediaInformationProvider
     {
-        private readonly IExifTool _exiftool;
-        private readonly NumberFormatInfo _numberFormat;
+        private readonly IExifTool exiftool;
+        private readonly NumberFormatInfo numberFormat;
 
         public ExifToolGpsProvider(IExifTool exiftool)
         {
-            _exiftool = exiftool;
-            _numberFormat = new NumberFormatInfo();
+            this.exiftool = exiftool;
+            numberFormat = new NumberFormatInfo();
         }
 
         public int Priority { get; } = 100;
@@ -31,7 +31,7 @@
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
-            var result = await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
                 return;
@@ -131,7 +131,7 @@
             if (string.IsNullOrWhiteSpace(value))
                 return float.NaN;
 
-            if (float.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, _numberFormat, out var result))
+            if (float.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, numberFormat, out var result))
                 return result;
 
             return float.NaN;

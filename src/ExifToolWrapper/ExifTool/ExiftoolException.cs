@@ -4,7 +4,8 @@
 
     public class ExiftoolException : Exception
     {
-        public ExiftoolException(int exitCode, string standardOutput, string standardError) : base(standardError)
+        public ExiftoolException(int exitCode, string standardOutput, string standardError)
+            : base(standardError)
         {
             ExitCode = exitCode;
             StandardOutput = standardOutput;

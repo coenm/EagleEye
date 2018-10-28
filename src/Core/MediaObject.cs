@@ -7,8 +7,8 @@
 
     public class MediaObject
     {
-        private readonly List<string> _persons;
-        private readonly List<string> _tags;
+        private readonly List<string> persons;
+        private readonly List<string> tags;
 
         public MediaObject(string filename)
         {
@@ -17,15 +17,15 @@
 
             FileInformation = new FileInformation(filename);
             Location = new Location();
-            _persons = new List<string>();
-            _tags = new List<string>();
+            persons = new List<string>();
+            tags = new List<string>();
         }
 
         public FileInformation FileInformation { get; }
 
-        public IReadOnlyList<string> Persons => _persons;
+        public IReadOnlyList<string> Persons => persons;
 
-        public IReadOnlyList<string> Tags => _tags;
+        public IReadOnlyList<string> Tags => tags;
 
         public Location Location { get; }
 
@@ -55,10 +55,10 @@
 
             name = name.Trim();
 
-            if (_tags.Contains(name))
+            if (tags.Contains(name))
                 return;
 
-            _persons.Add(name);
+            persons.Add(name);
         }
 
         public void AddTags([NotNull] IEnumerable<string> tags)
@@ -74,10 +74,10 @@
 
             tag = tag.Trim();
 
-            if (_tags.Contains(tag))
+            if (tags.Contains(tag))
                 return;
 
-            _tags.Add(tag);
+            tags.Add(tag);
         }
     }
 }

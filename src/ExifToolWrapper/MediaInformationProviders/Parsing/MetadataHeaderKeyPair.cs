@@ -19,12 +19,12 @@
 
         public struct Keys
         {
-            public const string XMP = "XMP";
-            public const string COMPOSITE = "Composite";
-            public const string EXIF = "EXIF";
+            public const string Xmp = "XMP";
+            public const string Composite = "Composite";
+            public const string Exif = "EXIF";
 
-            public const string EXIF_IFD = "ExifIFD";
-            public const string XMP_EXIF = "XMP-exif";
+            public const string ExifIfd = "ExifIFD";
+            public const string XmpExif = "XMP-exif";
         }
     }
 }

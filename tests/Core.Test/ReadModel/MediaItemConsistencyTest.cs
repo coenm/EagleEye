@@ -38,26 +38,25 @@
 
             // act
             await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
-                                  {
-                                      TimeStamp = initTimestamp
-                                  }).ConfigureAwait(false);
+            {
+                TimeStamp = initTimestamp,
+            }).ConfigureAwait(false);
 
             // assert
             var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
             result.Should().BeEquivalentTo(new MediaItemDb
-                                               {
-                                                   Id = guid,
-                                                   Version = 0,
-                                                   Filename = "FAKE NAME1",
-                                                   TimeStampUtc = initTimestamp,
-                                                   SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                                                                                                            {
-                                                                                                                Tags = new List<string>(initialTags),
-                                                                                                                Persons = new List<string>(initialPersons)
-                                                                                                            })
-                                               });
+            {
+                Id = guid,
+                Version = 0,
+                Filename = "FAKE NAME1",
+                TimeStampUtc = initTimestamp,
+                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
+                {
+                    Tags = new List<string>(initialTags),
+                    Persons = new List<string>(initialPersons),
+                }),
+            });
         }
-
 
         [Fact]
         public async Task HandleEvents_ShouldSaveDataToRepositoryTest()
@@ -70,40 +69,42 @@
 
             // act
             await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
-                                  {
-                                      Version = 1,
-                                      TimeStamp = initTimestamp
-                                  });
-            await sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
-                                  {
-                                      Version = 2,
-                                      TimeStamp = initTimestamp.AddHours(2)
+            {
+                Version = 1,
+                TimeStamp = initTimestamp,
             });
+
+            await sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
+            {
+                Version = 2,
+                TimeStamp = initTimestamp.AddHours(2),
+            });
+
             await sut.Handle(new PersonsRemovedFromMediaItem(guid, "Darion", "alice")
-                                  {
-                                      Version = 3,
-                                      TimeStamp = initTimestamp.AddHours(3)
-                                  });
+            {
+                Version = 3,
+                TimeStamp = initTimestamp.AddHours(3),
+            });
 
             // assert
             var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
             result.Should().BeEquivalentTo(new MediaItemDb
-                                               {
-                                                   Id = guid,
-                                                   Version = 3,
-                                                   Filename = "FAKE NAME1",
-                                                   TimeStampUtc = initTimestamp.AddHours(3),
-                                                   SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                                                                                                            {
-                                                                                                                Tags = new List<string>(initialTags),
-                                                                                                                Persons = new List<string>
-                                                                                                                              {
-                                                                                                                                  "bob",
-                                                                                                                                  "Calvin",
-                                                                                                                                  "Eve"
-                                                                                                                              }
-                                                                                                            })
-                                               });
+            {
+                Id = guid,
+                Version = 3,
+                Filename = "FAKE NAME1",
+                TimeStampUtc = initTimestamp.AddHours(3),
+                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
+                {
+                    Tags = new List<string>(initialTags),
+                    Persons = new List<string>
+                    {
+                        "bob",
+                        "Calvin",
+                        "Eve",
+                    },
+                }),
+            });
         }
     }
 }

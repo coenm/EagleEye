@@ -7,11 +7,22 @@
 
     public class InventoryItem : AggregateRoot
     {
-        private bool _activated;
+        private bool activated;
+
+        public InventoryItem(Guid id, string name)
+        {
+            Id = id;
+            ApplyChange(new InventoryItemCreated(id, name));
+        }
+
+        private InventoryItem()
+        {
+        }
 
         public void ChangeName(string newName)
         {
-            if (string.IsNullOrEmpty(newName)) throw new ArgumentException("newName");
+            if (string.IsNullOrEmpty(newName))
+                throw new ArgumentException(nameof(newName));
             ApplyChange(new InventoryItemRenamed(Id, newName));
         }
 
@@ -31,28 +42,19 @@
 
         public void Deactivate()
         {
-            if (!_activated) throw new InvalidOperationException("already deactivated");
+            if (!activated)
+                throw new InvalidOperationException("already deactivated");
             ApplyChange(new InventoryItemDeactivated(Id));
-        }
-
-        public InventoryItem(Guid id, string name)
-        {
-            Id = id;
-            ApplyChange(new InventoryItemCreated(id, name));
-        }
-
-        private InventoryItem()
-        {
         }
 
         private void Apply(InventoryItemCreated e)
         {
-            _activated = true;
+            activated = true;
         }
 
         private void Apply(InventoryItemDeactivated e)
         {
-            _activated = false;
+            activated = false;
         }
     }
 }

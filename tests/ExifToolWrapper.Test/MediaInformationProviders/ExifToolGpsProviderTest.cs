@@ -84,7 +84,7 @@
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -102,7 +102,7 @@
             // arrange
             var expectedGpsCoordinate = new Coordinate(40.736072f, -73.994293f);
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
             await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
@@ -116,7 +116,7 @@
             return "[{ " + data + " }]";
         }
 
-        private static JObject ConvertToJobject(string data)
+        private static JObject ConvertToJObject(string data)
         {
             try
             {

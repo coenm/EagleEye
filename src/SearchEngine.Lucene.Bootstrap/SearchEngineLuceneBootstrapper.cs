@@ -23,10 +23,10 @@
     public static class SearchEngineLuceneBootstrapper
     {
         // for now, we force a memory index
-        private const bool USE_MEMORY_INDEX = true;
+        private const bool UseMemoryIndex = true;
 
-        private static readonly Assembly[] _contractAssemblies = { typeof(ISearchEngineQuery<>).Assembly };
-        private static readonly Assembly[] _businessLayerAssemblies = { typeof(MediaIndex).Assembly }; // Assembly.GetExecutingAssembly()
+        private static readonly Assembly[] ContractAssemblies = { typeof(ISearchEngineQuery<>).Assembly };
+        private static readonly Assembly[] BusinessLayerAssemblies = { typeof(MediaIndex).Assembly }; // Assembly.GetExecutingAssembly()
 
         public static void Bootstrap(Container container)
         {
@@ -34,26 +34,26 @@
                 throw new ArgumentNullException(nameof(container));
 
             container.RegisterSingleton<MediaIndex>();
-            RegisterLuceneDirectoryFactory(container, USE_MEMORY_INDEX);
+            RegisterLuceneDirectoryFactory(container, UseMemoryIndex);
 
             // container.RegisterSingleton<IValidator>(new DataAnnotationsValidator(container));
 
-            container.Register(typeof(ICommandHandler<>), _businessLayerAssemblies);
+            container.Register(typeof(ICommandHandler<>), BusinessLayerAssemblies);
             // container.RegisterDecorator(typeof(ICommandHandler<>), typeof(ValidationCommandHandlerDecorator<>));
             // container.RegisterDecorator(typeof(ICommandHandler<>), typeof(AuthorizationCommandHandlerDecorator<>));
 
-            container.Register(typeof(IQueryHandler<,>), _businessLayerAssemblies);
+            container.Register(typeof(IQueryHandler<,>), BusinessLayerAssemblies);
             // container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(AuthorizationQueryHandlerDecorator<,>));
         }
 
         public static IEnumerable<Type> GetCommandTypes() =>
-            from assembly in _contractAssemblies
+            from assembly in ContractAssemblies
             from type in assembly.GetExportedTypes()
             where type.Name.EndsWith("Command")
             select type;
 
         public static IEnumerable<QueryInfo> GetQueryTypes() =>
-            from assembly in _contractAssemblies
+            from assembly in ContractAssemblies
             from type in assembly.GetExportedTypes()
             where QueryInfo.IsQuery(type)
             select new QueryInfo(type);
@@ -68,7 +68,7 @@
             {
                 container.RegisterInstance(new FileSystemLuceneDirectorySettings
                                                {
-                                                   Directory = "a/b/c"
+                                                   Directory = "a/b/c",
                                                });
 
                 container.RegisterSingleton<ILuceneDirectoryFactory, FileSystemLuceneDirectoryFactory>();

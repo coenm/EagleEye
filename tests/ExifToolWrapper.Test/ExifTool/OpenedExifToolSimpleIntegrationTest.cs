@@ -135,7 +135,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
 
             // assert
-            //sut.IsClosed.Should().Be(true);
+            // sut.IsClosed.Should().Be(true);
         }
 
         [Fact]

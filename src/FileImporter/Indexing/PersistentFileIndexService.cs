@@ -2,11 +2,11 @@
 {
     using System;
 
-    public class PersistantFileIndexService
+    public class PersistentFileIndexService
     {
         private readonly IImageDataRepository repository;
 
-        public PersistantFileIndexService(IImageDataRepository repository)
+        public PersistentFileIndexService(IImageDataRepository repository)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
