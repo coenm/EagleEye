@@ -27,6 +27,10 @@
     <PackageReference Include="NLog" Version="4.5.10" />
     <PackageReference Include="ShellProgressBar" Version="4.2.0" />
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
 
