@@ -5,9 +5,7 @@
     using CQRSlite.Commands;
 
     public class CreateInventoryItem : ICommand
-	{
-        public readonly string Name;
-
+    {
         public CreateInventoryItem(Guid id, string name)
         {
             Id = id;
@@ -16,6 +14,8 @@
 
         public Guid Id { get; set; }
 
+        public string Name { get; }
+
         public int ExpectedVersion { get; set; }
-	}
+    }
 }

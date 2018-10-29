@@ -10,13 +10,13 @@
 
     public class MimeTypeProviderTest
     {
-        private readonly MimeTypeProvider _sut;
-        private readonly MediaObject _media;
+        private readonly MimeTypeProvider sut;
+        private readonly MediaObject media;
 
         public MimeTypeProviderTest()
         {
-            _sut = new MimeTypeProvider();
-            _media = new MediaObject("a.jpg");
+            sut = new MimeTypeProvider();
+            media = new MediaObject("a.jpg");
         }
 
         [Fact]
@@ -25,7 +25,7 @@
             // arrange
 
             // act
-            var result = _sut.CanProvideInformation("dummy");
+            var result = sut.CanProvideInformation("dummy");
 
             // assert
             result.Should().BeTrue();
@@ -42,10 +42,10 @@
             // arrange
 
             // act
-            await _sut.ProvideAsync(filename, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(filename, media).ConfigureAwait(false);
 
             // assert
-            _media.FileInformation.Type.Should().Be(expectedMimeType);
+            media.FileInformation.Type.Should().Be(expectedMimeType);
         }
     }
 }

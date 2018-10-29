@@ -1,4 +1,4 @@
-namespace EagleEye.Core.Test.DefaultImplementations
+﻿namespace EagleEye.Core.Test.DefaultImplementations
 {
     using System;
 
@@ -10,11 +10,11 @@ namespace EagleEye.Core.Test.DefaultImplementations
 
     public class SystemDateTimeServiceTest
     {
-        private readonly SystemDateTimeService _sut;
+        private readonly SystemDateTimeService sut;
 
         public SystemDateTimeServiceTest()
         {
-            _sut = SystemDateTimeService.Instance;
+            sut = SystemDateTimeService.Instance;
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace EagleEye.Core.Test.DefaultImplementations
             // This test checks if the resulting value is almost the same as the current DateTime.Now.
 
             // act
-            var result = _sut.Now;
+            var result = sut.Now;
 
             // assert
             result.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
@@ -38,7 +38,7 @@ namespace EagleEye.Core.Test.DefaultImplementations
             // This test might fail when ran at midnight. For now, this acceptable.
 
             // act
-            var result = _sut.Today;
+            var result = sut.Today;
 
             // assert
             result.Should().Be(DateTime.Today);

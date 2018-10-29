@@ -6,8 +6,6 @@
 
     public class CreateMediaItemCommand : ICommand
     {
-        public readonly string Name;
-
         public CreateMediaItemCommand(Guid id, string name, string[] tags, string[] persons)
         {
             Id = id;
@@ -21,6 +19,8 @@
         public string[] Tags { get; set; }
 
         public string[] Persons { get; set; }
+
+        public string Name { get; }
 
         public int ExpectedVersion { get; set; }
     }

@@ -8,15 +8,15 @@
 
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
-        private readonly IPersistantSerializer<List<SimilarityResultStorage>> _storage;
-        private readonly List<SimilarityResultStorage> _data;
-        private readonly object _syncLock = new object();
-        private bool _autoSave = true;
+        private readonly IPersistentSerializer<List<SimilarityResultStorage>> storage;
+        private readonly List<SimilarityResultStorage> data;
+        private readonly object syncLock = new object();
+        private bool autoSave = true;
 
-        public SingleFileSimilarityRepository(IPersistantSerializer<List<SimilarityResultStorage>> storage)
+        public SingleFileSimilarityRepository(IPersistentSerializer<List<SimilarityResultStorage>> storage)
         {
-            _storage = storage ?? throw new ArgumentNullException(nameof(_storage));
-            _data = _storage.Load();
+            this.storage = storage ?? throw new ArgumentNullException(nameof(this.storage));
+            data = this.storage.Load();
         }
 
         public IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash)
@@ -24,10 +24,9 @@
             if (contentHash == null)
                 throw new ArgumentNullException(nameof(contentHash));
 
-            return _data
+            return data
                    .Where(index => index.ImageHash.Contains(contentHash))
                    .Select(index => index.ImageHash.Single(y => y.SequenceEqual(contentHash) == false));
-
         }
 
         public IEnumerable<SimilarityResult> FindSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95, int take = 0, int skip = 0)
@@ -36,17 +35,17 @@
                 throw new ArgumentNullException(nameof(contentHash));
 
             // ReSharper disable once InconsistentlySynchronizedField
-            IEnumerable<SimilarityResultStorage> result = _data.Where(index =>
-                                                                          index.ImageHash.Contains(contentHash)
-                                                                          &&
-                                                                          index.AverageHash >= minAvgHash
-                                                                          &&
-                                                                          index.DifferenceHash >= minDiffHash
-                                                                          &&
-                                                                          index.PerceptualHash >= minPerHash)
-                                                               .OrderBy(x => x.DifferenceHash)
-                                                               .ThenBy(x => x.PerceptualHash)
-                                                               .ThenBy(x => x.AverageHash);
+            IEnumerable<SimilarityResultStorage> result = data.Where(index =>
+                    index.ImageHash.Contains(contentHash)
+                    &&
+                    index.AverageHash >= minAvgHash
+                    &&
+                    index.DifferenceHash >= minDiffHash
+                    &&
+                    index.PerceptualHash >= minPerHash)
+                .OrderBy(x => x.DifferenceHash)
+                .ThenBy(x => x.PerceptualHash)
+                .ThenBy(x => x.AverageHash);
 
             if (skip > 0)
                 result = result.Skip(skip);
@@ -55,12 +54,12 @@
                 result = result.Take(take);
 
             return result.Select(match => new SimilarityResult
-                                              {
-                                                  DifferenceHash = match.DifferenceHash,
-                                                  AverageHash = match.AverageHash,
-                                                  PerceptualHash = match.PerceptualHash,
-                                                  OtherImageHash = match.ImageHash.Single(y => y.SequenceEqual(contentHash) == false)
-                                              });
+            {
+                DifferenceHash = match.DifferenceHash,
+                AverageHash = match.AverageHash,
+                PerceptualHash = match.PerceptualHash,
+                OtherImageHash = match.ImageHash.Single(y => y.SequenceEqual(contentHash) == false),
+            });
         }
 
         public int CountSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95)
@@ -73,17 +72,17 @@
             if (contentHash == null)
                 throw new ArgumentNullException(nameof(contentHash));
 
-            lock (_syncLock)
+            lock (syncLock)
             {
-                var existingItems = _data.Where(index => index.ImageHash.Contains(contentHash)).ToArray();
+                var existingItems = data.Where(index => index.ImageHash.Contains(contentHash)).ToArray();
 
                 if (existingItems.Any())
                     return;
 
                 foreach (var item in existingItems)
-                    _data.Remove(item);
+                    data.Remove(item);
 
-                _storage.Save(_data);
+                storage.Save(data);
             }
         }
 
@@ -95,16 +94,16 @@
             if (similarity == null)
                 throw new ArgumentNullException(nameof(similarity));
 
-            lock (_syncLock)
+            lock (syncLock)
             {
-                var existingItem = _data.FirstOrDefault(index => index.ImageHash.Contains(contentHash)
-                                                                 &&
-                                                                 index.ImageHash.Contains(similarity.OtherImageHash));
+                var existingItem = data.FirstOrDefault(index => index.ImageHash.Contains(contentHash)
+                                                                &&
+                                                                index.ImageHash.Contains(similarity.OtherImageHash));
 
                 if (existingItem != null)
-                    _data.Remove(existingItem);
+                    data.Remove(existingItem);
 
-                _data.Add(new SimilarityResultStorage
+                data.Add(new SimilarityResultStorage
                               {
                                   AverageHash = similarity.AverageHash,
                                   DifferenceHash = similarity.DifferenceHash,
@@ -112,28 +111,28 @@
                                   ImageHash = new List<byte[]>(2)
                                                   {
                                                       contentHash,
-                                                      similarity.OtherImageHash
-                                                  }
+                                                      similarity.OtherImageHash,
+                                                  },
                               });
 
-                if (_autoSave)
-                    _storage.Save(_data);
+                if (autoSave)
+                    storage.Save(data);
             }
         }
 
         public void SaveChanges()
         {
-            lock (_syncLock)
+            lock (syncLock)
             {
-                _storage.Save(_data);
+                storage.Save(data);
             }
         }
 
         public void AutoSave(bool value)
         {
-            lock (_syncLock)
+            lock (syncLock)
             {
-                _autoSave = value;
+                autoSave = value;
             }
         }
     }

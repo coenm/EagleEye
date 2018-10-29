@@ -1,4 +1,4 @@
-﻿namespace EagleEye.LuceneNet.Test.Reguar.DateTime
+﻿namespace EagleEye.LuceneNet.Test.Regular.DateTime
 {
     public class PersonDto
     {

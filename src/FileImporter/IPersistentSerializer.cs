@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.FileImporter
 {
-    public interface IPersistantSerializer<T> where T : new()
+    public interface IPersistentSerializer<T>
+        where T : new()
     {
         T Load();
 

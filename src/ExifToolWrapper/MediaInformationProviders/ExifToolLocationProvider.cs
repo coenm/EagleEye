@@ -11,11 +11,11 @@
 
     public class ExifToolLocationProvider : IMediaInformationProvider
     {
-        private readonly IExifTool _exiftool;
+        private readonly IExifTool exiftool;
 
         public ExifToolLocationProvider(IExifTool exiftool)
         {
-            _exiftool = exiftool;
+            this.exiftool = exiftool;
         }
 
         public int Priority { get; } = 100;
@@ -27,16 +27,14 @@
 
         public async Task ProvideAsync(string filename, MediaObject media)
         {
-            var result = await _exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
                 return;
 
-            JObject data;
             string s;
 
-            data = result["XMP"] as JObject;
-            if (data != null)
+            if (result["XMP"] is JObject data)
             {
                 s = TryGetString(data, "CountryCode");
                 if (!string.IsNullOrWhiteSpace(s))

@@ -52,7 +52,6 @@
             if (minutes < 0 || minutes > 59)
                 throw new ArgumentOutOfRangeException(nameof(minutes));
 
-
             if (seconds == null)
             {
                 Value = new DateTime(year, month.Value, day.Value, hour.Value, minutes.Value, 0);

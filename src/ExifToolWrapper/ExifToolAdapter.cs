@@ -11,17 +11,17 @@
 
     public class ExifToolAdapter : IExifTool
     {
-        private readonly OpenedExifTool _exiftoolImpl;
+        private readonly OpenedExifTool exiftoolImpl;
 
         public ExifToolAdapter(string exiftoolExecutable)
         {
-            _exiftoolImpl = new OpenedExifTool(exiftoolExecutable);
-            _exiftoolImpl.Init();
+            exiftoolImpl = new OpenedExifTool(exiftoolExecutable);
+            exiftoolImpl.Init();
         }
 
         public async Task<JObject> GetMetadataAsync(string filename)
         {
-            var result = await _exiftoolImpl.ExecuteAsync(filename).ConfigureAwait(false);
+            var result = await exiftoolImpl.ExecuteAsync(filename).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(result))
                 return null;
@@ -43,7 +43,7 @@
 
         public void Dispose()
         {
-            _exiftoolImpl
+            exiftoolImpl
                 .DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token)
                 .GetAwaiter()
                 .GetResult();

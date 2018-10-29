@@ -21,11 +21,11 @@
         ICancellableEventHandler<LocationClearedFromMediaItem>,
         ICancellableEventHandler<LocationSetToMediaItem>
     {
-        private readonly IMediaItemRepository _repository;
+        private readonly IMediaItemRepository repository;
 
         public MediaItemConsistency(IMediaItemRepository repository)
         {
-            _repository = repository;
+            this.repository = repository;
         }
 
         public async Task Handle(MediaItemCreated message, CancellationToken token = default(CancellationToken))
@@ -34,7 +34,7 @@
             if (message.Tags != null)
                 mediaItemDto.Tags = new List<string>(message.Tags);
 
-            if (message.Persons!= null)
+            if (message.Persons != null)
                 mediaItemDto.Persons = new List<string>(message.Persons);
 
             var item = new MediaItemDb
@@ -43,15 +43,15 @@
                                Id = message.Id,
                                Version = message.Version,
                                TimeStampUtc = message.TimeStamp,
-                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto)
+                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto),
                            };
 
-            await _repository.SaveAsync(item).ConfigureAwait(false);
+            await repository.SaveAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(TagsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
-            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
                 return; // throw??
@@ -71,12 +71,12 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(PersonsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
-            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
                 return; // throw??
@@ -96,12 +96,12 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(TagsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
-            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
                 return; // throw??
@@ -124,12 +124,12 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(PersonsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
-            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
                 return; // throw??
@@ -152,12 +152,12 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(LocationClearedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
-            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
                 return; // throw??
@@ -177,12 +177,12 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(LocationSetToMediaItem message, CancellationToken token = default(CancellationToken))
         {
-            var item = await _repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
                 return; // throw??
@@ -208,7 +208,7 @@
             item.Version = message.Version;
             item.TimeStampUtc = message.TimeStamp;
 
-            await _repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(item).ConfigureAwait(false);
         }
     }
 }

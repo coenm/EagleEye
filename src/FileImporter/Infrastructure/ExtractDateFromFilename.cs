@@ -39,7 +39,7 @@
             if (day == 0 | day > 31)
                 return null;
 
-            return new DateTime(year, month, day, 0,0,0);
+            return new DateTime(year, month, day, 0, 0, 0);
         }
     }
 }

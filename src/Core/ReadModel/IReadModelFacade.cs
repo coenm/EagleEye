@@ -21,22 +21,22 @@
 
     public class ReadModel : IReadModelFacade
     {
-        private readonly IMediaItemRepository _repository;
+        private readonly IMediaItemRepository repository;
 
         public ReadModel([NotNull] IMediaItemRepository repository)
         {
-            _repository = repository;
+            this.repository = repository;
         }
 
         public async Task<IEnumerable<MediaItemDto>> GetMediaItems()
         {
-            var result = await _repository.GetAllAsync().ConfigureAwait(false);
+            var result = await repository.GetAllAsync().ConfigureAwait(false);
             return result.Select(item => JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto));
         }
 
         public async Task<MediaItemDto> GetMediaItem(Guid id)
         {
-            var result = await _repository.GetByIdAsync(id).ConfigureAwait(false);
+            var result = await repository.GetByIdAsync(id).ConfigureAwait(false);
             return JsonConvert.DeserializeObject<MediaItemDto>(result.SerializedMediaItemDto);
         }
     }

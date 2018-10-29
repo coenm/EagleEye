@@ -16,7 +16,7 @@
 
     public class PicasaIniParserTest
     {
-        private const string PICASA_INI_FILE_CONTENT = @"
+        private const string PicasaIniFileContent = @"
 [pica 1.jpg]
 backuphash=15125
 faces=rect64(a16a5261b7037516),ffffffffffffffff;rect64(397a37cb697a77cb),5bee603ee623542d;rect64(7ba11f6daba15f6d),8ad3eb33cfdf42ce;rect64(a3e041b9d3d081b9),7131e767c91646ae
@@ -39,7 +39,7 @@ backuphash=11571";
         public void PicasaFileParserTest()
         {
             // arrange
-            using (var stream = GenerateStreamFromString(PICASA_INI_FILE_CONTENT))
+            using (var stream = GenerateStreamFromString(PicasaIniFileContent))
             {
                 // act
                 var result = Sut.Parse(stream).ToList();
@@ -60,7 +60,7 @@ backuphash=11571";
         public void Parse_ContentWithoutContacts2Section_ShouldThrowTest()
         {
             // arrange
-            var removedContacts2SectionContent = PICASA_INI_FILE_CONTENT.Replace("[Contacts2]", "[Contacts.jpg]");
+            var removedContacts2SectionContent = PicasaIniFileContent.Replace("[Contacts2]", "[Contacts.jpg]");
 
             using (var stream = GenerateStreamFromString(removedContacts2SectionContent))
             {
@@ -72,7 +72,6 @@ backuphash=11571";
                 act.Should().Throw<Exception>().WithMessage("Contacts2 not found");
             }
         }
-
 
         private static MemoryStream GenerateStreamFromString(string value)
         {

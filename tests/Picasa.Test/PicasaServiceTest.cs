@@ -19,27 +19,27 @@
 
     public class PicasaServiceTest : IDisposable
     {
-        private readonly string _imageFilename;
-        private readonly string _picasaFilename;
-        private readonly string _tempPath;
-        private readonly TestablePicasaService _sut;
-        private readonly IFileService _fileService;
-        private readonly Stream _picasaIniStream;
+        private readonly string imageFilename;
+        private readonly string picasaFilename;
+        private readonly string tempPath;
+        private readonly TestablePicasaService sut;
+        private readonly IFileService fileService;
+        private readonly Stream picasaIniStream;
 
         public PicasaServiceTest()
         {
-            _tempPath = Path.GetTempPath();
-            _imageFilename = GetFilename("image.jpg");
-            _picasaFilename = GetFilename(".picasa.ini");
+            tempPath = Path.GetTempPath();
+            imageFilename = GetFilename("image.jpg");
+            picasaFilename = GetFilename(".picasa.ini");
 
-            _fileService = A.Fake<IFileService>();
-            _sut = new TestablePicasaService(_fileService);
+            fileService = A.Fake<IFileService>();
+            sut = new TestablePicasaService(fileService);
 
-            _picasaIniStream = new MemoryStream();
-            A.CallTo(() => _fileService.FileExists(_imageFilename)).Returns(true);
-            A.CallTo(() => _fileService.FileExists(_picasaFilename)).Returns(true);
-            A.CallTo(() => _fileService.OpenRead(_imageFilename)).Throws(new Exception("Should not be called"));
-            A.CallTo(() => _fileService.OpenRead(_picasaFilename)).Returns(_picasaIniStream);
+            picasaIniStream = new MemoryStream();
+            A.CallTo(() => fileService.FileExists(imageFilename)).Returns(true);
+            A.CallTo(() => fileService.FileExists(picasaFilename)).Returns(true);
+            A.CallTo(() => fileService.OpenRead(imageFilename)).Throws(new Exception("Should not be called"));
+            A.CallTo(() => fileService.OpenRead(picasaFilename)).Returns(picasaIniStream);
         }
 
         [Theory]
@@ -47,14 +47,14 @@
         [InlineData(true, false, false)]
         [InlineData(false, true, false)]
         [InlineData(false, false, false)]
-        public void CanProvideDataChecksImageAndPicasaFileExistanceTest(bool imageExists, bool picasaFileExists, bool expectedResult)
+        public void CanProvideDataChecksImageAndPicasaFileExistenceTest(bool imageExists, bool picasaFileExists, bool expectedResult)
         {
             // arrange
-            A.CallTo(() => _fileService.FileExists(_imageFilename)).Returns(imageExists);
-            A.CallTo(() => _fileService.FileExists(_picasaFilename)).Returns(picasaFileExists);
+            A.CallTo(() => fileService.FileExists(imageFilename)).Returns(imageExists);
+            A.CallTo(() => fileService.FileExists(picasaFilename)).Returns(picasaFileExists);
 
             // acts
-            var result = _sut.CanProvideData(_imageFilename);
+            var result = sut.CanProvideData(imageFilename);
 
             // assert
             result.Should().Be(expectedResult);
@@ -64,25 +64,25 @@
         public async Task GetDataShouldUsePicasaIniFileToGetPersonDataTest()
         {
             // arrange
-            var expectedRestult = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
+            var expectedResult = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
             var fileWithPersonsList = new[]
                                           {
                                               new FileWithPersons("imageA.jpg", "Alice", "Bob"),
                                               new FileWithPersons("imageC.jpg", "Stephen Hawking", "Alice", "Bob"),
-                                              expectedRestult,
+                                              expectedResult,
                                           };
-            _sut.SetGetFileAndPersonDataImplementation(stream =>
+            sut.SetGetFileAndPersonDataImplementation(stream =>
                                                        {
-                                                           if (stream != null && stream == _picasaIniStream)
+                                                           if (stream != null && stream == picasaIniStream)
                                                                return fileWithPersonsList;
                                                            return null;
                                                        });
 
             // act
-            var result = await _sut.GetDataAsync(GetFilename("image.jpg")).ConfigureAwait(false);
+            var result = await sut.GetDataAsync(GetFilename("image.jpg")).ConfigureAwait(false);
 
             // assert
-            result.Should().Be(expectedRestult);
+            result.Should().Be(expectedResult);
         }
 
         [Fact]
@@ -95,7 +95,7 @@
             var dataImageA = new FileWithPersons("imageA.jpg", "Alice", "Bob");
             var dataImageB = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
             var dataImageC = new FileWithPersons("imageC.jpg", "Stephen Hawking", "Alice", "Bob");
-            _sut.SetGetFileAndPersonDataImplementation(_ =>
+            sut.SetGetFileAndPersonDataImplementation(_ =>
                                                        {
                                                            methodInvokedCounter++;
                                                            mreSimulateTaskDuration.Wait();
@@ -103,9 +103,9 @@
                                                        });
 
             // act
-            var resultTask1 = _sut.GetDataAsync(GetFilename("image.jpg"));
-            var resultTask2 = _sut.GetDataAsync(GetFilename("imageC.jpg"));
-            var resultTask3 = _sut.GetDataAsync(GetFilename("image.jpg"));
+            var resultTask1 = sut.GetDataAsync(GetFilename("image.jpg"));
+            var resultTask2 = sut.GetDataAsync(GetFilename("imageC.jpg"));
+            var resultTask3 = sut.GetDataAsync(GetFilename("image.jpg"));
 
             mreSimulateTaskDuration.Set();
 
@@ -122,17 +122,17 @@
 
         public void Dispose()
         {
-            _sut?.Dispose();
+            sut?.Dispose();
         }
 
         private string GetFilename(string filename)
         {
-            return Path.Combine(_tempPath, "photos", filename);
+            return Path.Combine(tempPath, "photos", filename);
         }
 
         private class TestablePicasaService : PicasaService
         {
-            private Func<Stream, IEnumerable<FileWithPersons>> _getFileAndPersonFunc;
+            private Func<Stream, IEnumerable<FileWithPersons>> getFileAndPersonFunc;
 
             public TestablePicasaService([NotNull] IFileService fileService)
                 : base(fileService)
@@ -141,13 +141,13 @@
 
             public void SetGetFileAndPersonDataImplementation(Func<Stream, IEnumerable<FileWithPersons>> getFileAndPersonFunc = null)
             {
-                _getFileAndPersonFunc = getFileAndPersonFunc;
+                this.getFileAndPersonFunc = getFileAndPersonFunc;
             }
 
             protected override IEnumerable<FileWithPersons> GetFileAndPersonData(Stream stream)
             {
-                if (_getFileAndPersonFunc != null)
-                    return _getFileAndPersonFunc.Invoke(stream);
+                if (getFileAndPersonFunc != null)
+                    return getFileAndPersonFunc.Invoke(stream);
                 return base.GetFileAndPersonData(stream);
             }
         }

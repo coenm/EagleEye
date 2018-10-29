@@ -9,24 +9,24 @@
 
     public static class PicasaIniParser
     {
-        private const string CONTACTS2_SECTION = "Contacts2";
-        private const string FACES_KEY = "faces";
-        private static readonly string[] _coordinatePersonSeparator = { "," };
+        private const string Contacts2Section = "Contacts2";
+        private const string FacesKey = "faces";
+        private static readonly string[] CoordinatePersonSeparator = { "," };
 
         public static IEnumerable<FileWithPersons> Parse(Stream stream)
         {
             var iniContent = SimpleIniParser.Parse(stream);
 
-            var contacts = iniContent.SingleOrDefault(x => x.Section == CONTACTS2_SECTION);
+            var contacts = iniContent.SingleOrDefault(x => x.Section == Contacts2Section);
             if (contacts == null)
-                throw new Exception($"{CONTACTS2_SECTION} not found");
+                throw new Exception($"{Contacts2Section} not found");
 
             var result = new List<FileWithPersons>(iniContent.Count - 1);
 
             foreach (var item in iniContent.Where(x => x != contacts))
             {
                 var fileWithPersons = new FileWithPersons(item.Section);
-                var facesList = item.Content.Where(x => x.Key == FACES_KEY).ToList();
+                var facesList = item.Content.Where(x => x.Key == FacesKey).ToList();
                 if (facesList.Count == 1)
                 {
                     var facesString = facesList.Single().Value;
@@ -39,7 +39,7 @@
                         // like: rect64(9ee42f2ee2e49bfa),4759b81b11610b7a
                         // means: <coordinate>,<person key>
 
-                        var singleCoordinateAndKey = faceCoordinateKey.Split(_coordinatePersonSeparator, StringSplitOptions.RemoveEmptyEntries);
+                        var singleCoordinateAndKey = faceCoordinateKey.Split(CoordinatePersonSeparator, StringSplitOptions.RemoveEmptyEntries);
 
                         // expect only two items
                         if (singleCoordinateAndKey.Length != 2)

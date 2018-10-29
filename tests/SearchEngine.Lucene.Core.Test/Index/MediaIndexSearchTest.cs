@@ -15,20 +15,20 @@
 
     public class MediaIndexSearchTest : IDisposable
     {
-        private readonly MediaIndex _sut;
+        private readonly MediaIndex sut;
 
         public MediaIndexSearchTest()
         {
             ILuceneDirectoryFactory indexDirectoryFactory = new RamLuceneDirectoryFactory();
-            _sut = new MediaIndex(indexDirectoryFactory);
+            sut = new MediaIndex(indexDirectoryFactory);
 
-            var data = Datastore.File001;
-            _sut.IndexMediaFileAsync(data).GetAwaiter().GetResult();
+            var data = DataStore.File001;
+            sut.IndexMediaFileAsync(data).GetAwaiter().GetResult();
         }
 
         public void Dispose()
         {
-            _sut?.Dispose();
+            sut?.Dispose();
         }
 
         [Fact]
@@ -37,11 +37,11 @@
             // arrange
 
             // act
-            var result = _sut.Search(new MatchAllDocsQuery(), null, out var totalCount);
+            var result = sut.Search(new MatchAllDocsQuery(), null, out var totalCount);
 
             // assert
             totalCount.Should().Be(1);
-            result.Should().BeEquivalentTo(Datastore.MediaResult001(1));
+            result.Should().BeEquivalentTo(DataStore.MediaResult001(1));
         }
 
         [Theory]
@@ -55,29 +55,28 @@
             // arrange
 
             // act
-            var result = _sut.Search(searchQuery, out var totalCount);
+            var result = sut.Search(searchQuery, out var totalCount);
             RemoveScore(result);
 
             // assert
             totalCount.Should().Be(1);
-            result.Should().BeEquivalentTo(Datastore.MediaResult001(0));
+            result.Should().BeEquivalentTo(DataStore.MediaResult001(0));
         }
 
         [Theory]
-        [InlineData("date:[20010401 TO 2002]")] // date (2001-04-00) is not witin range
+        [InlineData("date:[20010401 TO 2002]")] // date (2001-04-00) is not within range
         [InlineData("city:N* AND date:[20010401 TO 2002]")] // date is not within range
-        public void Search_WithinWrongeDateRange_ShouldReturnEmptyTest(string searchQuery)
+        public void Search_WithinWrongDateRange_ShouldReturnEmptyTest(string searchQuery)
         {
             // arrange
 
             // act
-            var result = _sut.Search(searchQuery, out var totalCount);
+            var result = sut.Search(searchQuery, out var totalCount);
 
             // assert
             totalCount.Should().Be(0);
             result.Should().BeEmpty();
         }
-
 
         private static void RemoveScore(List<MediaResult> result)
         {

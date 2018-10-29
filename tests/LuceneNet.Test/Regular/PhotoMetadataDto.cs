@@ -1,4 +1,4 @@
-﻿namespace EagleEye.LuceneNet.Test.Reguar
+﻿namespace EagleEye.LuceneNet.Test.Regular
 {
     using System.Collections.Generic;
     using System.Linq;

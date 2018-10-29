@@ -4,13 +4,14 @@
 
     public class Location
     {
-        public Location(string countryCode,
-                        string countryName,
-                        string state,
-                        string city,
-                        string subLocation,
-                        float? longitude,
-                        float? latitude)
+        public Location(
+            string countryCode,
+            string countryName,
+            string state,
+            string city,
+            string subLocation,
+            float? longitude,
+            float? latitude)
         {
             if (longitude == null && latitude != null)
                 throw new ArgumentException("Longitude and Latitude must be both null or both have a value.");

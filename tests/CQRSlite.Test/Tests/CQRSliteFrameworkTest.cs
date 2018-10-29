@@ -1,5 +1,4 @@
-﻿// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
-namespace CQRSlite.Test.Tests
+﻿namespace CQRSlite.Test.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -22,24 +21,25 @@ namespace CQRSlite.Test.Tests
 
     public class CqrsLiteFrameworkTest
     {
-        private readonly Router _router;
-        private readonly ICommandSender _commandSender;
-        private readonly IEventPublisher _eventPublisher;
-        private readonly IHandlerRegistrar _handlerRegister;
-        private readonly IRepository _repository;
-        private readonly ISession _session;
+        private readonly Router router;
+        private readonly ICommandSender commandSender;
+        private readonly IEventPublisher eventPublisher;
+        private readonly IHandlerRegistrar handlerRegister;
+        private readonly IRepository repository;
+        private readonly ISession session;
 
         public CqrsLiteFrameworkTest()
         {
-            _router = new Router();
-            _commandSender = _router;
-            _eventPublisher = _router;
-            _handlerRegister = _router;
-            _repository = new Repository(new InMemoryEventStore(_eventPublisher));
-            _session = new Session(_repository);
+            router = new Router();
+            commandSender = router;
+            eventPublisher = router;
+            handlerRegister = router;
+            repository = new Repository(new InMemoryEventStore(eventPublisher));
+            session = new Session(repository);
         }
 
-        [Fact, Exploratory]
+        [Fact]
+        [Exploratory]
         public async Task Test()
         {
             // arrange
@@ -47,16 +47,16 @@ namespace CQRSlite.Test.Tests
             var name = "monkey123!@#";
             var events = new List<InventoryItemCreated>();
 
-            var handler = new InventoryCommandHandlers(_session);
-            _handlerRegister.RegisterHandler<CreateInventoryItem>(handler.Handle);
-            _handlerRegister.RegisterHandler<InventoryItemCreated>((evt, ct) =>
+            var handler = new InventoryCommandHandlers(session);
+            handlerRegister.RegisterHandler<CreateInventoryItem>(handler.Handle);
+            handlerRegister.RegisterHandler<InventoryItemCreated>((evt, ct) =>
                                                             {
                                                                 events.Add(evt);
                                                                 return Task.CompletedTask;
                                                             });
 
             // act
-            await _commandSender.Send(new CreateInventoryItem(guid, name)).ConfigureAwait(false);
+            await commandSender.Send(new CreateInventoryItem(guid, name)).ConfigureAwait(false);
 
             // assert
             events.Should().ContainSingle();

@@ -11,13 +11,13 @@
 
     public class SystemFileServiceTest
     {
-        private readonly SystemFileService _sut;
-        private readonly string _filename;
+        private readonly SystemFileService sut;
+        private readonly string filename;
 
         public SystemFileServiceTest()
         {
-            _sut = SystemFileService.Instance;
-            _filename = Path.Combine(TestImages.InputImagesDirectoryFullPath, "1.jpg");
+            sut = SystemFileService.Instance;
+            filename = Path.Combine(TestImages.InputImagesDirectoryFullPath, "1.jpg");
         }
 
         [Fact]
@@ -26,7 +26,7 @@
             // arrange
 
             // act
-            var result = _sut.FileExists(_filename);
+            var result = sut.FileExists(filename);
 
             // assert
             result.Should().BeTrue();
@@ -36,10 +36,10 @@
         public void OpenReadTest()
         {
             // arrange
-            var filename = Path.Combine(_filename);
+            var fileName = Path.Combine(filename);
 
             // act
-            using (var result = _sut.OpenRead(filename))
+            using (var result = sut.OpenRead(fileName))
             {
                 // assert
                 result.Should().NotBeNull();

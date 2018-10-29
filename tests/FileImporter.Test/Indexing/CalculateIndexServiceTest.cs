@@ -15,11 +15,11 @@
 
     public class CalculateIndexServiceTest
     {
-        private readonly string[] _imageFilenames;
+        private readonly string[] imageFileNames;
 
         public CalculateIndexServiceTest()
         {
-            _imageFilenames = Directory
+            imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
@@ -34,7 +34,7 @@
             var sut = new CalculateIndexService(contentResolver);
 
             // act
-            var result = sut.CalculateIndex(_imageFilenames);
+            var result = sut.CalculateIndex(imageFileNames);
 
             // assert
             var preparedResult = result.Select(MapThis);
@@ -56,7 +56,7 @@
         /// <summary>
         /// Convert fullFilename to relative such that it doesn't matter what machine in what directory the sln is stored.
         /// </summary>
-        /// <param name="fullFilename">absolute filename</param>
+        /// <param name="fullFilename">absolute filename.</param>
         /// <returns>filename relative to sn file.</returns>
         private static string ConvertToRelativeFilename(string fullFilename)
         {

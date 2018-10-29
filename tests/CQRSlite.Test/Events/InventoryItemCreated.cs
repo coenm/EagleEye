@@ -6,7 +6,6 @@
 
     public class InventoryItemCreated : IEvent
     {
-        public readonly string Name;
         public InventoryItemCreated(Guid id, string name)
         {
             Id = id;
@@ -14,7 +13,11 @@
         }
 
         public Guid Id { get; set; }
+
+        public string Name { get; }
+
         public int Version { get; set; }
+
         public DateTimeOffset TimeStamp { get; set; }
     }
 }

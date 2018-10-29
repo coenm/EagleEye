@@ -8,18 +8,18 @@
 
     public class FileWithPersonsTest
     {
-        private FileWithPersons _sut;
+        private FileWithPersons sut;
 
         public FileWithPersonsTest()
         {
-            _sut = new FileWithPersons("file1.jpg", "Bob");
+            sut = new FileWithPersons("file1.jpg", "Bob");
         }
 
         [Fact]
         public void Ctor_ShouldSetDataTest()
         {
-            _sut.Filename.Should().Be("file1.jpg");
-            _sut.Persons.Should().BeEquivalentTo("Bob");
+            sut.Filename.Should().Be("file1.jpg");
+            sut.Persons.Should().BeEquivalentTo("Bob");
         }
 
         [Fact]
@@ -28,10 +28,10 @@
             // arrange
 
             // act
-            _sut.AddPerson("Carl");
+            sut.AddPerson("Carl");
 
             // assert
-            _sut.Persons.Should().BeEquivalentTo("Bob", "Carl");
+            sut.Persons.Should().BeEquivalentTo("Bob", "Carl");
         }
 
         [Fact]
@@ -40,20 +40,20 @@
             // arrange
 
             // act
-            _sut.AddPerson("Bob");
+            sut.AddPerson("Bob");
 
             // assert
-            _sut.Persons.Should().BeEquivalentTo("Bob");
+            sut.Persons.Should().BeEquivalentTo("Bob");
         }
 
         [Fact]
         public void ToString_ReturnsFileOnlyTest()
         {
             // arrange
-            _sut = new FileWithPersons("file.jpg");
+            sut = new FileWithPersons("file.jpg");
 
             // act
-            var result = _sut.ToString();
+            var result = sut.ToString();
 
             // assert
             result.Should().Be("file.jpg has no persons.");
@@ -63,10 +63,10 @@
         public void ToString_ReturnsFileWithPersonsTest()
         {
             // arrange
-            _sut = new FileWithPersons("file.jpg", "Bob", "Alice");
+            sut = new FileWithPersons("file.jpg", "Bob", "Alice");
 
             // act
-            var result = _sut.ToString();
+            var result = sut.ToString();
 
             // assert
             result.Should().Be("file.jpg has persons: Bob, Alice");

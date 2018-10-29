@@ -17,14 +17,14 @@
 
     public class MediaItemConsistencyTest
     {
-        private readonly MediaItemConsistency _sut;
-        private readonly IMediaItemRepository _mediaItemRepository;
+        private readonly MediaItemConsistency sut;
+        private readonly IMediaItemRepository mediaItemRepository;
 
         public MediaItemConsistencyTest()
         {
             IMediaItemDbContextFactory mediaItemDbContextFactory = new ExploringEntityFrameworkTests.InMemoryMediaItemDbContextFactory();
-            _mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
-            _sut = new MediaItemConsistency(_mediaItemRepository);
+            mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
+            sut = new MediaItemConsistency(mediaItemRepository);
         }
 
         [Fact]
@@ -37,27 +37,26 @@
             var initTimestamp = DateTimeOffset.UtcNow;
 
             // act
-            await _sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
-                                  {
-                                      TimeStamp = initTimestamp
-                                  }).ConfigureAwait(false);
+            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
+            {
+                TimeStamp = initTimestamp,
+            }).ConfigureAwait(false);
 
             // assert
-            var result = await _mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
+            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
             result.Should().BeEquivalentTo(new MediaItemDb
-                                               {
-                                                   Id = guid,
-                                                   Version = 0,
-                                                   Filename = "FAKE NAME1",
-                                                   TimeStampUtc = initTimestamp,
-                                                   SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                                                                                                            {
-                                                                                                                Tags = new List<string>(initialTags),
-                                                                                                                Persons = new List<string>(initialPersons)
-                                                                                                            })
-                                               });
+            {
+                Id = guid,
+                Version = 0,
+                Filename = "FAKE NAME1",
+                TimeStampUtc = initTimestamp,
+                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
+                {
+                    Tags = new List<string>(initialTags),
+                    Persons = new List<string>(initialPersons),
+                }),
+            });
         }
-
 
         [Fact]
         public async Task HandleEvents_ShouldSaveDataToRepositoryTest()
@@ -69,41 +68,43 @@
             var initTimestamp = DateTimeOffset.UtcNow;
 
             // act
-            await _sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
-                                  {
-                                      Version = 1,
-                                      TimeStamp = initTimestamp
-                                  });
-            await _sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
-                                  {
-                                      Version = 2,
-                                      TimeStamp = initTimestamp.AddHours(2)
+            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
+            {
+                Version = 1,
+                TimeStamp = initTimestamp,
             });
-            await _sut.Handle(new PersonsRemovedFromMediaItem(guid, "Darion", "alice")
-                                  {
-                                      Version = 3,
-                                      TimeStamp = initTimestamp.AddHours(3)
-                                  });
+
+            await sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
+            {
+                Version = 2,
+                TimeStamp = initTimestamp.AddHours(2),
+            });
+
+            await sut.Handle(new PersonsRemovedFromMediaItem(guid, "Darion", "alice")
+            {
+                Version = 3,
+                TimeStamp = initTimestamp.AddHours(3),
+            });
 
             // assert
-            var result = await _mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
+            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
             result.Should().BeEquivalentTo(new MediaItemDb
-                                               {
-                                                   Id = guid,
-                                                   Version = 3,
-                                                   Filename = "FAKE NAME1",
-                                                   TimeStampUtc = initTimestamp.AddHours(3),
-                                                   SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                                                                                                            {
-                                                                                                                Tags = new List<string>(initialTags),
-                                                                                                                Persons = new List<string>
-                                                                                                                              {
-                                                                                                                                  "bob",
-                                                                                                                                  "Calvin",
-                                                                                                                                  "Eve"
-                                                                                                                              }
-                                                                                                            })
-                                               });
+            {
+                Id = guid,
+                Version = 3,
+                Filename = "FAKE NAME1",
+                TimeStampUtc = initTimestamp.AddHours(3),
+                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
+                {
+                    Tags = new List<string>(initialTags),
+                    Persons = new List<string>
+                    {
+                        "bob",
+                        "Calvin",
+                        "Eve",
+                    },
+                }),
+            });
         }
     }
 }

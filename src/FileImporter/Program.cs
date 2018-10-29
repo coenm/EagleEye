@@ -6,27 +6,24 @@
     using System.Linq;
 
     using CommandLine;
-
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
     using EagleEye.FileImporter.Infrastructure.Everything;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-    using EagleEye.FileImporter.Infrastructure.PersistantSerializer;
+    using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
-
     using ShellProgressBar;
-
     using SimpleInjector;
 
+#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
+#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
+#pragma warning disable SA1005 // Single line comments should begin with single space
     public static class Program
     {
-        private static Container _container;
-
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
-            // ProgressBarOnBottom = true,
             ForegroundColor = ConsoleColor.Yellow,
             BackgroundColor = ConsoleColor.DarkYellow,
         };
@@ -35,13 +32,14 @@
         {
             ForegroundColor = ConsoleColor.Green,
             BackgroundColor = ConsoleColor.DarkGreen,
-            ProgressCharacter = '─'
+            ProgressCharacter = '─',
         };
+
+        private static Container container;
 
         public static void Main(string[] args)
         {
-            _container = new Container();
-//            Startup.ConfigureContainer(_container, rootPath, indexFilename);
+            container = new Container();
             Run(args);
         }
 
@@ -62,8 +60,8 @@
                 });
 
             Console.WriteLine("Done.");
-//            Console.WriteLine("Done. Press enter to exit.");
-//            Console.ReadLine();
+            // Console.WriteLine("Done. Press enter to exit.");
+            // Console.ReadLine();
         }
 
         private static void UpdateSimilarity(UpdateSimilarityOptions options)
@@ -74,19 +72,19 @@
                 return;
             }
 
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var indexService = _container.GetInstance<CalculateIndexService>();
-            var similarityRepository = _container.GetInstance<SimilarityService>();
+            var searchService = container.GetInstance<SearchService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
+            var similarityRepository = container.GetInstance<SimilarityService>();
 
-            var contentResolver = _container.GetInstance<IContentResolver>();
+            var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
             using (var progressBar = new ProgressBar(allIndexes.Length, "Search duplicates", ProgressOptions))
             {
-                using (var subProgressBar = progressBar.Spawn(allIndexes.Length, "", ChildOptions))
+                using (var subProgressBar = progressBar.Spawn(allIndexes.Length, string.Empty, ChildOptions))
                 {
                     foreach (var indexedFile in allIndexes)
                     {
@@ -114,6 +112,7 @@
                 Console.WriteLine("Image file cannot be empty.");
                 return;
             }
+
             if (string.IsNullOrWhiteSpace(options.IndexFile))
             {
                 Console.WriteLine("IndexFile file cannot be empty.");
@@ -164,23 +163,22 @@
                 matchYear |= fi.Identifier.Contains("2018");
                 return matchYear;
 
-                //return fi.Identifier.StartsWith(options.PathPrefix);
+                // return fi.Identifier.StartsWith(options.PathPrefix);
             };
 
-//            if (string.IsNullOrWhiteSpace(options.PathPrefix))
-//            {
-//                if (Directory.Exists(options.PathPrefix))
-//                    tempSpecialPredicate = fi =>
-//                    {
-//                        //return fi.Identifier.StartsWith(options.PathPrefix);
-//                    };
-//            }
+            //            if (string.IsNullOrWhiteSpace(options.PathPrefix))
+            //            {
+            //                if (Directory.Exists(options.PathPrefix))
+            //                    tempSpecialPredicate = fi =>
+            //                    {
+            //                        //return fi.Identifier.StartsWith(options.PathPrefix);
+            //                    };
+                              //            }
 
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            Startup.ConfigureContainer(_container, options.IndexFile);
-
-            var searchService = _container.GetInstance<SearchService>();
-            var indexService = _container.GetInstance<CalculateIndexService>();
+            var searchService = container.GetInstance<SearchService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
             var everything = new Everything();
             var show = false;
 
@@ -203,7 +201,7 @@
                     while (found > 10 && matchValue <= 100)
                     {
                         lastSimilar = similar;
-                        similar  = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
+                        similar = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
                             .Where(f => f.Identifier != index.Identifier
                                         &&
                                         File.Exists(f.Identifier)
@@ -213,7 +211,6 @@
                         found = similar.Count;
                         matchValue++;
                     }
-
 
                     if (!similar.Any())
                         similar = lastSimilar;
@@ -235,10 +232,10 @@
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
         {
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var contentResolver = _container.GetInstance<IContentResolver>();
+            var searchService = container.GetInstance<SearchService>();
+            var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -269,7 +266,7 @@
                         .Where(f =>
                         {
                             var info = new FileInfo(f.Identifier);
-                            if (info.Directory.FullName != dirIndex)
+                            if (info.Directory != null && info.Directory.FullName != dirIndex)
                                 return false;
 
                             return true;
@@ -351,7 +348,6 @@
                         continue;
                     }
 
-
                     try
                     {
                         var fi = new FileInfo(file);
@@ -368,9 +364,9 @@
 
         private static void Search(SearchOptions options)
         {
-            Startup.ConfigureContainer(_container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile);
 
-            var searchService = _container.GetInstance<SearchService>();
+            var searchService = container.GetInstance<SearchService>();
             var everything = new Everything();
 
             if (string.IsNullOrWhiteSpace(options.DirectoryToIndex))
@@ -407,7 +403,6 @@
                 return;
             }
 
-
             if (!Directory.Exists(options.DirectoryToIndex))
             {
                 Console.WriteLine("Directory does not exist.");
@@ -419,8 +414,7 @@
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
                 .ToArray();
 
-
-            var indexService = _container.GetInstance<CalculateIndexService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
@@ -432,15 +426,15 @@
                     items[0] = index;
 
                     var result = indexService.CalculateIndex(items).Single();
-                    var similars = searchService.FindSimilar(result).ToList();
+                    var similarItems = searchService.FindSimilar(result).ToList();
 
-                    similars = similars.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
+                    similarItems = similarItems.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
 
-                    if (similars.Any())
+                    if (similarItems.Any())
                         continue;
 
-                    similars.Add(result);
-                    everything.Show(similars);
+                    similarItems.Add(result);
+                    everything.Show(similarItems);
                     Console.WriteLine("Press enter for next");
                     Console.ReadKey();
                 }
@@ -459,11 +453,11 @@
 //            var diRoot = new DirectoryInfo(RootPath).FullName;
 //            var rp = RootPath;
 
-            Startup.ConfigureContainer(_container, options.OutputFile);
+            Startup.ConfigureContainer(container, options.OutputFile);
 
-            var searchService = _container.GetInstance<SearchService>();
-            var persistantService = _container.GetInstance<PersistantFileIndexService>();
-            var contentResolver = _container.GetInstance<IContentResolver>();
+            var searchService = container.GetInstance<SearchService>();
+            var persistentService = container.GetInstance<PersistentFileIndexService>();
+            var contentResolver = container.GetInstance<IContentResolver>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -476,7 +470,7 @@
                     // check if file exists.
                     if (!contentResolver.Exist(index.Identifier))
                     {
-                        persistantService.Delete(index.Identifier);
+                        persistentService.Delete(index.Identifier);
                     }
                 }
             }
@@ -492,25 +486,23 @@
             }
 
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
-//            var diRoot = new DirectoryInfo(RootPath).FullName;
-//
+
             var rp = string.Empty;
 //            if (diDirToIndex.StartsWith(diRoot))
 //            {
 //                rp = RootPath;
 //            }
 
-            Startup.ConfigureContainer(_container, options.OutputFile);
+            Startup.ConfigureContainer(container, options.OutputFile);
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
 //                .Select(f => ConvertToRelativeFilename(rp, f))
                 .ToArray();
 
-
-            var searchService = _container.GetInstance<SearchService>();
-            var indexService = _container.GetInstance<CalculateIndexService>();
-            var persistantService = _container.GetInstance<PersistantFileIndexService>();
+            var searchService = container.GetInstance<SearchService>();
+            var indexService = container.GetInstance<CalculateIndexService>();
+            var persistentService = container.GetInstance<PersistentFileIndexService>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
@@ -525,7 +517,7 @@
                         // index and add
                         progressBar.Message = $"Processing '{file}' ";
                         var index = indexService.CalculateIndex(items);
-                        persistantService.AddOrUpdate(index.Single());
+                        persistentService.AddOrUpdate(index.Single());
                     }
                     else
                     {
@@ -536,11 +528,12 @@
                         // index and add
                         progressBar.Message = $"Processing '{file}' ";
                         var index = indexService.CalculateIndex(items);
-                        persistantService.AddOrUpdate(index.Single());
+                        persistentService.AddOrUpdate(index.Single());
                     }
                 }
             }
-//            Console.ReadKey();
+
+            // Console.ReadKey();
         }
 
         private static string ConvertToRelativeFilename(string rootPath, string fullFilename)
@@ -575,7 +568,6 @@
                     Directory.CreateDirectory(opts.DuplicateDir);
             }
 
-//
 //            var index = ReadInputFile(opts.IndexFile);
 //            var filesToProcess = ReadInputFile(opts.ProcessingFile);
 //
@@ -602,4 +594,7 @@
             throw new Exception(s);
         }
     }
+#pragma warning restore SA1005 // Single line comments should begin with single space
+#pragma warning restore SA1515 // Single-line comment should be preceded by blank line
+#pragma warning restore SA1512 // Single-line comments should not be followed by blank line
 }

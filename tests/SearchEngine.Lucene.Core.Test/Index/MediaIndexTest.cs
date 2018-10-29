@@ -15,23 +15,23 @@
 
     public class MediaIndexTest : IDisposable
     {
-        private readonly MediaIndex _sut;
+        private readonly MediaIndex sut;
 
         public MediaIndexTest()
         {
             ILuceneDirectoryFactory indexDirectoryFactory = new RamLuceneDirectoryFactory();
-            _sut = new MediaIndex(indexDirectoryFactory);
+            sut = new MediaIndex(indexDirectoryFactory);
         }
 
         public void Dispose()
         {
-            _sut?.Dispose();
+            sut?.Dispose();
         }
 
         [Fact]
         public void Dispose_ShouldNotThrowTest()
         {
-            _sut.Dispose();
+            sut.Dispose();
         }
 
         [Fact]
@@ -40,7 +40,7 @@
             // arrange
 
             // act
-            var result = _sut.Search(new MatchAllDocsQuery(), null, out var totalCount);
+            var result = sut.Search(new MatchAllDocsQuery(), null, out var totalCount);
 
             // assert
             totalCount.Should().Be(0);
@@ -53,7 +53,7 @@
             // arrange
 
             // act
-            var result = _sut.Search("a*", out var totalCount);
+            var result = sut.Search("a*", out var totalCount);
 
             // assert
             totalCount.Should().Be(0);
@@ -64,30 +64,30 @@
         public async Task Index_ValidMediaObject_ShouldReturnTrueTest()
         {
             // arrange
-            var data = Datastore.File001;
+            var data = DataStore.File001;
 
             // act
-            var result = await _sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+            var result = await sut.IndexMediaFileAsync(data).ConfigureAwait(false);
 
             // assert
             result.Should().BeTrue();
-            _sut.Count().Should().Be(1);
+            sut.Count().Should().Be(1);
         }
 
         [Fact]
         public async Task Index_ValidMediaObjectTwice_ShouldOnlyIndexLastTest()
         {
             // arrange
-            var data = Datastore.File001;
+            var data = DataStore.File001;
 
             // act
-            var result1 = await _sut.IndexMediaFileAsync(data).ConfigureAwait(false);
-            var result2 = await _sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+            var result1 = await sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+            var result2 = await sut.IndexMediaFileAsync(data).ConfigureAwait(false);
 
             // assert
             result1.Should().BeTrue();
             result2.Should().BeTrue();
-            _sut.Count().Should().Be(1);
+            sut.Count().Should().Be(1);
         }
     }
 }

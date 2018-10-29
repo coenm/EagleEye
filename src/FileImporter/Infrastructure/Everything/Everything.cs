@@ -9,21 +9,20 @@
 
     public class Everything
     {
-        private const string EVERYTHING_EXE = "C:\\Program Files\\Everything\\Everything.exe";
-        private const string EVERYTHING_OR = "|";
-        private const string ESCAPE = "\"";
-        private const string START_END = "\"\"\"";
-
+        private const string EverythingExe = "C:\\Program Files\\Everything\\Everything.exe";
+        private const string EverythingOr = "|";
+        private const string Escape = "\"";
+        private const string StartEnd = "\"\"\"";
 
         public Task Show(IEnumerable<ImageData> files)
         {
             var files2 = files.Select(f => f.Identifier);
-            var search = string.Join(EVERYTHING_OR, files2);
-            var args = "-s " + ESCAPE + "filelist:" + START_END + search + START_END + " " + ESCAPE;
+            var search = string.Join(EverythingOr, files2);
+            var args = "-s " + Escape + "filelist:" + StartEnd + search + StartEnd + " " + Escape;
 
             var p = new Process
             {
-                StartInfo = new ProcessStartInfo(EVERYTHING_EXE, args)
+                StartInfo = new ProcessStartInfo(EverythingExe, args),
             };
             p.Start();
 

@@ -28,7 +28,7 @@
         {
             var result = new ImageHashValues
             {
-                FileHash = CalculateStreamHash(input)
+                FileHash = CalculateStreamHash(input),
             };
 
             input.Position = 0;

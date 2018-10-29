@@ -16,19 +16,19 @@
 
     public partial class NumberFacetSearchTest
     {
-        private readonly Directory _directory;
-        private readonly IndexWriterConfig _indexWriterConfig;
+        private readonly Directory directory;
+        private readonly IndexWriterConfig indexWriterConfig;
 
         public NumberFacetSearchTest()
         {
-            _directory = new RAMDirectory();
+            directory = new RAMDirectory();
 
-            Analyzer analyzer = new StandardAnalyzer(TestHelper.LUCENE_VERSION);
+            Analyzer analyzer = new StandardAnalyzer(TestHelper.LuceneVersion);
 
-            _indexWriterConfig = new IndexWriterConfig(TestHelper.LUCENE_VERSION, analyzer)
+            indexWriterConfig = new IndexWriterConfig(TestHelper.LuceneVersion, analyzer)
             {
                 OpenMode = OpenMode.CREATE_OR_APPEND,
-                RAMBufferSizeMB = 256.0
+                RAMBufferSizeMB = 256.0,
             };
         }
 
@@ -47,7 +47,7 @@
                 new NumberFacetResult("0-10", 11),
                 new NumberFacetResult("10-100", 90),
                 new NumberFacetResult("100-1000", 900),
-                new NumberFacetResult(">1000", 99000)
+                new NumberFacetResult(">1000", 99000),
             };
             Assert.Equal(expected, result);
         }
@@ -63,7 +63,7 @@
             var doc = new Document
             {
                 new TextField(nameof(dto.Name), dto.Name, Field.Store.YES),
-                new NumericDocValuesField(nameof(dto.Price), dto.Price)
+                new NumericDocValuesField(nameof(dto.Price), dto.Price),
             };
 
             if (writer.Config.OpenMode == OpenMode.CREATE)
@@ -82,7 +82,7 @@
 
         private void IndexStaticDocuments()
         {
-            using (var writer = new IndexWriter(_directory, _indexWriterConfig))
+            using (var writer = new IndexWriter(directory, indexWriterConfig))
             {
                 foreach (var item in GetDocuments())
                 {
@@ -95,7 +95,7 @@
 
         private IEnumerable<NumberFacetResult> FacetSearch()
         {
-            using (var reader = DirectoryReader.Open(_directory))
+            using (var reader = DirectoryReader.Open(directory))
             {
                 var facetsCollector = new FacetsCollector();
                 var searcher = new IndexSearcher(reader);

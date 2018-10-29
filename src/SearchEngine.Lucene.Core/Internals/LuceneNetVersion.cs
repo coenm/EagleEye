@@ -2,6 +2,6 @@
 {
     internal static class LuceneNetVersion
     {
-        public const Lucene.Net.Util.LuceneVersion VERSION = Lucene.Net.Util.LuceneVersion.LUCENE_48;
+        public const Lucene.Net.Util.LuceneVersion Version = Lucene.Net.Util.LuceneVersion.LUCENE_48;
     }
 }

@@ -11,7 +11,12 @@
     <DebugSymbols>True</DebugSymbols>
 
   </PropertyGroup>
-
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
@@ -25,6 +30,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="NetMQ" Version="4.0.0.1" />
     <PackageReference Include="NLog" Version="4.5.10" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.analyzers" Version="0.10.0" />
     <PackageReference Include="xunit.categories" Version="2.0.3" />

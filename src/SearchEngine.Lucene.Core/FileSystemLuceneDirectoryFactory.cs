@@ -8,19 +8,19 @@
 
     public class FileSystemLuceneDirectoryFactory : ILuceneDirectoryFactory
     {
-        private readonly string _path;
+        private readonly string path;
 
         public FileSystemLuceneDirectoryFactory([NotNull] FileSystemLuceneDirectorySettings settings)
         {
             if (string.IsNullOrWhiteSpace(settings.Directory))
                 throw new ArgumentNullException(nameof(settings));
 
-            _path = settings.Directory;
+            path = settings.Directory;
         }
 
         public Directory Create()
         {
-            return FSDirectory.Open(_path);
+            return FSDirectory.Open(path);
         }
     }
 }

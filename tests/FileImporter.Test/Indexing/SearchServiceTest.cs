@@ -11,11 +11,11 @@
 
     public class SearchServiceTest
     {
-        private readonly IImageDataRepository _repository;
+        private readonly IImageDataRepository repository;
 
         public SearchServiceTest()
         {
-            _repository = A.Fake<IImageDataRepository>();
+            repository = A.Fake<IImageDataRepository>();
         }
 
         [Fact]
@@ -24,7 +24,7 @@
             // arrange
 
             // act
-            var sut = new SearchService(_repository);
+            var sut = new SearchService(repository);
 
             // assert
             Assert.NotNull(sut);
@@ -40,15 +40,15 @@
         public void FindSimilarCallsRepositoryAndReturnsItResultTest()
         {
             // arrange
-            var sut = new SearchService(_repository);
+            var sut = new SearchService(repository);
             var src = A.Dummy<ImageData>();
-            A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).Returns(new List<ImageData>());
+            A.CallTo(() => repository.FindSimilar(src, 1, 2, 3, 4, 5)).Returns(new List<ImageData>());
 
             // act
             var result = sut.FindSimilar(src, 1, 2, 3, 4, 5);
 
             // assert
-            A.CallTo(() => _repository.FindSimilar(src, 1, 2, 3, 4, 5)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.FindSimilar(src, 1, 2, 3, 4, 5)).MustHaveHappenedOnceExactly();
             Assert.Equal(new List<ImageData>(), result);
         }
 
@@ -58,18 +58,17 @@
         public void GetCallsRepositoryAndReturnsItResultTest(bool resultFound)
         {
             // arrange
-            var sut = new SearchService(_repository);
+            var sut = new SearchService(repository);
             var id = A.Dummy<string>();
             var fileIndex = resultFound ? new ImageData(string.Empty) : null;
-            A.CallTo(() => _repository.Get(id)).Returns(fileIndex);
+            A.CallTo(() => repository.Get(id)).Returns(fileIndex);
 
             // act
             var result = sut.FindById(id);
 
             // assert
-            A.CallTo(() => _repository.Get(id)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => repository.Get(id)).MustHaveHappenedOnceExactly();
             Assert.Equal(fileIndex, result);
         }
-
     }
 }

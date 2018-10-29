@@ -1,4 +1,4 @@
-namespace NetMq.Test
+﻿namespace NetMq.Test
 {
     using FluentAssertions;
 
@@ -10,18 +10,19 @@ namespace NetMq.Test
 
     public class RequestResponseSocketTests
     {
-        [Fact, Exploratory]
+        [Fact]
+        [Exploratory]
         public void RequestResponseSocketTest()
         {
             // arrange
-            const string ADDRESS = "inproc://inproc-address";
+            const string address = "inproc://inproc-address";
 
             // act
             using (var server = new ResponseSocket())
             using (var client = new RequestSocket())
             {
-                server.Bind(ADDRESS);
-                client.Connect(ADDRESS);
+                server.Bind(address);
+                client.Connect(address);
 
                 client.SendFrame("Hello");
                 var receivedFromClient = server.ReceiveFrameString();

@@ -1,9 +1,10 @@
 ﻿namespace EagleEye.FileImporter.CmdOptions
 {
     using CommandLine;
+    using JetBrains.Annotations;
 
     [Verb("move", HelpText = "Move files to folders with date")]
-    // ReSharper disable once ClassNeverInstantiated.Global
+    [UsedImplicitly]
     internal class MoveOptions
     {
         [Option('d', "directory", Required = true)]

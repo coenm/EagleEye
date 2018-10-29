@@ -39,7 +39,7 @@
         public void CommentLinesAreIgnoredTest()
         {
             // arrange
-            const string CONTENT = @"
+            const string content = @"
 [Section1]
   key=value
 a = b  
@@ -52,10 +52,10 @@ b=c
                                   {
                                       { "key", "value" },
                                       { "a", "b" },
-                                      { "b", "c" }
+                                      { "b", "c" },
                                   };
 
-            using (var stream = GenerateStreamFromString(CONTENT))
+            using (var stream = GenerateStreamFromString(content))
             {
                 // act
                 var result = Sut.Parse(stream);
@@ -71,15 +71,14 @@ b=c
         public void InvalidSectionShouldThrowExceptionTest()
         {
             // arrange
-            const string CONTENT = "[Abc\r\nkey=value\r\n";
-            using (var stream = GenerateStreamFromString(CONTENT))
+            const string content = "[Abc\r\nkey=value\r\n";
+            using (var stream = GenerateStreamFromString(content))
             {
                 // act
                 // assert
                 Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
             }
         }
-
 
         [Fact]
         public void ParsingErrorStreamShouldThrowExceptionTest()

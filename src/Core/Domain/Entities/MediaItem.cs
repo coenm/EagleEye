@@ -12,26 +12,25 @@
 
     public class MediaItem : AggregateRoot
     {
-        private bool _created;
-
-        private readonly List<string> _tags;
-        private readonly List<string> _persons;
-        private Location _location;
-        private string _filename;
+        private readonly List<string> tags;
+        private readonly List<string> persons;
+        private bool created;
+        private Location location;
+        private string filename;
 
         public MediaItem(Guid id, string filename, string[] tags, string[] persons)
             : this()
         {
             Id = id;
-            _location = null;
+            location = null;
 
             ApplyChange(new MediaItemCreated(id, filename, tags, persons));
         }
 
         private MediaItem()
         {
-            _tags = new List<string>();
-            _persons = new List<string>();
+            tags = new List<string>();
+            persons = new List<string>();
         }
 
         public void AddTags(params string[] tags)
@@ -39,7 +38,7 @@
             if (tags == null)
                 return;
 
-            var addedTags = tags.Distinct().Where(tag => !_tags.Contains(tag)).ToArray();
+            var addedTags = tags.Distinct().Where(tag => !this.tags.Contains(tag)).ToArray();
 
             if (addedTags.Any())
                 ApplyChange(new TagsAddedToMediaItem(Id, addedTags));
@@ -51,7 +50,7 @@
                 return;
 
             var tagsRemoved = tags.Distinct()
-                                  .Where(tag => _tags.Contains(tag))
+                                  .Where(tag => this.tags.Contains(tag))
                                   .ToArray();
 
             if (tagsRemoved.Any())
@@ -64,7 +63,7 @@
                 return;
 
             var added = persons.Distinct()
-                               .Where(item => !_persons.Contains(item))
+                               .Where(item => !this.persons.Contains(item))
                                .ToArray();
 
             if (added.Any())
@@ -79,9 +78,8 @@
             if (persons.Length == 0)
                 return;
 
-
             var removed = persons.Distinct()
-                                 .Where(item => _persons.Contains(item))
+                                 .Where(item => this.persons.Contains(item))
                                  .ToArray();
 
             if (removed.Any())
@@ -97,7 +95,6 @@
             float? longitude,
             float? latitude)
         {
-
             var location = new Location(countryCode, countryName, state, city, subLocation, longitude, latitude);
 
             ApplyChange(new LocationSetToMediaItem(Id, location));
@@ -105,7 +102,7 @@
 
         public void ClearLocationData()
         {
-            if (_location == null)
+            if (location == null)
                 return;
 
             ApplyChange(new LocationClearedFromMediaItem(Id/*, _location*/));
@@ -114,28 +111,28 @@
         [UsedImplicitly]
         private void Apply(LocationClearedFromMediaItem e)
         {
-            _location = null;
+            location = null;
         }
 
         [UsedImplicitly]
         private void Apply(LocationSetToMediaItem e)
         {
-            _location = e.Location;
+            location = e.Location;
         }
 
         [UsedImplicitly]
         private void Apply(MediaItemCreated e)
         {
-            _created = true;
-            _filename = e.FileName;
-            _tags.AddRange(e.Tags);
-            _persons.AddRange(e.Persons);
+            created = true;
+            filename = e.FileName;
+            tags.AddRange(e.Tags);
+            persons.AddRange(e.Persons);
         }
 
         [UsedImplicitly]
         private void Apply(PersonsAddedToMediaItem e)
         {
-            _persons.AddRange(e.Persons ?? new string[0]);
+            persons.AddRange(e.Persons ?? new string[0]);
         }
 
         [UsedImplicitly]
@@ -145,13 +142,13 @@
                 return;
 
             foreach (var t in e.Persons)
-                _persons.Remove(t);
+                persons.Remove(t);
         }
 
         [UsedImplicitly]
         private void Apply(TagsAddedToMediaItem e)
         {
-            _tags.AddRange(e.Tags ?? new string[0]);
+            tags.AddRange(e.Tags ?? new string[0]);
         }
 
         [UsedImplicitly]
@@ -161,7 +158,7 @@
                 return;
 
             foreach (var t in e.Tags)
-                _tags.Remove(t);
+                tags.Remove(t);
         }
     }
 }

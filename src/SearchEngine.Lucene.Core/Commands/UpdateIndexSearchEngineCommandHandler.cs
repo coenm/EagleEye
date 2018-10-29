@@ -7,16 +7,16 @@
 
     public class UpdateIndexSearchEngineCommandHandler : ICommandHandler<UpdateIndexCommand>
     {
-        private readonly MediaIndex _mediaIndex;
+        private readonly MediaIndex mediaIndex;
 
         public UpdateIndexSearchEngineCommandHandler(MediaIndex mediaIndex)
         {
-            _mediaIndex = mediaIndex;
+            this.mediaIndex = mediaIndex;
         }
 
         public Task HandleAsync(UpdateIndexCommand command)
         {
-            return _mediaIndex.IndexMediaFileAsync(command.Data);
+            return mediaIndex.IndexMediaFileAsync(command.Data);
         }
     }
 }

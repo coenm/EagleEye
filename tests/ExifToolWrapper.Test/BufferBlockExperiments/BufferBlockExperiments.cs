@@ -14,72 +14,71 @@
     [Exploratory]
     public class BufferBlockExperiments
     {
-        private readonly CancellationTokenSource _ctsQueue;
-        private readonly BufferBlock<int> _queue;
-        private readonly List<CancellationTokenSource> _ctsSources;
+        private readonly CancellationTokenSource ctsQueue;
+        private readonly BufferBlock<int> queue;
+        private readonly List<CancellationTokenSource> ctsSources;
 
         public BufferBlockExperiments()
         {
-            _ctsQueue = new CancellationTokenSource();
-            _queue = new BufferBlock<int>(new DataflowBlockOptions
-                                              {
-                                                  BoundedCapacity = 1,
-                                                  CancellationToken = _ctsQueue.Token,
-                                                  EnsureOrdered = true,
-                                                  TaskScheduler = TaskScheduler.Current
-                                              });
+            ctsQueue = new CancellationTokenSource();
+            queue = new BufferBlock<int>(new DataflowBlockOptions
+            {
+                BoundedCapacity = 1,
+                CancellationToken = ctsQueue.Token,
+                EnsureOrdered = true,
+                TaskScheduler = TaskScheduler.Current,
+            });
 
-            _ctsSources = new List<CancellationTokenSource>();
+            ctsSources = new List<CancellationTokenSource>();
         }
 
         [Fact]
-        public async Task CancelQueueWillResultInFinshedTasksWithoutProcessingThemTest()
+        public async Task CancelQueueWillResultInFinishedTasksWithoutProcessingThemTest()
         {
             // arrange
             InitCancellationTokens(3);
-            var task1 = _queue.SendAsync(1, _ctsSources[0].Token);
-            var task2 = _queue.SendAsync(2, _ctsSources[1].Token);
-            var task3 = _queue.SendAsync(3, _ctsSources[2].Token);
+            var task1 = queue.SendAsync(1, ctsSources[0].Token);
+            var task2 = queue.SendAsync(2, ctsSources[1].Token);
+            var task3 = queue.SendAsync(3, ctsSources[2].Token);
 
             // act
-            _ctsQueue.Cancel();
+            ctsQueue.Cancel();
 
             // assert
             // the first was already in the queue and is therefore true?!
             await AssertTaskReturnsAsync(task1, true).ConfigureAwait(false);
 
-            // the other two were posponed and therefore return false!?
+            // the other two were postponed and therefore return false!?
             await AssertTaskReturnsAsync(task2, false).ConfigureAwait(false);
             await AssertTaskReturnsAsync(task3, false).ConfigureAwait(false);
         }
-
 
         [Fact]
         public async Task BufferBlockWithBoundedCapacityOfOneShouldRespectOrderTest()
         {
             // arrange
-            const int INDEX_TO_CANCEL = 55;
-            const int SIZE = 1000;
-            InitCancellationTokens(SIZE);
+            const int indexToCancel = 55;
+            const int size = 1000;
+            InitCancellationTokens(size);
 
             // act
-            for (var index = 0; index < SIZE; index++)
+            for (var index = 0; index < size; index++)
             {
-                _ = _queue.SendAsync(index, _ctsSources[index].Token);
+                _ = queue.SendAsync(index, ctsSources[index].Token);
             }
 
-            _ctsSources[INDEX_TO_CANCEL].Cancel();
+            ctsSources[indexToCancel].Cancel();
 
             // assert
-            for (var index = 0; index < INDEX_TO_CANCEL; index++)
+            for (var index = 0; index < indexToCancel; index++)
             {
-                var number = await _queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
+                var number = await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
                 number.Should().Be(index);
             }
 
-            for (var index = INDEX_TO_CANCEL + 1; index < SIZE; index++)
+            for (var index = indexToCancel + 1; index < size; index++)
             {
-                var number = await _queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
+                var number = await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
                 number.Should().Be(index);
             }
         }
@@ -91,15 +90,15 @@
             InitCancellationTokens(3);
 
             // act
-            var task1 = _queue.SendAsync(1, _ctsSources[0].Token);
-            var task2 = _queue.SendAsync(2, _ctsSources[1].Token);
-            var task3 = _queue.SendAsync(3, _ctsSources[2].Token);
+            var task1 = queue.SendAsync(1, ctsSources[0].Token);
+            var task2 = queue.SendAsync(2, ctsSources[1].Token);
+            var task3 = queue.SendAsync(3, ctsSources[2].Token);
 
-            _ctsSources[1].Cancel();
+            ctsSources[1].Cancel();
 
-            while (_queue.Count > 0)
+            while (queue.Count > 0)
             {
-                _ = await _queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
+                _ = await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
             }
 
             // assert
@@ -109,20 +108,20 @@
         }
 
         [Fact]
-        public async Task CompletingQueueWillNotStopProcessingAddedAndPosponedItemsInQueue()
+        public async Task CompletingQueueWillNotStopProcessingAddedAndPostponedItemsInQueue()
         {
             // arrange
             InitCancellationTokens(2);
 
             // act
-            var task1 = _queue.SendAsync(1, _ctsSources[0].Token);
-            _queue.Complete();
+            var task1 = queue.SendAsync(1, ctsSources[0].Token);
+            queue.Complete();
 
-            var task2 = _queue.SendAsync(2, _ctsSources[1].Token);
+            var task2 = queue.SendAsync(2, ctsSources[1].Token);
 
-            while (_queue.Count > 0)
+            while (queue.Count > 0)
             {
-                _ = await _queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
+                _ = await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
             }
 
             // assert
@@ -136,8 +135,8 @@
             // arrange
 
             // act
-            _queue.Complete();
-            var result = await _queue.SendAsync(3).ConfigureAwait(false);
+            queue.Complete();
+            var result = await queue.SendAsync(3).ConfigureAwait(false);
 
             // assert
             result.Should().Be(false);
@@ -149,13 +148,12 @@
             // arrange
 
             // act
-            _queue.Complete();
-            var result = await _queue.OutputAvailableAsync().ConfigureAwait(false);
+            queue.Complete();
+            var result = await queue.OutputAvailableAsync().ConfigureAwait(false);
 
             // assert
             result.Should().Be(false);
         }
-
 
         [Fact]
         public async Task OutputAvailableAsyncReturnsTrueWhenItemAdded()
@@ -163,8 +161,8 @@
             // arrange
 
             // act
-            await _queue.SendAsync(1).ConfigureAwait(false);
-            var result = await _queue.OutputAvailableAsync().ConfigureAwait(false);
+            await queue.SendAsync(1).ConfigureAwait(false);
+            var result = await queue.OutputAvailableAsync().ConfigureAwait(false);
 
             // assert
             result.Should().Be(true);
@@ -187,15 +185,15 @@
                 return;
             }
 
-            throw new Exception("Task wasnt cancelled.");
+            throw new Exception("Task wasn't cancelled.");
         }
 
         private void InitCancellationTokens(int count)
         {
-            _ctsSources.Clear();
+            ctsSources.Clear();
             for (var i = 0; i < count; i++)
             {
-                _ctsSources.Add(new CancellationTokenSource());
+                ctsSources.Add(new CancellationTokenSource());
             }
         }
     }

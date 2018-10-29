@@ -17,9 +17,9 @@
 
     public class ExifToolGpsProviderTest
     {
-        private const string FILENAME = "DUMMY";
+        private const string Filename = "DUMMY";
 
-        private const string METADATA_GPS = @"
+        private const string MetadataGps = @"
 ""GPS"": {
     ""GPSLatitudeRef"": ""North"",
     ""GPSLatitude"": 40.736072,
@@ -27,13 +27,13 @@
     ""GPSLongitude"": 73.994293,
   },";
 
-        private const string METADATA_XMP_EXIF = @"
+        private const string MetadataXmpExif = @"
 ""XMP-exif"": {
     ""GPSLatitude"": ""+40.736072"",
     ""GPSLongitude"": -73.994293,
   }";
 
-        private const string METADATA_COMPOSITE = @"
+        private const string MetadataComposite = @"
 ""Composite"": {
     ""GPSLatitude"": ""+40.736072"",
     ""GPSLatitudeRef"": ""North"",
@@ -41,15 +41,15 @@
     ""GPSLongitudeRef"": ""West"",
   }";
 
-        private readonly ExifToolGpsProvider _sut;
-        private readonly IExifTool _exiftool;
-        private readonly MediaObject _media;
+        private readonly ExifToolGpsProvider sut;
+        private readonly IExifTool exiftool;
+        private readonly MediaObject media;
 
         public ExifToolGpsProviderTest()
         {
-            _exiftool = A.Fake<IExifTool>();
-            _sut = new ExifToolGpsProvider(_exiftool);
-            _media = new MediaObject(FILENAME);
+            exiftool = A.Fake<IExifTool>();
+            sut = new ExifToolGpsProvider(exiftool);
+            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -58,7 +58,7 @@
             // arrange
 
             // act
-            var result = _sut.CanProvideInformation(FILENAME);
+            var result = sut.CanProvideInformation(Filename);
 
             // assert
             result.Should().BeTrue();
@@ -68,14 +68,14 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Coordinate.Should().BeNull();
+            media.Location.Coordinate.Should().BeNull();
         }
 
         [Theory]
@@ -83,32 +83,32 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Coordinate.Should().BeNull();
+            media.Location.Coordinate.Should().BeNull();
         }
 
         [Theory]
-        [InlineData(METADATA_GPS)]
-        [InlineData(METADATA_XMP_EXIF)]
-        [InlineData(METADATA_COMPOSITE)]
+        [InlineData(MetadataGps)]
+        [InlineData(MetadataXmpExif)]
+        [InlineData(MetadataComposite)]
         public async Task ProvideShouldFillCoordinatesTest(string data)
         {
             // arrange
             var expectedGpsCoordinate = new Coordinate(40.736072f, -73.994293f);
-            A.CallTo(() => _exiftool.GetMetadataAsync(FILENAME))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+             .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await _sut.ProvideAsync(FILENAME, _media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            _media.Location.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
+            media.Location.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
         }
 
         private static string ConvertToJsonArray(string data)
@@ -116,7 +116,7 @@
             return "[{ " + data + " }]";
         }
 
-        private static JObject ConvertToJobject(string data)
+        private static JObject ConvertToJObject(string data)
         {
             try
             {

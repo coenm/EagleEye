@@ -15,40 +15,39 @@
 
     public class ExifToolCacheDecoratorTest : IDisposable
     {
-        private const string FILENAME_1 = "FILENAME1.jpg";
-        private const string FILENAME_2 = "FILENAME2.jpg";
-        private const string FILENAME_3 = "FILENAME3.jpg";
-        private readonly JObject _fileResult1;
-        private readonly JObject _fileResult2;
-        private readonly JObject _fileResult3;
-        private readonly ExifToolCacheDecorator _sut;
-        private readonly IExifTool _decoratee;
-        private readonly IDateTimeService _dateTimeService;
-        private readonly DateTime _dtInit;
+        private const string Filename1 = "FILENAME1.jpg";
+        private const string Filename2 = "FILENAME2.jpg";
+        private const string Filename3 = "FILENAME3.jpg";
+        private readonly JObject fileResult1;
+        private readonly JObject fileResult2;
+        private readonly JObject fileResult3;
+        private readonly ExifToolCacheDecorator sut;
+        private readonly IExifTool decoratee;
+        private readonly IDateTimeService dateTimeService;
+        private readonly DateTime dtInit;
 
         public ExifToolCacheDecoratorTest()
         {
-            _decoratee = A.Fake<IExifTool>();
+            decoratee = A.Fake<IExifTool>();
 
-            _fileResult1 = new JObject();
-            _fileResult2 = new JObject();
-            _fileResult3 = new JObject();
+            fileResult1 = new JObject();
+            fileResult2 = new JObject();
+            fileResult3 = new JObject();
 
-            _dtInit = new DateTime(2000, 1, 2, 3, 4, 5);
+            dtInit = new DateTime(2000, 1, 2, 3, 4, 5);
 
-            A.CallTo(() => _decoratee.GetMetadataAsync(FILENAME_1)).Returns(Task.FromResult(_fileResult1));
-            A.CallTo(() => _decoratee.GetMetadataAsync(FILENAME_2)).Returns(Task.FromResult(_fileResult2));
-            A.CallTo(() => _decoratee.GetMetadataAsync(FILENAME_3)).Returns(Task.FromResult(_fileResult3));
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename1)).Returns(Task.FromResult(fileResult1));
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename2)).Returns(Task.FromResult(fileResult2));
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename3)).Returns(Task.FromResult(fileResult3));
 
-            _dateTimeService = A.Fake<IDateTimeService>();
+            dateTimeService = A.Fake<IDateTimeService>();
 
-
-            _sut = new ExifToolCacheDecorator(_decoratee, _dateTimeService);
+            sut = new ExifToolCacheDecorator(decoratee, dateTimeService);
         }
 
         public void Dispose()
         {
-            _sut?.Dispose();
+            sut?.Dispose();
         }
 
         [Fact]
@@ -57,44 +56,44 @@
             // arrange
 
             // act
-            _sut.Dispose();
+            sut.Dispose();
 
             // assert
-            A.CallTo(() => _decoratee.Dispose()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => decoratee.Dispose()).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
         public async Task GetMetadataAsync_ShouldGetAndReturnMetadataFromDecorateeTest()
         {
             // arrange
-            A.CallTo(() => _dateTimeService.Now).Returns(_dtInit);
+            A.CallTo(() => dateTimeService.Now).Returns(dtInit);
 
             // act
-            var result = await _sut.GetMetadataAsync(FILENAME_1).ConfigureAwait(false);
+            var result = await sut.GetMetadataAsync(Filename1).ConfigureAwait(false);
 
             // assert
-            result.Should().BeSameAs(_fileResult1);
-            A.CallTo(() => _decoratee.GetMetadataAsync(FILENAME_1)).MustHaveHappenedOnceExactly();
+            result.Should().BeSameAs(fileResult1);
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename1)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
         public async Task GetMetadataAsyncTwiceWithinCacheTimeoutShouldGetAndReturnMetadataFromDecorateeTest()
         {
             // arrange
-            A.CallTo(() => _dateTimeService.Now)
-             .ReturnsNextFromSequence(_dtInit, _dtInit.AddMinutes(2));
+            A.CallTo(() => dateTimeService.Now)
+             .ReturnsNextFromSequence(dtInit, dtInit.AddMinutes(2));
 
             // act
-            var result1Task = _sut.GetMetadataAsync(FILENAME_1);
-            var result2Task = _sut.GetMetadataAsync(FILENAME_1);
+            var result1Task = sut.GetMetadataAsync(Filename1);
+            var result2Task = sut.GetMetadataAsync(Filename1);
 
             var result1 = await result1Task.ConfigureAwait(false);
             var result2 = await result2Task.ConfigureAwait(false);
 
             // assert
-            result1.Should().BeSameAs(_fileResult1);
-            result2.Should().BeSameAs(_fileResult1);
-            A.CallTo(() => _decoratee.GetMetadataAsync(FILENAME_1)).MustHaveHappenedOnceExactly();
+            result1.Should().BeSameAs(fileResult1);
+            result2.Should().BeSameAs(fileResult1);
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename1)).MustHaveHappenedOnceExactly();
         }
     }
 }

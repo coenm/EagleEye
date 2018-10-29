@@ -10,7 +10,7 @@
         [JetBrains.Annotations.PublicAPI]
         public ConditionalHostFactAttribute(TestHost allowedHosts, string reason = null)
         {
-            if (TestEnvironment.RunsOnAppVeyor && (allowedHosts & TestHost.AppVeyor) == TestHost.AppVeyor)
+            if (TestEnvironment.RunsOnAppVeyor && (allowedHosts & TestHost.AppVeyorWindows) == TestHost.AppVeyorWindows)
                 return;
 
             if (TestEnvironment.RunsOnTravis && (allowedHosts & TestHost.Travis) == TestHost.Travis)
@@ -25,9 +25,9 @@
         [JetBrains.Annotations.PublicAPI]
         public ConditionalHostFactAttribute(TestHostMode mode, TestHost hosts, string reason = null)
         {
-            if (TestEnvironment.RunsOnAppVeyor && (hosts & TestHost.AppVeyor) == TestHost.AppVeyor)
+            if (TestEnvironment.RunsOnAppVeyor && (hosts & TestHost.AppVeyorWindows) == TestHost.AppVeyorWindows)
             {
-                ActOnHostMatched(mode, TestHost.AppVeyor, reason);
+                ActOnHostMatched(mode, TestHost.AppVeyorWindows, reason);
                 return;
             }
 
