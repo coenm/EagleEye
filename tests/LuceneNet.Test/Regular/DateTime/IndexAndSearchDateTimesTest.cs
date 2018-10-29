@@ -66,19 +66,6 @@
             Assert.Equal(new[] { "alice", "calvin", "eve" }, names);
         }
 
-        private void IndexStaticDocuments()
-        {
-            using (var writer = new IndexWriter(directory, indexWriterConfig))
-            {
-                foreach (var person in Persons)
-                {
-                    IndexDocs(writer, person);
-                }
-
-                writer.ForceMerge(1);
-            }
-        }
-
         private static IEnumerable<PersonDto> Persons
         {
             get
@@ -100,9 +87,9 @@
             doc.Add(fieldFilename);
 
             var fieldDateOfBirth = new StringField(
-                                                   nameof(PersonDto.DateOfBirth),
-                                                   DateTools.DateToString(person.DateOfBirth, DateTools.Resolution.DAY),
-                                                   Field.Store.YES);
+                nameof(PersonDto.DateOfBirth),
+                DateTools.DateToString(person.DateOfBirth, DateTools.Resolution.DAY),
+                Field.Store.YES);
 
             doc.Add(fieldDateOfBirth);
 
@@ -117,6 +104,19 @@
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
                 writer.UpdateDocument(new Term(nameof(PersonDto.Name), person.Name), doc);
+            }
+        }
+
+        private void IndexStaticDocuments()
+        {
+            using (var writer = new IndexWriter(directory, indexWriterConfig))
+            {
+                foreach (var person in Persons)
+                {
+                    IndexDocs(writer, person);
+                }
+
+                writer.ForceMerge(1);
             }
         }
 

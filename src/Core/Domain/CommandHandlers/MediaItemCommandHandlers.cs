@@ -29,14 +29,16 @@
             await session.Add(item).ConfigureAwait(false);
             await session.Commit().ConfigureAwait(false);
 
-//            var item = new MediaItem(message.Id, message.Name);
-//
-//            await _session.Add(item).ConfigureAwait(false);
-//            await _session.Commit().ConfigureAwait(false);
-//
-//            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
-//            item.Remove(message.Count);
-//            await _session.Commit(token);
+            /*
+            var item = new MediaItem(message.Id, message.Name);
+
+            await _session.Add(item).ConfigureAwait(false);
+            await _session.Commit().ConfigureAwait(false);
+
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
+            item.Remove(message.Count);
+            await _session.Commit(token);
+            */
         }
 
         public async Task Handle(AddTagsToMediaItemCommand message)

@@ -56,36 +56,38 @@
 
             InitSpatial();
             analyzer = new StandardAnalyzer(LuceneNetVersion.Version);
-//            _analyzer = new PerFieldAnalyzerWrapper(
-//                                                    new HtmlStripAnalyzer(LuceneNetVersion.VERSION),
-//                                                    new Dictionary<string, Analyzer>
-//                                                        {
-//                                                            {
-//                                                                "owner",
-//                                                                Analyzer.NewAnonymous((fieldName, reader) =>
-//                                                                                      {
-//                                                                                          var source = new KeywordTokenizer(reader);
-//                                                                                          TokenStream result = new ASCIIFoldingFilter(source);
-//                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
-//                                                                                          return new TokenStreamComponents(source, result);
-//                                                                                      })
-//                                                            },
-//                                                            {
-//                                                                "name",
-//                                                                Analyzer.NewAnonymous((fieldName, reader) =>
-//                                                                                      {
-//                                                                                          var source = new StandardTokenizer(LuceneNetVersion.VERSION, reader);
-//                                                                                          TokenStream result = new WordDelimiterFilter(LuceneNetVersion.VERSION, source, ~WordDelimiterFlags.STEM_ENGLISH_POSSESSIVE, CharArraySet.EMPTY_SET);
-//                                                                                          result = new ASCIIFoldingFilter(result);
-//                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
-//                                                                                          return new TokenStreamComponents(source, result);
-//                                                                                      })
-//                                                            }
-//                                                        });
+/*
+            _analyzer = new PerFieldAnalyzerWrapper(
+                                                    new HtmlStripAnalyzer(LuceneNetVersion.VERSION),
+                                                    new Dictionary<string, Analyzer>
+                                                        {
+                                                            {
+                                                                "owner",
+                                                                Analyzer.NewAnonymous((fieldName, reader) =>
+                                                                                      {
+                                                                                          var source = new KeywordTokenizer(reader);
+                                                                                          TokenStream result = new ASCIIFoldingFilter(source);
+                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
+                                                                                          return new TokenStreamComponents(source, result);
+                                                                                      })
+                                                            },
+                                                            {
+                                                                "name",
+                                                                Analyzer.NewAnonymous((fieldName, reader) =>
+                                                                                      {
+                                                                                          var source = new StandardTokenizer(LuceneNetVersion.VERSION, reader);
+                                                                                          TokenStream result = new WordDelimiterFilter(LuceneNetVersion.VERSION, source, ~WordDelimiterFlags.STEM_ENGLISH_POSSESSIVE, CharArraySet.EMPTY_SET);
+                                                                                          result = new ASCIIFoldingFilter(result);
+                                                                                          result = new LowerCaseFilter(LuceneNetVersion.VERSION, result);
+                                                                                          return new TokenStreamComponents(source, result);
+                                                                                      })
+                                                            }
+                                                        });
+*/
 
             queryParser = new MultiFieldQueryParser(
                                                      LuceneNetVersion.Version,
-                                                     new[] { KeyLocCity, KeyLocCountry }, //todo define fields
+                                                     new[] { KeyLocCity, KeyLocCountry }, // todo define fields
                                                      analyzer);
 
             var indexWriterConfig = new IndexWriterConfig(LuceneNetVersion.Version, analyzer)
@@ -112,44 +114,44 @@
             RemoveFromIndexByFilename(data.FileInformation.Filename);
 
             var doc = new Document
-                          {
-                              // file information
-                              new StringField(KeyFilename, data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
-                              new StringField(KeyFileType, data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
+            {
+                // file information
+                new StringField(KeyFilename, data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
+                new StringField(KeyFileType, data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
 
-                              // location data
-                              new TextField(KeyLocCity, data.Location?.City ?? string.Empty, Field.Store.YES),
-                              new TextField(KeyLocCountryCode, data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
-                              new TextField(KeyLocCountry, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
-                              new TextField(KeyLocState, data.Location?.State ?? string.Empty, Field.Store.YES),
-                              new TextField(KeyLocSubLocation, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
-                              new StoredField(KeyLocLongitude, data.Location?.Coordinate?.Longitude ?? 0),
-                              new StoredField(KeyLocLatitude, data.Location?.Coordinate?.Latitude ?? 0),
-                          };
+                // location data
+                new TextField(KeyLocCity, data.Location?.City ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocCountryCode, data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocCountry, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocState, data.Location?.State ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocSubLocation, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
+                new StoredField(KeyLocLongitude, data.Location?.Coordinate?.Longitude ?? 0),
+                new StoredField(KeyLocLatitude, data.Location?.Coordinate?.Latitude ?? 0),
+            };
 
             // index coordinate
+            var x = data.Location?.Coordinate?.Longitude;
+            var y = data.Location?.Coordinate?.Latitude;
+
+            if (x != null)
             {
-                var x = data.Location?.Coordinate?.Longitude;
-                var y = data.Location?.Coordinate?.Latitude;
+                var p = spatialContext.MakePoint(x.Value, y.Value);
 
-                if (x != null)
+                foreach (var shape in new[] { p })
                 {
-                    var p = spatialContext.MakePoint(x.Value, y.Value);
-
-                    foreach (var shape in new[] { p })
+                    foreach (var field in spatialStrategy.CreateIndexableFields(shape))
                     {
-                        foreach (var field in spatialStrategy.CreateIndexableFields(shape))
-                        {
-                            doc.Add(field);
-                        }
-
-                        // var pt = (IPoint)shape;
-                        // doc.Add(new StoredField(_strategy.FieldName, pt.X.ToString(CultureInfo.InvariantCulture) + " " + pt.Y.ToString(CultureInfo.InvariantCulture)));
+                        doc.Add(field);
                     }
+
+                    // var pt = (IPoint)shape;
+                    // doc.Add(new StoredField(_strategy.FieldName, pt.X.ToString(CultureInfo.InvariantCulture) + " " + pt.Y.ToString(CultureInfo.InvariantCulture)));
                 }
             }
 
-            var dateString = DateTools.DateToString(data.DateTimeTaken.Value, PrecisionToResolution(data.DateTimeTaken.Precision));
+            var dateString = DateTools.DateToString(
+                data.DateTimeTaken.Value,
+                PrecisionToResolution(data.DateTimeTaken.Precision));
             doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));
 
             foreach (var person in data.Persons ?? new List<string>())

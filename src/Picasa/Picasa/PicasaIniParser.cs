@@ -30,15 +30,14 @@
                 if (facesList.Count == 1)
                 {
                     var facesString = facesList.Single().Value;
-                    // rect64(9ee42f2ee2e49bfa),4759b81b11610b7a;rect64(9ee42f2ee2e49bfa),4759b81b11610b7a
 
+                    // rect64(9ee42f2ee2e49bfa),4759b81b11610b7a;rect64(9ee42f2ee2e49bfa),4759b81b11610b7a
                     // first split on ';'
                     var facesCoordinateKey = facesString.Split(';');
                     foreach (var faceCoordinateKey in facesCoordinateKey)
                     {
                         // like: rect64(9ee42f2ee2e49bfa),4759b81b11610b7a
                         // means: <coordinate>,<person key>
-
                         var singleCoordinateAndKey = faceCoordinateKey.Split(CoordinatePersonSeparator, StringSplitOptions.RemoveEmptyEntries);
 
                         // expect only two items

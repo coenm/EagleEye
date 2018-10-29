@@ -10,15 +10,15 @@
     [DebuggerDisplay("{QueryType.Name,nq}")]
     public sealed class QueryInfo
     {
-        public readonly Type QueryType;
-
-        public readonly Type ResultType;
-
         public QueryInfo(Type queryType)
         {
             QueryType = queryType;
             ResultType = DetermineResultTypes(queryType).Single();
         }
+
+        public Type QueryType { get; }
+
+        public Type ResultType { get; }
 
         public static bool IsQuery(Type type) => DetermineResultTypes(type).Any();
 

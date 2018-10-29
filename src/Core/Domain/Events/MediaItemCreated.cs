@@ -7,8 +7,6 @@
 
     public class MediaItemCreated : IEvent
     {
-        public readonly string FileName;
-
         [DebuggerStepThrough]
         public MediaItemCreated(Guid id, string filename, string[] tags, string[] persons)
         {
@@ -23,6 +21,8 @@
         public string[] Tags { get; }
 
         public string[] Persons { get; }
+
+        public string FileName { get; }
 
         public int Version { get; set; }
 
