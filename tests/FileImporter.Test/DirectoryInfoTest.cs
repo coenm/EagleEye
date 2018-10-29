@@ -3,13 +3,13 @@
     using System.IO;
 
     using EagleEye.TestHelper;
-
     using Xunit;
+    using Xunit.Categories;
 
     public class DirectoryInfoTest
     {
         [Theory]
-        [Xunit.Categories.Exploratory]
+        [Exploratory]
         [InlineData("C:/a/b/c")]
         [InlineData("C:\\a\\b\\c")]
         public void WindowsDirectoryTest(string d)
@@ -22,7 +22,7 @@
         }
 
         [Theory]
-        [Xunit.Categories.Exploratory]
+        [Exploratory]
         [InlineData("/a/b/c")]
         public void LinuxDirectory1Test(string d)
         {
@@ -30,11 +30,11 @@
                 return;
 
             var di = new DirectoryInfo(d);
-            Assert.NotEqual("/a/b/c", di.FullName);
+            Assert.Equal("/a/b/c", di.FullName);
         }
 
         [Theory]
-        [Xunit.Categories.Exploratory]
+        [Exploratory]
         [InlineData("\\a\\b\\c")]
         public void LinuxDirectory2Test(string d)
         {
@@ -42,7 +42,7 @@
                 return;
 
             var di = new DirectoryInfo(d);
-            Assert.Equal("/a/b/c", di.FullName);
+            Assert.NotEqual("/a/b/c", di.FullName);
         }
     }
 }
