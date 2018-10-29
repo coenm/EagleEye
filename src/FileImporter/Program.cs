@@ -16,6 +16,9 @@
     using ShellProgressBar;
     using SimpleInjector;
 
+#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
+#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
+#pragma warning disable SA1005 // Single line comments should begin with single space
     public static class Program
     {
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
@@ -163,14 +166,14 @@
                 // return fi.Identifier.StartsWith(options.PathPrefix);
             };
 
-//            if (string.IsNullOrWhiteSpace(options.PathPrefix))
-//            {
-//                if (Directory.Exists(options.PathPrefix))
-//                    tempSpecialPredicate = fi =>
-//                    {
-//                        //return fi.Identifier.StartsWith(options.PathPrefix);
-//                    };
-//            }
+            //            if (string.IsNullOrWhiteSpace(options.PathPrefix))
+            //            {
+            //                if (Directory.Exists(options.PathPrefix))
+            //                    tempSpecialPredicate = fi =>
+            //                    {
+            //                        //return fi.Identifier.StartsWith(options.PathPrefix);
+            //                    };
+                              //            }
 
             Startup.ConfigureContainer(container, options.IndexFile);
 
@@ -591,4 +594,7 @@
             throw new Exception(s);
         }
     }
+#pragma warning restore SA1005 // Single line comments should begin with single space
+#pragma warning restore SA1515 // Single-line comment should be preceded by blank line
+#pragma warning restore SA1512 // Single-line comments should not be followed by blank line
 }

@@ -62,7 +62,7 @@
             cmd.Result.StandardOutput.Should().Be($"{currentExifToolVersion}\r\n".ConvertToOsString());
         }
 
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
         [Categories.ExifTool]
         public async Task RunExifToolWithCustomStream()
         {

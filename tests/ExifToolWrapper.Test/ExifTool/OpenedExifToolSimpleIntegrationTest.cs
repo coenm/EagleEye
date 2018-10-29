@@ -54,7 +54,7 @@
             await sut.DisposeAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token).ConfigureAwait(false);
         }
 
-        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor)]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
         [Xunit.Categories.IntegrationTest]
         [Categories.ExifTool]
         [Categories.Performance]

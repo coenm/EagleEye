@@ -24,8 +24,19 @@
         [Theory]
         [Xunit.Categories.Exploratory]
         [InlineData("/a/b/c")]
+        public void LinuxDirectory1Test(string d)
+        {
+            if (!TestEnvironment.IsLinux)
+                return;
+
+            var di = new DirectoryInfo(d);
+            Assert.NotEqual("/a/b/c", di.FullName);
+        }
+
+        [Theory]
+        [Xunit.Categories.Exploratory]
         [InlineData("\\a\\b\\c")]
-        public void LinuxDirectoryTest(string d)
+        public void LinuxDirectory2Test(string d)
         {
             if (!TestEnvironment.IsLinux)
                 return;

@@ -6,9 +6,9 @@ namespace EagleEye.Categories
 
     using Xunit.Sdk;
 
-    [TraitDiscoverer(ExifToolDiscoverer.DISCOVERER_TYPE_NAME, TestHelperSettings.ASSEMBLY_NAME)]
+    [TraitDiscoverer(ExifToolDiscoverer.DiscovererTypeName, TestHelperSettings.AssemblyName)]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Xunit")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "XUnit")]
     public class ExifToolAttribute : Attribute, ITraitAttribute
     {
     }

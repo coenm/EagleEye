@@ -30,7 +30,7 @@
             endOfMessageSequenceEnd = this.encoding.GetBytes(suffix);
         }
 
-        public event EventHandler<DataCapturedArgs> Update = delegate { };
+        public event EventHandler<DataCapturedArgs> Update;
 
         public override bool CanRead => false;
 
@@ -98,7 +98,7 @@
 
                 var content = encoding.GetString(cache, lastEndIndex, i - lastEndIndex);
                 var key = encoding.GetString(cache, keyStartIndex, keyLength);
-                Update(this, new DataCapturedArgs(key, content));
+                Update?.Invoke(this, new DataCapturedArgs(key, content));
 
                 i = j;
                 lastEndIndex = j;

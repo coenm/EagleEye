@@ -38,40 +38,42 @@
             act.Should().Throw<Exception>().WithMessage("Not initialized");
         }
 
-//        [Fact]
-//        public async Task ExecuteAsyncWithoutInitializingShouldThrowTestaaaa()
-//        {
-//            // arrange
-//
-//            const int TEST_TIMEOUT = 1000;
-//            var mre = new ManualResetEventSlim(false);
-//            var mre2 = new ManualResetEventSlim(false);
-//            A.CallTo(() => _mediallionShell.WriteLineAsync(A<string>._))
-//             .Invokes(call => _calledArguments.Add((string)call.Arguments[0]))
-//             .ReturnsLazily(async call =>
-//                            {
-//                                var line = (string)call.Arguments[0];
-//                                if (line.StartsWith("-execute"))
-//                                {
-//                                    await Task.Yield();
-//                                    mre2.Set();
-//                                    if (!mre.Wait(TEST_TIMEOUT))
-//                                        throw new TimeoutException();
-//                                }
-//                            });
-//
-//            _sut.Init();
-//
-//            // act
-//            var resultTask = _sut.ExecuteAsync("arg 1").ConfigureAwait(false);
-//
-//            mre2.Wait(TEST_TIMEOUT);
-//            mre.Set();
-//
-//
-//            // assert
-//            act.Should().Throw<Exception>().WithMessage("Not initialized");
-//        }
+/*
+        [Fact]
+        public async Task ExecuteAsyncWithoutInitializingShouldThrowTestaaaa()
+        {
+            // arrange
+
+            const int TEST_TIMEOUT = 1000;
+            var mre = new ManualResetEventSlim(false);
+            var mre2 = new ManualResetEventSlim(false);
+            A.CallTo(() => mediallionShell.WriteLineAsync(A<string>._))
+             .Invokes(call => calledArguments.Add((string)call.Arguments[0]))
+             .ReturnsLazily(async call =>
+                            {
+                                var line = (string)call.Arguments[0];
+                                if (line.StartsWith("-execute"))
+                                {
+                                    await Task.Yield();
+                                    mre2.Set();
+                                    if (!mre.Wait(TEST_TIMEOUT))
+                                        throw new TimeoutException();
+                                }
+                            });
+
+            sut.Init();
+
+            // act
+            var resultTask = _sut.ExecuteAsync("arg 1").ConfigureAwait(false);
+
+            mre2.Wait(TEST_TIMEOUT);
+            mre.Set();
+
+
+            // assert
+            act.Should().Throw<Exception>().WithMessage("Not initialized");
+        }
+*/
 
         private class TestableOpenedExifTool : OpenedExifTool
         {

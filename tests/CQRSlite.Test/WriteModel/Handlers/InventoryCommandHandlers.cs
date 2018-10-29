@@ -9,10 +9,7 @@
     using CQRSlite.Test.WriteModel.Domain;
 
     public class InventoryCommandHandlers : ICancellableCommandHandler<CreateInventoryItem>,
-//                                            ICancellableCommandHandler<DeactivateInventoryItem>,
                                             ICancellableCommandHandler<RemoveItemsFromInventory>
-//                                            ICancellableCommandHandler<CheckInItemsToInventory>,
-//                                            ICancellableCommandHandler<RenameInventoryItem>
     {
         private readonly ISession session;
 
@@ -28,12 +25,12 @@
             await session.Commit(token).ConfigureAwait(false);
         }
 
-//        public async Task Handle(DeactivateInventoryItem message, CancellationToken token)
-//        {
-//            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
-//            item.Deactivate();
-//            await _session.Commit(token);
-//        }
+        /* public async Task Handle(DeactivateInventoryItem message, CancellationToken token)
+         {
+             var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
+             item.Deactivate();
+             await _session.Commit(token);
+         }*/
 
         public async Task Handle(RemoveItemsFromInventory message, CancellationToken token)
         {
@@ -42,18 +39,18 @@
             await session.Commit(token);
         }
 
-//        public async Task Handle(CheckInItemsToInventory message, CancellationToken token)
-//        {
-//            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
-//            item.CheckIn(message.Count);
-//            await _session.Commit(token);
-//        }
-//
-//        public async Task Handle(RenameInventoryItem message, CancellationToken token)
-//        {
-//            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
-//            item.ChangeName(message.NewName);
-//            await _session.Commit(token);
-//        }
+        /*public async Task Handle(CheckInItemsToInventory message, CancellationToken token)
+        {
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
+            item.CheckIn(message.Count);
+            await _session.Commit(token);
+        }*/
+
+        /*public async Task Handle(RenameInventoryItem message, CancellationToken token)
+        {
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
+            item.ChangeName(message.NewName);
+            await _session.Commit(token);
+        }*/
     }
 }

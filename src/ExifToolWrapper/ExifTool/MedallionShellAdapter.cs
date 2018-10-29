@@ -14,7 +14,11 @@
         [NotNull]
         private readonly Command cmd;
 
-        public MedallionShellAdapter(string exifToolPath, IEnumerable<string> defaultArgs, Stream outputStream, Stream errorStream = null)
+        public MedallionShellAdapter(
+            string exifToolPath,
+            IEnumerable<string> defaultArgs,
+            Stream outputStream,
+            Stream errorStream = null)
         {
             cmd = Command.Run(exifToolPath, defaultArgs)
                           .RedirectTo(outputStream);
@@ -23,19 +27,20 @@
                 cmd = cmd.RedirectStandardErrorTo(errorStream);
 
             Task = System.Threading.Tasks.Task.Run(async () =>
-                                                   {
-                                                       try
-                                                       {
-                                                           return await cmd.Task.ConfigureAwait(false);
-                                                       }
-                                                       finally
-                                                       {
-                                                           ProcessExited?.Invoke(this, EventArgs.Empty);
-                                                       }
-                                                   });
+            {
+                try
+                {
+                    return await cmd.Task.ConfigureAwait(false);
+                }
+                finally
+                {
+                    ProcessExited?.Invoke(this, EventArgs.Empty);
+                }
+            });
         }
 
-        public event EventHandler ProcessExited = delegate { };
+        [CanBeNull]
+        public event EventHandler ProcessExited;
 
         public bool Finished => Task.IsCompleted;
 
