@@ -26,10 +26,6 @@
             sut = new SingleImageDataRepository(storage);
         }
 
-        /// <summary>
-        /// Use real dataset with real values. The 'wa' images should be found based on the original.
-        /// </summary>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         [Theory]
         [InlineData("1.jpg", "1wa.jpg")]
         [InlineData("2.jpg", "2wa.jpg")]
