@@ -26,8 +26,7 @@ dotnet_csproj:
 
 install:
 - cmd: git status
-- cmd: git fetch --unshallow
-- cmd: git status
+- cmd: echo APPVEYOR_REPO_BRANCH  %APPVEYOR_REPO_BRANCH%
 # Install and run gitversion. (use param "/l console" to show debug info)
 - cmd: choco install gitversion.portable -pre -y
 # - cmd: C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
