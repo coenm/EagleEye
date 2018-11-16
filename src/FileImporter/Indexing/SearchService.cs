@@ -1,7 +1,8 @@
 ﻿namespace EagleEye.FileImporter.Indexing
 {
-    using System;
     using System.Collections.Generic;
+
+    using Helpers.Guards;
 
     public class SearchService
     {
@@ -9,7 +10,8 @@
 
         public SearchService(IImageDataRepository repository)
         {
-            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            Guard.NotNull(repository, nameof(repository));
+            this.repository = repository;
         }
 
         public ImageData FindById(string identifier)

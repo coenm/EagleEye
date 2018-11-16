@@ -1,9 +1,7 @@
 ﻿namespace SearchEngine.LuceneNet.Core
 {
-    using System;
-
+    using Helpers.Guards;
     using JetBrains.Annotations;
-
     using Lucene.Net.Store;
 
     public class FileSystemLuceneDirectoryFactory : ILuceneDirectoryFactory
@@ -12,8 +10,8 @@
 
         public FileSystemLuceneDirectoryFactory([NotNull] FileSystemLuceneDirectorySettings settings)
         {
-            if (string.IsNullOrWhiteSpace(settings.Directory))
-                throw new ArgumentNullException(nameof(settings));
+            Guard.NotNull(settings, nameof(settings));
+            Guard.NotNullOrWhiteSpace(settings.Directory, nameof(settings.Directory));
 
             path = settings.Directory;
         }

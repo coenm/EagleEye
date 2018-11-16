@@ -1,10 +1,10 @@
 ﻿namespace EagleEye.FileImporter.Infrastructure.JsonSimilarity
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using EagleEye.FileImporter.Similarity;
+    using Helpers.Guards;
 
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
@@ -15,14 +15,14 @@
 
         public SingleFileSimilarityRepository(IPersistentSerializer<List<SimilarityResultStorage>> storage)
         {
-            this.storage = storage ?? throw new ArgumentNullException(nameof(this.storage));
+            Guard.NotNull(storage, nameof(storage));
+            this.storage = storage;
             data = this.storage.Load();
         }
 
         public IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash)
         {
-            if (contentHash == null)
-                throw new ArgumentNullException(nameof(contentHash));
+            Guard.NotNull(contentHash, nameof(contentHash));
 
             return data
                    .Where(index => index.ImageHash.Contains(contentHash))
@@ -31,8 +31,7 @@
 
         public IEnumerable<SimilarityResult> FindSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95, int take = 0, int skip = 0)
         {
-            if (contentHash == null)
-                throw new ArgumentNullException(nameof(contentHash));
+            Guard.NotNull(contentHash, nameof(contentHash));
 
             // ReSharper disable once InconsistentlySynchronizedField
             IEnumerable<SimilarityResultStorage> result = data.Where(index =>
@@ -69,8 +68,7 @@
 
         public void Delete(byte[] contentHash)
         {
-            if (contentHash == null)
-                throw new ArgumentNullException(nameof(contentHash));
+            Guard.NotNull(contentHash, nameof(contentHash));
 
             lock (syncLock)
             {
@@ -88,11 +86,8 @@
 
         public void AddOrUpdate(byte[] contentHash, SimilarityResult similarity)
         {
-            if (contentHash == null)
-                throw new ArgumentNullException(nameof(contentHash));
-
-            if (similarity == null)
-                throw new ArgumentNullException(nameof(similarity));
+            Guard.NotNull(contentHash, nameof(contentHash));
+            Guard.NotNull(similarity, nameof(similarity));
 
             lock (syncLock)
             {

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     using SearchEngine.Interface.Queries;
@@ -19,10 +20,9 @@
             this.index = index;
         }
 
-        public Task<SearchResult> HandleAsync(WildcardSearchQuery query)
+        public Task<SearchResult> HandleAsync([NotNull] WildcardSearchQuery query)
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
+            Guard.NotNull(query, nameof(query));
 
             var searchResult = index.Search(query.Query, out var hitsCount);
 

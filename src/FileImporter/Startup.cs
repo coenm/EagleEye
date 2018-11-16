@@ -19,6 +19,7 @@
     using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
+    using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using SearchEngine.Lucene.Bootstrap;
@@ -28,10 +29,8 @@
     {
         public static void ConfigureContainer([NotNull] Container container, [NotNull] string indexFilename)
         {
-            if (container == null)
-                throw new ArgumentNullException(nameof(container));
-            if (indexFilename == null)
-                throw new ArgumentNullException(nameof(indexFilename));
+            Guard.NotNull(container, nameof(container));
+            Guard.NotNull(indexFilename, nameof(indexFilename));
 
             var similarityFilename = indexFilename + ".similarity.json";
             // todo check arguments.
@@ -73,14 +72,13 @@
 
         public static void VerifyContainer([NotNull] Container container)
         {
-            if (container == null)
-                throw new ArgumentNullException(nameof(container));
-
+            Guard.NotNull(container, nameof(container));
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
-        private static void RegisterSearchEngine(Container container)
+        private static void RegisterSearchEngine([NotNull] Container container)
         {
+            DebugGuard.NotNull(container, nameof(container));
             SearchEngineLuceneBootstrapper.Bootstrap(container);
         }
     }

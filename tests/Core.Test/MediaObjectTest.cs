@@ -8,18 +8,29 @@
 
     public class MediaObjectTest
     {
-        [Theory]
-        [InlineData(null)]
-        [InlineData(" ")]
-        public void CtorWithInvalidFilename_ThrowsExceptionTest(string filename)
+        [Fact]
+        public void CtorWithNullFilename_ThrowsArgumentNullExceptionTest()
         {
             // arrange
+
+            // act
+            Action act = () => _ = new MediaObject(null);
+
+            // assert
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void CtorWithInvalidFilename_ThrowsArgumentExceptionTest()
+        {
+            // arrange
+            var filename = " ";
 
             // act
             Action act = () => _ = new MediaObject(filename);
 
             // assert
-            act.Should().Throw<ArgumentNullException>();
+            act.Should().Throw<ArgumentException>();
         }
     }
 }

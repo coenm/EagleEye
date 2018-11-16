@@ -1,9 +1,9 @@
 ﻿namespace EagleEye.FileImporter.Infrastructure.ContentResolver
 {
-    using System;
     using System.IO;
 
     using EagleEye.FileImporter.Indexing;
+    using Helpers.Guards;
 
     public class RelativeFilesystemContentResolver : IContentResolver
     {
@@ -11,7 +11,8 @@
 
         public RelativeFilesystemContentResolver(string baseDirectory)
         {
-            this.baseDirectory = baseDirectory ?? throw new ArgumentNullException(nameof(baseDirectory));
+            Guard.NotNull(baseDirectory, nameof(baseDirectory));
+            this.baseDirectory = baseDirectory;
         }
 
         public bool Exist(string identifier)

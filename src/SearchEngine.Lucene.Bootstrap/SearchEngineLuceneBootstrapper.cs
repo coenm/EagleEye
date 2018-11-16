@@ -6,6 +6,8 @@
     using System.Linq;
     using System.Reflection;
 
+    using Helpers.Guards;
+    using JetBrains.Annotations;
     using SearchEngine.Interface;
     using SearchEngine.LuceneNet.Core;
     using SearchEngine.LuceneNet.Core.Commands;
@@ -28,10 +30,9 @@
         private static readonly Assembly[] ContractAssemblies = { typeof(ISearchEngineQuery<>).Assembly };
         private static readonly Assembly[] BusinessLayerAssemblies = { typeof(MediaIndex).Assembly }; // Assembly.GetExecutingAssembly()
 
-        public static void Bootstrap(Container container)
+        public static void Bootstrap([NotNull] Container container)
         {
-            if (container == null)
-                throw new ArgumentNullException(nameof(container));
+            Guard.NotNull(container, nameof(container));
 
             container.RegisterSingleton<MediaIndex>();
             RegisterLuceneDirectoryFactory(container, UseMemoryIndex);
@@ -58,8 +59,10 @@
             where QueryInfo.IsQuery(type)
             select new QueryInfo(type);
 
-        private static void RegisterLuceneDirectoryFactory(Container container, bool useInMemoryIndex)
+        private static void RegisterLuceneDirectoryFactory([NotNull] Container container, bool useInMemoryIndex)
         {
+            DebugGuard.NotNull(container, nameof(container));
+
             if (useInMemoryIndex)
             {
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();

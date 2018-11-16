@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.Core.ReadModel.EntityFramework
 {
-    using System;
+    using Helpers.Guards;
 
     using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +10,8 @@
 
         public MediaItemDbContextFactory(DbContextOptions<MediaItemDbContext> options)
         {
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            Guard.NotNull(options, nameof(options));
+            this.options = options;
         }
 
         public MediaItemDbContext CreateMediaItemDbContext() => new MediaItemDbContext(options);

@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     using Lucene.Net.Analysis;
@@ -104,12 +105,9 @@
         [PublicAPI]
         public Task<bool> IndexMediaFileAsync([NotNull] MediaObject data)
         {
-            // todo verification of data object
-            if (data.FileInformation == null)
-                throw new ArgumentNullException(nameof(data.FileInformation));
-
-            if (string.IsNullOrWhiteSpace(data.FileInformation.Filename))
-                throw new ArgumentNullException(nameof(data.FileInformation.Filename));
+            Guard.NotNull(data, nameof(data));
+            Guard.NotNull(data.FileInformation, nameof(data.FileInformation)); // todo verification of data object
+            Guard.NotNullOrWhiteSpace(data.FileInformation.Filename, nameof(data.FileInformation.Filename));
 
             RemoveFromIndexByFilename(data.FileInformation.Filename);
 
@@ -340,7 +338,7 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            Debug.Assert(!string.IsNullOrWhiteSpace(filename), "Filename should be filled in.");
+            DebugGuard.NotNullOrWhiteSpace(filename, nameof(filename));
 
             var term = new Term(KeyFilename, filename);
 

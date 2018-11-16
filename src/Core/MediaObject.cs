@@ -1,8 +1,8 @@
 ﻿namespace EagleEye.Core
 {
-    using System;
     using System.Collections.Generic;
 
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     public class MediaObject
@@ -12,8 +12,7 @@
 
         public MediaObject(string filename)
         {
-            if (string.IsNullOrWhiteSpace(filename))
-                throw new ArgumentNullException(nameof(filename));
+            Guard.NotNullOrWhiteSpace(filename, nameof(filename));
 
             FileInformation = new FileInformation(filename);
             Location = new Location();
@@ -44,6 +43,8 @@
 
         public void AddPersons([NotNull] IEnumerable<string> persons)
         {
+            Guard.NotNull(persons, nameof(persons));
+
             foreach (var person in persons)
                 AddPerson(person);
         }
@@ -63,6 +64,8 @@
 
         public void AddTags([NotNull] IEnumerable<string> tags)
         {
+            Guard.NotNull(tags, nameof(tags));
+
             foreach (var tag in tags)
                 AddTag(tag);
         }

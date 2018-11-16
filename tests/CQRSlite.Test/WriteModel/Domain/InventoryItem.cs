@@ -4,6 +4,8 @@
 
     using CQRSlite.Domain;
     using CQRSlite.Test.Events;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
 
     public class InventoryItem : AggregateRoot
     {
@@ -19,10 +21,9 @@
         {
         }
 
-        public void ChangeName(string newName)
+        public void ChangeName([NotNull] string newName)
         {
-            if (string.IsNullOrEmpty(newName))
-                throw new ArgumentException(nameof(newName));
+            Guard.NotNullOrWhiteSpace(newName, nameof(newName));
             ApplyChange(new InventoryItemRenamed(Id, newName));
         }
 
