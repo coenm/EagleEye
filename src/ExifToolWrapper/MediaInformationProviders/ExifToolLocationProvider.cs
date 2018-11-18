@@ -4,7 +4,7 @@
 
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
-
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     using Newtonsoft.Json.Linq;
@@ -13,8 +13,9 @@
     {
         private readonly IExifTool exiftool;
 
-        public ExifToolLocationProvider(IExifTool exiftool)
+        public ExifToolLocationProvider([NotNull] IExifTool exiftool)
         {
+            Guard.NotNull(exiftool, nameof(exiftool));
             this.exiftool = exiftool;
         }
 

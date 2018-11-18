@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces;
-
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     using Newtonsoft.Json.Linq;
@@ -23,6 +23,8 @@
 
         public ExifToolCacheDecorator([NotNull] IExifTool exiftool, [NotNull] IDateTimeService dateTimeService)
         {
+            Guard.NotNull(exiftool, nameof(exiftool));
+            Guard.NotNull(dateTimeService, nameof(dateTimeService));
             cacheValidity = TimeSpan.FromMinutes(5); // todo make this configurable.
             this.exiftool = exiftool;
             this.dateTimeService = dateTimeService;

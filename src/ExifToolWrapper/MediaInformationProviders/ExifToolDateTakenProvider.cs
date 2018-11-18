@@ -10,7 +10,7 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
     using EagleEye.ExifToolWrapper.MediaInformationProviders.Parsing;
-
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     using Newtonsoft.Json.Linq;
@@ -28,8 +28,9 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
 
         private readonly IExifTool exiftool;
 
-        public ExifToolDateTakenProvider(IExifTool exiftool)
+        public ExifToolDateTakenProvider([NotNull] IExifTool exiftool)
         {
+            Guard.NotNull(exiftool, nameof(exiftool));
             this.exiftool = exiftool;
         }
 

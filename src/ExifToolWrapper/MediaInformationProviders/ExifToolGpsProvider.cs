@@ -6,7 +6,7 @@
 
     using EagleEye.Core;
     using EagleEye.Core.Interfaces;
-
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
     using Newtonsoft.Json.Linq;
@@ -16,8 +16,9 @@
         private readonly IExifTool exiftool;
         private readonly NumberFormatInfo numberFormat;
 
-        public ExifToolGpsProvider(IExifTool exiftool)
+        public ExifToolGpsProvider([NotNull] IExifTool exiftool)
         {
+            Guard.NotNull(exiftool, nameof(exiftool));
             this.exiftool = exiftool;
             numberFormat = new NumberFormatInfo();
         }
