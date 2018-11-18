@@ -28,7 +28,8 @@ install:
 - cmd: git status
 - cmd: echo APPVEYOR_REPO_BRANCH  %APPVEYOR_REPO_BRANCH%
 # Install and run gitversion. (use param "/l console" to show debug info)
-- cmd: choco install gitversion.portable -pre -y
+#- cmd: choco install gitversion.portable -pre -y   4.0.1-beta1-38
+- cmd: choco install gitversion.portable -y
 # - cmd: C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
 - cmd: IF [%APPVEYOR_PULL_REQUEST_NUMBER%]==[] ( 
        C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /b %APPVEYOR_REPO_BRANCH% /c %APPVEYOR_REPO_COMMIT% 
