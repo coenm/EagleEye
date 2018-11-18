@@ -1,9 +1,9 @@
 ﻿namespace EagleEye.LuceneNet.Test.Regular.DateTime
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
+    using Helpers.Guards;
     using Lucene.Net.Analysis;
     using Lucene.Net.Analysis.Standard;
     using Lucene.Net.Documents;
@@ -127,8 +127,7 @@
 
         private IEnumerable<SearchResults<PersonDto>> Search(Query query, Filter filter)
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
+            Guard.NotNull(query, nameof(query));
 
             var results = new List<SearchResults<PersonDto>>();
 

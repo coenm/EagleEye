@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj" />
     <ProjectReference Include="..\SearchEngine.Interface\SearchEngine.Interface.csproj" />
   </ItemGroup>
 

@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Helpers.Guards;
+    using JetBrains.Annotations;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -10,8 +12,10 @@
     /// <remarks>See <see href="http://stackoverflow.com/questions/15226921/how-to-serialize-byte-as-simple-json-array-and-not-as-base64-in-json-net"/>.</remarks>
     public sealed class Z85ByteArrayJsonConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson([NotNull] JsonWriter writer, [CanBeNull] object value, JsonSerializer serializer)
         {
+            Guard.NotNull(writer, nameof(writer));
+
             if (value == null)
             {
                 writer.WriteNull();
@@ -24,8 +28,10 @@
             writer.WriteValue(encodedData);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson([NotNull] JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            Guard.NotNull(reader, nameof(reader));
+
             do
             {
                 switch (reader.TokenType)

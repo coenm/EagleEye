@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Text;
+    using Helpers.Guards;
 
     public class ExifToolStayOpenStream : Stream
     {
@@ -19,8 +20,7 @@
 
         public ExifToolStayOpenStream(Encoding encoding, int bufferSize = OneMb)
         {
-            if (bufferSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(bufferSize));
+            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
 
             this.bufferSize = bufferSize;
             this.encoding = encoding ?? new UTF8Encoding();

@@ -5,22 +5,26 @@
     using System.Threading.Tasks;
 
     using EagleEye.FileImporter.Indexing;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
 
     public class SimilarityService
     {
         private readonly ISimilarityRepository similarityRepository;
         private readonly IImageDataRepository imageRepository;
 
-        public SimilarityService(ISimilarityRepository similarityRepository, IImageDataRepository imageRepository)
+        public SimilarityService([NotNull] ISimilarityRepository similarityRepository, [NotNull] IImageDataRepository imageRepository)
         {
+            Guard.NotNull(similarityRepository, nameof(similarityRepository));
+            Guard.NotNull(imageRepository, nameof(imageRepository));
+
             this.imageRepository = imageRepository;
             this.similarityRepository = similarityRepository;
         }
 
-        public void Update(ImageData image, IProgress<FilenameProgressData> progress)
+        public void Update([NotNull] ImageData image, [CanBeNull] IProgress<FilenameProgressData> progress)
         {
-            if (image == null)
-                throw new ArgumentNullException(nameof(image));
+            Guard.NotNull(image, nameof(image));
 
             if (progress == null)
                 progress = new Progress<FilenameProgressData>(i => { });

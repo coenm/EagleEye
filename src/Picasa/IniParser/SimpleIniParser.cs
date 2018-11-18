@@ -4,6 +4,9 @@
     using System.Collections.Generic;
     using System.IO;
 
+    using Helpers.Guards;
+    using JetBrains.Annotations;
+
     public static class SimpleIniParser
     {
         private static readonly string[] KeyValueSeparator;
@@ -13,17 +16,17 @@
             KeyValueSeparator = new[] { "=" };
         }
 
-        public static List<IniData> Parse(Stream input)
+        public static List<IniData> Parse([NotNull] Stream input)
         {
-            var content = GetContent(input);
+            Guard.NotNull(input, nameof(input));
 
+            var content = GetContent(input);
             return ParseContent(content);
         }
 
-        private static string[] GetContent(Stream stream)
+        private static string[] GetContent([NotNull] Stream stream)
         {
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
+            DebugGuard.NotNull(stream, nameof(stream));
 
             try
             {
@@ -101,8 +104,7 @@
 
         private static (string key, string value) GetKeyValueFromIni(string line)
         {
-            if (string.IsNullOrWhiteSpace(line))
-                throw new ArgumentNullException(nameof(line));
+            Guard.NotNullOrWhiteSpace(line, nameof(line));
 
             line = line.Trim();
 

@@ -1,9 +1,10 @@
 ﻿namespace EagleEye.FileImporter.Indexing
 {
-    using System;
     using System.Collections.Generic;
 
     using EagleEye.FileImporter.Imaging;
+
+    using Helpers.Guards;
 
     public class CalculateIndexService
     {
@@ -11,13 +12,13 @@
 
         public CalculateIndexService(IContentResolver contentResolver)
         {
-            this.contentResolver = contentResolver ?? throw new ArgumentNullException(nameof(contentResolver));
+            Guard.NotNull(contentResolver, nameof(contentResolver));
+            this.contentResolver = contentResolver;
         }
 
         public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
         {
-            if (fileIdentifiers == null)
-                throw new ArgumentNullException(nameof(fileIdentifiers));
+            Guard.NotNull(fileIdentifiers, nameof(fileIdentifiers));
 
             var result = new ImageData[fileIdentifiers.Count];
 
