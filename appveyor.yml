@@ -31,9 +31,9 @@ install:
 - cmd: choco install gitversion.portable -pre -y
 # - cmd: C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
 - cmd: IF [%APPVEYOR_PULL_REQUEST_NUMBER%]==[] ( 
-       C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /l console /output buildserver /b %APPVEYOR_REPO_BRANCH% /c %APPVEYOR_REPO_COMMIT% 
+       C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /b %APPVEYOR_REPO_BRANCH% /c %APPVEYOR_REPO_COMMIT% 
     ) ELSE (
-       C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /l console /output buildserver /c %APPVEYOR_REPO_COMMIT%
+       C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
     )
 - sh: chmod +x .scripts/InstallGitVersion.sh && .scripts/InstallGitVersion.sh
 
