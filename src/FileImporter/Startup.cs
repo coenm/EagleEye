@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Core.ReadModel.EntityFramework.SqlLite;
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
@@ -62,7 +61,7 @@
 
             // entity framework stuff??! transient? singleton? ..
             // wip
-            container.Register<IMediaItemRepository, EntityFrameworkMediaItemRepository>();
+            container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
 
             container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
@@ -73,8 +72,8 @@
 
 //            const string connectionString = "InMemory EagleEye";
             const string connectionString = "Filename=./EagleEye.db";
-            container.Register<DbContextOptions<MediaItemDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
-            container.Register<IMediaItemDbContextFactory, MediaItemDbContextFactory>();
+            container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
+            container.Register<IEagleEyeDbContextFactory, EagleEyeDbContextFactory>();
 //            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
 //                                                                                               .UseInMemoryDatabase("Dummy")
 //                                                                                               .Options));

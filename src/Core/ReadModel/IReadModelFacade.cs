@@ -2,42 +2,40 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
-
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
     using JetBrains.Annotations;
 
     using Newtonsoft.Json;
 
     public interface IReadModelFacade
     {
-        Task<IEnumerable<MediaItemDto>> GetMediaItems();
+        Task<IEnumerable<Photo>> GetMediaItems();
 
-        Task<MediaItemDto> GetMediaItem(Guid id);
+        Task<Photo> GetMediaItem(Guid id);
     }
 
     public class ReadModel : IReadModelFacade
     {
-        private readonly IMediaItemRepository repository;
+        private readonly IEagleEyeRepository repository;
 
-        public ReadModel([NotNull] IMediaItemRepository repository)
+        public ReadModel([NotNull] IEagleEyeRepository repository)
         {
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<MediaItemDto>> GetMediaItems()
+        public async Task<IEnumerable<Photo>> GetMediaItems()
         {
             var result = await repository.GetAllAsync().ConfigureAwait(false);
-            return result.Select(item => JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto));
+            return result;
         }
 
-        public async Task<MediaItemDto> GetMediaItem(Guid id)
+        public async Task<Photo> GetMediaItem(Guid id)
         {
             var result = await repository.GetByIdAsync(id).ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<MediaItemDto>(result.SerializedMediaItemDto);
+            return result;
         }
     }
 }

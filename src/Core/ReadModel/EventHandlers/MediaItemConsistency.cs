@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Core.ReadModel.EventHandlers
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -8,9 +9,7 @@
 
     using EagleEye.Core.Domain.Events;
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
-
-    using Newtonsoft.Json;
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
 
     public class MediaItemConsistency :
         ICancellableEventHandler<MediaItemCreated>,
@@ -21,32 +20,41 @@
         ICancellableEventHandler<LocationClearedFromMediaItem>,
         ICancellableEventHandler<LocationSetToMediaItem>
     {
-        private readonly IMediaItemRepository repository;
+        private readonly IEagleEyeRepository repository;
 
-        public MediaItemConsistency(IMediaItemRepository repository)
+        public MediaItemConsistency(IEagleEyeRepository repository)
         {
             this.repository = repository;
         }
 
         public async Task Handle(MediaItemCreated message, CancellationToken token = default(CancellationToken))
         {
-            var mediaItemDto = new MediaItemDto();
+            var mediaItemDto = new Photo
+            {
+                Id = message.Id,
+                Filename = message.FileName,
+                Version = message.Version,
+                FileSha256 = new byte[0],
+                EventTimestamp = message.TimeStamp,
+            };
+
             if (message.Tags != null)
-                mediaItemDto.Tags = new List<string>(message.Tags);
+                mediaItemDto.Tags = new List<Tag>(); // todo message.Tags
 
             if (message.Persons != null)
-                mediaItemDto.Persons = new List<string>(message.Persons);
+                mediaItemDto.People = new List<Person>(); // todo (message.Persons);
 
-            var item = new MediaItemDb
-                           {
-                               Filename = message.FileName,
-                               Id = message.Id,
-                               Version = message.Version,
-                               TimeStampUtc = message.TimeStamp,
-                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto),
-                           };
 
-            await repository.SaveAsync(item).ConfigureAwait(false);
+//            var item = new MediaItemDb
+//                           {
+//                               Filename = message.FileName,
+//                               Id = message.Id,
+//                               Version = message.Version,
+//                               TimeStampUtc = message.TimeStamp,
+//                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto),
+//                           };
+
+            await repository.SaveAsync(mediaItemDto).ConfigureAwait(false);
         }
 
         public async Task Handle(TagsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
@@ -58,18 +66,18 @@
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Tags == null)
-                mediaItemDto.Tags = new List<string>();
-
-            mediaItemDto.Tags.AddRange(message.Tags);
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
-
-            // update tags
+            // todo update tags..
+            item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
+
+//            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+//
+//            if (mediaItemDto.Tags == null)
+//                mediaItemDto.Tags = new List<string>();
+//
+//            mediaItemDto.Tags.AddRange(message.Tags);
+//
+//            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }
@@ -83,18 +91,20 @@
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+            //todo add persons.
 
-            if (mediaItemDto.Persons == null)
-                mediaItemDto.Persons = new List<string>();
-
-            mediaItemDto.Persons.AddRange(message.Persons);
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+//            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+//
+//            if (mediaItemDto.Persons == null)
+//                mediaItemDto.Persons = new List<string>();
+//
+//            mediaItemDto.Persons.AddRange(message.Persons);
+//
+//            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
 
             // update tags
+            item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }
@@ -108,21 +118,9 @@
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Tags == null)
-                return; // throw?
-
-            foreach (var tag in message.Tags)
-            {
-                mediaItemDto.Tags.Remove(tag);
-            }
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
-
-            // update tags
+            item.Tags?.RemoveAll(x => message.Tags.Contains(x.Value));
+            item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }
@@ -136,21 +134,9 @@
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Tags == null)
-                return; // throw?
-
-            foreach (var person in message.Persons)
-            {
-                mediaItemDto.Persons.Remove(person);
-            }
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
-
-            // update tags
+            item.People?.RemoveAll(x => message.Persons.Contains(x.Name));
+            item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }
@@ -164,18 +150,11 @@
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Location == null)
-                return; // throw?
-
-            mediaItemDto.Location = null;
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+            item.Location = null; // not sure if this is the way to do this.
 
             // update tags
+            item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }
@@ -189,24 +168,20 @@
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            mediaItemDto.Location = new LocationDto
-                                        {
-                                            CountryName = message.Location.CountryName,
-                                            CountryCode = message.Location.CountryCode,
-                                            City = message.Location.City,
-                                            State = message.Location.State,
-                                            SubLocation = message.Location.SubLocation,
-                                            Latitude = message.Location.Latitude,
-                                            Longitude = message.Location.Longitude,
-                                        };
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+            item.Location = new Location
+            {
+                CountryName = message.Location.CountryName,
+                CountryCode = message.Location.CountryCode,
+                City = message.Location.City,
+                State = message.Location.State,
+                SubLocation = message.Location.SubLocation,
+                Latitude = message.Location.Latitude,
+                Longitude = message.Location.Longitude,
+            };
 
             // update tags
+            item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }

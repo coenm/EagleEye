@@ -5,51 +5,50 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
-
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
     using Microsoft.EntityFrameworkCore;
 
-    public class EntityFrameworkMediaItemRepository : IMediaItemRepository
+    public class EntityFrameworkEagleEyeRepository : IEagleEyeRepository
     {
-        private readonly IMediaItemDbContextFactory contextFactory;
+        private readonly IEagleEyeDbContextFactory contextFactory;
 
-        public EntityFrameworkMediaItemRepository(IMediaItemDbContextFactory contextFactory)
+        public EntityFrameworkEagleEyeRepository(IEagleEyeDbContextFactory contextFactory)
         {
             this.contextFactory = contextFactory;
         }
 
-        public Task<MediaItemDb> GetByIdAsync(Guid id)
+        public Task<Photo> GetByIdAsync(Guid id)
         {
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                var result = db.MediaItems.FirstOrDefault(x => x.Id.Equals(id));
+                var result = db.Photos.FirstOrDefault(x => x.Id.Equals(id));
                 return Task.FromResult(result);
             }
         }
 
-        public Task<MediaItemDb> GetByFilenameAsync(Guid id)
+        public Task<Photo> GetByFilenameAsync(Guid id)
         {
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                var result = db.MediaItems.FirstOrDefault(x => x.Id.Equals(id));
+                var result = db.Photos.FirstOrDefault(x => x.Id.Equals(id));
                 return Task.FromResult(result);
             }
         }
 
-        public Task<IEnumerable<MediaItemDb>> GetAllAsync()
+        public Task<IEnumerable<Photo>> GetAllAsync()
         {
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                var result = db.MediaItems.AsEnumerable(); // not sure
+                var result = db.Photos.AsEnumerable(); // not sure
                 return Task.FromResult(result);
             }
         }
 
-        public async Task<int> UpdateAsync(MediaItemDb item)
+        public async Task<int> UpdateAsync(Photo item)
         {
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                db.MediaItems.Update(item);
+                db.Photos.Update(item);
                 return await db.SaveChangesAsync().ConfigureAwait(false);
             }
         }
@@ -61,7 +60,7 @@
 
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                var items = await db.MediaItems
+                var items = await db.Photos
                                     .Where(x => itemIds.Contains(x.Id))
                                     .ToListAsync()
                                     .ConfigureAwait(false);
@@ -70,17 +69,17 @@
                     return 0;
 
                 foreach (var item in items)
-                    db.MediaItems.Remove(item);
+                    db.Photos.Remove(item);
 
                 return await db.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task<int> SaveAsync(MediaItemDb item)
+        public async Task<int> SaveAsync(Photo item)
         {
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                await db.MediaItems.AddAsync(item).ConfigureAwait(false);
+                await db.Photos.AddAsync(item).ConfigureAwait(false);
                 return await db.SaveChangesAsync().ConfigureAwait(false);
             }
         }

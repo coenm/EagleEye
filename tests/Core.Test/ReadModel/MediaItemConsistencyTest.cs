@@ -1,30 +1,25 @@
 ﻿namespace EagleEye.Core.Test.ReadModel
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Domain.Events;
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
     using EagleEye.Core.ReadModel.EventHandlers;
-
     using FluentAssertions;
-
-    using Newtonsoft.Json;
-
     using Xunit;
 
     public class MediaItemConsistencyTest
     {
         private readonly MediaItemConsistency sut;
-        private readonly IMediaItemRepository mediaItemRepository;
+        private readonly IEagleEyeRepository eagleEyeRepository;
 
         public MediaItemConsistencyTest()
         {
-            IMediaItemDbContextFactory mediaItemDbContextFactory = new ExploringEntityFrameworkTests.InMemoryMediaItemDbContextFactory();
-            mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
-            sut = new MediaItemConsistency(mediaItemRepository);
+            IEagleEyeDbContextFactory eagleEyeDbContextFactory = new ExploringEntityFrameworkTests.InMemoryEagleEyeDbContextFactory();
+            eagleEyeRepository = new EntityFrameworkEagleEyeRepository(eagleEyeDbContextFactory);
+            sut = new MediaItemConsistency(eagleEyeRepository);
         }
 
         [Fact]
@@ -43,18 +38,14 @@
             }).ConfigureAwait(false);
 
             // assert
-            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
-            result.Should().BeEquivalentTo(new MediaItemDb
+            var result = await eagleEyeRepository.GetByIdAsync(guid).ConfigureAwait(false);
+            result.Should().BeEquivalentTo(new Photo
             {
                 Id = guid,
                 Version = 0,
                 Filename = "FAKE NAME1",
-                TimeStampUtc = initTimestamp,
-                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                {
-                    Tags = new List<string>(initialTags),
-                    Persons = new List<string>(initialPersons),
-                }),
+                EventTimestamp = initTimestamp,
+                FileSha256 = new byte[0],
             });
         }
 
@@ -87,23 +78,24 @@
             });
 
             // assert
-            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
-            result.Should().BeEquivalentTo(new MediaItemDb
+            var result = await eagleEyeRepository.GetByIdAsync(guid).ConfigureAwait(false);
+            result.Should().BeEquivalentTo(new Photo
             {
                 Id = guid,
                 Version = 3,
                 Filename = "FAKE NAME1",
-                TimeStampUtc = initTimestamp.AddHours(3),
-                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                {
-                    Tags = new List<string>(initialTags),
-                    Persons = new List<string>
-                    {
-                        "bob",
-                        "Calvin",
-                        "Eve",
-                    },
-                }),
+                EventTimestamp = initTimestamp.AddHours(3),
+                FileSha256 = new byte[0],
+//                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
+//                {
+//                    Tags = new List<string>(initialTags),
+//                    Persons = new List<string>
+//                    {
+//                        "bob",
+//                        "Calvin",
+//                        "Eve",
+//                    },
+//                }),
             });
         }
     }

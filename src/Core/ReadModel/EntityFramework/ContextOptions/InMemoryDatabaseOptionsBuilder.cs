@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.ReadModel.EntityFramework.InMemory
+﻿namespace EagleEye.Core.ReadModel.EntityFramework.ContextOptions
 {
     using System;
 
@@ -28,12 +28,12 @@
             return true;
         }
 
-        public DbContextOptionsBuilder<MediaItemDbContext> Create([CanBeNull] string connectionString)
+        public DbContextOptionsBuilder<EagleEyeDbContext> Create([CanBeNull] string connectionString)
         {
             // By contract, the param can be null, however, by design, this strategy only works when it is not null (see CanHandle)
             Guard.NotNull(connectionString, nameof(connectionString));
 
-            return new DbContextOptionsBuilder<MediaItemDbContext>()
+            return new DbContextOptionsBuilder<EagleEyeDbContext>()
                 .UseInMemoryDatabase(GetNameFromConnectionString(connectionString));
         }
 

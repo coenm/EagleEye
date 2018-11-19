@@ -9,6 +9,6 @@
 
         bool CanHandle([CanBeNull] string connectionString);
 
-        DbContextOptionsBuilder<MediaItemDbContext> Create([CanBeNull] string connectionString);
+        DbContextOptionsBuilder<EagleEyeDbContext> Create([CanBeNull] string connectionString);
     }
 }

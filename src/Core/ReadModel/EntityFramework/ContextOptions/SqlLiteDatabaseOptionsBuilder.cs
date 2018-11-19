@@ -1,7 +1,6 @@
-﻿namespace EagleEye.Core.ReadModel.EntityFramework.SqlLite
+﻿namespace EagleEye.Core.ReadModel.EntityFramework.ContextOptions
 {
     using System;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
@@ -24,12 +23,12 @@
             return true;
         }
 
-        public DbContextOptionsBuilder<MediaItemDbContext> Create([CanBeNull] string connectionString)
+        public DbContextOptionsBuilder<EagleEyeDbContext> Create([CanBeNull] string connectionString)
         {
             // By contract, the param can be null, however, by design, this strategy only works when it is not null (see CanHandle)
             Guard.NotNull(connectionString, nameof(connectionString));
 
-            return new DbContextOptionsBuilder<MediaItemDbContext>()
+            return new DbContextOptionsBuilder<EagleEyeDbContext>()
                 .UseSqlite(connectionString);
         }
     }

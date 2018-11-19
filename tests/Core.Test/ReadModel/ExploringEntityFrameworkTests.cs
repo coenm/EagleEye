@@ -6,12 +6,9 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
-
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
     using FluentAssertions;
-
     using Microsoft.EntityFrameworkCore;
-
     using Xunit;
 
     public class ExploringEntityFrameworkTests
@@ -21,13 +18,13 @@
         public async Task SelectUsingPredicateFromEmptyDatabaseShouldReturnNothingTest()
         {
             // arrange
-            var sut = new InMemoryMediaItemDbContextFactory();
+            var sut = new InMemoryEagleEyeDbContextFactory();
 
             using (var db = sut.CreateMediaItemDbContext())
             {
                 // act
-                var result = await db.MediaItems
-                                     .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
+                var result = await db.Photos
+                                     .Where(item => item.EventTimestamp <= DateTimeOffset.UtcNow)
                                      .ToListAsync()
                                      .ConfigureAwait(false);
 
@@ -45,16 +42,16 @@
             var item2 = Create(2, DateTimeOffset.UtcNow); // should match predicate
             var item3 = Create(3, DateTimeOffset.UtcNow.AddDays(1)); // should NOT match predicate
 
-            var sut = new InMemoryMediaItemDbContextFactory();
+            var sut = new InMemoryEagleEyeDbContextFactory();
 
             using (var db = sut.CreateMediaItemDbContext())
             {
-                await db.MediaItems.AddRangeAsync(item1, item2, item3).ConfigureAwait(false);
+                await db.Photos.AddRangeAsync(item1, item2, item3).ConfigureAwait(false);
                 await db.SaveChangesAsync().ConfigureAwait(false);
 
                 // act
-                var result = await db.MediaItems
-                                     .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
+                var result = await db.Photos
+                                     .Where(item => item.EventTimestamp <= DateTimeOffset.UtcNow)
                                      .ToListAsync()
                                      .ConfigureAwait(false);
 
@@ -63,20 +60,20 @@
             }
         }
 
-        private static MediaItemDb Create(int version, DateTimeOffset timestamp)
+        private static Photo Create(int version, DateTimeOffset timestamp)
         {
-            return new MediaItemDb
+            return new Photo
             {
                 Id = Guid.NewGuid(),
                 Version = version,
-                TimeStampUtc = timestamp,
+                EventTimestamp = timestamp,
             };
         }
 
-        internal class InMemoryMediaItemDbContextFactory : MediaItemDbContextFactory
+        internal class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory
         {
-            public InMemoryMediaItemDbContextFactory([CallerMemberName] string name = "dummy")
-                : base(new DbContextOptionsBuilder<MediaItemDbContext>()
+            public InMemoryEagleEyeDbContextFactory([CallerMemberName] string name = "dummy")
+                : base(new DbContextOptionsBuilder<EagleEyeDbContext>()
                        .UseInMemoryDatabase(name)
                        .Options)
             {

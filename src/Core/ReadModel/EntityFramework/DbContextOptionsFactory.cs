@@ -20,7 +20,7 @@
         }
 
         [CanBeNull]
-        public DbContextOptions<MediaItemDbContext> Create([CanBeNull] string connectionString)
+        public DbContextOptions<EagleEyeDbContext> Create([CanBeNull] string connectionString)
         {
             var applicable = strategies
                 .OrderBy(x => x.Priority)
@@ -32,7 +32,7 @@
 
             if (applicable.Count > 1)
             {
-                Logger.Info(() => $"{applicable.Count} handlers found to create a {nameof(DbContextOptionsBuilder<MediaItemDbContext>)}. Selecting the first one.");
+                Logger.Info(() => $"{applicable.Count} handlers found to create a {nameof(DbContextOptionsBuilder<EagleEyeDbContext>)}. Selecting the first one.");
             }
 
             return applicable
