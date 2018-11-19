@@ -134,7 +134,7 @@
 
             // check versions?
 
-            item.People?.RemoveAll(x => message.Persons.Contains(x.Name));
+            item.People?.RemoveAll(x => message.Persons.Contains(x.Value));
             item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
 

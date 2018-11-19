@@ -15,12 +15,5 @@
         public DbSet<Photo> Photos { get; set; }
 
         public Task EnsureCreated() => Database.EnsureCreatedAsync();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Person>()
-                .HasIndex(p => new { p.Name })
-                .IsUnique();
-        }
     }
 }

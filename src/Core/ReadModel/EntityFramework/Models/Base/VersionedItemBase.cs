@@ -8,8 +8,8 @@
         [Required]
         public int Version { get; set; }
 
-        [Required]
-        [Timestamp]
-        public byte[] Timestamp { get; set; }
+//        [Required]
+//        [Timestamp]
+//        public byte[] Timestamp { get; set; }
     }
 }

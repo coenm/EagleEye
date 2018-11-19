@@ -9,9 +9,9 @@
     /// </summary>
     public class Person : ValueObjectItemBase
     {
-        // Index and is unique set using fluent API.
         [Required]
+        [MinLength(2)]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }
