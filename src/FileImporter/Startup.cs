@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using Core.ReadModel.EntityFramework.SqlLite;
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
@@ -63,9 +63,21 @@
             // entity framework stuff??! transient? singleton? ..
             // wip
             container.Register<IMediaItemRepository, EntityFrameworkMediaItemRepository>();
-            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
-                                                                                               .UseInMemoryDatabase("Dummy")
-                                                                                               .Options));
+
+            container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
+            container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
+            // todo
+//            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
+//                                                                                               .UseInMemoryDatabase("Dummy")
+//                                                                                               .Options));
+
+//            const string connectionString = "InMemory EagleEye";
+            const string connectionString = "Filename=./EagleEye.db";
+            container.Register<DbContextOptions<MediaItemDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
+            container.Register<IMediaItemDbContextFactory, MediaItemDbContextFactory>();
+//            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
+//                                                                                               .UseInMemoryDatabase("Dummy")
+//                                                                                               .Options));
 
             RegisterSearchEngine(container);
         }
