@@ -7,7 +7,7 @@
     /// <summary>
     /// Value object.
     /// </summary>
-    public class Person : ValueObjectItemBase
+    internal class Person : ValueObjectItemBase
     {
         [Required]
         [MinLength(2)]

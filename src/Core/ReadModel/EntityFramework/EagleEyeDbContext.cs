@@ -5,7 +5,7 @@
     using EagleEye.Core.ReadModel.EntityFramework.Models;
     using Microsoft.EntityFrameworkCore;
 
-    public class EagleEyeDbContext : DbContext
+    internal class EagleEyeDbContext : DbContext
     {
         public EagleEyeDbContext(DbContextOptions options)
             : base(options)

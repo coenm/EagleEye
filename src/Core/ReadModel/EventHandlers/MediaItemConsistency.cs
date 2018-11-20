@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.Core.ReadModel.EventHandlers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -10,8 +9,11 @@
     using EagleEye.Core.Domain.Events;
     using EagleEye.Core.ReadModel.EntityFramework;
     using EagleEye.Core.ReadModel.EntityFramework.Models;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
+    using NLog;
 
-    public class MediaItemConsistency :
+    internal class MediaItemConsistency :
         ICancellableEventHandler<MediaItemCreated>,
         ICancellableEventHandler<TagsAddedToMediaItem>,
         ICancellableEventHandler<TagsRemovedFromMediaItem>,
@@ -20,15 +22,19 @@
         ICancellableEventHandler<LocationClearedFromMediaItem>,
         ICancellableEventHandler<LocationSetToMediaItem>
     {
-        private readonly IEagleEyeRepository repository;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        [NotNull] private readonly IEagleEyeRepository repository;
 
         public MediaItemConsistency(IEagleEyeRepository repository)
         {
+            Guard.NotNull(repository, nameof(repository));
             this.repository = repository;
         }
 
-        public async Task Handle(MediaItemCreated message, CancellationToken token = default(CancellationToken))
+        public async Task Handle([NotNull] MediaItemCreated message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+
             var mediaItemDto = new Photo
             {
                 Id = message.Id,
@@ -39,70 +45,70 @@
             };
 
             if (message.Tags != null)
-                mediaItemDto.Tags = new List<Tag>(); // todo message.Tags
+                mediaItemDto.Tags = message.Tags.Select(x => new Tag { Value = x }).ToList();
 
             if (message.Persons != null)
-                mediaItemDto.People = new List<Person>(); // todo (message.Persons);
-
-
-//            var item = new MediaItemDb
-//                           {
-//                               Filename = message.FileName,
-//                               Id = message.Id,
-//                               Version = message.Version,
-//                               TimeStampUtc = message.TimeStamp,
-//                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto),
-//                           };
+                mediaItemDto.People = message.Persons.Select(x => new Person { Value = x }).ToList();
 
             await repository.SaveAsync(mediaItemDto).ConfigureAwait(false);
         }
 
         public async Task Handle(TagsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+
             var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
-                return; // throw??
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
-            // check versions?
+            // todo check versions?
 
-            // todo update tags..
+            if (message.Tags != null && message.Tags.Any())
+            {
+                var origValues = item.Tags.Select(x => x.Value).ToList();
+
+                var newItems = message.Tags
+                    .Where(x => origValues.All(y => x != y))
+                    .Select(x => new Tag { Value = x });
+
+                item.Tags.AddRange(newItems);
+            }
+
             item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
-
-//            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-//
-//            if (mediaItemDto.Tags == null)
-//                mediaItemDto.Tags = new List<string>();
-//
-//            mediaItemDto.Tags.AddRange(message.Tags);
-//
-//            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
 
             await repository.UpdateAsync(item).ConfigureAwait(false);
         }
 
         public async Task Handle(PersonsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+
             var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
-                return; // throw??
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
-            // check versions?
+            // todo check versions?
 
-            //todo add persons.
+            if (message.Persons != null && message.Persons.Any())
+            {
+                var origValues = item.People.Select(x => x.Value).ToList();
 
-//            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-//
-//            if (mediaItemDto.Persons == null)
-//                mediaItemDto.Persons = new List<string>();
-//
-//            mediaItemDto.Persons.AddRange(message.Persons);
-//
-//            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+                var newItems = message.Persons
+                    .Where(x => origValues.All(y => x != y))
+                    .Select(x => new Person { Value = x });
 
-            // update tags
+                item.People.AddRange(newItems);
+            }
+
             item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
 
@@ -111,10 +117,15 @@
 
         public async Task Handle(TagsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+
             var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
-                return; // throw??
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
             // check versions?
 
@@ -127,10 +138,15 @@
 
         public async Task Handle(PersonsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+
             var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
-                return; // throw??
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
             // check versions?
 
@@ -143,16 +159,19 @@
 
         public async Task Handle(LocationClearedFromMediaItem message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+
             var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
-                return; // throw??
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
             // check versions?
 
             item.Location = null; // not sure if this is the way to do this.
-
-            // update tags
             item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
 
@@ -161,10 +180,16 @@
 
         public async Task Handle(LocationSetToMediaItem message, CancellationToken token = default(CancellationToken))
         {
+            DebugGuard.NotNull(message, nameof(message));
+            DebugGuard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
+
             var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
             if (item == null)
-                return; // throw??
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
             // check versions?
 
@@ -179,7 +204,6 @@
                 Longitude = message.Location.Longitude,
             };
 
-            // update tags
             item.EventTimestamp = message.TimeStamp;
             item.Version = message.Version;
 

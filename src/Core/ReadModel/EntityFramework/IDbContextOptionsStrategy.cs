@@ -3,7 +3,7 @@
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
-    public interface IDbContextOptionsStrategy
+    internal interface IDbContextOptionsStrategy
     {
         int Priority { get; }
 

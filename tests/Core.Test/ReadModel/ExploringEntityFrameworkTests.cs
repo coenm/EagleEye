@@ -18,7 +18,7 @@
         public async Task SelectUsingPredicateFromEmptyDatabaseShouldReturnNothingTest()
         {
             // arrange
-            using (var ctx = await CreateMediaItemDbContext())
+            using (var ctx = CreateMediaItemDbContext())
             {
                 // act
                 var result = await ctx.Photos
@@ -40,7 +40,7 @@
             var item2 = Create(2, "abc2", DateTimeOffset.UtcNow); // should match predicate
             var item3 = Create(3, "abc3", DateTimeOffset.UtcNow.AddDays(1)); // should NOT match predicate
 
-            using (var ctx = await CreateMediaItemDbContext())
+            using (var ctx = CreateMediaItemDbContext())
             {
                 await ctx.Photos.AddRangeAsync(item1, item2, item3).ConfigureAwait(false);
                 await ctx.SaveChangesAsync().ConfigureAwait(false);
@@ -75,7 +75,7 @@
                 new Tag { Value = "Winter" },
             };
 
-            using (var ctx = await CreateMediaItemDbContext())
+            using (var ctx = CreateMediaItemDbContext())
             {
                 await ctx.Photos.AddRangeAsync(item1, item2).ConfigureAwait(false);
                 await ctx.SaveChangesAsync().ConfigureAwait(false);
@@ -90,6 +90,12 @@
             }
         }
 
+        internal static EagleEyeDbContext CreateMediaItemDbContext()
+        {
+            var sut = new InMemoryEagleEyeDbContextFactory();
+            return sut.CreateMediaItemDbContext();
+        }
+
         private static Photo Create(int version, string filename, DateTimeOffset timestamp)
         {
             return new Photo
@@ -102,27 +108,34 @@
             };
         }
 
-        private async Task<EagleEyeDbContext> CreateMediaItemDbContext()
+        internal class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory, IEagleEyeDbContextFactory
         {
-            var sut = new InMemoryEagleEyeDbContextFactory();
-            var db = sut.CreateMediaItemDbContext();
+            private readonly object syncLock = new object();
+            private EagleEyeDbContext ctx = null;
 
-            // todo, move this
-            // because it is Sql Lite InMemory.
-            await db.Database.OpenConnectionAsync();
-            await db.Database.EnsureCreatedAsync();
 
-            return db;
-        }
-
-        internal class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory
-        {
             public InMemoryEagleEyeDbContextFactory()
                 : base(new DbContextOptionsBuilder<EagleEyeDbContext>()
                     // .UseInMemoryDatabase(Guid.NewGuid().ToString())
                     .UseSqlite("Data Source=:memory:;")
                     .Options)
             {
+            }
+
+            public new EagleEyeDbContext CreateMediaItemDbContext()
+            {
+                lock (syncLock)
+                {
+                    if (ctx != null)
+                        return ctx;
+
+                    ctx = base.CreateMediaItemDbContext();
+
+                    ctx.Database.OpenConnection();
+                    ctx.Database.EnsureCreated();
+
+                    return ctx;
+                }
             }
         }
     }

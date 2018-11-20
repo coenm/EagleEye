@@ -4,7 +4,7 @@
 
     using EagleEye.Core.ReadModel.EntityFramework.Models.Base;
 
-    public class Location : ValueObjectItemBase
+    internal class Location : ValueObjectItemBase
     {
         [MaxLength(5)]
         public string CountryCode { get; set; }

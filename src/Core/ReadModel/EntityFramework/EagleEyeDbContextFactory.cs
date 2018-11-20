@@ -4,7 +4,7 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    public class EagleEyeDbContextFactory : IEagleEyeDbContextFactory
+    internal class EagleEyeDbContextFactory : IEagleEyeDbContextFactory
     {
         private readonly DbContextOptions<EagleEyeDbContext> options;
 

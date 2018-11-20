@@ -6,7 +6,7 @@
 
     using EagleEye.Core.ReadModel.EntityFramework.Models;
 
-    public interface IEagleEyeRepository /*: IReadOnlyRepository<MediaItemDb>*/
+    internal interface IEagleEyeRepository /*: IReadOnlyRepository<MediaItemDb>*/
     {
         Task<Photo> GetByIdAsync(Guid id);
 

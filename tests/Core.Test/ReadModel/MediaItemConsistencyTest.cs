@@ -17,8 +17,8 @@
 
         public MediaItemConsistencyTest()
         {
-            IEagleEyeDbContextFactory eagleEyeDbContextFactory = new ExploringEntityFrameworkTests.InMemoryEagleEyeDbContextFactory();
-            eagleEyeRepository = new EntityFrameworkEagleEyeRepository(eagleEyeDbContextFactory);
+            var dbContextFactory = new ExploringEntityFrameworkTests.InMemoryEagleEyeDbContextFactory();
+            eagleEyeRepository = new EntityFrameworkEagleEyeRepository(dbContextFactory);
             sut = new MediaItemConsistency(eagleEyeRepository);
         }
 

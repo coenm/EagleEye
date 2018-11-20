@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.Core.ReadModel.EntityFramework
 {
-    public interface IEagleEyeDbContextFactory
+    internal interface IEagleEyeDbContextFactory
     {
         EagleEyeDbContext CreateMediaItemDbContext();
     }

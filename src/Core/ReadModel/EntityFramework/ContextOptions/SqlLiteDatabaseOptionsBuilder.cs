@@ -6,7 +6,7 @@
     using Microsoft.EntityFrameworkCore;
 
     [UsedImplicitly]
-    public class SqlLiteDatabaseOptionsBuilder : IDbContextOptionsStrategy
+    internal class SqlLiteDatabaseOptionsBuilder : IDbContextOptionsStrategy
     {
         private const string Key = "Filename=";
 

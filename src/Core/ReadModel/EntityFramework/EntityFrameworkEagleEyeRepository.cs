@@ -8,7 +8,7 @@
     using EagleEye.Core.ReadModel.EntityFramework.Models;
     using Microsoft.EntityFrameworkCore;
 
-    public class EntityFrameworkEagleEyeRepository : IEagleEyeRepository
+    internal class EntityFrameworkEagleEyeRepository : IEagleEyeRepository
     {
         private readonly IEagleEyeDbContextFactory contextFactory;
 

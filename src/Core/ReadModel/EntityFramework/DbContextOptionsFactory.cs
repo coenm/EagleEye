@@ -8,7 +8,7 @@
     using Microsoft.EntityFrameworkCore;
     using NLog;
 
-    public class DbContextOptionsFactory
+    internal class DbContextOptionsFactory
     {
         [NotNull] private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IList<IDbContextOptionsStrategy> strategies;

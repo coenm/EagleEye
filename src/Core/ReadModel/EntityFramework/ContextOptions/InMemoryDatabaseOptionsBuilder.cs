@@ -7,7 +7,7 @@
     using Microsoft.EntityFrameworkCore;
 
     [UsedImplicitly]
-    public class InMemoryDatabaseOptionsBuilder : IDbContextOptionsStrategy
+    internal class InMemoryDatabaseOptionsBuilder : IDbContextOptionsStrategy
     {
         private const string Key = "InMemory";
 

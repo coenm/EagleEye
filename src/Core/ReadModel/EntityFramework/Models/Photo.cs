@@ -6,7 +6,7 @@
 
     using EagleEye.Core.ReadModel.EntityFramework.Models.Base;
 
-    public class Photo : VersionedItemBase
+    internal class Photo : VersionedItemBase
     {
         [Required]
         [MinLength(2)]
