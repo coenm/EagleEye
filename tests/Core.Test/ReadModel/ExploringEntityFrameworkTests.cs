@@ -64,15 +64,15 @@
             var item1 = Create(1, "aaa", DateTimeOffset.UtcNow);
             item1.Tags = new List<Tag>
             {
-                new Tag {Value = "Vacation"},
-                new Tag {Value = "Summer"},
+                new Tag { Value = "Vacation" },
+                new Tag { Value = "Summer" },
             };
 
-            var item2 = Create(1, "abcd", DateTimeOffset.UtcNow);
+            var item2 = Create(1, "bbb", DateTimeOffset.UtcNow);
             item2.Tags = new List<Tag>
             {
-                new Tag {Value = "Vacation"},
-                new Tag {Value = "Winter"},
+                new Tag { Value = "Vacation" },
+                new Tag { Value = "Winter" },
             };
 
             using (var ctx = await CreateMediaItemDbContext())
@@ -97,7 +97,7 @@
                 Id = Guid.NewGuid(),
                 Filename = filename,
                 Version = version,
-                FileSha256 = new byte[1] {0x01},
+                FileSha256 = new byte[1] { 0x01 },
                 EventTimestamp = timestamp,
             };
         }
