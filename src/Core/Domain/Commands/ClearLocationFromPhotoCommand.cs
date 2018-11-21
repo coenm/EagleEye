@@ -3,10 +3,12 @@
     using System;
 
     using CQRSlite.Commands;
+    using JetBrains.Annotations;
 
-    public class ClearLocationFromMediaItemCommand : ICommand
+    [PublicAPI]
+    public class ClearLocationFromPhotoCommand : ICommand
     {
-        public ClearLocationFromMediaItemCommand(Guid id)
+        public ClearLocationFromPhotoCommand(Guid id)
         {
             Id = id;
         }

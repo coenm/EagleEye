@@ -1,12 +1,22 @@
-﻿namespace EagleEye.FileImporter
+﻿using Helpers.Guards;
+using JetBrains.Annotations;
+using SearchEngine.Lucene.Bootstrap;
+using SimpleInjector;
+
+namespace EagleEye.FileImporter
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
+    using Core.Domain.Commands;
+    using Core.Domain.Events;
+    using Core.ReadModel.EventHandlers;
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Messages;
+    using CQRSlite.Queries;
     using CQRSlite.Routing;
     using EagleEye.Core.Domain;
     using EagleEye.Core.Domain.CommandHandlers;
@@ -39,25 +49,29 @@
             container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
 
             // CQRS lite stuff.
-            container.Register<Router, Router>(Lifestyle.Singleton);
-            container.Register<ICommandSender, Router>(Lifestyle.Singleton);
-            container.Register<IEventPublisher, Router>(Lifestyle.Singleton);
-            container.Register<IHandlerRegistrar, Router>(Lifestyle.Singleton);
+            container.Register<Router>(Lifestyle.Singleton);
+            container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);
+            container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
+            container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
             container.RegisterSingleton<IEventStore, InMemoryEventStore>();
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!
-            container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>())); // Repository has two public constructors (why??)
-            container.RegisterDecorator<IRepository, CacheRepository>();
-            container.Register<ISession, Session>();
+            container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton); // Repository has two public constructors (why??)
+            container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
+            container.Register<ISession, Session>(Lifestyle.Singleton); // check.
 
             container.Register<IReadModelFacade, ReadModel>();
 
             // Scan and register command handlers and event handlers
             var coreAssembly = typeof(MediaItemCommandHandlers).Assembly;
-            container.Register(typeof(IHandler<>), coreAssembly);
-            container.Register(typeof(ICancellableHandler<>), coreAssembly);
+            container.Register(typeof(IHandler<>), coreAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableHandler<>), coreAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICommandHandler<>), coreAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableCommandHandler<>), coreAssembly, Lifestyle.Transient);
+            container.Register(typeof(IQueryHandler<,>), coreAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableQueryHandler<,>), coreAssembly, Lifestyle.Transient);
 
             // entity framework stuff??! transient? singleton? ..
             // wip
@@ -71,14 +85,37 @@
 //                                                                                               .Options));
 
 //            const string connectionString = "InMemory EagleEye";
-            const string connectionString = "Filename=./EagleEye.db";
-            container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
-            container.Register<IEagleEyeDbContextFactory, EagleEyeDbContextFactory>();
+            const string connectionString = "Filename=D:\\EagleEye.db";
+            container.Register<DbContextOptions<EagleEyeDbContext>>(() =>
+            {
+                var result = container.GetInstance<DbContextOptionsFactory>().Create(connectionString);
+                return result;
+            });
+
+            container.Register<IEagleEyeDbContextFactory>(
+                () =>
+                {
+                    // arghhh... todo
+                    var result = container.GetInstance<EagleEyeDbContextFactory>();
+                    result.Initialize().GetAwaiter().GetResult();
+                    return result;
+                }, Lifestyle.Singleton);
+
 //            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
 //                                                                                               .UseInMemoryDatabase("Dummy")
 //                                                                                               .Options));
 
             RegisterSearchEngine(container);
+
+            // strange stuff..
+            container.Register<MediaItemConsistency>();
+            container.Register<MediaItemCommandHandlers>();
+            var registrar = new RouteRegistrar(container);
+            registrar.RegisterHandlers(typeof(MediaItemCommandHandlers));
+            registrar.RegisterHandlers(typeof(MediaItemConsistency));
+
+
+//            registrar.RegisterInAssemblyOf(typeof(MediaItemCommandHandlers));
         }
 
         public static void VerifyContainer([NotNull] Container container)

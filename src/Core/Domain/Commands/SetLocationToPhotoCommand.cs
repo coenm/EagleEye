@@ -3,10 +3,12 @@
     using System;
 
     using CQRSlite.Commands;
+    using JetBrains.Annotations;
 
-    public class SetLocationToMediaItemCommand : ICommand
+    [PublicAPI]
+    public class SetLocationToPhotoCommand : ICommand
     {
-        public SetLocationToMediaItemCommand(Guid id)
+        public SetLocationToPhotoCommand(Guid id)
         {
             Id = id;
         }

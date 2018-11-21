@@ -12,7 +12,7 @@
 
         Task<Photo> GetByFilenameAsync(Guid id);
 
-        Task<IEnumerable<Photo>> GetAllAsync();
+        Task<List<Photo>> GetAllAsync();
 
         Task<int> UpdateAsync(Photo item);
 

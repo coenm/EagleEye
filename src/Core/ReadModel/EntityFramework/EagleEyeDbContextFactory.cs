@@ -1,5 +1,7 @@
 ﻿namespace EagleEye.Core.ReadModel.EntityFramework
 {
+    using System.Threading.Tasks;
+
     using Helpers.Guards;
 
     using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,15 @@
         {
             Guard.NotNull(options, nameof(options));
             this.options = options;
+        }
+
+        public async Task Initialize()
+        {
+            using (var db = CreateMediaItemDbContext())
+            {
+//                await db.Database.OpenConnectionAsync();
+                await db.Database.EnsureCreatedAsync();
+            }
         }
 
         public EagleEyeDbContext CreateMediaItemDbContext() => new EagleEyeDbContext(options);

@@ -1,14 +1,15 @@
-﻿namespace EagleEye.Core.Domain.Events
+﻿namespace EagleEye.Core.Domain.Events.Base
 {
     using System;
 
     using CQRSlite.Events;
 
-    public class LocationClearedFromMediaItem : IEvent
+    public abstract class TagsEventBase : IEvent
     {
-        public LocationClearedFromMediaItem(Guid id)
+        internal TagsEventBase(Guid id, params string[] tags)
         {
             Id = id;
+            Tags = tags;
         }
 
         public Guid Id { get; set; }
@@ -16,5 +17,7 @@
         public int Version { get; set; }
 
         public DateTimeOffset TimeStamp { get; set; }
+
+        public string[] Tags { get; set; }
     }
 }

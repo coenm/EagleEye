@@ -4,19 +4,14 @@
 
     using CQRSlite.Events;
 
-    using EagleEye.Core.Domain.Entities;
-
-    public class LocationSetToMediaItem : IEvent
+    public class LocationClearedFromPhoto : IEvent
     {
-        public LocationSetToMediaItem(Guid id, Location location)
+        public LocationClearedFromPhoto(Guid id)
         {
             Id = id;
-            Location = location;
         }
 
         public Guid Id { get; set; }
-
-        public Location Location { get; }
 
         public int Version { get; set; }
 

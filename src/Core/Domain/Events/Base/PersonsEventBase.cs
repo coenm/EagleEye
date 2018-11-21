@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.Domain.Events
+﻿namespace EagleEye.Core.Domain.Events.Base
 {
     using System;
 

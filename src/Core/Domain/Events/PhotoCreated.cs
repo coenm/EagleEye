@@ -4,16 +4,23 @@
     using System.Diagnostics;
 
     using CQRSlite.Events;
+    using JetBrains.Annotations;
 
-    public class MediaItemCreated : IEvent
+    public class PhotoCreated : IEvent
     {
         [DebuggerStepThrough]
-        public MediaItemCreated(Guid id, string filename, string[] tags, string[] persons)
+        public PhotoCreated(
+            Guid id,
+            [NotNull] string filename,
+            [NotNull] byte[] fileHash,
+            [CanBeNull] string[] tags,
+            [CanBeNull] string[] persons)
         {
             Id = id;
             Tags = tags ?? new string[0];
             Persons = persons ?? new string[0];
             FileName = filename;
+            FileHash = fileHash;
         }
 
         public Guid Id { get; set; }
@@ -23,6 +30,8 @@
         public string[] Persons { get; }
 
         public string FileName { get; }
+
+        public byte[] FileHash { get; }
 
         public int Version { get; set; }
 

@@ -7,27 +7,38 @@
     using CQRSlite.Domain;
 
     using EagleEye.Core.Domain.Events;
-
+    using Helpers.Guards;
     using JetBrains.Annotations;
 
-    public class MediaItem : AggregateRoot
+    public class Photo : AggregateRoot
     {
-        private readonly List<string> tags;
-        private readonly List<string> persons;
-        private bool created;
-        private Location location;
-        private string filename;
+        private const int Sha256ByteSize = 256 / 8;
+        [NotNull] private readonly List<string> tags;
+        [NotNull] private readonly List<string> persons;
 
-        public MediaItem(Guid id, string filename, string[] tags, string[] persons)
+        private bool created;
+        [CanBeNull] private Location location;
+        private string filename;
+        private byte[] fileHash;
+
+        public Photo(
+            Guid id,
+            [NotNull] string filename,
+            [NotNull] byte[] fileSha256,
+            [CanBeNull] string[] tags,
+            [CanBeNull] string[] persons)
             : this()
         {
-            Id = id;
-            location = null;
+            Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Guard.NotNull(fileSha256, nameof(fileSha256));
+            Guard.MustBeEqualTo(fileSha256.Length, Sha256ByteSize, $"{nameof(fileSha256)}.{nameof(fileSha256.Length)}");
 
-            ApplyChange(new MediaItemCreated(id, filename, tags, persons));
+            Id = id;
+
+            ApplyChange(new PhotoCreated(id, filename, fileSha256, tags, persons));
         }
 
-        private MediaItem()
+        private Photo()
         {
             tags = new List<string>();
             persons = new List<string>();
@@ -41,7 +52,7 @@
             var addedTags = tags.Distinct().Where(tag => !this.tags.Contains(tag)).ToArray();
 
             if (addedTags.Any())
-                ApplyChange(new TagsAddedToMediaItem(Id, addedTags));
+                ApplyChange(new TagsAddedToPhoto(Id, addedTags));
         }
 
         public void RemoveTags(params string[] tags)
@@ -54,7 +65,7 @@
                                   .ToArray();
 
             if (tagsRemoved.Any())
-                ApplyChange(new TagsRemovedFromMediaItem(Id, tagsRemoved));
+                ApplyChange(new TagsRemovedFromPhoto(Id, tagsRemoved));
         }
 
         public void AddPersons(params string[] persons)
@@ -67,7 +78,7 @@
                                .ToArray();
 
             if (added.Any())
-                ApplyChange(new PersonsAddedToMediaItem(Id, added));
+                ApplyChange(new PersonsAddedToPhoto(Id, added));
         }
 
         public void RemovePersons(params string[] persons)
@@ -83,7 +94,7 @@
                                  .ToArray();
 
             if (removed.Any())
-                ApplyChange(new PersonsRemovedFromMediaItem(Id, removed));
+                ApplyChange(new PersonsRemovedFromPhoto(Id, removed));
         }
 
         public void SetLocation(
@@ -97,7 +108,7 @@
         {
             var location = new Location(countryCode, countryName, state, city, subLocation, longitude, latitude);
 
-            ApplyChange(new LocationSetToMediaItem(Id, location));
+            ApplyChange(new LocationSetToPhoto(Id, location));
         }
 
         public void ClearLocationData()
@@ -105,38 +116,40 @@
             if (location == null)
                 return;
 
-            ApplyChange(new LocationClearedFromMediaItem(Id/*, _location*/));
+            ApplyChange(new LocationClearedFromPhoto(Id/*, _location*/));
         }
 
         [UsedImplicitly]
-        private void Apply(LocationClearedFromMediaItem e)
+        private void Apply(LocationClearedFromPhoto e)
         {
             location = null;
         }
 
         [UsedImplicitly]
-        private void Apply(LocationSetToMediaItem e)
+        private void Apply(LocationSetToPhoto e)
         {
             location = e.Location;
         }
 
         [UsedImplicitly]
-        private void Apply(MediaItemCreated e)
+        private void Apply(PhotoCreated e)
         {
             created = true;
+            Id = e.Id;
             filename = e.FileName;
+            fileHash = e.FileHash;
             tags.AddRange(e.Tags);
             persons.AddRange(e.Persons);
         }
 
         [UsedImplicitly]
-        private void Apply(PersonsAddedToMediaItem e)
+        private void Apply(PersonsAddedToPhoto e)
         {
             persons.AddRange(e.Persons ?? new string[0]);
         }
 
         [UsedImplicitly]
-        private void Apply(PersonsRemovedFromMediaItem e)
+        private void Apply(PersonsRemovedFromPhoto e)
         {
             if (e.Persons == null)
                 return;
@@ -146,13 +159,13 @@
         }
 
         [UsedImplicitly]
-        private void Apply(TagsAddedToMediaItem e)
+        private void Apply(TagsAddedToPhoto e)
         {
             tags.AddRange(e.Tags ?? new string[0]);
         }
 
         [UsedImplicitly]
-        private void Apply(TagsRemovedFromMediaItem e)
+        private void Apply(TagsRemovedFromPhoto e)
         {
             if (e.Tags == null)
                 return;

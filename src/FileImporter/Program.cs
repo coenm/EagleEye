@@ -4,8 +4,11 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-
+    using System.Threading;
     using CommandLine;
+    using Core.Domain.Commands;
+    using CQRSlite.Commands;
+    using EagleEye.Core.ReadModel;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
@@ -45,7 +48,7 @@
 
         public static void Run(string[] args)
         {
-            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions>(args)
+            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions, ListReadModelOptions>(args)
                 .WithParsed<UpdateSimilarityOptions>(UpdateSimilarity)
                 .WithParsed<SearchDuplicateFileOptions>(SearchDuplicateFile)
                 .WithParsed<AutoDeleteSameFile>(AutoDeleteSameFile)
@@ -53,6 +56,7 @@
                 .WithParsed<UpdateIndexOptions>(UpdateIndex)
                 .WithParsed<CheckIndexOptions>(CheckIndex)
                 .WithParsed<SearchOptions>(Search)
+                .WithParsed<ListReadModelOptions>(ListAllReadModel)
                 .WithParsed<FindAndHandleDuplicatesOptions>(FindAndProcessDuplicates)
                 .WithNotParsed(errs =>
                 {
@@ -62,6 +66,44 @@
             Console.WriteLine("Done.");
             // Console.WriteLine("Done. Press enter to exit.");
             // Console.ReadLine();
+        }
+
+        private static void ListAllReadModel(ListReadModelOptions opts)
+        {
+            Startup.ConfigureContainer(container, opts.IndexFile);
+
+            var readModelFacade = container.GetInstance<IReadModelFacade>();
+
+            var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], new[] { "zoo", "holiday" }, null);
+
+            var dispatcher = container.GetInstance<ICommandSender>();
+            dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+
+            var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
+
+            if (result == null)
+            {
+                Console.WriteLine("ReadModel returned null");
+                return;
+            }
+
+            if (result.Any() == false)
+            {
+                Console.WriteLine("ReadModel returned no items.");
+                return;
+            }
+
+            var items = result.ToList();
+            Console.WriteLine("Files found:");
+            foreach (var item in items)
+                Console.WriteLine($" [{item.Id}] -- ({item.Version}) -- {item.Filename}");
+
+            // add names
+            var command1 = new AddPersonsToPhotoCommand(command.Id, "AAA", "BBB");
+            dispatcher.Send(command1).GetAwaiter().GetResult();
+
+            Console.WriteLine("Press enter");
+            Console.ReadKey();
         }
 
         private static void UpdateSimilarity(UpdateSimilarityOptions options)

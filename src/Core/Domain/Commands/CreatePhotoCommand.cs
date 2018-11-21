@@ -3,15 +3,22 @@
     using System;
 
     using CQRSlite.Commands;
+    using JetBrains.Annotations;
 
-    public class CreateMediaItemCommand : ICommand
+    [PublicAPI]
+    public class CreatePhotoCommand : ICommand
     {
-        public CreateMediaItemCommand(Guid id, string name, string[] tags, string[] persons)
+        public CreatePhotoCommand(
+            [NotNull] string name,
+            [NotNull] byte[] fileSha256,
+            [CanBeNull] string[] tags,
+            [CanBeNull] string[] persons)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Tags = tags;
             Persons = persons;
             Name = name;
+            FileSha256 = fileSha256;
         }
 
         public Guid Id { get; set; }
@@ -21,6 +28,8 @@
         public string[] Persons { get; set; }
 
         public string Name { get; }
+
+        public byte[] FileSha256 { get; }
 
         public int ExpectedVersion { get; set; }
     }

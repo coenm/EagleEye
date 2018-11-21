@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.Domain.Commands
+﻿namespace EagleEye.Core.Domain.Commands.Base
 {
     using System;
 

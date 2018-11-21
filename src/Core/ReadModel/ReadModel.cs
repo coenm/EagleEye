@@ -24,7 +24,7 @@
         {
             var result = await repository.GetAllAsync().ConfigureAwait(false);
 
-            return result?.Select(MapPhoto);
+            return result?.Select(MapPhoto).ToList();
         }
 
         public async Task<Model.Photo> GetPhotoByGuidAsync(Guid id)
@@ -42,6 +42,7 @@
             DebugGuard.NotNull(photo, nameof(photo));
 
             return new Photo(
+                photo.Id,
                 photo.Filename,
                 photo.FileSha256,
                 photo.Tags?.Select(x => x.Value).ToList().AsReadOnly() ?? new List<string>().AsReadOnly(),

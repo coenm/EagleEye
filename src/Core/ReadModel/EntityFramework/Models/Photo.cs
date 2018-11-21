@@ -5,6 +5,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using EagleEye.Core.ReadModel.EntityFramework.Models.Base;
+    using JetBrains.Annotations;
 
     internal class Photo : VersionedItemBase
     {
@@ -19,13 +20,16 @@
         [Required]
         public byte[] FileSha256 { get; set; }
 
-//        [Required]
-//        public uint FileSize { get; set; }
+        //        [Required]
+        //        public uint FileSize { get; set; }
 
+        [CanBeNull]
         public List<Tag> Tags { get; set; }
 
+        [CanBeNull]
         public List<Person> People { get; set; }
 
+        [CanBeNull]
         public Location Location { get; set; }
     }
 }

@@ -36,16 +36,20 @@
         }
 
         [Fact]
-        public async Task HandleMediaItemCreated_ShouldSaveDataToRepositoryTest()
+        public async Task HandlePhotoCreated_ShouldSaveDataToRepositoryTest()
         {
             // arrange
             var guid = Guid.NewGuid();
+            var version = 0;
+            var filename = "a.jpg";
             var initialTags = new[] { "soccer", "sports" };
             var initialPersons = new[] { "alice", "bob" };
             var initTimestamp = DateTimeOffset.UtcNow;
+            var fileHash = new byte[32];
+            var expectedPhoto = CreatePhoto(guid, version, filename, fileHash, initTimestamp, initialTags, initialPersons);
 
             // act
-            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
+            await sut.Handle(new PhotoCreated(guid, filename, fileHash, initialTags, initialPersons)
             {
                 TimeStamp = initTimestamp,
             }).ConfigureAwait(false);
@@ -53,8 +57,7 @@
             // assert
             A.CallTo(eagleEyeRepository).MustHaveHappenedOnceExactly();
             savedPhotos.Should().HaveCount(1);
-            savedPhotos.Single().Should().BeEquivalentTo(
-                CreatePhoto(guid, 0, "FAKE NAME1", new byte[0], initTimestamp, initialTags, initialPersons));
+            savedPhotos.Single().Should().BeEquivalentTo(expectedPhoto);
         }
 
         [Fact]
@@ -70,7 +73,7 @@
                 .Returns(Task.FromResult(CreatePhoto(guid, 1, string.Empty, new byte[0], initTimestamp, initialTags, initialPersons)));
 
             // act
-            await sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
+            await sut.Handle(new PersonsAddedToPhoto(guid, "Calvin", "Darion", "Eve")
             {
                 Version = 2,
                 TimeStamp = initTimestamp.AddHours(2),

@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.Core.ReadModel.Model
 {
+    using System;
     using System.Collections.Generic;
 
     using Helpers.Guards;
@@ -8,6 +9,7 @@
     public class Photo
     {
         internal Photo(
+            Guid id,
             [NotNull] string filename,
             [NotNull] byte[] fileSha256,
             [NotNull] IReadOnlyList<string> tags,
@@ -20,6 +22,7 @@
             DebugGuard.NotNull(tags, nameof(tags));
             DebugGuard.NotNull(persons, nameof(persons));
 
+            Id = id;
             Filename = filename;
             FileSha256 = fileSha256;
             Tags = tags;
@@ -27,6 +30,8 @@
             Location = location;
             Version = version;
         }
+
+        public Guid Id { get; }
 
         public string Filename { get; }
 

@@ -35,11 +35,11 @@
             }
         }
 
-        public Task<IEnumerable<Photo>> GetAllAsync()
+        public Task<List<Photo>> GetAllAsync()
         {
             using (var db = contextFactory.CreateMediaItemDbContext())
             {
-                var result = db.Photos.AsEnumerable(); // not sure
+                var result = db.Photos.ToList();
                 return Task.FromResult(result);
             }
         }
