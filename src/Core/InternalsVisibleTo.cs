@@ -4,3 +4,6 @@
 
 [assembly: InternalsVisibleTo("FileImporter")]
 [assembly: InternalsVisibleTo("EagleEye.FileImporter")]
+
+// required for FakeItEasy
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
