@@ -5,9 +5,10 @@
     using System.IO;
     using System.Linq;
     using System.Threading;
+
     using CommandLine;
-    using Core.Domain.Commands;
     using CQRSlite.Commands;
+    using EagleEye.Core.Domain.Commands;
     using EagleEye.Core.ReadModel;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;

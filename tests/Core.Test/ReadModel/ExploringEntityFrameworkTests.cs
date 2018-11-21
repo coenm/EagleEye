@@ -52,7 +52,7 @@
                     .ConfigureAwait(false);
 
                 // assert
-                result.Should().BeEquivalentTo(new[] {item1, item2}.AsEnumerable());
+                result.Should().BeEquivalentTo(new[] { item1, item2 }.AsEnumerable());
             }
         }
 
@@ -86,11 +86,11 @@
                     .ConfigureAwait(false);
 
                 // assert
-                result.Should().BeEquivalentTo(new[] {item1, item2}.AsEnumerable());
+                result.Should().BeEquivalentTo(new[] { item1, item2 }.AsEnumerable());
             }
         }
 
-        internal static EagleEyeDbContext CreateMediaItemDbContext()
+        private static EagleEyeDbContext CreateMediaItemDbContext()
         {
             var sut = new InMemoryEagleEyeDbContextFactory();
             return sut.CreateMediaItemDbContext();
@@ -108,11 +108,10 @@
             };
         }
 
-        internal class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory, IEagleEyeDbContextFactory
+        private class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory, IEagleEyeDbContextFactory
         {
             private readonly object syncLock = new object();
             private EagleEyeDbContext ctx = null;
-
 
             public InMemoryEagleEyeDbContextFactory()
                 : base(new DbContextOptionsBuilder<EagleEyeDbContext>()

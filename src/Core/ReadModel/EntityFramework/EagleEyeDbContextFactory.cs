@@ -20,7 +20,7 @@
         {
             using (var db = CreateMediaItemDbContext())
             {
-//                await db.Database.OpenConnectionAsync();
+                // await db.Database.OpenConnectionAsync();
                 await db.Database.EnsureCreatedAsync();
             }
         }

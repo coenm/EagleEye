@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Core.Domain.Commands.Base
 {
     using System;
+
     using CQRSlite.Commands;
 
     public abstract class TagsCommandBase : ICommand

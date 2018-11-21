@@ -1,7 +1,7 @@
 ﻿namespace EagleEye.Core.ReadModel.EntityFramework.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using System.Runtime.CompilerServices;
+
     using EagleEye.Core.ReadModel.EntityFramework.Models.Base;
 
     /// <summary>
