@@ -1,16 +1,9 @@
-﻿using Helpers.Guards;
-using JetBrains.Annotations;
-using SearchEngine.Lucene.Bootstrap;
-using SimpleInjector;
-
-namespace EagleEye.FileImporter
+﻿namespace EagleEye.FileImporter
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
-    using Core.Domain.Commands;
-    using Core.Domain.Events;
-    using Core.ReadModel.EventHandlers;
+    using System.IO;
+
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
@@ -22,6 +15,7 @@ namespace EagleEye.FileImporter
     using EagleEye.Core.Domain.CommandHandlers;
     using EagleEye.Core.ReadModel;
     using EagleEye.Core.ReadModel.EntityFramework;
+    using EagleEye.Core.ReadModel.EventHandlers;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
@@ -79,18 +73,12 @@ namespace EagleEye.FileImporter
 
             container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
-            // todo
-//            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
-//                                                                                               .UseInMemoryDatabase("Dummy")
-//                                                                                               .Options));
 
-//            const string connectionString = "InMemory EagleEye";
-            const string connectionString = "Filename=D:\\EagleEye.db";
-            container.Register<DbContextOptions<EagleEyeDbContext>>(() =>
-            {
-                var result = container.GetInstance<DbContextOptionsFactory>().Create(connectionString);
-                return result;
-            });
+            var dir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var fullFile = Path.Combine(dir, "EagleEye.db");
+            string connectionString = $"Filename={fullFile}";
+
+            container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
 
             container.Register<IEagleEyeDbContextFactory>(
                 () =>
@@ -101,10 +89,6 @@ namespace EagleEye.FileImporter
                     return result;
                 }, Lifestyle.Singleton);
 
-//            container.Register<IMediaItemDbContextFactory>(() => new MediaItemDbContextFactory(new DbContextOptionsBuilder<MediaItemDbContext>()
-//                                                                                               .UseInMemoryDatabase("Dummy")
-//                                                                                               .Options));
-
             RegisterSearchEngine(container);
 
             // strange stuff..
@@ -113,9 +97,6 @@ namespace EagleEye.FileImporter
             var registrar = new RouteRegistrar(container);
             registrar.RegisterHandlers(typeof(MediaItemCommandHandlers));
             registrar.RegisterHandlers(typeof(MediaItemConsistency));
-
-
-//            registrar.RegisterInAssemblyOf(typeof(MediaItemCommandHandlers));
         }
 
         public static void VerifyContainer([NotNull] Container container)
