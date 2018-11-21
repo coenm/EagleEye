@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Core.ReadModel.EventHandlers
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -8,207 +9,210 @@
 
     using EagleEye.Core.Domain.Events;
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
+    using NLog;
 
-    using Newtonsoft.Json;
-
-    public class MediaItemConsistency :
-        ICancellableEventHandler<MediaItemCreated>,
-        ICancellableEventHandler<TagsAddedToMediaItem>,
-        ICancellableEventHandler<TagsRemovedFromMediaItem>,
-        ICancellableEventHandler<PersonsAddedToMediaItem>,
-        ICancellableEventHandler<PersonsRemovedFromMediaItem>,
-        ICancellableEventHandler<LocationClearedFromMediaItem>,
-        ICancellableEventHandler<LocationSetToMediaItem>
+    internal class MediaItemConsistency :
+        ICancellableEventHandler<PhotoCreated>,
+        ICancellableEventHandler<TagsAddedToPhoto>,
+        ICancellableEventHandler<TagsRemovedFromPhoto>,
+        ICancellableEventHandler<PersonsAddedToPhoto>,
+        ICancellableEventHandler<PersonsRemovedFromPhoto>,
+        ICancellableEventHandler<LocationClearedFromPhoto>,
+        ICancellableEventHandler<LocationSetToPhoto>
     {
-        private readonly IMediaItemRepository repository;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        [NotNull] private readonly IEagleEyeRepository repository;
 
-        public MediaItemConsistency(IMediaItemRepository repository)
+        public MediaItemConsistency([NotNull] IEagleEyeRepository repository)
         {
+            Guard.NotNull(repository, nameof(repository));
             this.repository = repository;
         }
 
-        public async Task Handle(MediaItemCreated message, CancellationToken token = default(CancellationToken))
+        public async Task Handle([NotNull] PhotoCreated message, CancellationToken token = default(CancellationToken))
         {
-            var mediaItemDto = new MediaItemDto();
+            DebugGuard.NotNull(message, nameof(message));
+
+            var photo = new Photo
+            {
+                Id = message.Id,
+                Filename = message.FileName,
+                Version = message.Version,
+                FileSha256 = message.FileHash,
+                EventTimestamp = message.TimeStamp,
+            };
+
             if (message.Tags != null)
-                mediaItemDto.Tags = new List<string>(message.Tags);
+                photo.Tags = message.Tags.Select(x => new Tag { Value = x }).ToList();
 
             if (message.Persons != null)
-                mediaItemDto.Persons = new List<string>(message.Persons);
+                photo.People = message.Persons.Select(x => new Person { Value = x }).ToList();
 
-            var item = new MediaItemDb
-                           {
-                               Filename = message.FileName,
-                               Id = message.Id,
-                               Version = message.Version,
-                               TimeStampUtc = message.TimeStamp,
-                               SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto),
-                           };
-
-            await repository.SaveAsync(item).ConfigureAwait(false);
+            await repository.SaveAsync(photo).ConfigureAwait(false);
         }
 
-        public async Task Handle(TagsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            DebugGuard.NotNull(message, nameof(message));
 
-            if (item == null)
-                return; // throw??
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
-            // check versions?
-
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Tags == null)
-                mediaItemDto.Tags = new List<string>();
-
-            mediaItemDto.Tags.AddRange(message.Tags);
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
-
-            // update tags
-            item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
-
-            await repository.UpdateAsync(item).ConfigureAwait(false);
-        }
-
-        public async Task Handle(PersonsAddedToMediaItem message, CancellationToken token = default(CancellationToken))
-        {
-            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
-
-            if (item == null)
-                return; // throw??
-
-            // check versions?
-
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Persons == null)
-                mediaItemDto.Persons = new List<string>();
-
-            mediaItemDto.Persons.AddRange(message.Persons);
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
-
-            // update tags
-            item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
-
-            await repository.UpdateAsync(item).ConfigureAwait(false);
-        }
-
-        public async Task Handle(TagsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
-        {
-            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
-
-            if (item == null)
-                return; // throw??
-
-            // check versions?
-
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Tags == null)
-                return; // throw?
-
-            foreach (var tag in message.Tags)
+            if (photo == null)
             {
-                mediaItemDto.Tags.Remove(tag);
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
             }
 
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+            // todo check versions?
 
-            // update tags
-            item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
-
-            await repository.UpdateAsync(item).ConfigureAwait(false);
-        }
-
-        public async Task Handle(PersonsRemovedFromMediaItem message, CancellationToken token = default(CancellationToken))
-        {
-            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
-
-            if (item == null)
-                return; // throw??
-
-            // check versions?
-
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
-
-            if (mediaItemDto.Tags == null)
-                return; // throw?
-
-            foreach (var person in message.Persons)
+            if (message.Tags != null && message.Tags.Any())
             {
-                mediaItemDto.Persons.Remove(person);
+                var origValues = photo.Tags?.Select(x => x.Value).ToList() ?? new List<string>();
+
+                var newItems = message.Tags
+                    .Where(x => origValues.All(y => x != y))
+                    .Select(x => new Tag { Value = x });
+
+                if (photo.Tags == null)
+                    photo.Tags = new List<Tag>();
+                photo.Tags.AddRange(newItems);
             }
 
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
 
-            // update tags
-            item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
-
-            await repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
         }
 
-        public async Task Handle(LocationClearedFromMediaItem message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            DebugGuard.NotNull(message, nameof(message));
 
-            if (item == null)
-                return; // throw??
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (photo == null)
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
+
+            // todo check versions?
+
+            if (message.Persons != null && message.Persons.Any())
+            {
+                var origValues = photo.People?.Select(x => x.Value).ToList() ?? new List<string>();
+
+                var newItems = message.Persons
+                    .Where(x => origValues.All(y => x != y))
+                    .Select(x => new Person { Value = x });
+
+                if (photo.People == null)
+                    photo.People = new List<Person>();
+                photo.People.AddRange(newItems);
+            }
+
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
+
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
+        }
+
+        public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
+        {
+            DebugGuard.NotNull(message, nameof(message));
+
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (photo == null)
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+            photo.Tags?.RemoveAll(x => message.Tags.Contains(x.Value));
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
 
-            if (mediaItemDto.Location == null)
-                return; // throw?
-
-            mediaItemDto.Location = null;
-
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
-
-            // update tags
-            item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
-
-            await repository.UpdateAsync(item).ConfigureAwait(false);
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
         }
 
-        public async Task Handle(LocationSetToMediaItem message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            var item = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+            DebugGuard.NotNull(message, nameof(message));
 
-            if (item == null)
-                return; // throw??
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (photo == null)
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
 
             // check versions?
 
-            var mediaItemDto = JsonConvert.DeserializeObject<MediaItemDto>(item.SerializedMediaItemDto);
+            photo.People?.RemoveAll(x => message.Persons.Contains(x.Value));
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
 
-            mediaItemDto.Location = new LocationDto
-                                        {
-                                            CountryName = message.Location.CountryName,
-                                            CountryCode = message.Location.CountryCode,
-                                            City = message.Location.City,
-                                            State = message.Location.State,
-                                            SubLocation = message.Location.SubLocation,
-                                            Latitude = message.Location.Latitude,
-                                            Longitude = message.Location.Longitude,
-                                        };
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
+        }
 
-            item.SerializedMediaItemDto = JsonConvert.SerializeObject(mediaItemDto);
+        public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default(CancellationToken))
+        {
+            DebugGuard.NotNull(message, nameof(message));
 
-            // update tags
-            item.Version = message.Version;
-            item.TimeStampUtc = message.TimeStamp;
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
-            await repository.UpdateAsync(item).ConfigureAwait(false);
+            if (photo == null)
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
+
+            // check versions?
+
+            photo.Location = null; // not sure if this is the way to do this.
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
+
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
+        }
+
+        public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
+        {
+            DebugGuard.NotNull(message, nameof(message));
+            DebugGuard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
+
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (photo == null)
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
+
+            // check versions?
+
+            photo.Location = new Location
+            {
+                CountryName = message.Location.CountryName,
+                CountryCode = message.Location.CountryCode,
+                City = message.Location.City,
+                State = message.Location.State,
+                SubLocation = message.Location.SubLocation,
+                Latitude = message.Location.Latitude,
+                Longitude = message.Location.Longitude,
+            };
+
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
+
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
         }
     }
 }

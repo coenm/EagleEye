@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Text;
+
     using Helpers.Guards;
 
     public class ExifToolStayOpenStream : Stream

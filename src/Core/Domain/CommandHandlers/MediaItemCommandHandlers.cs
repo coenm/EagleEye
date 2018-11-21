@@ -7,25 +7,28 @@
 
     using EagleEye.Core.Domain.Commands;
     using EagleEye.Core.Domain.Entities;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
 
-    public class MediaItemCommandHandlers : /*ICancellable*/ICommandHandler<CreateMediaItemCommand>,
-                                                            ICommandHandler<AddTagsToMediaItemCommand>,
-                                                            ICommandHandler<AddPersonsToMediaItemCommand>,
-                                                            ICommandHandler<RemoveTagsFromMediaItemCommand>,
-                                                            ICommandHandler<RemovePersonsFromMediaItemCommand>,
-                                                            ICommandHandler<SetLocationToMediaItemCommand>,
-                                                            ICommandHandler<ClearLocationFromMediaItemCommand>
+    public class MediaItemCommandHandlers : /*ICancellable*/ICommandHandler<CreatePhotoCommand>,
+                                                            ICommandHandler<AddTagsToPhotoCommand>,
+                                                            ICommandHandler<AddPersonsToPhotoCommand>,
+                                                            ICommandHandler<RemoveTagsFromPhotoCommand>,
+                                                            ICommandHandler<RemovePersonsFromPhotoCommand>,
+                                                            ICommandHandler<SetLocationToPhotoCommand>,
+                                                            ICommandHandler<ClearLocationFromPhotoCommand>
     {
         private readonly ISession session;
 
-        public MediaItemCommandHandlers(ISession session)
+        public MediaItemCommandHandlers([NotNull] ISession session)
         {
+            Guard.NotNull(session, nameof(session));
             this.session = session;
         }
 
-        public async Task Handle(CreateMediaItemCommand message)
+        public async Task Handle(CreatePhotoCommand message)
         {
-            var item = new MediaItem(message.Id, message.Name, message.Tags, message.Persons);
+            var item = new Photo(message.Id, message.Name, message.FileSha256, message.Tags, message.Persons);
             await session.Add(item).ConfigureAwait(false);
             await session.Commit().ConfigureAwait(false);
 
@@ -41,37 +44,37 @@
             */
         }
 
-        public async Task Handle(AddTagsToMediaItemCommand message)
+        public async Task Handle(AddTagsToPhotoCommand message)
         {
-            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.AddTags(message.Tags);
             await session.Commit().ConfigureAwait(false);
         }
 
-        public async Task Handle(RemoveTagsFromMediaItemCommand message)
+        public async Task Handle(RemoveTagsFromPhotoCommand message)
         {
-            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.RemoveTags(message.Tags);
             await session.Commit().ConfigureAwait(false);
         }
 
-        public async Task Handle(AddPersonsToMediaItemCommand message)
+        public async Task Handle(AddPersonsToPhotoCommand message)
         {
-            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.AddPersons(message.Persons);
             await session.Commit().ConfigureAwait(false);
         }
 
-        public async Task Handle(RemovePersonsFromMediaItemCommand message)
+        public async Task Handle(RemovePersonsFromPhotoCommand message)
         {
-            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.RemovePersons(message.Persons);
             await session.Commit().ConfigureAwait(false);
         }
 
-        public async Task Handle(SetLocationToMediaItemCommand message)
+        public async Task Handle(SetLocationToPhotoCommand message)
         {
-            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.SetLocation(
                              message.CountryCode,
                              message.CountryName,
@@ -84,9 +87,9 @@
             await session.Commit().ConfigureAwait(false);
         }
 
-        public async Task Handle(ClearLocationFromMediaItemCommand message)
+        public async Task Handle(ClearLocationFromPhotoCommand message)
         {
-            var item = await session.Get<MediaItem>(message.Id).ConfigureAwait(false);
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.ClearLocationData();
             await session.Commit().ConfigureAwait(false);
         }

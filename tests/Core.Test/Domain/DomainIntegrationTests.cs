@@ -28,29 +28,30 @@
             var session = new Session(repository);
             var handler = new MediaItemCommandHandlers(session);
             var events = new List<IEvent>();
-            publisher.RegisterHandler<MediaItemCreated>((evt, ct) =>
+            publisher.RegisterHandler<PhotoCreated>((evt, ct) =>
                                                         {
                                                             events.Add(evt);
                                                             return Task.CompletedTask;
                                                         });
-            publisher.RegisterHandler<TagsAddedToMediaItem>((evt, ct) =>
+            publisher.RegisterHandler<TagsAddedToPhoto>((evt, ct) =>
                                                         {
                                                             events.Add(evt);
                                                             return Task.CompletedTask;
                                                         });
 
             // act
-            var guid = Guid.NewGuid();
-            var command = new CreateMediaItemCommand(guid, "aap", new[] { "zoo", "holiday" }, null);
+            var hash = new byte[32];
+            var command = new CreatePhotoCommand("aap", hash, new[] { "zoo", "holiday" }, null);
+            var guid = command.Id;
             await handler.Handle(command).ConfigureAwait(false);
 
-            var addTagsCommand = new AddTagsToMediaItemCommand(guid, "summer", "holiday");
+            var addTagsCommand = new AddTagsToPhotoCommand(guid, "summer", "holiday");
             await handler.Handle(addTagsCommand).ConfigureAwait(false);
 
-            addTagsCommand = new AddTagsToMediaItemCommand(guid, "summer", "soccer");
+            addTagsCommand = new AddTagsToPhotoCommand(guid, "summer", "soccer");
             await handler.Handle(addTagsCommand).ConfigureAwait(false);
 
-            var removeTagsCommand = new RemoveTagsFromMediaItemCommand(guid, "summer");
+            var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, "summer");
             await handler.Handle(removeTagsCommand).ConfigureAwait(false);
 
             // assert

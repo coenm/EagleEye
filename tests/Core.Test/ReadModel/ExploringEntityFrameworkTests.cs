@@ -1,17 +1,14 @@
 ﻿namespace EagleEye.Core.Test.ReadModel
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
-
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
     using FluentAssertions;
-
     using Microsoft.EntityFrameworkCore;
-
     using Xunit;
 
     public class ExploringEntityFrameworkTests
@@ -21,15 +18,13 @@
         public async Task SelectUsingPredicateFromEmptyDatabaseShouldReturnNothingTest()
         {
             // arrange
-            var sut = new InMemoryMediaItemDbContextFactory();
-
-            using (var db = sut.CreateMediaItemDbContext())
+            using (var ctx = CreateMediaItemDbContext())
             {
                 // act
-                var result = await db.MediaItems
-                                     .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
-                                     .ToListAsync()
-                                     .ConfigureAwait(false);
+                var result = await ctx.Photos
+                    .Where(item => item.EventTimestamp <= DateTimeOffset.UtcNow)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 // assert
                 result.Should().BeEmpty();
@@ -41,45 +36,105 @@
         public async Task SelectUsingPredicateShouldReturnAskedItemTest()
         {
             // arrange
-            var item1 = Create(1, DateTimeOffset.UtcNow); // should match predicate
-            var item2 = Create(2, DateTimeOffset.UtcNow); // should match predicate
-            var item3 = Create(3, DateTimeOffset.UtcNow.AddDays(1)); // should NOT match predicate
+            var item1 = Create(1, "abc1", DateTimeOffset.UtcNow); // should match predicate
+            var item2 = Create(2, "abc2", DateTimeOffset.UtcNow); // should match predicate
+            var item3 = Create(3, "abc3", DateTimeOffset.UtcNow.AddDays(1)); // should NOT match predicate
 
-            var sut = new InMemoryMediaItemDbContextFactory();
-
-            using (var db = sut.CreateMediaItemDbContext())
+            using (var ctx = CreateMediaItemDbContext())
             {
-                await db.MediaItems.AddRangeAsync(item1, item2, item3).ConfigureAwait(false);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await ctx.Photos.AddRangeAsync(item1, item2, item3).ConfigureAwait(false);
+                await ctx.SaveChangesAsync().ConfigureAwait(false);
 
                 // act
-                var result = await db.MediaItems
-                                     .Where(item => item.TimeStampUtc <= DateTimeOffset.UtcNow)
-                                     .ToListAsync()
-                                     .ConfigureAwait(false);
+                var result = await ctx.Photos
+                    .Where(item => item.EventTimestamp <= DateTimeOffset.UtcNow)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 // assert
                 result.Should().BeEquivalentTo(new[] { item1, item2 }.AsEnumerable());
             }
         }
 
-        private static MediaItemDb Create(int version, DateTimeOffset timestamp)
+        [Fact]
+        [Xunit.Categories.Exploratory]
+        public async Task InsertWithRelationTest()
         {
-            return new MediaItemDb
+            // arrange
+            var item1 = Create(1, "aaa", DateTimeOffset.UtcNow);
+            item1.Tags = new List<Tag>
+            {
+                new Tag { Value = "Vacation" },
+                new Tag { Value = "Summer" },
+            };
+
+            var item2 = Create(1, "bbb", DateTimeOffset.UtcNow);
+            item2.Tags = new List<Tag>
+            {
+                new Tag { Value = "Vacation" },
+                new Tag { Value = "Winter" },
+            };
+
+            using (var ctx = CreateMediaItemDbContext())
+            {
+                await ctx.Photos.AddRangeAsync(item1, item2).ConfigureAwait(false);
+                await ctx.SaveChangesAsync().ConfigureAwait(false);
+
+                // act
+                var result = await ctx.Photos
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // assert
+                result.Should().BeEquivalentTo(new[] { item1, item2 }.AsEnumerable());
+            }
+        }
+
+        private static EagleEyeDbContext CreateMediaItemDbContext()
+        {
+            var sut = new InMemoryEagleEyeDbContextFactory();
+            return sut.CreateMediaItemDbContext();
+        }
+
+        private static Photo Create(int version, string filename, DateTimeOffset timestamp)
+        {
+            return new Photo
             {
                 Id = Guid.NewGuid(),
+                Filename = filename,
                 Version = version,
-                TimeStampUtc = timestamp,
+                FileSha256 = new byte[1] { 0x01 },
+                EventTimestamp = timestamp,
             };
         }
 
-        internal class InMemoryMediaItemDbContextFactory : MediaItemDbContextFactory
+        private class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory, IEagleEyeDbContextFactory
         {
-            public InMemoryMediaItemDbContextFactory([CallerMemberName] string name = "dummy")
-                : base(new DbContextOptionsBuilder<MediaItemDbContext>()
-                       .UseInMemoryDatabase(name)
-                       .Options)
+            private readonly object syncLock = new object();
+            private EagleEyeDbContext ctx = null;
+
+            public InMemoryEagleEyeDbContextFactory()
+                : base(new DbContextOptionsBuilder<EagleEyeDbContext>()
+                    // .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                    .UseSqlite("Data Source=:memory:;")
+                    .Options)
             {
+            }
+
+            public new EagleEyeDbContext CreateMediaItemDbContext()
+            {
+                lock (syncLock)
+                {
+                    if (ctx != null)
+                        return ctx;
+
+                    ctx = base.CreateMediaItemDbContext();
+
+                    ctx.Database.OpenConnection();
+                    ctx.Database.EnsureCreated();
+
+                    return ctx;
+                }
             }
         }
     }

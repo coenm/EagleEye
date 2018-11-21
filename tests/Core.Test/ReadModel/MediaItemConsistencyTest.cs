@@ -2,60 +2,62 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Domain.Events;
     using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EntityFramework.Dto;
+    using EagleEye.Core.ReadModel.EntityFramework.Models;
     using EagleEye.Core.ReadModel.EventHandlers;
-
+    using FakeItEasy;
     using FluentAssertions;
-
-    using Newtonsoft.Json;
-
     using Xunit;
 
     public class MediaItemConsistencyTest
     {
         private readonly MediaItemConsistency sut;
-        private readonly IMediaItemRepository mediaItemRepository;
+        private readonly IEagleEyeRepository eagleEyeRepository;
+        private readonly List<Photo> savedPhotos;
+        private readonly List<Photo> updatedPhotos;
 
         public MediaItemConsistencyTest()
         {
-            IMediaItemDbContextFactory mediaItemDbContextFactory = new ExploringEntityFrameworkTests.InMemoryMediaItemDbContextFactory();
-            mediaItemRepository = new EntityFrameworkMediaItemRepository(mediaItemDbContextFactory);
-            sut = new MediaItemConsistency(mediaItemRepository);
+            eagleEyeRepository = A.Fake<IEagleEyeRepository>();
+            sut = new MediaItemConsistency(eagleEyeRepository);
+
+            savedPhotos = new List<Photo>();
+            updatedPhotos = new List<Photo>();
+            A.CallTo(() => eagleEyeRepository.SaveAsync(A<Photo>._))
+                .Invokes(call => savedPhotos.Add((Photo)call.Arguments[0]))
+                .Returns(Task.FromResult(0));
+            A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._))
+                .Invokes(call => updatedPhotos.Add((Photo)call.Arguments[0]))
+                .Returns(Task.FromResult(0));
         }
 
         [Fact]
-        public async Task HandleMediaItemCreated_ShouldSaveDataToRepositoryTest()
+        public async Task HandlePhotoCreated_ShouldSaveDataToRepositoryTest()
         {
             // arrange
             var guid = Guid.NewGuid();
+            var version = 0;
+            var filename = "a.jpg";
             var initialTags = new[] { "soccer", "sports" };
             var initialPersons = new[] { "alice", "bob" };
             var initTimestamp = DateTimeOffset.UtcNow;
+            var fileHash = new byte[32];
+            var expectedPhoto = CreatePhoto(guid, version, filename, fileHash, initTimestamp, initialTags, initialPersons);
 
             // act
-            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
+            await sut.Handle(new PhotoCreated(guid, filename, fileHash, initialTags, initialPersons)
             {
                 TimeStamp = initTimestamp,
             }).ConfigureAwait(false);
 
             // assert
-            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
-            result.Should().BeEquivalentTo(new MediaItemDb
-            {
-                Id = guid,
-                Version = 0,
-                Filename = "FAKE NAME1",
-                TimeStampUtc = initTimestamp,
-                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                {
-                    Tags = new List<string>(initialTags),
-                    Persons = new List<string>(initialPersons),
-                }),
-            });
+            A.CallTo(eagleEyeRepository).MustHaveHappenedOnceExactly();
+            savedPhotos.Should().HaveCount(1);
+            savedPhotos.Single().Should().BeEquivalentTo(expectedPhoto);
         }
 
         [Fact]
@@ -67,44 +69,55 @@
             var initialPersons = new[] { "alice", "bob" };
             var initTimestamp = DateTimeOffset.UtcNow;
 
-            // act
-            await sut.Handle(new MediaItemCreated(guid, "FAKE NAME1", initialTags, initialPersons)
-            {
-                Version = 1,
-                TimeStamp = initTimestamp,
-            });
+            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid))
+                .Returns(Task.FromResult(CreatePhoto(guid, 1, string.Empty, new byte[0], initTimestamp, initialTags, initialPersons)));
 
-            await sut.Handle(new PersonsAddedToMediaItem(guid, "Calvin", "Darion", "Eve")
+            // act
+            await sut.Handle(new PersonsAddedToPhoto(guid, "Calvin", "Darion", "Eve")
             {
                 Version = 2,
                 TimeStamp = initTimestamp.AddHours(2),
             });
 
-            await sut.Handle(new PersonsRemovedFromMediaItem(guid, "Darion", "alice")
-            {
-                Version = 3,
-                TimeStamp = initTimestamp.AddHours(3),
-            });
-
             // assert
-            var result = await mediaItemRepository.GetByIdAsync(guid).ConfigureAwait(false);
-            result.Should().BeEquivalentTo(new MediaItemDb
+            var expectedPhoto = CreatePhoto(
+                guid,
+                2,
+                string.Empty,
+                new byte[0],
+                initTimestamp.AddHours(2),
+                initialTags,
+                new[] { "alice", "bob", "Calvin", "Darion", "Eve" });
+
+            A.CallTo(eagleEyeRepository).MustHaveHappenedTwiceExactly();
+            updatedPhotos.Should().HaveCount(1);
+            updatedPhotos.Single().Should().BeEquivalentTo(expectedPhoto);
+        }
+
+        private static Photo CreatePhoto(Guid id, int version, string filename, byte[] fileSha, DateTimeOffset eventTimestamp, string[] tags, string[] people)
+        {
+            var result = new Photo
             {
-                Id = guid,
-                Version = 3,
-                Filename = "FAKE NAME1",
-                TimeStampUtc = initTimestamp.AddHours(3),
-                SerializedMediaItemDto = JsonConvert.SerializeObject(new MediaItemDto
-                {
-                    Tags = new List<string>(initialTags),
-                    Persons = new List<string>
-                    {
-                        "bob",
-                        "Calvin",
-                        "Eve",
-                    },
-                }),
-            });
+                Id = id,
+                Version = version,
+                Filename = filename,
+                FileSha256 = fileSha,
+                EventTimestamp = eventTimestamp,
+                Tags = CreateTags(tags),
+                People = CreatePeoples(people),
+            };
+
+            return result;
+        }
+
+        private static List<Tag> CreateTags(params string[] tags)
+        {
+            return tags?.Select(x => new Tag { Value = x }).ToList();
+        }
+
+        private static List<Person> CreatePeoples(params string[] people)
+        {
+            return people?.Select(x => new Person { Value = x }).ToList();
         }
     }
 }
