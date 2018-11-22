@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.Domain
+﻿namespace EagleEye.Core.Domain.EventStore
 {
     using System;
     using System.Collections.Generic;
@@ -7,14 +7,17 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
 
     public class InMemoryEventStore : IEventStore
     {
         private readonly IEventPublisher publisher;
         private readonly Dictionary<Guid, List<IEvent>> inMemoryDb = new Dictionary<Guid, List<IEvent>>();
 
-        public InMemoryEventStore(IEventPublisher publisher)
+        public InMemoryEventStore([NotNull] IEventPublisher publisher)
         {
+            Guard.NotNull(publisher, nameof(publisher));
             this.publisher = publisher;
         }
 
