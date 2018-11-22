@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-
+    using Core.Domain.EventStore;
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
@@ -35,6 +35,8 @@
             Guard.NotNull(container, nameof(container));
             Guard.NotNull(indexFilename, nameof(indexFilename));
 
+            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
             var similarityFilename = indexFilename + ".similarity.json";
             // todo check arguments.
             // container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
@@ -48,7 +50,12 @@
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
-            container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+//            container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+            container.RegisterSingleton<IEventStore>(() =>
+            {
+                string basePath = Path.Combine(userDir, "EagleEyeEvents");
+                return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
+            });
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!
@@ -74,8 +81,7 @@
             container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
 
-            var dir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var fullFile = Path.Combine(dir, "EagleEye.db");
+            var fullFile = Path.Combine(userDir, "EagleEye.db");
             string connectionString = $"Filename={fullFile}";
 
             container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));

@@ -100,8 +100,17 @@
                 Console.WriteLine($" [{item.Id}] -- ({item.Version}) -- {item.Filename}");
 
             // add names
-            var command1 = new AddPersonsToPhotoCommand(command.Id, "AAA", "BBB");
-            dispatcher.Send(command1).GetAwaiter().GetResult();
+            var others = items.Where(x => x.Id != command.Id);
+            if (others.Any())
+            {
+                var command1 = new AddPersonsToPhotoCommand(others.First().Id, "AAA11", "BBB11");
+                dispatcher.Send(command1).GetAwaiter().GetResult();
+            }
+            else
+            {
+                var command1 = new AddPersonsToPhotoCommand(command.Id, "AAA", "BBB");
+                dispatcher.Send(command1).GetAwaiter().GetResult();
+            }
 
             Console.WriteLine("Press enter");
             Console.ReadKey();
