@@ -28,7 +28,14 @@
 
         public async Task Handle(CreatePhotoCommand message)
         {
-            var item = new Photo(message.Id, message.Name, message.FileSha256, message.Tags, message.Persons);
+            var item = new Photo(
+                message.Id,
+                message.FileName,
+                message.PhotoMimeType,
+                message.FileSha256,
+                message.Tags,
+                message.Persons);
+
             await session.Add(item).ConfigureAwait(false);
             await session.Commit().ConfigureAwait(false);
 

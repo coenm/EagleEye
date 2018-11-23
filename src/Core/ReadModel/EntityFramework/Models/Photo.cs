@@ -15,6 +15,11 @@
         public string Filename { get; set; }
 
         [Required]
+        [MinLength(2)]
+        [MaxLength(100)]
+        public string FileMimeType { get; set; }
+
+        [Required]
         public DateTimeOffset EventTimestamp { get; set; }
 
         [Required]

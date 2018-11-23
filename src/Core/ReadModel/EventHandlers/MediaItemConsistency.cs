@@ -40,6 +40,7 @@
             {
                 Id = message.Id,
                 Filename = message.FileName,
+                FileMimeType = message.MimeType,
                 Version = message.Version,
                 FileSha256 = message.FileHash,
                 EventTimestamp = message.TimeStamp,

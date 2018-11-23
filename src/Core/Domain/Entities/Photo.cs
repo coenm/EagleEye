@@ -24,6 +24,7 @@
         public Photo(
             Guid id,
             [NotNull] string filename,
+            [NotNull] string mimeType,
             [NotNull] byte[] fileSha256,
             [CanBeNull] string[] tags,
             [CanBeNull] string[] persons)
@@ -35,7 +36,7 @@
 
             Id = id;
 
-            ApplyChange(new PhotoCreated(id, filename, fileSha256, tags, persons));
+            ApplyChange(new PhotoCreated(id, filename, mimeType, fileSha256, tags, persons));
         }
 
         private Photo()

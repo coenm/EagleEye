@@ -101,6 +101,7 @@
             return new Photo
             {
                 Id = Guid.NewGuid(),
+                FileMimeType = "image/jpeg",
                 Filename = filename,
                 Version = version,
                 FileSha256 = new byte[1] { 0x01 },
