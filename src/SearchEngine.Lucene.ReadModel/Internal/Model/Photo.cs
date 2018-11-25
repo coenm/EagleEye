@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using JetBrains.Annotations;
+
     internal class Photo
     {
         public Guid Id { get; set; }
@@ -31,6 +33,7 @@
 
         public float? LocationLongitude { get; set; }
 
+        [CanBeNull]
         public Timestamp DateTimeTaken { get; set; }
     }
 }

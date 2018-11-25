@@ -8,6 +8,7 @@
 
     using CommandLine;
     using CQRSlite.Commands;
+    using EagleEye.Core;
     using EagleEye.Core.Domain.Commands;
     using EagleEye.Core.ReadModel;
     using EagleEye.FileImporter.CmdOptions;
@@ -77,11 +78,14 @@
             Startup.ConfigureContainer(container, opts.IndexFile);
 
             var readModelFacade = container.GetInstance<IReadModelFacade>();
+            var dispatcher = container.GetInstance<ICommandSender>();
+            var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
 
             var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
-
-            var dispatcher = container.GetInstance<ICommandSender>();
             dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+
+            var commandDateTime = new SetDateTimeTakenCommand(command.Id, new Timestamp(2010, 04));
+            dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
             var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
 
@@ -115,8 +119,6 @@
                 dispatcher.Send(command1).GetAwaiter().GetResult();
             }
 
-            var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
-
             // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
             // search terms:
             // - id
@@ -149,8 +151,6 @@
 
             searchResults = search.FullSearch("tag:zo"); // should match nothing.
             Console.WriteLine(searchResults.Count);
-
-            //            searchResults = search.Search("title:\"The Right Way\" AND text:go");
 
             Console.WriteLine("Press enter");
             Console.ReadKey();

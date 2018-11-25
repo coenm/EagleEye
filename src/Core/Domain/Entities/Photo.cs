@@ -15,11 +15,13 @@
         private const int Sha256ByteSize = 256 / 8;
         [NotNull] private readonly List<string> tags;
         [NotNull] private readonly List<string> persons;
+        private DateTime? dateTimeTaken;
 
         private bool created;
         [CanBeNull] private Location location;
         private string filename;
         private byte[] fileHash;
+        private TimestampPrecision dateTimeTakenPrecision;
 
         public Photo(
             Guid id,
@@ -120,6 +122,14 @@
             ApplyChange(new LocationClearedFromPhoto(Id/*, _location*/));
         }
 
+
+        public void SetDateTimeTaken(DateTime dateTime, TimestampPrecision precision)
+        {
+            // todo check
+
+            ApplyChange(new DateTimeTakenChanged(Id, dateTime, precision));
+        }
+
         [UsedImplicitly]
         private void Apply(LocationClearedFromPhoto e)
         {
@@ -173,6 +183,14 @@
 
             foreach (var t in e.Tags)
                 tags.Remove(t);
+        }
+
+        [UsedImplicitly]
+        private void Apply(DateTimeTakenChanged e)
+        {
+            dateTimeTaken = e.DateTimeTaken;
+            dateTimeTakenPrecision = e.Precision;
+
         }
     }
 }

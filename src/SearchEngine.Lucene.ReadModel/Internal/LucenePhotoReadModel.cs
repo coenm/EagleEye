@@ -44,6 +44,8 @@
         {
             DebugGuard.NotNull(photo, nameof(photo));
 
+            // todo datetime taken.
+
             return new Interface.Model.PhotoResult(
                 photo.Id,
                 photo.FileName,

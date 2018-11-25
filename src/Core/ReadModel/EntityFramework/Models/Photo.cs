@@ -36,5 +36,7 @@
 
         [CanBeNull]
         public Location Location { get; set; }
+
+        public DateTime? DateTimeTaken { get; set; }
     }
 }

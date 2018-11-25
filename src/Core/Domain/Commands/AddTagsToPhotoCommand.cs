@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.Core.Domain.Commands
 {
     using System;
-
     using EagleEye.Core.Domain.Commands.Base;
     using JetBrains.Annotations;
 

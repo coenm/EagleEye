@@ -1,5 +1,6 @@
 ﻿namespace SearchEngine.LuceneNet.ReadModel.Internal.EventHandlers
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -8,9 +9,11 @@
     using EagleEye.Core.Domain.Events;
     using Helpers.Guards;
     using JetBrains.Annotations;
+    using Lucene.Net.Search.Payloads;
     using NLog;
     using SearchEngine.LuceneNet.ReadModel.Internal.LuceneNet;
     using SearchEngine.LuceneNet.ReadModel.Internal.Model;
+    using TimestampPrecision = EagleEye.Core.TimestampPrecision;
 
     internal class PhotoCreatedEventHandler :
             ICancellableEventHandler<PhotoCreated>,
@@ -19,7 +22,8 @@
             ICancellableEventHandler<PersonsAddedToPhoto>,
             ICancellableEventHandler<PersonsRemovedFromPhoto>,
             ICancellableEventHandler<LocationClearedFromPhoto>,
-            ICancellableEventHandler<LocationSetToPhoto>
+            ICancellableEventHandler<LocationSetToPhoto>,
+            ICancellableEventHandler<DateTimeTakenChanged>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly PhotoIndex photoIndex;
@@ -37,11 +41,6 @@
             var storedItem = photoIndex.Search(message.Id);
 
             // should be null
-            // otherwise,delete it
-            if (storedItem != null)
-            {
-                photoIndex.DeleteById(message.Id);
-            }
 
             // not interested in message.FileHash.
 
@@ -53,10 +52,10 @@
                 FileMimeType = message.MimeType,
                 Tags = message.Tags?.ToList(),
                 Persons = message.Persons?.ToList(),
-                // TimeStamp
+                DateTimeTaken = null, // todo
             };
 
-            return photoIndex.IndexMediaFileAsync(photo);
+            return photoIndex.ReIndexMediaFileAsync(photo);
         }
 
         public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
@@ -100,6 +99,41 @@
             DebugGuard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
 
             await Task.Delay(0, token).ConfigureAwait(false);
+        }
+
+        public Task Handle(DateTimeTakenChanged message, CancellationToken token = new CancellationToken())
+        {
+            DebugGuard.NotNull(message, nameof(message));
+
+            var storedItem = photoIndex.Search(message.Id);
+
+            if (storedItem == null)
+                throw new NullReferenceException();
+
+            storedItem.DateTimeTaken = new Timestamp(message.DateTimeTaken, Convert(message.Precision));
+
+            return photoIndex.ReIndexMediaFileAsync(storedItem);
+        }
+
+        private Model.TimestampPrecision Convert(TimestampPrecision input)
+        {
+            switch (input)
+            {
+            case TimestampPrecision.Year:
+                return Model.TimestampPrecision.Year;
+            case TimestampPrecision.Month:
+                return Model.TimestampPrecision.Month;
+            case TimestampPrecision.Day:
+                return Model.TimestampPrecision.Day;
+            case TimestampPrecision.Hour:
+                return Model.TimestampPrecision.Hour;
+            case TimestampPrecision.Minute:
+                return Model.TimestampPrecision.Minute;
+            case TimestampPrecision.Second:
+                return Model.TimestampPrecision.Second;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(input), input, null);
+            }
         }
     }
 }

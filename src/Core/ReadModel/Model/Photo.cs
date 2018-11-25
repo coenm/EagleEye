@@ -16,6 +16,7 @@
             [NotNull] IReadOnlyList<string> tags,
             [NotNull] IReadOnlyList<string> persons,
             [CanBeNull] Location location,
+            DateTime? taken,
             int version)
         {
             DebugGuard.NotNull(filename, nameof(filename));
@@ -30,6 +31,7 @@
             Tags = tags;
             Persons = persons;
             Location = location;
+            Taken = taken;
             Version = version;
         }
 
@@ -46,6 +48,8 @@
         public IReadOnlyList<string> Persons { get; }
 
         public Location Location { get; }
+
+        public DateTime? Taken { get; }
 
         public int Version { get; }
     }

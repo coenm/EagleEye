@@ -105,7 +105,7 @@
         }
 
         [PublicAPI]
-        public Task<bool> IndexMediaFileAsync([NotNull] Photo data)
+        public Task<bool> ReIndexMediaFileAsync([NotNull] Photo data)
         {
             Guard.NotNull(data, nameof(data));
 
@@ -150,10 +150,14 @@
                 }
             }
 
-//            var dateString = DateTools.DateToString(
-//                data.DateTimeTaken.Value,
-//                PrecisionToResolution(data.DateTimeTaken.Precision));
-//            doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));
+            if (data.DateTimeTaken != null)
+            {
+                var dateString = DateTools.DateToString(
+                    data.DateTimeTaken.Value,
+                    PrecisionToResolution(data.DateTimeTaken.Precision));
+
+                doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));
+            }
 
             foreach (var person in data.Persons ?? new List<string>())
             {
@@ -277,7 +281,7 @@
                                        LocationCountryCode = doc.GetField(KeyLocCountryCode)?.GetStringValue(),
                                        LocationLatitude = doc.GetField(KeyLocLatitude)?.GetSingleValue() ?? 0,
                                        LocationLongitude = doc.GetField(KeyLocLongitude)?.GetSingleValue() ?? 0,
-//                                       DateTimeTaken = StringToTimestamp(doc.Get(KeyDateTaken)),
+                                       DateTimeTaken = StringToTimestamp(doc.Get(KeyDateTaken)),
                                        Persons = doc.GetValues(KeyPerson)?.ToList() ?? new List<string>(),
                                        Tags = doc.GetValues(KeyTag)?.ToList() ?? new List<string>(),
                                    };
@@ -321,46 +325,41 @@
             indexDirectory?.Dispose();
         }
 
-//        [CanBeNull]
-//        private static Timestamp StringToTimestamp(string dateString)
-//        {
-//            if (string.IsNullOrWhiteSpace(dateString))
-//                return null;
-//
-//            var y = DateTools.StringToDate(dateString);
-//            Timestamp.FromDateTime(y)
-//
-////            var result = new Timestamp
-//
-////                             };
-////
-////            switch (dateString.Length)
-////            {
-////                case 4:
-////                    result.Precision = TimestampPrecision.Year;
-////                    break;
-////                case 6:
-////                    result.Precision = TimestampPrecision.Month;
-////                    break;
-////                case 8:
-////                    result.Precision = TimestampPrecision.Day;
-////                    break;
-////                case 10:
-////                    result.Precision = TimestampPrecision.Hour;
-////                    break;
-////                case 12:
-////                    result.Precision = TimestampPrecision.Minute;
-////                    break;
-////                case 14:
-////                    result.Precision = TimestampPrecision.Second;
-////                    break;
-////                default:
-////                    result.Precision = TimestampPrecision.Second;
-////                    break;
-////            }
-////
-////            return result;
-//        }
+        [CanBeNull]
+        private static Model.Timestamp StringToTimestamp(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+                return null;
+
+            var precision = default(Model.TimestampPrecision);
+
+            switch (dateString.Length)
+            {
+            case 4:
+                precision = Model.TimestampPrecision.Year;
+                break;
+            case 6:
+                precision = Model.TimestampPrecision.Month;
+                break;
+            case 8:
+                precision = Model.TimestampPrecision.Day;
+                break;
+            case 10:
+                precision = Model.TimestampPrecision.Hour;
+                break;
+            case 12:
+                precision = Model.TimestampPrecision.Minute;
+                break;
+            case 14:
+                precision = Model.TimestampPrecision.Second;
+                break;
+            default:
+                precision = Model.TimestampPrecision.Second;
+                break;
+            }
+
+            return new Model.Timestamp(DateTools.StringToDate(dateString), precision);
+        }
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
@@ -414,30 +413,25 @@
             spatialStrategy = new RecursivePrefixTreeStrategy(grid, KeyLocGps);
         }
 
-        private DateTools.Resolution PrecisionToResolution(TimestampPrecision precision)
+        private DateTools.Resolution PrecisionToResolution(Model.TimestampPrecision precision)
         {
             switch (precision)
             {
-                case TimestampPrecision.Year:
+                case Model.TimestampPrecision.Year:
                     return DateTools.Resolution.YEAR;
-                case TimestampPrecision.Month:
+                case Model.TimestampPrecision.Month:
                     return DateTools.Resolution.MONTH;
-                case TimestampPrecision.Day:
+                case Model.TimestampPrecision.Day:
                     return DateTools.Resolution.DAY;
-                case TimestampPrecision.Hour:
+                case Model.TimestampPrecision.Hour:
                     return DateTools.Resolution.HOUR;
-                case TimestampPrecision.Minute:
+                case Model.TimestampPrecision.Minute:
                     return DateTools.Resolution.MINUTE;
-                case TimestampPrecision.Second:
+                case Model.TimestampPrecision.Second:
                     return DateTools.Resolution.SECOND;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(precision), precision, null);
             }
-        }
-
-        public void DeleteById(Guid guid)
-        {
-            RemoveFromIndexByGuid(guid);
         }
     }
 }
