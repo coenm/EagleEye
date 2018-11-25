@@ -25,7 +25,6 @@
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
-    using SearchEngine.Lucene.Bootstrap;
     using SearchEngine.LuceneNet.ReadModel;
     using SimpleInjector;
 
@@ -118,8 +117,6 @@
         private static void RegisterSearchEngine([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
         {
             DebugGuard.NotNull(container, nameof(container));
-
-            SearchEngineLuceneBootstrapper.Bootstrap(container); // old
 
             Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,
