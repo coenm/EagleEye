@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.ReadModel.Model
+﻿namespace SearchEngine.LuceneNet.ReadModel.Interface.Model
 {
     using System;
     using System.Collections.Generic;
@@ -6,50 +6,41 @@
     using Helpers.Guards;
     using JetBrains.Annotations;
 
-    public class Photo
+    public class PhotoResult : PhotoIdResult
     {
-        internal Photo(
+        internal PhotoResult(
             Guid id,
             [NotNull] string filename,
-            [NotNull] string fileMimeType,
-            [NotNull] byte[] fileSha256,
+            string mimeType,
+            // [NotNull] byte[] fileSha256, // by design.
             [NotNull] IReadOnlyList<string> tags,
             [NotNull] IReadOnlyList<string> persons,
             [CanBeNull] Location location,
-            DateTime? taken,
-            int version)
+            int version,
+            float score)
+            : base(id, score)
         {
             DebugGuard.NotNull(filename, nameof(filename));
-            DebugGuard.NotNull(fileSha256, nameof(fileSha256));
             DebugGuard.NotNull(tags, nameof(tags));
             DebugGuard.NotNull(persons, nameof(persons));
 
-            Id = id;
             Filename = filename;
-            FileMimeType = fileMimeType;
-            FileSha256 = fileSha256;
+            MimeType = mimeType;
             Tags = tags;
             Persons = persons;
             Location = location;
-            Taken = taken;
             Version = version;
         }
 
-        public Guid Id { get; }
-
         public string Filename { get; }
 
-        public string FileMimeType { get; }
-
-        public byte[] FileSha256 { get; }
+        public string MimeType { get; }
 
         public IReadOnlyList<string> Tags { get; }
 
         public IReadOnlyList<string> Persons { get; }
 
         public Location Location { get; }
-
-        public DateTime? Taken { get; }
 
         public int Version { get; }
     }

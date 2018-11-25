@@ -16,7 +16,8 @@
                                                             ICommandHandler<RemoveTagsFromPhotoCommand>,
                                                             ICommandHandler<RemovePersonsFromPhotoCommand>,
                                                             ICommandHandler<SetLocationToPhotoCommand>,
-                                                            ICommandHandler<ClearLocationFromPhotoCommand>
+                                                            ICommandHandler<ClearLocationFromPhotoCommand>,
+        ICommandHandler<SetDateTimeTakenCommand>
     {
         private readonly ISession session;
 
@@ -28,7 +29,14 @@
 
         public async Task Handle(CreatePhotoCommand message)
         {
-            var item = new Photo(message.Id, message.Name, message.FileSha256, message.Tags, message.Persons);
+            var item = new Photo(
+                message.Id,
+                message.FileName,
+                message.PhotoMimeType,
+                message.FileSha256,
+                message.Tags,
+                message.Persons);
+
             await session.Add(item).ConfigureAwait(false);
             await session.Commit().ConfigureAwait(false);
 
@@ -91,6 +99,13 @@
         {
             var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
             item.ClearLocationData();
+            await session.Commit().ConfigureAwait(false);
+        }
+
+        public async Task Handle(SetDateTimeTakenCommand message)
+        {
+            var item = await session.Get<Photo>(message.Id).ConfigureAwait(false);
+            item.SetDateTimeTaken(message.DateTimeTaken.Value, message.DateTimeTaken.Precision);
             await session.Commit().ConfigureAwait(false);
         }
     }

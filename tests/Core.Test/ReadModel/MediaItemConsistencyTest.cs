@@ -42,6 +42,7 @@
             var guid = Guid.NewGuid();
             var version = 0;
             var filename = "a.jpg";
+            var fileMimeType = "image/jpeg";
             var initialTags = new[] { "soccer", "sports" };
             var initialPersons = new[] { "alice", "bob" };
             var initTimestamp = DateTimeOffset.UtcNow;
@@ -49,7 +50,7 @@
             var expectedPhoto = CreatePhoto(guid, version, filename, fileHash, initTimestamp, initialTags, initialPersons);
 
             // act
-            await sut.Handle(new PhotoCreated(guid, filename, fileHash, initialTags, initialPersons)
+            await sut.Handle(new PhotoCreated(guid, filename, fileMimeType, fileHash, initialTags, initialPersons)
             {
                 TimeStamp = initTimestamp,
             }).ConfigureAwait(false);
@@ -105,6 +106,7 @@
                 EventTimestamp = eventTimestamp,
                 Tags = CreateTags(tags),
                 People = CreatePeoples(people),
+                FileMimeType = "image/jpeg",
             };
 
             return result;

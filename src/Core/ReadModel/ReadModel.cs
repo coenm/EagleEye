@@ -44,10 +44,12 @@
             return new Photo(
                 photo.Id,
                 photo.Filename,
+                photo.FileMimeType,
                 photo.FileSha256,
                 photo.Tags?.Select(x => x.Value).ToList().AsReadOnly() ?? new List<string>().AsReadOnly(),
                 photo.People?.Select(x => x.Value).ToList().AsReadOnly() ?? new List<string>().AsReadOnly(),
                 MapLocation(photo.Location),
+                photo.DateTimeTaken,
                 photo.Version);
         }
 

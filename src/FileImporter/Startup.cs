@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using Core.Domain.EventStore;
+
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
@@ -11,8 +11,8 @@
     using CQRSlite.Messages;
     using CQRSlite.Queries;
     using CQRSlite.Routing;
-    using EagleEye.Core.Domain;
     using EagleEye.Core.Domain.CommandHandlers;
+    using EagleEye.Core.Domain.EventStore;
     using EagleEye.Core.ReadModel;
     using EagleEye.Core.ReadModel.EntityFramework;
     using EagleEye.Core.ReadModel.EventHandlers;
@@ -25,7 +25,7 @@
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
-    using SearchEngine.Lucene.Bootstrap;
+    using SearchEngine.LuceneNet.ReadModel;
     using SimpleInjector;
 
     public static class Startup
@@ -36,6 +36,7 @@
             Guard.NotNull(indexFilename, nameof(indexFilename));
 
             var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            userDir = Path.Combine(userDir, "EagleEye");
 
             var similarityFilename = indexFilename + ".similarity.json";
             // todo check arguments.
@@ -53,7 +54,7 @@
 //            container.RegisterSingleton<IEventStore, InMemoryEventStore>();
             container.RegisterSingleton<IEventStore>(() =>
             {
-                string basePath = Path.Combine(userDir, "EagleEyeEvents");
+                string basePath = Path.Combine(userDir, "Events");
                 return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
             });
             container.RegisterSingleton<ICache, MemoryCache>();
@@ -95,7 +96,7 @@
                     return result;
                 }, Lifestyle.Singleton);
 
-            RegisterSearchEngine(container);
+            RegisterSearchEngine(container, Path.Combine(userDir, "Index"));
 
             // strange stuff..
             container.Register<MediaItemConsistency>();
@@ -103,6 +104,8 @@
             var registrar = new RouteRegistrar(container);
             registrar.RegisterHandlers(typeof(MediaItemCommandHandlers));
             registrar.RegisterHandlers(typeof(MediaItemConsistency));
+
+            registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
         }
 
         public static void VerifyContainer([NotNull] Container container)
@@ -111,10 +114,14 @@
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
-        private static void RegisterSearchEngine([NotNull] Container container)
+        private static void RegisterSearchEngine([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
         {
             DebugGuard.NotNull(container, nameof(container));
-            SearchEngineLuceneBootstrapper.Bootstrap(container);
+
+            Bootstrapper.BootstrapSearchEngineLuceneReadModel(
+                container,
+                string.IsNullOrWhiteSpace(indexBaseDirectory),
+                indexBaseDirectory);
         }
     }
 }

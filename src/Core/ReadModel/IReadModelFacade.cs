@@ -6,6 +6,7 @@
 
     using JetBrains.Annotations;
 
+    [PublicAPI]
     public interface IReadModelFacade
     {
         [ItemCanBeNull]

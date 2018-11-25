@@ -41,7 +41,7 @@
 
             // act
             var hash = new byte[32];
-            var command = new CreatePhotoCommand("aap", hash, new[] { "zoo", "holiday" }, null);
+            var command = new CreatePhotoCommand("aap", hash, "image/jpeg", new[] { "zoo", "holiday" }, null);
             var guid = command.Id;
             await handler.Handle(command).ConfigureAwait(false);
 

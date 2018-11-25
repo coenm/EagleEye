@@ -8,6 +8,7 @@
 
     using CommandLine;
     using CQRSlite.Commands;
+    using EagleEye.Core;
     using EagleEye.Core.Domain.Commands;
     using EagleEye.Core.ReadModel;
     using EagleEye.FileImporter.CmdOptions;
@@ -16,7 +17,10 @@
     using EagleEye.FileImporter.Infrastructure.Everything;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
+    using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Similarity;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using ShellProgressBar;
     using SimpleInjector;
 
@@ -74,11 +78,14 @@
             Startup.ConfigureContainer(container, opts.IndexFile);
 
             var readModelFacade = container.GetInstance<IReadModelFacade>();
-
-            var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], new[] { "zoo", "holiday" }, null);
-
             var dispatcher = container.GetInstance<ICommandSender>();
+            var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
+
+            var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
             dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+
+            var commandDateTime = new SetDateTimeTakenCommand(command.Id, new Timestamp(2010, 04));
+            dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
             var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
 
@@ -111,6 +118,39 @@
                 var command1 = new AddPersonsToPhotoCommand(command.Id, "AAA", "BBB");
                 dispatcher.Send(command1).GetAwaiter().GetResult();
             }
+
+            // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+            // search terms:
+            // - id
+            // - version
+            // - filename
+            // - filetype
+            // - city
+            // - countrycode
+            // - country
+            // - state
+            // - sublocation
+            // - longitude
+            // - latitude
+            // - date
+            // - person
+            // - tag
+            // - gps
+            var searchResults = search.FullSearch("tag:zoo");
+            Console.WriteLine(searchResults.Count);
+
+            var JsonSerializerSettings = new JsonSerializerSettings();
+            JsonSerializerSettings.Converters.Add(new StringEnumConverter());
+            JsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
+            Console.WriteLine(searchResults.Count);
+            Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
+            Console.WriteLine();
+            searchResults = search.FullSearch("tag:zo~"); // should also match zoo ;-)
+            Console.WriteLine(searchResults.Count);
+            Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
+
+            searchResults = search.FullSearch("tag:zo"); // should match nothing.
+            Console.WriteLine(searchResults.Count);
 
             Console.WriteLine("Press enter");
             Console.ReadKey();

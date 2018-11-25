@@ -21,7 +21,8 @@
         ICancellableEventHandler<PersonsAddedToPhoto>,
         ICancellableEventHandler<PersonsRemovedFromPhoto>,
         ICancellableEventHandler<LocationClearedFromPhoto>,
-        ICancellableEventHandler<LocationSetToPhoto>
+        ICancellableEventHandler<LocationSetToPhoto>,
+        ICancellableEventHandler<DateTimeTakenChanged>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IEagleEyeRepository repository;
@@ -40,9 +41,11 @@
             {
                 Id = message.Id,
                 Filename = message.FileName,
+                FileMimeType = message.MimeType,
                 Version = message.Version,
                 FileSha256 = message.FileHash,
                 EventTimestamp = message.TimeStamp,
+                DateTimeTaken = null,
             };
 
             if (message.Tags != null)
@@ -208,6 +211,30 @@
                 Latitude = message.Location.Latitude,
                 Longitude = message.Location.Longitude,
             };
+
+            photo.EventTimestamp = message.TimeStamp;
+            photo.Version = message.Version;
+
+            await repository.UpdateAsync(photo).ConfigureAwait(false);
+        }
+
+        public async Task Handle(DateTimeTakenChanged message, CancellationToken token = new CancellationToken())
+        {
+            DebugGuard.NotNull(message, nameof(message));
+
+            var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
+
+            if (photo == null)
+            {
+                Logger.Error($"No {nameof(Photo)} found with id {message.Id}.");
+                return;
+            }
+
+            // check versions?
+
+            // todo, something with precision?
+
+            photo.DateTimeTaken = message.DateTimeTaken;
 
             photo.EventTimestamp = message.TimeStamp;
             photo.Version = message.Version;

@@ -1,4 +1,4 @@
-﻿namespace SearchEngine.LuceneNet.Core.Index
+﻿namespace SearchEngine.LuceneNet.ReadModel.Internal.LuceneNet
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,6 @@
 
     using Helpers.Guards;
     using JetBrains.Annotations;
-
     using Lucene.Net.Analysis;
     using Lucene.Net.Analysis.Standard;
     using Lucene.Net.Documents;
@@ -18,16 +17,17 @@
     using Lucene.Net.Spatial;
     using Lucene.Net.Spatial.Prefix;
     using Lucene.Net.Spatial.Prefix.Tree;
-
-    using SearchEngine.Interface.Commands.ParameterObjects;
-    using SearchEngine.LuceneNet.Core.Internals;
-
+    using SearchEngine.LuceneNet.ReadModel.Interface;
+    using SearchEngine.LuceneNet.ReadModel.Internal.Model;
     using Spatial4n.Core.Context;
 
     using Directory = Lucene.Net.Store.Directory;
+    using TimestampPrecision = EagleEye.Core.TimestampPrecision;
 
-    public class MediaIndex : IDisposable
+    internal class PhotoIndex : IDisposable
     {
+        private const string KeyId = "id";
+        private const string KeyVersion = "version";
         private const string KeyFilename = "filename";
         private const string KeyFileType = "filetype";
         private const string KeyLocCity = "city";
@@ -51,7 +51,7 @@
         private SpatialContext spatialContext;
         private SpatialStrategy spatialStrategy;
 
-        public MediaIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
+        public PhotoIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
             Guard.NotNull(indexDirectoryFactory, nameof(indexDirectoryFactory));
 
@@ -90,7 +90,7 @@
 
             queryParser = new MultiFieldQueryParser(
                                                      LuceneNetVersion.Version,
-                                                     new[] { KeyLocCity, KeyLocCountry }, // todo define fields
+                                                     new[] { KeyLocCity, KeyLocCountry, KeyId, KeyFilename, }, // todo define fields
                                                      analyzer);
 
             var indexWriterConfig = new IndexWriterConfig(LuceneNetVersion.Version, analyzer)
@@ -105,35 +105,36 @@
         }
 
         [PublicAPI]
-        public Task<bool> IndexMediaFileAsync([NotNull] MediaObject data)
+        public Task<bool> ReIndexMediaFileAsync([NotNull] Photo data)
         {
             Guard.NotNull(data, nameof(data));
-            Guard.NotNull(data.FileInformation, nameof(data.FileInformation)); // todo verification of data object
-            Guard.NotNullOrWhiteSpace(data.FileInformation.Filename, nameof(data.FileInformation.Filename));
 
-            RemoveFromIndexByFilename(data.FileInformation.Filename);
+            RemoveFromIndexByFilename(data.FileName);
+            RemoveFromIndexByGuid(data.Id);
 
             var doc = new Document
             {
                 // file information
-                new StringField(KeyFilename, data.FileInformation?.Filename ?? string.Empty, Field.Store.YES),
-                new StringField(KeyFileType, data.FileInformation?.Type ?? string.Empty, Field.Store.YES),
+                new StringField(KeyId, data.Id.ToString(), Field.Store.YES),
+                new NumericDocValuesField(KeyVersion, data.Version), // int field??
+                new StringField(KeyFilename, data.FileName ?? string.Empty, Field.Store.YES),
+                new StringField(KeyFileType, data.FileMimeType ?? string.Empty, Field.Store.YES),
 
                 // location data
-                new TextField(KeyLocCity, data.Location?.City ?? string.Empty, Field.Store.YES),
-                new TextField(KeyLocCountryCode, data.Location?.CountryCode ?? string.Empty, Field.Store.YES),
-                new TextField(KeyLocCountry, data.Location?.CountryName ?? string.Empty, Field.Store.YES),
-                new TextField(KeyLocState, data.Location?.State ?? string.Empty, Field.Store.YES),
-                new TextField(KeyLocSubLocation, data.Location?.SubLocation ?? string.Empty, Field.Store.YES),
-                new StoredField(KeyLocLongitude, data.Location?.Coordinate?.Longitude ?? 0),
-                new StoredField(KeyLocLatitude, data.Location?.Coordinate?.Latitude ?? 0),
+                new TextField(KeyLocCity, data.LocationCity ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocCountryCode, data.LocationCountryCode ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocCountry, data.LocationCountryName ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocState, data.LocationState ?? string.Empty, Field.Store.YES),
+                new TextField(KeyLocSubLocation, data.LocationSubLocation ?? string.Empty, Field.Store.YES),
+                new StoredField(KeyLocLongitude, data.LocationLongitude ?? 0),
+                new StoredField(KeyLocLatitude, data.LocationLatitude ?? 0),
             };
 
             // index coordinate
-            var x = data.Location?.Coordinate?.Longitude;
-            var y = data.Location?.Coordinate?.Latitude;
+            var x = data.LocationLongitude;
+            var y = data.LocationLatitude;
 
-            if (x != null)
+            if (x != null && y != null)
             {
                 var p = spatialContext.MakePoint(x.Value, y.Value);
 
@@ -149,10 +150,14 @@
                 }
             }
 
-            var dateString = DateTools.DateToString(
-                data.DateTimeTaken.Value,
-                PrecisionToResolution(data.DateTimeTaken.Precision));
-            doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));
+            if (data.DateTimeTaken != null)
+            {
+                var dateString = DateTools.DateToString(
+                    data.DateTimeTaken.Value,
+                    PrecisionToResolution(data.DateTimeTaken.Precision));
+
+                doc.Add(new StringField(KeyDateTaken, dateString, Field.Store.YES));
+            }
 
             foreach (var person in data.Persons ?? new List<string>())
             {
@@ -174,7 +179,7 @@
                 // Existing index (an old copy of this document may have been indexed) so
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
-                indexWriter.UpdateDocument(new Term(KeyFilename, data.FileInformation.Filename), doc);
+                indexWriter.UpdateDocument(new Term(KeyId, data.Id.ToString()), doc);
             }
 
             indexWriter.Flush(true, true);
@@ -217,8 +222,20 @@
             throw new Exception("No items found.");
         }
 
+        [CanBeNull]
+        public PhotoSearchResult Search(Guid guid)
+        {
+            if (guid == Guid.Empty)
+                return null;
+
+            var term = new Term(KeyId, guid.ToString());
+            var query = new TermQuery(term);
+            return Search(query, null, out _).SingleOrDefault();
+        }
+
         [PublicAPI]
-        public List<MediaResult> Search(string queryString, out int totalHits)
+        [NotNull]
+        public List<PhotoSearchResult> Search(string queryString, out int totalHits)
         {
             // Parse the query - assuming it's not a single term but an actual query string
             // the QueryParser used is using the same analyzer used for indexing
@@ -227,9 +244,10 @@
         }
 
         [PublicAPI]
-        public List<MediaResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
+        [NotNull]
+        public List<PhotoSearchResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {
-            var results = new List<MediaResult>();
+            var results = new List<PhotoSearchResult>();
             totalHits = 0;
 
             // Execute the search with a fresh indexSearcher
@@ -250,26 +268,19 @@
                     var doc = searcher.Doc(result.Doc);
 
                     // Results are automatically sorted by relevance
-                    var item = new MediaResult(result.Score)
+                    var item = new PhotoSearchResult(result.Score)
                                    {
-                                       FileInformation = new FileInformation
-                                                             {
-                                                                 Filename = doc.GetField(KeyFilename)?.GetStringValue(),
-                                                                 Type = doc.GetField(KeyFileType)?.GetStringValue(),
-                                                             },
-                                       Location = new Location
-                                           {
-                                               CountryName = doc.GetField(KeyLocCountry)?.GetStringValue(),
-                                               State = doc.GetField(KeyLocState)?.GetStringValue(),
-                                               City = doc.GetField(KeyLocCity)?.GetStringValue(),
-                                               SubLocation = doc.GetField(KeyLocSubLocation)?.GetStringValue(),
-                                               CountryCode = doc.GetField(KeyLocCountryCode)?.GetStringValue(),
-                                               Coordinate = new Coordinate
-                                                                {
-                                                                    Latitude = doc.GetField(KeyLocLatitude)?.GetSingleValue() ?? 0,
-                                                                    Longitude = doc.GetField(KeyLocLongitude)?.GetSingleValue() ?? 0,
-                                                                },
-                                           },
+                                       Id = GetId(doc),
+                                       Version = doc.GetField(KeyVersion)?.GetInt32Value() ?? 0,
+                                       FileName = doc.GetField(KeyFilename)?.GetStringValue(),
+                                       FileMimeType = doc.GetField(KeyFileType)?.GetStringValue(),
+                                       LocationCountryName = doc.GetField(KeyLocCountry)?.GetStringValue(),
+                                       LocationState = doc.GetField(KeyLocState)?.GetStringValue(),
+                                       LocationCity = doc.GetField(KeyLocCity)?.GetStringValue(),
+                                       LocationSubLocation = doc.GetField(KeyLocSubLocation)?.GetStringValue(),
+                                       LocationCountryCode = doc.GetField(KeyLocCountryCode)?.GetStringValue(),
+                                       LocationLatitude = doc.GetField(KeyLocLatitude)?.GetSingleValue() ?? 0,
+                                       LocationLongitude = doc.GetField(KeyLocLongitude)?.GetSingleValue() ?? 0,
                                        DateTimeTaken = StringToTimestamp(doc.Get(KeyDateTaken)),
                                        Persons = doc.GetValues(KeyPerson)?.ToList() ?? new List<string>(),
                                        Tags = doc.GetValues(KeyTag)?.ToList() ?? new List<string>(),
@@ -292,6 +303,20 @@
             return results;
         }
 
+        private Guid GetId([NotNull] Document doc)
+        {
+            DebugGuard.NotNull(doc, nameof(doc));
+
+            var guidString = doc.GetField(KeyId)?.GetStringValue();
+            if (string.IsNullOrWhiteSpace(guidString))
+                return Guid.Empty;
+
+            if (Guid.TryParse(guidString, out var id))
+                return id;
+
+            return Guid.Empty;
+        }
+
         public void Dispose()
         {
             analyzer?.Dispose();
@@ -300,42 +325,40 @@
             indexDirectory?.Dispose();
         }
 
-        private static Timestamp StringToTimestamp(string dateString)
+        [CanBeNull]
+        private static Model.Timestamp StringToTimestamp(string dateString)
         {
             if (string.IsNullOrWhiteSpace(dateString))
-                return new Timestamp();
+                return null;
 
-            var result = new Timestamp
-                             {
-                                 Value = DateTools.StringToDate(dateString),
-                             };
+            var precision = default(Model.TimestampPrecision);
 
             switch (dateString.Length)
             {
-                case 4:
-                    result.Precision = TimestampPrecision.Year;
-                    break;
-                case 6:
-                    result.Precision = TimestampPrecision.Month;
-                    break;
-                case 8:
-                    result.Precision = TimestampPrecision.Day;
-                    break;
-                case 10:
-                    result.Precision = TimestampPrecision.Hour;
-                    break;
-                case 12:
-                    result.Precision = TimestampPrecision.Minute;
-                    break;
-                case 14:
-                    result.Precision = TimestampPrecision.Second;
-                    break;
-                default:
-                    result.Precision = TimestampPrecision.Second;
-                    break;
+            case 4:
+                precision = Model.TimestampPrecision.Year;
+                break;
+            case 6:
+                precision = Model.TimestampPrecision.Month;
+                break;
+            case 8:
+                precision = Model.TimestampPrecision.Day;
+                break;
+            case 10:
+                precision = Model.TimestampPrecision.Hour;
+                break;
+            case 12:
+                precision = Model.TimestampPrecision.Minute;
+                break;
+            case 14:
+                precision = Model.TimestampPrecision.Second;
+                break;
+            default:
+                precision = Model.TimestampPrecision.Second;
+                break;
             }
 
-            return result;
+            return new Model.Timestamp(DateTools.StringToDate(dateString), precision);
         }
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
@@ -343,6 +366,26 @@
             DebugGuard.NotNullOrWhiteSpace(filename, nameof(filename));
 
             var term = new Term(KeyFilename, filename);
+
+            try
+            {
+                indexWriter.DeleteDocuments(term);
+                indexWriter.Flush(true, true);
+                indexWriter.Commit();
+            }
+            catch (OutOfMemoryException)
+            {
+                indexWriter.Dispose();
+                throw;
+            }
+        }
+
+        private void RemoveFromIndexByGuid(Guid guid)
+        {
+            if (guid == Guid.Empty)
+                return;
+
+            var term = new Term(KeyId, guid.ToString());
 
             try
             {
@@ -370,21 +413,21 @@
             spatialStrategy = new RecursivePrefixTreeStrategy(grid, KeyLocGps);
         }
 
-        private DateTools.Resolution PrecisionToResolution(TimestampPrecision precision)
+        private DateTools.Resolution PrecisionToResolution(Model.TimestampPrecision precision)
         {
             switch (precision)
             {
-                case TimestampPrecision.Year:
+                case Model.TimestampPrecision.Year:
                     return DateTools.Resolution.YEAR;
-                case TimestampPrecision.Month:
+                case Model.TimestampPrecision.Month:
                     return DateTools.Resolution.MONTH;
-                case TimestampPrecision.Day:
+                case Model.TimestampPrecision.Day:
                     return DateTools.Resolution.DAY;
-                case TimestampPrecision.Hour:
+                case Model.TimestampPrecision.Hour:
                     return DateTools.Resolution.HOUR;
-                case TimestampPrecision.Minute:
+                case Model.TimestampPrecision.Minute:
                     return DateTools.Resolution.MINUTE;
-                case TimestampPrecision.Second:
+                case Model.TimestampPrecision.Second:
                     return DateTools.Resolution.SECOND;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(precision), precision, null);
