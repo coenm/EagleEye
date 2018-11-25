@@ -22,7 +22,6 @@
     using Spatial4n.Core.Context;
 
     using Directory = Lucene.Net.Store.Directory;
-    using TimestampPrecision = EagleEye.Core.TimestampPrecision;
 
     internal class PhotoIndex : IDisposable
     {
@@ -116,7 +115,10 @@
             {
                 // file information
                 new StringField(KeyId, data.Id.ToString(), Field.Store.YES),
-                new NumericDocValuesField(KeyVersion, data.Version), // int field??
+
+                new NumericDocValuesField(KeyVersion, data.Version),
+                new StoredField(KeyVersion, data.Version),
+
                 new StringField(KeyFilename, data.FileName ?? string.Empty, Field.Store.YES),
                 new StringField(KeyFileType, data.FileMimeType ?? string.Empty, Field.Store.YES),
 
@@ -268,6 +270,8 @@
                     var doc = searcher.Doc(result.Doc);
 
                     // Results are automatically sorted by relevance
+
+                    var aaa = doc.GetField(KeyVersion);
                     var item = new PhotoSearchResult(result.Score)
                                    {
                                        Id = GetId(doc),

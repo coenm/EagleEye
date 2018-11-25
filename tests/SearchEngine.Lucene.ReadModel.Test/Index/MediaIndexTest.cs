@@ -1,26 +1,24 @@
-﻿namespace SearchEngine.Lucene.Core.Test.Index
+﻿namespace SearchEngine.Lucene.ReadModel.Test.Index
 {
     using System;
     using System.Threading.Tasks;
 
     using FluentAssertions;
-
     using global::Lucene.Net.Search;
-
-    using SearchEngine.Lucene.Core.Test.Data;
-    using SearchEngine.LuceneNet.Core;
-    using SearchEngine.LuceneNet.Core.Index;
-
+    using SearchEngine.Lucene.ReadModel.Test.Data;
+    using SearchEngine.LuceneNet.ReadModel.Interface;
+    using SearchEngine.LuceneNet.ReadModel.Internal.LuceneDirectoryFactories;
+    using SearchEngine.LuceneNet.ReadModel.Internal.LuceneNet;
     using Xunit;
 
     public class MediaIndexTest : IDisposable
     {
-        private readonly MediaIndex sut;
+        private readonly PhotoIndex sut;
 
         public MediaIndexTest()
         {
             ILuceneDirectoryFactory indexDirectoryFactory = new RamLuceneDirectoryFactory();
-            sut = new MediaIndex(indexDirectoryFactory);
+            sut = new PhotoIndex(indexDirectoryFactory);
         }
 
         public void Dispose()
@@ -67,7 +65,7 @@
             var data = DataStore.File001;
 
             // act
-            var result = await sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+            var result = await sut.ReIndexMediaFileAsync(data).ConfigureAwait(false);
 
             // assert
             result.Should().BeTrue();
@@ -81,8 +79,8 @@
             var data = DataStore.File001;
 
             // act
-            var result1 = await sut.IndexMediaFileAsync(data).ConfigureAwait(false);
-            var result2 = await sut.IndexMediaFileAsync(data).ConfigureAwait(false);
+            var result1 = await sut.ReIndexMediaFileAsync(data).ConfigureAwait(false);
+            var result2 = await sut.ReIndexMediaFileAsync(data).ConfigureAwait(false);
 
             // assert
             result1.Should().BeTrue();

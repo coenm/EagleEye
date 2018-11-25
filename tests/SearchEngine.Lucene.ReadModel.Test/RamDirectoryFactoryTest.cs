@@ -1,12 +1,10 @@
-namespace SearchEngine.Lucene.Core.Test
+﻿namespace SearchEngine.Lucene.ReadModel.Test
 {
     using FluentAssertions;
+    using SearchEngine.LuceneNet.ReadModel.Internal.LuceneDirectoryFactories;
+    using Xunit;
 
     using global::Lucene.Net.Store;
-
-    using SearchEngine.LuceneNet.Core;
-
-    using Xunit;
 
     public class RamDirectoryFactoryTest
     {
