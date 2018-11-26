@@ -10,7 +10,8 @@
     using CQRSlite.Commands;
     using EagleEye.Core;
     using EagleEye.Core.Domain.Commands;
-    using EagleEye.Core.ReadModel;
+    // using EagleEye.Core.ReadModel;
+    // using EagleEye.Core.ReadModel.EntityFramework.Models;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
@@ -21,6 +22,9 @@
     using EagleEye.FileImporter.Similarity;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+
+    using Photo.EntityFramework.ReadModel.Interface;
+
     using ShellProgressBar;
     using SimpleInjector;
 
@@ -77,7 +81,7 @@
         {
             Startup.ConfigureContainer(container, opts.IndexFile);
 
-            var readModelFacade = container.GetInstance<IReadModelFacade>();
+            var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
             var dispatcher = container.GetInstance<ICommandSender>();
             var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
 

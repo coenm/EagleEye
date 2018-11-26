@@ -45,6 +45,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "src\Helpers\Help
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.ReadModel", "src\SearchEngine.Lucene.ReadModel\SearchEngine.Lucene.ReadModel.csproj", "{4D01785D-A758-4F4A-A0E8-61CED8ED98EB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.EntityFramework.ReadModel.Test", "tests\Photo.EntityFramework.ReadModel.Test\Photo.EntityFramework.ReadModel.Test.csproj", "{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.EntityFramework.ReadModel", "src\Photo.EntityFramework.ReadModel\Photo.EntityFramework.ReadModel.csproj", "{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +115,14 @@ Global
 		{4D01785D-A758-4F4A-A0E8-61CED8ED98EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D01785D-A758-4F4A-A0E8-61CED8ED98EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D01785D-A758-4F4A-A0E8-61CED8ED98EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

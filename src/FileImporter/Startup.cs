@@ -13,9 +13,6 @@
     using CQRSlite.Routing;
     using EagleEye.Core.Domain.CommandHandlers;
     using EagleEye.Core.Domain.EventStore;
-    using EagleEye.Core.ReadModel;
-    using EagleEye.Core.ReadModel.EntityFramework;
-    using EagleEye.Core.ReadModel.EventHandlers;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
@@ -24,8 +21,6 @@
     using EagleEye.FileImporter.Similarity;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Microsoft.EntityFrameworkCore;
-    using SearchEngine.LuceneNet.ReadModel;
     using SimpleInjector;
 
     public static class Startup
@@ -51,7 +46,7 @@
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
-//            container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
             container.RegisterSingleton<IEventStore>(() =>
             {
                 string basePath = Path.Combine(userDir, "Events");
@@ -64,8 +59,6 @@
             container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
             container.Register<ISession, Session>(Lifestyle.Singleton); // check.
 
-            container.Register<IReadModelFacade, ReadModel>();
-
             // Scan and register command handlers and event handlers
             var coreAssembly = typeof(MediaItemCommandHandlers).Assembly;
             container.Register(typeof(IHandler<>), coreAssembly, Lifestyle.Transient);
@@ -77,35 +70,25 @@
 
             // entity framework stuff??! transient? singleton? ..
             // wip
-            container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
-
-            container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
-            container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
+            //// container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
+            //
+            // container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
+            // container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
 
             var fullFile = Path.Combine(userDir, "EagleEye.db");
+            RegisterSearchEngineReadModel(container, Path.Combine(userDir, "Index"));
+
             string connectionString = $"Filename={fullFile}";
+            RegisterPhotoDatabaseReadModel(container, connectionString);
 
-            container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
-
-            container.Register<IEagleEyeDbContextFactory>(
-                () =>
-                {
-                    // arghhh... todo
-                    var result = container.GetInstance<EagleEyeDbContextFactory>();
-                    result.Initialize().GetAwaiter().GetResult();
-                    return result;
-                }, Lifestyle.Singleton);
-
-            RegisterSearchEngine(container, Path.Combine(userDir, "Index"));
 
             // strange stuff..
-            container.Register<MediaItemConsistency>();
             container.Register<MediaItemCommandHandlers>();
             var registrar = new RouteRegistrar(container);
             registrar.RegisterHandlers(typeof(MediaItemCommandHandlers));
-            registrar.RegisterHandlers(typeof(MediaItemConsistency));
 
-            registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(Photo.EntityFramework.ReadModel.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(SearchEngine.LuceneNet.ReadModel.Bootstrapper.GetEventHandlerTypes());
         }
 
         public static void VerifyContainer([NotNull] Container container)
@@ -114,11 +97,21 @@
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
-        private static void RegisterSearchEngine([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
+        private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+
+            Photo.EntityFramework.ReadModel.Bootstrapper.BootstrapEntityFrameworkReadModel(
+                                                                                           container,
+                                                                                           connectionString);
+        }
+
+        private static void RegisterSearchEngineReadModel([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
         {
             DebugGuard.NotNull(container, nameof(container));
 
-            Bootstrapper.BootstrapSearchEngineLuceneReadModel(
+            SearchEngine.LuceneNet.ReadModel.Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,
                 string.IsNullOrWhiteSpace(indexBaseDirectory),
                 indexBaseDirectory);
