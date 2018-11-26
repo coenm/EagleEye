@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Domain.Events;
+    using EagleEye.Photo.Domain.Events;
 
     using FakeItEasy;
 

@@ -45,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\ExifToolWrapper\ExifToolWrapper.csproj" />
+    <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
     <ProjectReference Include="..\Photo.EntityFramework.ReadModel\Photo.EntityFramework.ReadModel.csproj" />
     <ProjectReference Include="..\Picasa\Picasa.csproj" />
     <ProjectReference Include="..\SearchEngine.Lucene.ReadModel\SearchEngine.Lucene.ReadModel.csproj" />

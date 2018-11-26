@@ -8,17 +8,18 @@
     using CQRSlite.Commands;
     using CQRSlite.Domain;
     using CQRSlite.Events;
-    using CQRSlite.Messages;
-    using CQRSlite.Queries;
     using CQRSlite.Routing;
-    using EagleEye.Core.Domain.CommandHandlers;
-    using EagleEye.Core.Domain.EventStore;
+
+    using EagleEye.Core.DefaultImplementations;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
     using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
+
+    using global::Photo.EntityFramework.ReadModel;
+
     using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
@@ -60,13 +61,7 @@
             container.Register<ISession, Session>(Lifestyle.Singleton); // check.
 
             // Scan and register command handlers and event handlers
-            var coreAssembly = typeof(MediaItemCommandHandlers).Assembly;
-            container.Register(typeof(IHandler<>), coreAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableHandler<>), coreAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICommandHandler<>), coreAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableCommandHandler<>), coreAssembly, Lifestyle.Transient);
-            container.Register(typeof(IQueryHandler<,>), coreAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableQueryHandler<,>), coreAssembly, Lifestyle.Transient);
+
 
             // entity framework stuff??! transient? singleton? ..
             // wip
@@ -74,6 +69,8 @@
             //
             // container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
             // container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
+
+            RegisterPhotoDomain(container);
 
             var fullFile = Path.Combine(userDir, "EagleEye.db");
             RegisterSearchEngineReadModel(container, Path.Combine(userDir, "Index"));
@@ -83,11 +80,9 @@
 
 
             // strange stuff..
-            container.Register<MediaItemCommandHandlers>();
             var registrar = new RouteRegistrar(container);
-            registrar.RegisterHandlers(typeof(MediaItemCommandHandlers));
-
-            registrar.RegisterHandlers(Photo.EntityFramework.ReadModel.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(EagleEye.Photo.Domain.Bootstrapper.GetEventHandlerTypesPhotoDomain());
+            registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypesEf());
             registrar.RegisterHandlers(SearchEngine.LuceneNet.ReadModel.Bootstrapper.GetEventHandlerTypes());
         }
 
@@ -97,14 +92,21 @@
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
+        private static void RegisterPhotoDomain([NotNull] Container container)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+
+            EagleEye.Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
+        }
+
         private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
         {
             DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
-            Photo.EntityFramework.ReadModel.Bootstrapper.BootstrapEntityFrameworkReadModel(
-                                                                                           container,
-                                                                                           connectionString);
+            Bootstrapper.BootstrapEntityFrameworkReadModel(
+                                                           container,
+                                                           connectionString);
         }
 
         private static void RegisterSearchEngineReadModel([NotNull] Container container, [CanBeNull] string indexBaseDirectory)

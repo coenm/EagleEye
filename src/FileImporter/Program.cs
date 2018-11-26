@@ -9,9 +9,6 @@
     using CommandLine;
     using CQRSlite.Commands;
     using EagleEye.Core;
-    using EagleEye.Core.Domain.Commands;
-    // using EagleEye.Core.ReadModel;
-    // using EagleEye.Core.ReadModel.EntityFramework.Models;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
@@ -20,13 +17,17 @@
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Similarity;
+    using EagleEye.Photo.Domain.Commands;
+
+    using global::Photo.EntityFramework.ReadModel.Interface;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    using Photo.EntityFramework.ReadModel.Interface;
-
     using ShellProgressBar;
     using SimpleInjector;
+
+    using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
 
 #pragma warning disable SA1512 // Single-line comments should not be followed by blank line
 #pragma warning disable SA1515 // Single-line comment should be preceded by blank line

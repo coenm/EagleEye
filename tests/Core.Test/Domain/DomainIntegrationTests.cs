@@ -1,17 +1,15 @@
 ﻿namespace EagleEye.Core.Test.Domain
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Core.Domain.EventStore;
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
 
-    using EagleEye.Core.Domain;
-    using EagleEye.Core.Domain.CommandHandlers;
-    using EagleEye.Core.Domain.Commands;
-    using EagleEye.Core.Domain.Events;
+    using EagleEye.Photo.Domain.CommandHandlers;
+    using EagleEye.Photo.Domain.Commands;
+    using EagleEye.Photo.Domain.Events;
+    using EagleEye.Photo.Domain.EventStore;
 
     using FluentAssertions;
 

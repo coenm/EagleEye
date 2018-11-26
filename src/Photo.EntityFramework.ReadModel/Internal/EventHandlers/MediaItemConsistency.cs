@@ -7,13 +7,11 @@
 
     using CQRSlite.Events;
 
-    using EagleEye.Core.Domain.Events;
+    using EagleEye.Photo.Domain.Events;
+
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using NLog;
-
     using Photo.EntityFramework.ReadModel.Internal.EntityFramework;
     using Photo.EntityFramework.ReadModel.Internal.EntityFramework.Models;
 

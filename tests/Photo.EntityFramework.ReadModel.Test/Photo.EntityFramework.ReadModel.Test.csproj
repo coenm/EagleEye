@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Photo.Domain\Photo.Domain.csproj" />
     <ProjectReference Include="..\..\src\Photo.EntityFramework.ReadModel\Photo.EntityFramework.ReadModel.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>

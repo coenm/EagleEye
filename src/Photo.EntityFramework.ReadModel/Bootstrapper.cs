@@ -47,7 +47,7 @@
             container.Register<MediaItemConsistency>();
         }
 
-        public static Type[] GetEventHandlerTypes()
+        public static Type[] GetEventHandlerTypesEf()
         {
             return new Type[]
             {
