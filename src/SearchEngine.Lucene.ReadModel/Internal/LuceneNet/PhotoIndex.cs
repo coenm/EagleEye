@@ -270,8 +270,6 @@
                     var doc = searcher.Doc(result.Doc);
 
                     // Results are automatically sorted by relevance
-
-                    var aaa = doc.GetField(KeyVersion);
                     var item = new PhotoSearchResult(result.Score)
                                    {
                                        Id = GetId(doc),

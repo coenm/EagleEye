@@ -6,14 +6,14 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
-    using EagleEye.Core.Domain.Events;
+
+    using EagleEye.Photo.Domain.Events;
+
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Lucene.Net.Search.Payloads;
     using NLog;
     using SearchEngine.LuceneNet.ReadModel.Internal.LuceneNet;
     using SearchEngine.LuceneNet.ReadModel.Internal.Model;
-    using TimestampPrecision = EagleEye.Core.TimestampPrecision;
 
     internal class PhotoCreatedEventHandler :
             ICancellableEventHandler<PhotoCreated>,
@@ -115,22 +115,22 @@
             return photoIndex.ReIndexMediaFileAsync(storedItem);
         }
 
-        private Model.TimestampPrecision Convert(TimestampPrecision input)
+        private TimestampPrecision Convert(EagleEye.Photo.Domain.Aggregates.TimestampPrecision input)
         {
             switch (input)
             {
-            case TimestampPrecision.Year:
-                return Model.TimestampPrecision.Year;
-            case TimestampPrecision.Month:
-                return Model.TimestampPrecision.Month;
-            case TimestampPrecision.Day:
-                return Model.TimestampPrecision.Day;
-            case TimestampPrecision.Hour:
-                return Model.TimestampPrecision.Hour;
-            case TimestampPrecision.Minute:
-                return Model.TimestampPrecision.Minute;
-            case TimestampPrecision.Second:
-                return Model.TimestampPrecision.Second;
+            case EagleEye.Photo.Domain.Aggregates.TimestampPrecision.Year:
+                return TimestampPrecision.Year;
+            case EagleEye.Photo.Domain.Aggregates.TimestampPrecision.Month:
+                return TimestampPrecision.Month;
+            case EagleEye.Photo.Domain.Aggregates.TimestampPrecision.Day:
+                return TimestampPrecision.Day;
+            case EagleEye.Photo.Domain.Aggregates.TimestampPrecision.Hour:
+                return TimestampPrecision.Hour;
+            case EagleEye.Photo.Domain.Aggregates.TimestampPrecision.Minute:
+                return TimestampPrecision.Minute;
+            case EagleEye.Photo.Domain.Aggregates.TimestampPrecision.Second:
+                return TimestampPrecision.Second;
             default:
                 throw new ArgumentOutOfRangeException(nameof(input), input, null);
             }
