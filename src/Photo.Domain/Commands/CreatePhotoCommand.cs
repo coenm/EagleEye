@@ -3,7 +3,6 @@
     using System;
 
     using CQRSlite.Commands;
-
     using Helpers.Guards;
 
     using JetBrains.Annotations;

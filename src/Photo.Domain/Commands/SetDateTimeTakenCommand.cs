@@ -2,22 +2,19 @@
 {
     using System;
 
-    using CQRSlite.Commands;
-
+    using EagleEye.Photo.Domain.Commands.Base;
     using EagleEye.Photo.Domain.Commands.Inner;
 
     using JetBrains.Annotations;
 
     [PublicAPI]
-    public class SetDateTimeTakenCommand : ICommand
+    public class SetDateTimeTakenCommand : CommandBase
     {
-        public SetDateTimeTakenCommand(Guid id, Timestamp dateTimeTaken)
+        public SetDateTimeTakenCommand(Guid id, int expectedVersion, Timestamp dateTimeTaken)
+            : base(id, expectedVersion)
         {
-            Id = id;
             DateTimeTaken = dateTimeTaken;
         }
-
-        public Guid Id { get; }
 
         public Timestamp DateTimeTaken { get; }
     }

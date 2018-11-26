@@ -1,7 +1,9 @@
 ﻿namespace EagleEye.Core.Test.Domain
 {
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
+
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
@@ -41,16 +43,16 @@
             var hash = new byte[32];
             var command = new CreatePhotoCommand("aap", hash, "image/jpeg", new[] { "zoo", "holiday" }, null);
             var guid = command.Id;
-            await handler.Handle(command).ConfigureAwait(false);
+            await handler.Handle(command, default(CancellationToken)).ConfigureAwait(false);
 
-            var addTagsCommand = new AddTagsToPhotoCommand(guid, "summer", "holiday");
-            await handler.Handle(addTagsCommand).ConfigureAwait(false);
+            var addTagsCommand = new AddTagsToPhotoCommand(guid, 1, "summer", "holiday");
+            await handler.Handle(addTagsCommand, default(CancellationToken)).ConfigureAwait(false);
 
-            addTagsCommand = new AddTagsToPhotoCommand(guid, "summer", "soccer");
-            await handler.Handle(addTagsCommand).ConfigureAwait(false);
+            addTagsCommand = new AddTagsToPhotoCommand(guid, 2, "summer", "soccer");
+            await handler.Handle(addTagsCommand, default(CancellationToken)).ConfigureAwait(false);
 
-            var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, "summer");
-            await handler.Handle(removeTagsCommand).ConfigureAwait(false);
+            var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, 3, "summer");
+            await handler.Handle(removeTagsCommand, default(CancellationToken)).ConfigureAwait(false);
 
             // assert
             events.Should().HaveCount(3);

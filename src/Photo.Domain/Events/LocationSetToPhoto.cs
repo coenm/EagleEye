@@ -2,11 +2,10 @@
 {
     using System;
 
-    using CQRSlite.Events;
-
     using EagleEye.Photo.Domain.Aggregates;
+    using EagleEye.Photo.Domain.Events.Base;
 
-    public class LocationSetToPhoto : IEvent
+    public class LocationSetToPhoto : EventBase
     {
         public LocationSetToPhoto(Guid id, Location location)
         {
@@ -14,12 +13,6 @@
             Location = location;
         }
 
-        public Guid Id { get; set; }
-
         public Location Location { get; }
-
-        public int Version { get; set; }
-
-        public DateTimeOffset TimeStamp { get; set; }
     }
 }

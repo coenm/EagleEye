@@ -2,11 +2,10 @@
 {
     using System;
 
-    using CQRSlite.Events;
-
     using EagleEye.Photo.Domain.Aggregates;
+    using EagleEye.Photo.Domain.Events.Base;
 
-    public class DateTimeTakenChanged : IEvent
+    public class DateTimeTakenChanged : EventBase
     {
         public DateTimeTakenChanged(Guid id, DateTime dateTime, TimestampPrecision precision)
         {
@@ -18,11 +17,5 @@
         public DateTime DateTimeTaken { get; }
 
         public TimestampPrecision Precision { get; }
-
-        public Guid Id { get; set; }
-
-        public int Version { get; set; }
-
-        public DateTimeOffset TimeStamp { get; set; }
     }
 }

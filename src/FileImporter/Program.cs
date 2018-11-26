@@ -8,7 +8,6 @@
 
     using CommandLine;
     using CQRSlite.Commands;
-    using EagleEye.Core;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
@@ -20,7 +19,6 @@
     using EagleEye.Photo.Domain.Commands;
 
     using global::Photo.EntityFramework.ReadModel.Interface;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
@@ -89,7 +87,7 @@
             var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
             dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-            var commandDateTime = new SetDateTimeTakenCommand(command.Id, new Timestamp(2010, 04));
+            var commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
             dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
             var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
@@ -115,12 +113,13 @@
             var others = items.Where(x => x.Id != command.Id);
             if (others.Any())
             {
-                var command1 = new AddPersonsToPhotoCommand(others.First().Id, "AAA11", "BBB11");
+                var photo = others.First();
+                var command1 = new AddPersonsToPhotoCommand(photo.Id, photo.Version, "AAA11", "BBB11");
                 dispatcher.Send(command1).GetAwaiter().GetResult();
             }
             else
             {
-                var command1 = new AddPersonsToPhotoCommand(command.Id, "AAA", "BBB");
+                var command1 = new AddPersonsToPhotoCommand(command.Id, 1, "AAA", "BBB");
                 dispatcher.Send(command1).GetAwaiter().GetResult();
             }
 

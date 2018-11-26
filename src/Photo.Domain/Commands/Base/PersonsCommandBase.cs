@@ -2,17 +2,13 @@
 {
     using System;
 
-    using CQRSlite.Commands;
-
-    public abstract class PersonsCommandBase : ICommand
+    public abstract class PersonsCommandBase : CommandBase
     {
-        internal PersonsCommandBase(Guid id, params string[] persons)
+        internal PersonsCommandBase(Guid id, int expectedVersion, params string[] persons)
+        : base(id, expectedVersion)
         {
-            Id = id;
             Persons = persons;
         }
-
-        public Guid Id { get; set; }
 
         public string[] Persons { get; set; }
     }

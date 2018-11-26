@@ -2,17 +2,13 @@
 {
     using System;
 
-    using CQRSlite.Commands;
-
-    public abstract class TagsCommandBase : ICommand
+    public abstract class TagsCommandBase : CommandBase
     {
-        internal TagsCommandBase(Guid id, params string[] tags)
+        internal TagsCommandBase(Guid id, int expectedVersion, params string[] tags)
+            : base(id, expectedVersion)
         {
-            Id = id;
             Tags = tags;
         }
-
-        public Guid Id { get; set; }
 
         public string[] Tags { get; set; }
     }

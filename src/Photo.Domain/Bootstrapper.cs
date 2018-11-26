@@ -7,7 +7,7 @@
     using CQRSlite.Queries;
 
     using EagleEye.Photo.Domain.CommandHandlers;
-
+    using EagleEye.Photo.Domain.Decorators;
     using Helpers.Guards;
 
     using JetBrains.Annotations;
@@ -30,6 +30,8 @@
             container.Register(typeof(ICancellableCommandHandler<>), thisAssembly, Lifestyle.Transient);
             container.Register(typeof(IQueryHandler<,>), thisAssembly, Lifestyle.Transient);
             container.Register(typeof(ICancellableQueryHandler<,>), thisAssembly, Lifestyle.Transient);
+
+            container.RegisterDecorator(typeof(ICancellableCommandHandler<>), typeof(VerifyTokenCommandHandlerDecorator<>), Lifestyle.Transient);
 
             container.Register<MediaItemCommandHandlers>();
         }

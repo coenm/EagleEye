@@ -2,19 +2,16 @@
 {
     using System;
 
-    using CQRSlite.Commands;
-
+    using EagleEye.Photo.Domain.Commands.Base;
     using JetBrains.Annotations;
 
     [PublicAPI]
-    public class SetLocationToPhotoCommand : ICommand
+    public class SetLocationToPhotoCommand : CommandBase
     {
-        public SetLocationToPhotoCommand(Guid id)
+        public SetLocationToPhotoCommand(Guid id, int expectedVersion)
+            : base(id, expectedVersion)
         {
-            Id = id;
         }
-
-        public Guid Id { get; set; }
 
         public string CountryCode { get; set; }
 

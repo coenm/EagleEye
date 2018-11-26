@@ -3,11 +3,10 @@
     using System;
     using System.Diagnostics;
 
-    using CQRSlite.Events;
-
+    using EagleEye.Photo.Domain.Events.Base;
     using JetBrains.Annotations;
 
-    public class PhotoCreated : IEvent
+    public class PhotoCreated : EventBase
     {
         [DebuggerStepThrough]
         public PhotoCreated(
@@ -26,8 +25,6 @@
             Persons = persons ?? new string[0];
         }
 
-        public Guid Id { get; set; }
-
         [NotNull] public string FileName { get; }
 
         [NotNull] public string MimeType { get; }
@@ -37,9 +34,5 @@
         public string[] Tags { get; }
 
         public string[] Persons { get; }
-
-        public int Version { get; set; }
-
-        public DateTimeOffset TimeStamp { get; set; }
     }
 }

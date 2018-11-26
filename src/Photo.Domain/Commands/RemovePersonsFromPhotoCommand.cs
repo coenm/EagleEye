@@ -9,8 +9,8 @@
     [PublicAPI]
     public class RemovePersonsFromPhotoCommand : PersonsCommandBase
     {
-        public RemovePersonsFromPhotoCommand(Guid id, params string[] persons)
-            : base(id, persons)
+        public RemovePersonsFromPhotoCommand(Guid id, int expectedVersion, params string[] persons)
+            : base(id, expectedVersion, persons)
         {
         }
     }

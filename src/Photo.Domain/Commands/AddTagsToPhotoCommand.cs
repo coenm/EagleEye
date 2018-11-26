@@ -9,8 +9,8 @@
     [PublicAPI]
     public class AddTagsToPhotoCommand : TagsCommandBase
     {
-        public AddTagsToPhotoCommand(Guid id, params string[] tags)
-            : base(id, tags)
+        public AddTagsToPhotoCommand(Guid id, int expectedVersion, params string[] tags)
+            : base(id, expectedVersion, tags)
         {
         }
     }

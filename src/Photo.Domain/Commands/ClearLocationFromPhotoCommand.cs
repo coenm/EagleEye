@@ -2,18 +2,15 @@
 {
     using System;
 
-    using CQRSlite.Commands;
-
+    using EagleEye.Photo.Domain.Commands.Base;
     using JetBrains.Annotations;
 
     [PublicAPI]
-    public class ClearLocationFromPhotoCommand : ICommand
+    public class ClearLocationFromPhotoCommand : CommandBase
     {
-        public ClearLocationFromPhotoCommand(Guid id)
+        public ClearLocationFromPhotoCommand(Guid id, int expectedVersion)
+            : base(id, expectedVersion)
         {
-            Id = id;
         }
-
-        public Guid Id { get; set; }
     }
 }

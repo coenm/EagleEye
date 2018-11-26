@@ -2,19 +2,13 @@
 {
     using System;
 
-    using CQRSlite.Events;
+    using EagleEye.Photo.Domain.Events.Base;
 
-    public class LocationClearedFromPhoto : IEvent
+    public class LocationClearedFromPhoto : EventBase
     {
         public LocationClearedFromPhoto(Guid id)
         {
             Id = id;
         }
-
-        public Guid Id { get; set; }
-
-        public int Version { get; set; }
-
-        public DateTimeOffset TimeStamp { get; set; }
     }
 }

@@ -9,8 +9,8 @@
     [PublicAPI]
     public class AddPersonsToPhotoCommand : PersonsCommandBase
     {
-        public AddPersonsToPhotoCommand(Guid id, params string[] persons)
-            : base(id, persons)
+        public AddPersonsToPhotoCommand(Guid id, int expectedVersion, params string[] persons)
+            : base(id, expectedVersion, persons)
         {
         }
     }
