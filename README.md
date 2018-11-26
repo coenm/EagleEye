@@ -19,16 +19,16 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - [x] [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/);
 - [x] [GitVersion](https://gitversion.readthedocs.io/en/latest/) for automatic versioning; 
 - [x] dotnet core / standard;
-- [ ] DI: [SimpleInjector](https://simpleinjector.org/);
+- [x] DI: [SimpleInjector](https://simpleinjector.org/);
 - [x] Test frameworks: [xUnit](https://github.com/xunit), [FakeItEasy](https://fakeiteasy.github.io/), [FluentAssertions](https://fluentassertions.com/);
-- [x] [Jetbrains Annotations](https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html), Maybe use [Code Contract](https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/code-contracts)?
+- [x] [Jetbrains Annotations](https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html), ~~Maybe use [Code Contract](https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/code-contracts)?~~
 - [x] CI: [AppVeyor](https://www.appveyor.com/) (windows CI and Ubuntu); ~~[Travis](https://travis-ci.org/) (Linux CI);~~
 - [x] Coverage: [OpenCover](https://github.com/OpenCover/opencover) (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
 - [x] Coverage Report: [CodeCov](https://codecov.io), [Coveralls](https://coveralls.io);
 - [ ] Docker;
 - [ ] [SonarQube](https://about.sonarcloud.io/);
-- [ ] CQRS ES (using CQRSlite);
-- [ ] Entity framework. Now, it is placed in Core library (as read-model). Should have its own project.
+- [x] CQRS ES (using CQRSlite);
+- [x] Entity framework. Now, it is placed in Core library (as read-model). Should have its own project.
 - [ ] Misc: NLog, Humanizer, Lucene.NET, NetMq (ZeroMq).
 
 
