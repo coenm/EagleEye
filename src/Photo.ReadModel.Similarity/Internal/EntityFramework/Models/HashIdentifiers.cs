@@ -6,7 +6,7 @@
     internal class HashIdentifiers
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required] // unique
         [MinLength(2)]

@@ -70,14 +70,15 @@
 
             RegisterPhotoDomain(container);
 
-            var fullFile = Path.Combine(userDir, "EagleEye.db");
             RegisterSearchEngineReadModel(container, Path.Combine(userDir, "Index"));
 
-            string connectionString = $"Filename={fullFile}";
-            RegisterPhotoDatabaseReadModel(container, connectionString);
+            var fullFileEagleEye = Path.Combine(userDir, "EagleEye.db");
+            string connectionString1 = $"Filename={fullFileEagleEye}";
+            RegisterPhotoDatabaseReadModel(container, connectionString1);
 
-            RegisterSimilarityReadModel(container);
-
+            var fullFileSimilarity = Path.Combine(userDir, "Similarity.db");
+            string connectionString2 = $"Filename={fullFileSimilarity}";
+            RegisterSimilarityReadModel(container, connectionString2);
 
             // strange stuff..
             var registrar = new RouteRegistrar(container);
@@ -93,10 +94,12 @@
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
-        private static void RegisterSimilarityReadModel([NotNull] Container container)
+        private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString)
         {
             DebugGuard.NotNull(container, nameof(container));
-            global::Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container);
+            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+
+            global::Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString);
         }
 
         private static void RegisterPhotoDomain([NotNull] Container container)

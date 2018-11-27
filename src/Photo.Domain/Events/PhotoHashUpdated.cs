@@ -15,6 +15,6 @@
 
         public string HashIdentifier { get; set; }
 
-        public Memory<byte> Hash { get; set; }
+        public byte[] Hash { get; set; }
     }
 }

@@ -41,9 +41,7 @@
                 },
                 Lifestyle.Singleton);
 
-            // container.RegisterSingleton<PhotoIndex>();
             container.Register<IReadModelEntityFramework, ReadModelEntityFramework>();
-
             container.Register<MediaItemConsistency>();
         }
 

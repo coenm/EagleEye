@@ -5,9 +5,6 @@
 
     internal class Scores
     {
-        [Key] // not sure if we want this.
-        public int Id { get; set; }
-
         [Required]
         public Guid PhotoA { get; set; }
 
@@ -15,6 +12,8 @@
         public Guid PhotoB { get; set; }
 
         [Required]
+        public int HashIdentifierId { get; set; }
+
         public HashIdentifiers HashIdentifier { get; set; }
 
         [Required]

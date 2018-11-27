@@ -119,7 +119,8 @@
             }
             else
             {
-                var command1 = new AddPersonsToPhotoCommand(command.Id, 1, "AAA", "BBB");
+//                var command1 = new AddPersonsToPhotoCommand(command.Id, 2, "AAA", "BBB");
+                var command1 = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", new byte[32]);
                 dispatcher.Send(command1).GetAwaiter().GetResult();
             }
 

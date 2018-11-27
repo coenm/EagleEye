@@ -9,6 +9,9 @@
         [Required]
         public byte[] Hash { get; set; }
 
+        [Required] // foreign key
+        public int HashIdentifiersId { get; set; }
+
         [Required]
         public HashIdentifiers HashIdentifier { get; set; }
     }
