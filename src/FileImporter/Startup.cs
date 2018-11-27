@@ -18,8 +18,6 @@
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
 
-    using global::Photo.EntityFramework.ReadModel;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
@@ -78,18 +76,27 @@
             string connectionString = $"Filename={fullFile}";
             RegisterPhotoDatabaseReadModel(container, connectionString);
 
+            RegisterSimilarityReadModel(container);
+
 
             // strange stuff..
             var registrar = new RouteRegistrar(container);
             registrar.RegisterHandlers(EagleEye.Photo.Domain.Bootstrapper.GetEventHandlerTypesPhotoDomain());
-            registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypesEf());
+            registrar.RegisterHandlers(global::Photo.EntityFramework.ReadModel.Bootstrapper.GetEventHandlerTypesEf());
             registrar.RegisterHandlers(SearchEngine.LuceneNet.ReadModel.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(global::Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
 
         public static void VerifyContainer([NotNull] Container container)
         {
             Guard.NotNull(container, nameof(container));
             container.Verify(VerificationOption.VerifyAndDiagnose);
+        }
+
+        private static void RegisterSimilarityReadModel([NotNull] Container container)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+            global::Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container);
         }
 
         private static void RegisterPhotoDomain([NotNull] Container container)
@@ -104,7 +111,7 @@
             DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
-            Bootstrapper.BootstrapEntityFrameworkReadModel(
+            global::Photo.EntityFramework.ReadModel.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,
                                                            connectionString);
         }

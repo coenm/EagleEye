@@ -57,6 +57,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProofOfConcepts", "ProofOfC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.Domain.Test", "tests\Photo.Domain.Test\Photo.Domain.Test.csproj", "{AA8656F5-0607-47FA-977D-3C27475CACCC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.Similarity", "src\Photo.ReadModel.Similarity\Photo.ReadModel.Similarity.csproj", "{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.Similarity.Test", "tests\Photo.ReadModel.Similarity.Test\Photo.ReadModel.Similarity.Test.csproj", "{2A173FCD-26CC-4772-8C41-96D4827E10DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -139,6 +143,14 @@ Global
 		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +167,8 @@ Global
 		{4D01785D-A758-4F4A-A0E8-61CED8ED98EB} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 		{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 		{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
+		{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
+		{2A173FCD-26CC-4772-8C41-96D4827E10DA} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7C2606B-F2C8-4C33-8571-8D27AC814D68}
