@@ -18,16 +18,16 @@
             Guard.NotNull(container, nameof(container));
             var thisAssembly = typeof(Bootstrapper).Assembly;
             //
-            // container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
+            // container.Register<IEagleEyeRepository, EntityFrameworkSimilarityRepository>();
             // container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
             //
             // container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
             // container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
-            // container.Register<IEagleEyeDbContextFactory>(
+            // container.Register<ISimilarityDbContextFactory>(
             //     () =>
             //     {
             //         // arghhh... todo
-            //         var result = container.GetInstance<EagleEyeDbContextFactory>();
+            //         var result = container.GetInstance<SimilarityDbContextFactory>();
             //         result.Initialize().GetAwaiter().GetResult();
             //         return result;
             //     },
@@ -36,14 +36,14 @@
             // container.RegisterSingleton<PhotoIndex>();
             // container.Register<ISimilarityReadModel, ReadModelEntityFramework>();
 
-            // container.Register<MediaItemConsistency>();
+            // container.Register<SimilarityEventHandlers>();
         }
 
         public static Type[] GetEventHandlerTypes()
         {
             return new Type[]
             {
-                // typeof(MediaItemConsistency),
+                // typeof(SimilarityEventHandlers),
             };
         }
     }

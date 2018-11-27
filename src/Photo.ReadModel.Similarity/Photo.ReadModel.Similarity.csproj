@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,12 +7,12 @@
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
-    
+
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
-    <AssemblyName>Photo.ReadModel.Similarity</AssemblyName>    
+    <AssemblyName>Photo.ReadModel.Similarity</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.4" />
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0001" />
     <PackageReference Include="CqrsLite" Version="0.26.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
@@ -38,7 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Internal\" />
+    <Reference Include="Microsoft.EntityFrameworkCore">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\2.1.4\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,12 +7,12 @@
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
-    
+
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
-    <AssemblyName>Photo.EntityFramework.ReadModel</AssemblyName>    
+    <AssemblyName>Photo.EntityFramework.ReadModel</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.4" />  
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.4" />
     <PackageReference Include="CqrsLite" Version="0.26.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
     <PackageReference Include="NLog" Version="4.5.11" />
