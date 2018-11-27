@@ -15,6 +15,7 @@
     public class Photo : AggregateRoot
     {
         private const int Sha256ByteSize = 256 / 8;
+        [NotNull] private readonly Dictionary<string, byte[]> photoHashes;
         [NotNull] private readonly List<string> tags;
         [NotNull] private readonly List<string> persons;
         private DateTime? dateTimeTaken;
@@ -47,6 +48,7 @@
         {
             tags = new List<string>();
             persons = new List<string>();
+            photoHashes = new Dictionary<string, byte[]>();
         }
 
         public void AddTags(params string[] tags)
@@ -126,24 +128,54 @@
 
         public void SetDateTimeTaken(DateTime dateTime, TimestampPrecision precision)
         {
-            // todo
-
+            // todo check
             ApplyChange(new DateTimeTakenChanged(Id, dateTime, precision));
         }
 
-        public void UpdateFileHash(Span<byte> fileHash)
+        public void UpdateFileHash([NotNull] byte[] fileHash)
         {
-            // todo
+            Guard.NotNullOrEmpty(fileHash, nameof(fileHash));
+
+            if (!this.fileHash.SequenceEqual(fileHash))
+                ApplyChange(new FileHashUpdated(Id, fileHash));
         }
 
-        public void UpdatePhotoHash(string hashIdentifier, Span<byte> fileHash)
+        public void UpdatePhotoHash([NotNull] string hashIdentifier, [NotNull] byte[] fileHash)
         {
-            // todo
+            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Guard.NotNullOrEmpty(fileHash, nameof(fileHash));
+
+            if (!photoHashes.ContainsKey(hashIdentifier) || !photoHashes[hashIdentifier].SequenceEqual(fileHash))
+                ApplyChange(new PhotoHashUpdated(Id, hashIdentifier, fileHash));
         }
 
-        public void ClearPhotoHash(string hashIdentifier)
+        public void ClearPhotoHash([NotNull] string hashIdentifier)
         {
-            // todo
+            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+
+            if (photoHashes.ContainsKey(hashIdentifier))
+                ApplyChange(new PhotoHashCleared(Id, hashIdentifier));
+        }
+
+        [UsedImplicitly]
+        private void Apply(FileHashUpdated e)
+        {
+            fileHash = e.Hash.ToArray();
+        }
+
+        [UsedImplicitly]
+        private void Apply(PhotoHashUpdated e)
+        {
+            if (photoHashes.ContainsKey(e.HashIdentifier))
+                photoHashes[e.HashIdentifier] = e.Hash.ToArray();
+            else
+                photoHashes.Add(e.HashIdentifier, e.Hash.ToArray());
+        }
+
+        [UsedImplicitly]
+        private void Apply(PhotoHashCleared e)
+        {
+            photoHashes.Remove(e.HashIdentifier);
         }
 
         [UsedImplicitly]
