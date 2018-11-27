@@ -126,9 +126,24 @@
 
         public void SetDateTimeTaken(DateTime dateTime, TimestampPrecision precision)
         {
-            // todo check
+            // todo
 
             ApplyChange(new DateTimeTakenChanged(Id, dateTime, precision));
+        }
+
+        public void UpdateFileHash(Span<byte> fileHash)
+        {
+            // todo
+        }
+
+        public void UpdatePhotoHash(string hashIdentifier, Span<byte> fileHash)
+        {
+            // todo
+        }
+
+        public void ClearPhotoHash(string hashIdentifier)
+        {
+            // todo
         }
 
         [UsedImplicitly]

@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.Domain", "src\Photo.D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProofOfConcepts", "ProofOfConcepts", "{CF601582-9B4B-41A0-A91D-30A8E4E52441}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.Domain.Test", "tests\Photo.Domain.Test\Photo.Domain.Test.csproj", "{AA8656F5-0607-47FA-977D-3C27475CACCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,10 @@ Global
 		{5B7B4C0A-C002-4762-80A7-B331E514D04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B7B4C0A-C002-4762-80A7-B331E514D04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B7B4C0A-C002-4762-80A7-B331E514D04F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8656F5-0607-47FA-977D-3C27475CACCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,7 +23,10 @@
         ICancellableCommandHandler<RemovePersonsFromPhotoCommand>,
         ICancellableCommandHandler<SetLocationToPhotoCommand>,
         ICancellableCommandHandler<ClearLocationFromPhotoCommand>,
-        ICancellableCommandHandler<SetDateTimeTakenCommand>
+        ICancellableCommandHandler<SetDateTimeTakenCommand>,
+        ICancellableCommandHandler<UpdateFileHashCommand>,
+        ICancellableCommandHandler<UpdatePhotoHashCommand>,
+        ICancellableCommandHandler<ClearPhotoHashCommand>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
@@ -117,6 +120,27 @@
         {
             var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
             item.SetDateTimeTaken(message.DateTimeTaken.Value, ConvertTimeStampPrecision(message.DateTimeTaken.Precision));
+            await session.Commit(token).ConfigureAwait(false);
+        }
+
+        public async Task Handle(UpdateFileHashCommand message, CancellationToken token = new CancellationToken())
+        {
+            var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
+            item.UpdateFileHash(message.FileHash);
+            await session.Commit(token).ConfigureAwait(false);
+        }
+
+        public async Task Handle(UpdatePhotoHashCommand message, CancellationToken token = new CancellationToken())
+        {
+            var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
+            item.UpdatePhotoHash(message.HashIdentifier, message.FileHash);
+            await session.Commit(token).ConfigureAwait(false);
+        }
+
+        public async Task Handle(ClearPhotoHashCommand message, CancellationToken token = new CancellationToken())
+        {
+            var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
+            item.ClearPhotoHash(message.HashIdentifier);
             await session.Commit(token).ConfigureAwait(false);
         }
 
