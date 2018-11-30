@@ -1,5 +1,6 @@
 ﻿namespace Photo.ReadModel.Similarity.Internal.EventHandlers
 {
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@
     using Microsoft.EntityFrameworkCore;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
+    using Photo.ReadModel.Similarity.Internal.Processing;
 
     [UsedImplicitly]
     internal class SimilarityEventHandlers :
@@ -32,28 +34,31 @@
 
         public async Task Handle(PhotoHashCleared message, CancellationToken ct)
         {
-            BackgroundJob.Enqueue(() => null);
-
             DebugGuard.NotNull(message, nameof(message));
 
             using (var db = contextFactory.CreateDbContext())
             {
                 var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct);
 
-                await db.ToProcess.AddAsync(
-                                            new PhotoToProcess
-                                            {
-                                                Action = PhotoAction.Delete,
-                                                HashIdentifier = hashIdentifier,
-                                                HashIdentifiersId = hashIdentifier.Id,
-                                                Id = message.Id,
-                                                Hash = null,
-                                                Version = message.Version,
-                                            },
-                                            ct);
+                var itemToRemove = await db.PhotoHashes
+                                           .Where(x =>
+                                                      x.Id == message.Id
+                                                      &&
+                                                      x.HashIdentifier == hashIdentifier
+                                                      &&
+                                                      x.Version <= message.Version)
+                                           .ToListAsync(ct)
+                                           .ConfigureAwait(false);
+
+                if (itemToRemove.Any())
+                {
+                    db.PhotoHashes.RemoveRange(itemToRemove);
+                }
 
                 await db.SaveChangesAsync(ct).ConfigureAwait(false);
             }
+
+            BackgroundJob.Enqueue<ClearPhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
         }
 
         public async Task Handle(PhotoHashUpdated message, CancellationToken ct)
@@ -64,20 +69,38 @@
             {
                 var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct);
 
-                await db.ToProcess.AddAsync(
-                                            new PhotoToProcess
-                                            {
-                                                Action = PhotoAction.Update,
-                                                HashIdentifier = hashIdentifier,
-                                                HashIdentifiersId = hashIdentifier.Id,
-                                                Id = message.Id,
-                                                Hash = message.Hash,
-                                                Version = message.Version,
-                                            },
-                                            ct);
+                var existingItem = await db.PhotoHashes
+                                           .SingleOrDefaultAsync(x => x.Id == message.Id && x.HashIdentifier == hashIdentifier, ct)
+                                           .ConfigureAwait(false);
+
+                if (existingItem != null)
+                {
+                    if (existingItem.Version > message.Version)
+                    {
+                        return;
+                    }
+
+                    existingItem.Version = message.Version;
+                    existingItem.Hash = message.Hash;
+
+                    db.PhotoHashes.Update(existingItem);
+                }
+                else
+                {
+                    var newItem = new PhotoHash
+                                  {
+                                      Id = message.Id,
+                                      Version = message.Version,
+                                      HashIdentifier = hashIdentifier,
+                                      Hash = message.Hash,
+                                  };
+                    await db.PhotoHashes.AddAsync(newItem, ct);
+                }
 
                 await db.SaveChangesAsync(ct).ConfigureAwait(false);
             }
+
+            BackgroundJob.Enqueue<UpdatePhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
         }
 
         private static async Task<HashIdentifiers> GetAddHashIdentifierAsync(

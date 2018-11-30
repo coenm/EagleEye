@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
 
     using CQRSlite.Caching;
     using CQRSlite.Commands;
@@ -11,6 +12,7 @@
     using CQRSlite.Routing;
 
     using EagleEye.Core.DefaultImplementations;
+    using EagleEye.Core.Interfaces;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
@@ -78,7 +80,11 @@
 
             var fullFileSimilarity = Path.Combine(userDir, "Similarity.db");
             string connectionString2 = $"Filename={fullFileSimilarity}";
-            RegisterSimilarityReadModel(container, connectionString2);
+
+            var fullFileSimilarityHangfire = Path.Combine(userDir, "Similarity.Hangfire.db");
+            string connectionStringHangfire = $"Filename={fullFileSimilarityHangfire};";
+
+            RegisterSimilarityReadModel(container, connectionString2, connectionStringHangfire);
 
             // strange stuff..
             var registrar = new RouteRegistrar(container);
@@ -94,12 +100,31 @@
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
-        private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString)
+        public static void StartServices([NotNull] Container container)
+        {
+            var x = container.GetAllInstances<IEagleEyeProcess>();
+            foreach (var eagleEyeProcess in x)
+            {
+                eagleEyeProcess.Start();
+            }
+        }
+
+        public static void StopServices([NotNull] Container container)
+        {
+            var x = container.GetAllInstances<IEagleEyeProcess>();
+            foreach (var eagleEyeProcess in x)
+            {
+                eagleEyeProcess.Stop();
+            }
+        }
+
+        private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, string connectionstringHangfire)
         {
             DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugGuard.NotNullOrWhiteSpace(connectionstringHangfire, nameof(connectionstringHangfire));
 
-            global::Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString);
+            global::Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionstringHangfire);
         }
 
         private static void RegisterPhotoDomain([NotNull] Container container)

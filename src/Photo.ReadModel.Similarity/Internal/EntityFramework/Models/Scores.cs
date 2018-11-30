@@ -9,7 +9,13 @@
         public Guid PhotoA { get; set; }
 
         [Required]
+        public int VersionPhotoA { get; set; }
+
+        [Required]
         public Guid PhotoB { get; set; }
+
+        [Required]
+        public int VersionPhotoB { get; set; }
 
         [Required]
         public int HashIdentifierId { get; set; }
@@ -17,6 +23,6 @@
         public HashIdentifiers HashIdentifier { get; set; }
 
         [Required]
-        public float Score { get; set; }
+        public double Score { get; set; }
     }
 }

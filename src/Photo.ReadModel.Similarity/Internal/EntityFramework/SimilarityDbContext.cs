@@ -18,10 +18,6 @@
 
         public DbSet<Scores> Scores { get; set; }
 
-        public DbSet<PhotosCurrentlyProcessing> Processing { get; set; }
-
-        public DbSet<PhotoToProcess> ToProcess { get; set; }
-
         public Task EnsureCreatedAsync() => Database.EnsureCreatedAsync();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

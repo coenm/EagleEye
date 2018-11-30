@@ -80,85 +80,116 @@
         {
             Startup.ConfigureContainer(container, opts.IndexFile);
 
-            var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
-            var dispatcher = container.GetInstance<ICommandSender>();
-            var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
-
-            var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
-            dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
-
-            var commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
-            dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
-
-            var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
-
-            if (result == null)
+            Startup.StartServices(container);
+            try
             {
-                Console.WriteLine("ReadModel returned null");
-                return;
-            }
+                var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
+                var dispatcher = container.GetInstance<ICommandSender>();
+                var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
 
-            if (result.Any() == false)
+                var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
+                dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+
+                var commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
+                dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
+
+                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", new byte[32]);
+                dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
+
+
+                command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
+                dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+
+                commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
+                dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
+
+                var hash = new byte[32];
+                hash[3] = 0x22;
+                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", hash);
+                dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
+
+
+                var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
+
+                if (result == null)
+                {
+                    Console.WriteLine("ReadModel returned null");
+                    return;
+                }
+
+                if (result.Any() == false)
+                {
+                    Console.WriteLine("ReadModel returned no items.");
+                    return;
+                }
+
+                var items = result.ToList();
+                Console.WriteLine("Files found:");
+                foreach (var item in items)
+                    Console.WriteLine($" [{item.Id}] -- ({item.Version}) -- {item.Filename}");
+
+    //             // add names
+    //             var others = items.Where(x => x.Id != command.Id);
+    //             if (others.Any())
+    //             {
+    //                 var photo = others.First();
+    //                 var command1 = new AddPersonsToPhotoCommand(photo.Id, photo.Version, "AAA11", "BBB11");
+    //                 dispatcher.Send(command1).GetAwaiter().GetResult();
+    //             }
+    //             else
+    //             {
+    // //                var command1 = new AddPersonsToPhotoCommand(command.Id, 2, "AAA", "BBB");
+    //                 var command1 = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", new byte[32]);
+    //                 dispatcher.Send(command1).GetAwaiter().GetResult();
+    //             }
+
+                // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+                // search terms:
+                // - id
+                // - version
+                // - filename
+                // - filetype
+                // - city
+                // - countrycode
+                // - country
+                // - state
+                // - sublocation
+                // - longitude
+                // - latitude
+                // - date
+                // - person
+                // - tag
+                // - gps
+                var searchResults = search.FullSearch("tag:zoo");
+                Console.WriteLine(searchResults.Count);
+
+                var JsonSerializerSettings = new JsonSerializerSettings();
+                JsonSerializerSettings.Converters.Add(new StringEnumConverter());
+                JsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
+                Console.WriteLine(searchResults.Count);
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
+                Console.WriteLine();
+                searchResults = search.FullSearch("tag:zo~"); // should also match zoo ;-)
+                Console.WriteLine(searchResults.Count);
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
+
+                searchResults = search.FullSearch("tag:zo"); // should match nothing.
+                Console.WriteLine(searchResults.Count);
+
+                Thread.Sleep(1000*5);
+                Console.WriteLine("Press enter");
+                Console.ReadKey();
+
+            }
+            finally
             {
-                Console.WriteLine("ReadModel returned no items.");
-                return;
+                Startup.StopServices(container);
             }
-
-            var items = result.ToList();
-            Console.WriteLine("Files found:");
-            foreach (var item in items)
-                Console.WriteLine($" [{item.Id}] -- ({item.Version}) -- {item.Filename}");
-
-            // add names
-            var others = items.Where(x => x.Id != command.Id);
-            if (others.Any())
-            {
-                var photo = others.First();
-                var command1 = new AddPersonsToPhotoCommand(photo.Id, photo.Version, "AAA11", "BBB11");
-                dispatcher.Send(command1).GetAwaiter().GetResult();
-            }
-            else
-            {
-//                var command1 = new AddPersonsToPhotoCommand(command.Id, 2, "AAA", "BBB");
-                var command1 = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", new byte[32]);
-                dispatcher.Send(command1).GetAwaiter().GetResult();
-            }
-
-            // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
-            // search terms:
-            // - id
-            // - version
-            // - filename
-            // - filetype
-            // - city
-            // - countrycode
-            // - country
-            // - state
-            // - sublocation
-            // - longitude
-            // - latitude
-            // - date
-            // - person
-            // - tag
-            // - gps
-            var searchResults = search.FullSearch("tag:zoo");
-            Console.WriteLine(searchResults.Count);
-
-            var JsonSerializerSettings = new JsonSerializerSettings();
-            JsonSerializerSettings.Converters.Add(new StringEnumConverter());
-            JsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
-            Console.WriteLine(searchResults.Count);
-            Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
-            Console.WriteLine();
-            searchResults = search.FullSearch("tag:zo~"); // should also match zoo ;-)
-            Console.WriteLine(searchResults.Count);
-            Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
-
-            searchResults = search.FullSearch("tag:zo"); // should match nothing.
-            Console.WriteLine(searchResults.Count);
 
             Console.WriteLine("Press enter");
             Console.ReadKey();
+
+            container.Dispose();
         }
 
         private static void UpdateSimilarity(UpdateSimilarityOptions options)
