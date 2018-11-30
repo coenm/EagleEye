@@ -1,6 +1,11 @@
 ﻿namespace Photo.ReadModel.Similarity
 {
     using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Hangfire;
+    using Hangfire.SQLite;
 
     using Helpers.Guards;
 
@@ -10,6 +15,8 @@
     using Photo.ReadModel.Similarity.Internal;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EventHandlers;
+    using Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter;
+
     using SimpleInjector;
 
     public static class Bootstrapper
@@ -49,6 +56,44 @@
             {
                 typeof(SimilarityEventHandlers),
             };
+        }
+
+        public static Task InitAsync([NotNull] Container container, CancellationToken ct = default(CancellationToken))
+        {
+            Guard.NotNull(container, nameof(container));
+
+            return Task.CompletedTask;
+        }
+
+        public static void Run([NotNull] Container container, CancellationToken ct = default(CancellationToken))
+        {
+            Guard.NotNull(container, nameof(container));
+
+            Task.Run(() => RunCalculationAsync(container, ct), ct);
+        }
+
+        private static void RunCalculationAsync([NotNull] Container container, CancellationToken ct)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+
+            if (ct.IsCancellationRequested)
+                return;
+
+            var mre = new ManualResetEvent(false);
+            var connectionStringHangfire = string.Empty;
+
+            Hangfire.GlobalConfiguration
+                    .Configuration
+                    .UseSQLiteStorage(connectionStringHangfire)
+                    .UseActivator(new SimpleInjectorJobActivator(container));
+
+            using (var server = new BackgroundJobServer())
+            {
+                using (ct.Register(() => mre.Set()))
+                {
+                    mre.WaitOne();
+                }
+            }
         }
     }
 }

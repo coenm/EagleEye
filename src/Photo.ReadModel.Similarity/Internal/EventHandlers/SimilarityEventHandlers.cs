@@ -5,21 +5,20 @@
 
     using CQRSlite.Events;
     using EagleEye.Photo.Domain.Events;
+
+    using Hangfire;
+
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
-    using NLog;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
 
     [UsedImplicitly]
     internal class SimilarityEventHandlers :
-        ICancellableEventHandler<PhotoCreated>,
-        ICancellableEventHandler<FileHashUpdated>,
         ICancellableEventHandler<PhotoHashCleared>,
         ICancellableEventHandler<PhotoHashUpdated>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly ISimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
 
@@ -31,74 +30,78 @@
             this.contextFactory = contextFactory;
         }
 
-        public async Task Handle(PhotoCreated message, CancellationToken token)
+        public async Task Handle(PhotoHashCleared message, CancellationToken ct)
         {
+            BackgroundJob.Enqueue(() => null);
+
             DebugGuard.NotNull(message, nameof(message));
 
-            // add hash identifier if not exist.
+            using (var db = contextFactory.CreateDbContext())
+            {
+                var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct);
 
+                await db.ToProcess.AddAsync(
+                                            new PhotoToProcess
+                                            {
+                                                Action = PhotoAction.Delete,
+                                                HashIdentifier = hashIdentifier,
+                                                HashIdentifiersId = hashIdentifier.Id,
+                                                Id = message.Id,
+                                                Hash = null,
+                                                Version = message.Version,
+                                            },
+                                            ct);
 
-
-            // todo fill in
-            await Task.Delay(9).ConfigureAwait(false);
+                await db.SaveChangesAsync(ct).ConfigureAwait(false);
+            }
         }
 
-        public Task Handle(FileHashUpdated message, CancellationToken token)
-        {
-            // do nothing with this at the moment...
-            return Task.CompletedTask;
-        }
-
-        public async Task Handle(PhotoHashCleared message, CancellationToken token)
-        {
-            DebugGuard.NotNull(message, nameof(message));
-
-            await Task.Delay(9).ConfigureAwait(false);
-        }
-
-        public async Task Handle(PhotoHashUpdated message, CancellationToken token)
+        public async Task Handle(PhotoHashUpdated message, CancellationToken ct)
         {
             DebugGuard.NotNull(message, nameof(message));
 
             using (var db = contextFactory.CreateDbContext())
             {
-                var dbItem = await db.HashIdentifiers.FirstOrDefaultAsync(x => x.HashIdentifier == message.HashIdentifier, cancellationToken: token);
+                var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct);
 
-                if (dbItem == null)
-                {
-                    dbItem = new HashIdentifiers
-                    {
-                        HashIdentifier = message.HashIdentifier,
-                    };
-                    await db.HashIdentifiers.AddAsync(dbItem, token).ConfigureAwait(false);
-                }
+                await db.ToProcess.AddAsync(
+                                            new PhotoToProcess
+                                            {
+                                                Action = PhotoAction.Update,
+                                                HashIdentifier = hashIdentifier,
+                                                HashIdentifiersId = hashIdentifier.Id,
+                                                Id = message.Id,
+                                                Hash = message.Hash,
+                                                Version = message.Version,
+                                            },
+                                            ct);
 
-                var dbItem2 = await db.PhotoHashes.SingleOrDefaultAsync(x => x.Id == message.Id, cancellationToken: token);
-                if (dbItem2 == null)
-                {
-                    // create
-                    await db.PhotoHashes.AddAsync(
-                        new PhotoHash
-                        {
-                            Id = message.Id,
-                            HashIdentifier = dbItem,
-                            Hash = message.Hash,
-                            Version = message.Version,
-                            HashIdentifiersId = dbItem.Id,
-                        },
-                        token).ConfigureAwait(false);
-                }
-                else
-                {
-                    dbItem2.Version = message.Version;
-                    dbItem2.Hash = message.Hash;
-                    dbItem2.HashIdentifiersId = dbItem.Id;
-                    dbItem2.HashIdentifier = dbItem;
-                    db.PhotoHashes.Update(dbItem2);
-                }
-
-                await db.SaveChangesAsync(token).ConfigureAwait(false);
+                await db.SaveChangesAsync(ct).ConfigureAwait(false);
             }
+        }
+
+        private static async Task<HashIdentifiers> GetAddHashIdentifierAsync(
+            [NotNull] SimilarityDbContext db,
+            [NotNull] string identifier,
+            CancellationToken ct = default(CancellationToken))
+        {
+            DebugGuard.NotNull(db, nameof(db));
+            DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+
+            ct.ThrowIfCancellationRequested();
+
+            var dbItem = await db.HashIdentifiers.FirstOrDefaultAsync(x => x.HashIdentifier == identifier, ct);
+
+            if (dbItem != null)
+                return dbItem;
+
+            dbItem = new HashIdentifiers
+                     {
+                         HashIdentifier = identifier,
+                     };
+
+            await db.HashIdentifiers.AddAsync(dbItem, ct).ConfigureAwait(false);
+            return dbItem;
         }
     }
 }
