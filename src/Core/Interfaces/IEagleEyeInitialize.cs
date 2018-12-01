@@ -4,6 +4,6 @@
 
     public interface IEagleEyeInitialize
     {
-        Task Initialize();
+        Task InitializeAsync();
     }
 }

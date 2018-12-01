@@ -3,11 +3,8 @@
     using System;
     using System.Linq;
 
-    using Hangfire;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
-
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
 
@@ -17,7 +14,9 @@
         [NotNull] private readonly ISimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
 
-        public UpdatePhotoHashResultsJob([NotNull] ISimilarityRepository repository, [NotNull] ISimilarityDbContextFactory contextFactory)
+        public UpdatePhotoHashResultsJob(
+            [NotNull] ISimilarityRepository repository,
+            [NotNull] ISimilarityDbContextFactory contextFactory)
         {
             Guard.NotNull(repository, nameof(repository));
             Guard.NotNull(contextFactory, nameof(contextFactory));
@@ -38,11 +37,9 @@
                 if (currentItem == null)
                     return;
 
-
-
-                var xx = db.Scores
-                           .Where(x => x.HashIdentifierId == hashIdentifier.Id && x.PhotoA == id && x.VersionPhotoA <= version)
-                           .ToList();
+                var outdatedScores = db.Scores
+                    .Where(x => x.HashIdentifierId == hashIdentifier.Id && x.PhotoA == id && x.VersionPhotoA <= version)
+                    .ToList();
 
                 // If the system architecture is little-endian (that is, little end first),
                 // reverse the byte array.
@@ -50,7 +47,7 @@
                 //     Array.Reverse(bytes);
                 var hashUnsignedLong = BitConverter.ToUInt64(currentItem.Hash, 0);
 
-                foreach (var score in xx)
+                foreach (var score in outdatedScores)
                 {
                     // update existing.
 
@@ -88,25 +85,23 @@
                     }
                 }
 
-
                 var itemsToDelete = db.Scores
-                                      .Where(x =>
-                                                 x.HashIdentifierId == hashIdentifier.Id
-                                                 && (
-                                                        (x.PhotoA == id && x.VersionPhotoA <= version)
-                                                        ||
-                                                        (x.PhotoB == id && x.VersionPhotoB <= version)))
-                                      .ToList();
+                    .Where(x =>
+                        x.HashIdentifierId == hashIdentifier.Id
+                        && (
+                            (x.PhotoA == id && x.VersionPhotoA <= version)
+                            ||
+                            (x.PhotoB == id && x.VersionPhotoB <= version)))
+                    .ToList();
 
                 if (itemsToDelete.Any())
                 {
                     db.Scores.RemoveRange(itemsToDelete);
                 }
 
-
                 var allHashes = db.PhotoHashes
-                                  .Where(x => x.HashIdentifier == hashIdentifier && x.Id != id)
-                                  .ToList();
+                    .Where(x => x.HashIdentifier == hashIdentifier && x.Id != id)
+                    .ToList();
 
                 foreach (var item in allHashes)
                 {
@@ -122,22 +117,17 @@
                     {
                         // update
                         var score = new Scores
-                                    {
-                                        VersionPhotoA = version,
-                                        VersionPhotoB = item.Version,
-                                        PhotoA = id,
-                                        PhotoB = item.Id,
-                                        HashIdentifier = hashIdentifier,
-                                        Score = value,
-                                    };
+                        {
+                            VersionPhotoA = version,
+                            VersionPhotoB = item.Version,
+                            PhotoA = id,
+                            PhotoB = item.Id,
+                            HashIdentifier = hashIdentifier,
+                            Score = value,
+                        };
                         db.Scores.Add(score);
                     }
                 }
-
-
-
-
-
 
                 db.SaveChanges();
             }
@@ -156,9 +146,9 @@
                 return dbItem;
 
             dbItem = new HashIdentifiers
-                     {
-                         HashIdentifier = identifier,
-                     };
+            {
+                HashIdentifier = identifier,
+            };
 
             db.HashIdentifiers.Add(dbItem);
             return dbItem;

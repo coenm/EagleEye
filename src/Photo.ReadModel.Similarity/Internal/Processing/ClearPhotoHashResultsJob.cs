@@ -14,7 +14,9 @@
         [NotNull] private readonly ISimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
 
-        public ClearPhotoHashResultsJob([NotNull] ISimilarityRepository repository, [NotNull] ISimilarityDbContextFactory contextFactory)
+        public ClearPhotoHashResultsJob(
+            [NotNull] ISimilarityRepository repository,
+            [NotNull] ISimilarityDbContextFactory contextFactory)
         {
             Guard.NotNull(repository, nameof(repository));
             Guard.NotNull(contextFactory, nameof(contextFactory));
@@ -31,13 +33,13 @@
                 var hashIdentifier = GetAddHashIdentifier(db, hashIdentifierString);
 
                 var itemsToDelete = db.Scores
-                                      .Where(x =>
-                                                 x.HashIdentifierId == hashIdentifier.Id
-                                                 && (
-                                                        (x.PhotoA == id && x.VersionPhotoA <= version)
-                                                        ||
-                                                        (x.PhotoB == id && x.VersionPhotoB <= version)))
-                                      .ToList();
+                    .Where(x =>
+                        x.HashIdentifierId == hashIdentifier.Id
+                        && (
+                            (x.PhotoA == id && x.VersionPhotoA <= version)
+                            ||
+                            (x.PhotoB == id && x.VersionPhotoB <= version)))
+                    .ToList();
 
                 if (itemsToDelete.Any())
                 {
@@ -61,9 +63,9 @@
                 return dbItem;
 
             dbItem = new HashIdentifiers
-                     {
-                         HashIdentifier = identifier,
-                     };
+            {
+                HashIdentifier = identifier,
+            };
 
             db.HashIdentifiers.Add(dbItem);
             return dbItem;

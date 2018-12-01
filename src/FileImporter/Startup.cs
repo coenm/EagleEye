@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading;
-
+    using System.Linq;
+    using System.Threading.Tasks;
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
@@ -60,16 +60,6 @@
             container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
             container.Register<ISession, Session>(Lifestyle.Singleton); // check.
 
-            // Scan and register command handlers and event handlers
-
-
-            // entity framework stuff??! transient? singleton? ..
-            // wip
-            //// container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
-            //
-            // container.Collection.Register(typeof(IDbContextOptionsStrategy), coreAssembly);
-            // container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
-
             RegisterPhotoDomain(container);
 
             RegisterSearchEngineReadModel(container, Path.Combine(userDir, "Index"));
@@ -100,10 +90,18 @@
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
+
+        public static async Task InitializeAllServices([NotNull] Container container)
+        {
+            Guard.NotNull(container, nameof(container));
+            var allInstances = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
+            await Task.WhenAll(allInstances.Select(x => x.InitializeAsync())).ConfigureAwait(false);
+        }
+
         public static void StartServices([NotNull] Container container)
         {
-            var x = container.GetAllInstances<IEagleEyeProcess>();
-            foreach (var eagleEyeProcess in x)
+            var allInstances = container.GetAllInstances<IEagleEyeProcess>();
+            foreach (var eagleEyeProcess in allInstances)
             {
                 eagleEyeProcess.Start();
             }

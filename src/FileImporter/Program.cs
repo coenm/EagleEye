@@ -79,7 +79,7 @@
         private static void ListAllReadModel(ListReadModelOptions opts)
         {
             Startup.ConfigureContainer(container, opts.IndexFile);
-
+            Startup.InitializeAllServices(container).GetAwaiter().GetResult(); // todo
             Startup.StartServices(container);
             try
             {

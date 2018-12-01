@@ -6,7 +6,7 @@
 
     internal class DatabaseInitializer : IEagleEyeInitialize
     {
-        public Task Initialize()
+        public Task InitializeAsync()
         {
             return Task.CompletedTask;
         }

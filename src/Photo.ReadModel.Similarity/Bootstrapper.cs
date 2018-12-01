@@ -27,7 +27,7 @@
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
         /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty.</param>
-        /// <param name="hangfireConnectionString">Connectionstrng for hangfire.</param>
+        /// <param name="hangfireConnectionString">Connection string for hangfire.</param>
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void Bootstrap(
             [NotNull] Container container,
@@ -49,7 +49,7 @@
                 {
                     // arghhh... todo
                     var result = container.GetInstance<SimilarityDbContextFactory>();
-                    result.Initialize().GetAwaiter().GetResult();
+                 //   result.Initialize().GetAwaiter().GetResult();
                     return result;
                 },
                 Lifestyle.Singleton);
@@ -61,7 +61,8 @@
 
             // todo
             container.RegisterSingleton<HangFireServerEagleEyeProcess>(() => new HangFireServerEagleEyeProcess(container, hangfireConnectionString));
-            container.Collection.Register<IEagleEyeProcess>(typeof(HangFireServerEagleEyeProcess));
+            container.Collection.Append<IEagleEyeProcess, HangFireServerEagleEyeProcess>();
+            container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
         }
 
         public static Type[] GetEventHandlerTypes()
