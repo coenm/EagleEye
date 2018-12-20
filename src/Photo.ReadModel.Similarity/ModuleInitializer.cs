@@ -7,6 +7,7 @@
     using JetBrains.Annotations;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
 
+    [UsedImplicitly]
     internal class ModuleInitializer : IEagleEyeInitialize
     {
         private readonly ISimilarityDbContextFactory dbContextFactory;
