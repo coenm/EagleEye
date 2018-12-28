@@ -2,16 +2,14 @@
 {
     using System;
 
+    using EagleEye.Core.Interfaces;
     using Helpers.Guards;
     using JetBrains.Annotations;
-
     using Microsoft.EntityFrameworkCore;
-
     using Photo.EntityFramework.ReadModel.Interface;
     using Photo.EntityFramework.ReadModel.Internal;
     using Photo.EntityFramework.ReadModel.Internal.EntityFramework;
     using Photo.EntityFramework.ReadModel.Internal.EventHandlers;
-
     using SimpleInjector;
 
     public static class Bootstrapper
@@ -24,28 +22,23 @@
         {
             Guard.NotNull(container, nameof(container));
             Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
             container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
 
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
-            container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
-            container.Register<IEagleEyeDbContextFactory>(
-                () =>
-                {
-                    // arghhh... todo
-                    var result = container.GetInstance<EagleEyeDbContextFactory>();
-                    result.Initialize().GetAwaiter().GetResult();
-                    return result;
-                },
-                Lifestyle.Singleton);
+            container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
+            container.Register<IEagleEyeDbContextFactory, EagleEyeDbContextFactory>(Lifestyle.Singleton);
 
             container.Register<IReadModelEntityFramework, ReadModelEntityFramework>();
             container.Register<MediaItemConsistency>();
+
+            container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
         }
 
-        public static Type[] GetEventHandlerTypesEf()
+        public static Type[] GetEventHandlerTypes()
         {
             return new Type[]
             {

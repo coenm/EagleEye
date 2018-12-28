@@ -18,23 +18,23 @@
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
         /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty.</param>
-        /// <param name="hangfireConnectionString">Connection string for hangfire.</param>
+        /// <param name="hangFireConnectionString">Connection string for HangFire.</param>
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void Bootstrap(
             [NotNull] Container container,
             [NotNull] string connectionString,
-            [NotNull] string hangfireConnectionString)
+            [NotNull] string hangFireConnectionString)
         {
             Guard.NotNull(container, nameof(container));
             Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            Guard.NotNullOrWhiteSpace(hangfireConnectionString, nameof(hangfireConnectionString));
+            Guard.NotNullOrWhiteSpace(hangFireConnectionString, nameof(hangFireConnectionString));
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register<ISimilarityRepository, EntityFrameworkSimilarityRepository>();
             container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
 
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
-            container.Register<DbContextOptions<SimilarityDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString));
+            container.Register<DbContextOptions<SimilarityDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
             container.Register<ISimilarityDbContextFactory, SimilarityDbContextFactory>(Lifestyle.Singleton);
 
             container.Register<ISimilarityReadModel, ReadModelEntityFramework>();
@@ -43,7 +43,7 @@
             container.Collection.Register<IEagleEyeInitialize>(typeof(DatabaseInitializer));
 
             // todo
-            container.RegisterSingleton<HangFireServerEagleEyeProcess>(() => new HangFireServerEagleEyeProcess(container, hangfireConnectionString));
+            container.RegisterSingleton<HangFireServerEagleEyeProcess>(() => new HangFireServerEagleEyeProcess(container, hangFireConnectionString));
             container.Collection.Append<IEagleEyeProcess, HangFireServerEagleEyeProcess>();
             container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
         }
