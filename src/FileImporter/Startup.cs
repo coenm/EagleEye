@@ -94,8 +94,8 @@
         public static async Task InitializeAllServices([NotNull] Container container)
         {
             Guard.NotNull(container, nameof(container));
-            var allInstances = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
-            await Task.WhenAll(allInstances.Select(x => x.InitializeAsync())).ConfigureAwait(false);
+            var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
+            await Task.WhenAll(instancesToInitialize.Select(instance => instance.InitializeAsync())).ConfigureAwait(false);
         }
 
         public static void StartServices([NotNull] Container container)
