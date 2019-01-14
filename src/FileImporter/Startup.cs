@@ -109,8 +109,8 @@
 
         public static void StopServices([NotNull] Container container)
         {
-            var x = container.GetAllInstances<IEagleEyeProcess>();
-            foreach (var eagleEyeProcess in x)
+            var allEagleEyeProcesses = container.GetAllInstances<IEagleEyeProcess>();
+            foreach (var eagleEyeProcess in allEagleEyeProcesses)
             {
                 eagleEyeProcess.Stop();
             }

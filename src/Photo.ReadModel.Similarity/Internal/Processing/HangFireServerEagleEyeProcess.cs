@@ -3,16 +3,12 @@
     using System;
 
     using EagleEye.Core.Interfaces;
-
     using Hangfire;
+    using Hangfire.MemoryStorage;
     using Hangfire.SQLite;
-
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter;
-
     using SimpleInjector;
 
     internal class HangFireServerEagleEyeProcess : IEagleEyeProcess, IDisposable
@@ -25,24 +21,38 @@
             Guard.NotNull(container, nameof(container));
             Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
-            Hangfire.GlobalConfiguration
+            // TODO this is not very nice  :|
+            if (connectionString.StartsWith("InMemory"))
+            {
+                Hangfire.GlobalConfiguration
+                    .Configuration
+                    .UseActivator(new SimpleInjectorJobActivator(container))
+                    .UseMemoryStorage();
+            }
+            else
+            {
+                Hangfire.GlobalConfiguration
                     .Configuration
                     .UseSQLiteStorage(connectionString)
                     .UseActivator(new SimpleInjectorJobActivator(container));
+            }
         }
 
         public void Start()
         {
+            if (backgroundJobServer != null)
+                return;
+
             lock (syncLock)
             {
-                if (backgroundJobServer == null)
+                if (backgroundJobServer != null)
+                    return;
+
+                var backgroundJobServerOptions = new BackgroundJobServerOptions
                 {
-                    var backgroundJobServerOptions = new BackgroundJobServerOptions
-                                                     {
-                                                         WorkerCount = 1,
-                                                     };
-                    backgroundJobServer = new BackgroundJobServer(backgroundJobServerOptions);
-                }
+                    WorkerCount = 1,
+                };
+                backgroundJobServer = new BackgroundJobServer(backgroundJobServerOptions);
             }
         }
 

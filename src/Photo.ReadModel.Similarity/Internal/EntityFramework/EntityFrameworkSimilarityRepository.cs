@@ -5,14 +5,17 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Helpers.Guards;
+    using JetBrains.Annotations;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
 
     internal class EntityFrameworkSimilarityRepository : ISimilarityRepository
     {
         private readonly ISimilarityDbContextFactory contextFactory;
 
-        public EntityFrameworkSimilarityRepository(ISimilarityDbContextFactory contextFactory)
+        public EntityFrameworkSimilarityRepository([NotNull] ISimilarityDbContextFactory contextFactory)
         {
+            Guard.NotNull(contextFactory, nameof(contextFactory));
             this.contextFactory = contextFactory;
         }
 

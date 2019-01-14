@@ -1,6 +1,7 @@
 ﻿namespace Photo.EntityFramework.ReadModel.Internal.EntityFramework
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using Helpers.Guards;
@@ -16,6 +17,7 @@
         [NotNull] private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IList<IDbContextOptionsStrategy> strategies;
 
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration", Justification = "Used by Guard for null check")]
         public DbContextOptionsFactory([NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
         {
             Guard.NotNull(strategies, nameof(strategies));
