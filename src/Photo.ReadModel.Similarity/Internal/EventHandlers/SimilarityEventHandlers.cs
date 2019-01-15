@@ -6,9 +6,7 @@
 
     using CQRSlite.Events;
     using EagleEye.Photo.Domain.Events;
-
     using Hangfire;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
@@ -74,7 +72,7 @@
 
             using (var db = contextFactory.CreateDbContext())
             {
-                var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct);
+                var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct).ConfigureAwait(false);
 
                 var existingItem = await db.PhotoHashes
                                            .SingleOrDefaultAsync(x => x.Id == message.Id && x.HashIdentifier == hashIdentifier, ct)

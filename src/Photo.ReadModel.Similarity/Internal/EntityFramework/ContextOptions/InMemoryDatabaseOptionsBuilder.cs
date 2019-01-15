@@ -3,9 +3,7 @@
     using System;
 
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using Microsoft.EntityFrameworkCore;
 
     [UsedImplicitly]

@@ -1,11 +1,13 @@
 ﻿namespace EagleEye.Photo.Domain.Events
 {
     using System;
+    using System.Diagnostics;
 
     using EagleEye.Photo.Domain.Events.Base;
 
     public class PhotoHashUpdated : EventBase
     {
+        [DebuggerStepThrough]
         public PhotoHashUpdated(Guid id, string hashIdentifier, byte[] hash)
         {
             Id = id;
