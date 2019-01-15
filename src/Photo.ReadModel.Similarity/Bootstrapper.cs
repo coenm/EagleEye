@@ -3,6 +3,9 @@
     using System;
 
     using EagleEye.Core.Interfaces;
+    using Hangfire;
+    using Hangfire.MemoryStorage;
+    using Hangfire.SQLite;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
@@ -11,6 +14,7 @@
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EventHandlers;
     using Photo.ReadModel.Similarity.Internal.Processing;
+    using Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter;
     using SimpleInjector;
 
     public static class Bootstrapper
@@ -42,10 +46,15 @@
 
             container.Collection.Register<IEagleEyeInitialize>(typeof(DatabaseInitializer));
 
+            // BackgroundJobClient contains multiple public constructors.
+            container.Register<IBackgroundJobClient>(() => new BackgroundJobClient(), Lifestyle.Singleton);
+
             // todo
-            container.RegisterSingleton<HangFireServerEagleEyeProcess>(() => new HangFireServerEagleEyeProcess(container, hangFireConnectionString));
+            container.RegisterSingleton<HangFireServerEagleEyeProcess, HangFireServerEagleEyeProcess>();
             container.Collection.Append<IEagleEyeProcess, HangFireServerEagleEyeProcess>();
             container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
+
+            SetHangFireConfiguration(container, hangFireConnectionString);
         }
 
         public static Type[] GetEventHandlerTypes()
@@ -54,6 +63,25 @@
             {
                 typeof(SimilarityEventHandlers),
             };
+        }
+
+        private static void SetHangFireConfiguration(Container container, string connectionString)
+        {
+            // TODO this is not very nice  :|
+            if (connectionString.StartsWith("InMemory"))
+            {
+                Hangfire.GlobalConfiguration
+                    .Configuration
+                    .UseActivator(new SimpleInjectorJobActivator(container))
+                    .UseMemoryStorage();
+            }
+            else
+            {
+                Hangfire.GlobalConfiguration
+                    .Configuration
+                    .UseSQLiteStorage(connectionString)
+                    .UseActivator(new SimpleInjectorJobActivator(container));
+            }
         }
     }
 }
