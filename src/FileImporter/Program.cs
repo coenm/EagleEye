@@ -78,7 +78,7 @@
 
         private static void ListAllReadModel(ListReadModelOptions opts)
         {
-            Startup.ConfigureContainer(container, opts.IndexFile);
+            Startup.ConfigureContainer(container, opts.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
             Startup.InitializeAllServices(container).GetAwaiter().GetResult(); // todo
             Startup.StartServices(container);
             try
@@ -200,7 +200,7 @@
                 return;
             }
 
-            Startup.ConfigureContainer(container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
@@ -303,7 +303,7 @@
             //                    };
                               //            }
 
-            Startup.ConfigureContainer(container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
@@ -360,7 +360,7 @@
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
         {
-            Startup.ConfigureContainer(container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
 
             var searchService = container.GetInstance<SearchService>();
             var contentResolver = container.GetInstance<IContentResolver>();
@@ -492,7 +492,7 @@
 
         private static void Search(SearchOptions options)
         {
-            Startup.ConfigureContainer(container, options.IndexFile);
+            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
 
             var searchService = container.GetInstance<SearchService>();
             var everything = new Everything();
@@ -581,7 +581,7 @@
 //            var diRoot = new DirectoryInfo(RootPath).FullName;
 //            var rp = RootPath;
 
-            Startup.ConfigureContainer(container, options.OutputFile);
+            Startup.ConfigureContainer(container, options.OutputFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
 
             var searchService = container.GetInstance<SearchService>();
             var persistentService = container.GetInstance<PersistentFileIndexService>();
@@ -621,7 +621,7 @@
 //                rp = RootPath;
 //            }
 
-            Startup.ConfigureContainer(container, options.OutputFile);
+            Startup.ConfigureContainer(container, options.OutputFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)

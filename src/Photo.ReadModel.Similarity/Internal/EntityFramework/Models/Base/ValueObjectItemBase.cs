@@ -5,7 +5,7 @@
 
     internal abstract class ValueObjectItemBase
     {
-        [Key]
+        [Required]
         public Guid Id { get; set; }
     }
 }

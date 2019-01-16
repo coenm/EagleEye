@@ -38,7 +38,7 @@
 
         public async Task Handle(PhotoHashCleared message, CancellationToken ct)
         {
-            DebugGuard.NotNull(message, nameof(message));
+            Guard.NotNull(message, nameof(message));
 
             using (var db = contextFactory.CreateDbContext())
             {
@@ -56,9 +56,7 @@
                     .ConfigureAwait(false);
 
                 if (itemToRemove.Any())
-                {
                     db.PhotoHashes.RemoveRange(itemToRemove);
-                }
 
                 await db.SaveChangesAsync(ct).ConfigureAwait(false);
             }
@@ -108,7 +106,7 @@
             hangFireClient.Enqueue<UpdatePhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
         }
 
-        private static async Task<HashIdentifiers> GetAddHashIdentifierAsync(
+        [NotNull] private static async Task<HashIdentifiers> GetAddHashIdentifierAsync(
             [NotNull] SimilarityDbContext db,
             [NotNull] string identifier,
             CancellationToken ct = default(CancellationToken))

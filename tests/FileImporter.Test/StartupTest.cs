@@ -19,7 +19,7 @@
             // act
             Action act = () =>
                          {
-                             Startup.ConfigureContainer(container, string.Empty);
+                             Startup.ConfigureContainer(container, "dummy", "InMemory hangfire");
                              Startup.VerifyContainer(container);
                          };
 
