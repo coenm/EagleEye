@@ -17,8 +17,8 @@
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
-
-    using global::Photo.EntityFramework.ReadModel.Interface;
+    using global::Photo.ReadModel.EntityFramework.Interface;
+    using global::Photo.ReadModel.SearchEngineLucene.Interface;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
@@ -85,7 +85,7 @@
             {
                 var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
                 var dispatcher = container.GetInstance<ICommandSender>();
-                var search = container.GetInstance<SearchEngine.LuceneNet.ReadModel.Interface.IReadModel>();
+                var search = container.GetInstance<IReadModel>();
 
                 var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();

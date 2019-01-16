@@ -21,7 +21,6 @@
             // this.repository = repository;
         }
 
-
         public Task<IEnumerable<SimilarityResult>> GetAllSimilaritiesAsync()
         {
             throw new NotImplementedException();

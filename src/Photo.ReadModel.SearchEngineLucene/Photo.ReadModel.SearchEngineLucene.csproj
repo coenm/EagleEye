@@ -1,55 +1,50 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
-    <RootNamespace>EagleEye.FileImporter</RootNamespace>
-    
+    <RootNamespace>Photo.ReadModel.SearchEngineLucene</RootNamespace>
+
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
-
+    
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <AssemblyName>Photo.ReadModel.SearchEngineLucene</AssemblyName>    
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.0" />
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0001" />
-    <PackageReference Include="CommandLineParser" Version="2.3.0" />
     <PackageReference Include="CqrsLite" Version="0.26.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
-    <PackageReference Include="NetMQ" Version="4.0.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Expressions" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Facet" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Join" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Memory" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Misc" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
     <PackageReference Include="NLog" Version="4.5.11" />
-    <PackageReference Include="ShellProgressBar" Version="4.2.0" />
     <PackageReference Include="SimpleInjector" Version="4.4.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\ExifToolWrapper\ExifToolWrapper.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
-    <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
-    <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
-    <ProjectReference Include="..\Photo.ReadModel.Similarity\Photo.ReadModel.Similarity.csproj" />
-    <ProjectReference Include="..\Picasa\Picasa.csproj" />
   </ItemGroup>
 
 </Project>

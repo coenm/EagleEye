@@ -19,7 +19,7 @@
     using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
-
+    using global::Photo.ReadModel.SearchEngineLucene;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
@@ -83,8 +83,8 @@
             // strange stuff..
             var registrar = new RouteRegistrar(container);
             registrar.RegisterHandlers(EagleEye.Photo.Domain.Bootstrapper.GetEventHandlerTypesPhotoDomain());
-            registrar.RegisterHandlers(global::Photo.EntityFramework.ReadModel.Bootstrapper.GetEventHandlerTypes());
-            registrar.RegisterHandlers(SearchEngine.LuceneNet.ReadModel.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(global::Photo.ReadModel.EntityFramework.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
             registrar.RegisterHandlers(global::Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
 
@@ -159,7 +159,7 @@
             DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
-            global::Photo.EntityFramework.ReadModel.Bootstrapper.BootstrapEntityFrameworkReadModel(
+            global::Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,
                                                            connectionString);
         }
@@ -168,7 +168,7 @@
         {
             DebugGuard.NotNull(container, nameof(container));
 
-            SearchEngine.LuceneNet.ReadModel.Bootstrapper.BootstrapSearchEngineLuceneReadModel(
+            Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,
                 string.IsNullOrWhiteSpace(indexBaseDirectory),
                 indexBaseDirectory);

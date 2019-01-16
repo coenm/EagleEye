@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetMq.Test", "tests\NetMq.T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhotoReadModel", "PhotoReadModel", "{0364CB15-A4A9-4100-A70C-64B5F5088069}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.ReadModel.Test", "tests\SearchEngine.Lucene.ReadModel.Test\SearchEngine.Lucene.ReadModel.Test.csproj", "{3E96CD8A-C800-46FB-B559-CBF879C4E86A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.SearchEngineLucene.Test", "tests\Photo.ReadModel.SearchEngineLucene.Test\Photo.ReadModel.SearchEngineLucene.Test.csproj", "{3E96CD8A-C800-46FB-B559-CBF879C4E86A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite.Test", "tests\CQRSlite.Test\CQRSlite.Test.csproj", "{4372D252-35EB-427C-99AF-1F759C9350CA}"
 EndProject
@@ -45,11 +45,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "src\Helpers\Helpers.csproj", "{EFB6BFEE-D62F-4F8E-A88D-DCDC0127BE89}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Lucene.ReadModel", "src\SearchEngine.Lucene.ReadModel\SearchEngine.Lucene.ReadModel.csproj", "{4D01785D-A758-4F4A-A0E8-61CED8ED98EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.SearchEngineLucene", "src\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj", "{4D01785D-A758-4F4A-A0E8-61CED8ED98EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.EntityFramework.ReadModel.Test", "tests\Photo.EntityFramework.ReadModel.Test\Photo.EntityFramework.ReadModel.Test.csproj", "{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.EntityFramework.Test", "tests\Photo.ReadModel.EntityFramework.Test\Photo.ReadModel.EntityFramework.Test.csproj", "{01C6D04E-CD6B-4D09-B55B-5B3AC8516F10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.EntityFramework.ReadModel", "src\Photo.EntityFramework.ReadModel\Photo.EntityFramework.ReadModel.csproj", "{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.EntityFramework", "src\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj", "{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.Domain", "src\Photo.Domain\Photo.Domain.csproj", "{5B7B4C0A-C002-4762-80A7-B331E514D04F}"
 EndProject
