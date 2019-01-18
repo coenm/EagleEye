@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Common;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
@@ -14,12 +13,11 @@
     using Hangfire;
     using Hangfire.Common;
     using Hangfire.States;
-    using Microsoft.Data.Sqlite;
-    using Microsoft.EntityFrameworkCore;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using Photo.ReadModel.Similarity.Internal.EventHandlers;
     using Photo.ReadModel.Similarity.Internal.Processing;
+    using Photo.ReadModel.Similarity.Test.Mocks;
     using Xunit;
 
     public class SimilarityEventHandlersTest : IDisposable
@@ -28,8 +26,7 @@
         private const string HashAlgorithm1 = "hashAlgo1";
         private const string HashAlgorithm2 = "hashAlgo2";
 
-        private readonly DbConnection connection;
-        private readonly ISimilarityDbContextFactory contextFactory;
+        private readonly InMemorySimilarityDbContextFactory contextFactory;
         private readonly IBackgroundJobClient hangFireClient;
         private readonly SimilarityEventHandlers sut;
         private readonly List<Job> jobsAdded;
@@ -39,16 +36,7 @@
         {
             timestamp = DateTimeOffset.UtcNow;
 
-            // In-memory database only exists while the connection is open
-            connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<SimilarityDbContext>()
-                .UseSqlite(connection)
-                .Options;
-
-            contextFactory = new SimilarityDbContextFactory(options);
-
+            contextFactory = new InMemorySimilarityDbContextFactory();
             contextFactory.Initialize().GetAwaiter().GetResult();
 
             hangFireClient = A.Fake<IBackgroundJobClient>();
@@ -60,10 +48,7 @@
             sut = new SimilarityEventHandlers(A.Dummy<ISimilarityRepository>(), contextFactory, hangFireClient);
         }
 
-        public void Dispose()
-        {
-            connection.Close();
-        }
+        public void Dispose() => contextFactory.Dispose();
 
         [Fact]
         public async Task Handle_PhotoHashUpdated_ShouldAddHashIdentifierAndPhotoHashIntoDbAndCreateHangFireJob()

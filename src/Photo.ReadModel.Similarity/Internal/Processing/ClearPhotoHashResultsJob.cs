@@ -42,9 +42,7 @@
                     .ToList();
 
                 if (itemsToDelete.Any())
-                {
                     db.Scores.RemoveRange(itemsToDelete);
-                }
 
                 db.SaveChanges();
             }
