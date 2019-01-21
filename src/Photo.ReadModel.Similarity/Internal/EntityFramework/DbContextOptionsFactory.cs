@@ -4,11 +4,8 @@
     using System.Linq;
 
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using Microsoft.EntityFrameworkCore;
-
     using NLog;
 
     internal class DbContextOptionsFactory

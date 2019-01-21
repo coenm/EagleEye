@@ -6,6 +6,6 @@
     {
         Task Initialize();
 
-        SimilarityDbContext CreateDbContext();
+        ISimilarityDbContext CreateDbContext();
     }
 }

@@ -9,7 +9,6 @@
     using Hangfire;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Microsoft.EntityFrameworkCore;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using Photo.ReadModel.Similarity.Internal.Processing;
@@ -19,12 +18,12 @@
         ICancellableEventHandler<PhotoHashCleared>,
         ICancellableEventHandler<PhotoHashUpdated>
     {
-        [NotNull] private readonly ISimilarityRepository repository;
+        [NotNull] private readonly IInternalStatelessSimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
         [NotNull] private readonly IBackgroundJobClient hangFireClient;
 
         public SimilarityEventHandlers(
-            [NotNull] ISimilarityRepository repository,
+            [NotNull] IInternalStatelessSimilarityRepository repository,
             [NotNull] ISimilarityDbContextFactory contextFactory,
             [NotNull] IBackgroundJobClient hangFireClient)
         {
@@ -42,17 +41,10 @@
 
             using (var db = contextFactory.CreateDbContext())
             {
-                var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct)
+                var hashIdentifier = await repository.GetAddHashIdentifierAsync(db, message.HashIdentifier, ct)
                     .ConfigureAwait(false);
 
-                var itemToRemove = await db.PhotoHashes
-                    .Where(x =>
-                        x.Id == message.Id
-                        &&
-                        x.HashIdentifier == hashIdentifier
-                        &&
-                        x.Version <= message.Version)
-                    .ToListAsync(ct)
+                var itemToRemove = await repository.GetPhotoHashesUntilVersionAsync(db, message.Id, hashIdentifier, message.Version, ct)
                     .ConfigureAwait(false);
 
                 if (itemToRemove.Any())
@@ -70,11 +62,11 @@
 
             using (var db = contextFactory.CreateDbContext())
             {
-                var hashIdentifier = await GetAddHashIdentifierAsync(db, message.HashIdentifier, ct).ConfigureAwait(false);
+                var hashIdentifier = await repository.GetAddHashIdentifierAsync(db, message.HashIdentifier, ct)
+                    .ConfigureAwait(false);
 
-                var existingItem = await db.PhotoHashes
-                                           .SingleOrDefaultAsync(x => x.Id == message.Id && x.HashIdentifier == hashIdentifier, ct)
-                                           .ConfigureAwait(false);
+                var existingItem = await repository.TryGetHashByIdAndHashIdentifierAsync(db, message.Id, hashIdentifier, ct)
+                    .ConfigureAwait(false);
 
                 if (existingItem != null)
                 {
@@ -97,37 +89,15 @@
                                       HashIdentifier = hashIdentifier,
                                       Hash = message.Hash,
                                   };
-                    await db.PhotoHashes.AddAsync(newItem, ct);
+                    await db.PhotoHashes.AddAsync(newItem, ct)
+                        .ConfigureAwait(false);
                 }
 
-                await db.SaveChangesAsync(ct).ConfigureAwait(false);
+                await db.SaveChangesAsync(ct)
+                    .ConfigureAwait(false);
             }
 
             hangFireClient.Enqueue<UpdatePhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
-        }
-
-        [NotNull] private static async Task<HashIdentifiers> GetAddHashIdentifierAsync(
-            [NotNull] SimilarityDbContext db,
-            [NotNull] string identifier,
-            CancellationToken ct = default(CancellationToken))
-        {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
-
-            ct.ThrowIfCancellationRequested();
-
-            var dbItem = await db.HashIdentifiers.FirstOrDefaultAsync(x => x.HashIdentifier == identifier, ct);
-
-            if (dbItem != null)
-                return dbItem;
-
-            dbItem = new HashIdentifiers
-                     {
-                         HashIdentifier = identifier,
-                     };
-
-            await db.HashIdentifiers.AddAsync(dbItem, ct).ConfigureAwait(false);
-            return dbItem;
         }
     }
 }

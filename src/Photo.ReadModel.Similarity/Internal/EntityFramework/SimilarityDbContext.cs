@@ -1,11 +1,12 @@
 ﻿namespace Photo.ReadModel.Similarity.Internal.EntityFramework
 {
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
     using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
 
-    internal class SimilarityDbContext : DbContext
+    internal class SimilarityDbContext : DbContext, ISimilarityDbContext
     {
         public SimilarityDbContext(DbContextOptions options)
             : base(options)
@@ -17,6 +18,10 @@
         public DbSet<PhotoHash> PhotoHashes { get; set; }
 
         public DbSet<Scores> Scores { get; set; }
+
+        Task ISimilarityDbContext.SaveChangesAsync(CancellationToken ct) => SaveChangesAsync(ct);
+
+        void ISimilarityDbContext.SaveChanges() => SaveChanges();
 
         public Task EnsureCreatedAsync() => Database.EnsureCreatedAsync();
 

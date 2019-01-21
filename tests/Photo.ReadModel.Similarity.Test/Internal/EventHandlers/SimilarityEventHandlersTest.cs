@@ -27,6 +27,7 @@
         private const string HashAlgorithm2 = "hashAlgo2";
 
         private readonly InMemorySimilarityDbContextFactory contextFactory;
+        private readonly IInternalStatelessSimilarityRepository repository;
         private readonly IBackgroundJobClient hangFireClient;
         private readonly SimilarityEventHandlers sut;
         private readonly List<Job> jobsAdded;
@@ -39,13 +40,15 @@
             contextFactory = new InMemorySimilarityDbContextFactory();
             contextFactory.Initialize().GetAwaiter().GetResult();
 
+            repository = A.Fake<InternalSimilarityRepository>();
+
             hangFireClient = A.Fake<IBackgroundJobClient>();
 
             jobsAdded = new List<Job>();
             A.CallTo(() => hangFireClient.Create(A<Job>._, A<IState>._))
                 .Invokes(call => jobsAdded.Add(call.Arguments[0] as Job));
 
-            sut = new SimilarityEventHandlers(A.Dummy<ISimilarityRepository>(), contextFactory, hangFireClient);
+            sut = new SimilarityEventHandlers(repository, contextFactory, hangFireClient);
         }
 
         public void Dispose() => contextFactory.Dispose();

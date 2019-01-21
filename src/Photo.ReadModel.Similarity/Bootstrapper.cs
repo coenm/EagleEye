@@ -34,7 +34,7 @@
             Guard.NotNullOrWhiteSpace(hangFireConnectionString, nameof(hangFireConnectionString));
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
-            container.Register<ISimilarityRepository, EntityFrameworkSimilarityRepository>();
+            container.Register<IInternalStatelessSimilarityRepository, InternalSimilarityRepository>(Lifestyle.Singleton);
             container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
 
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);

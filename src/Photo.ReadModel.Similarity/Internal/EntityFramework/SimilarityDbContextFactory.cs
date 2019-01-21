@@ -25,6 +25,8 @@
             }
         }
 
+        ISimilarityDbContext ISimilarityDbContextFactory.CreateDbContext() => CreateDbContext();
+
         public SimilarityDbContext CreateDbContext() => new SimilarityDbContext(options);
     }
 }

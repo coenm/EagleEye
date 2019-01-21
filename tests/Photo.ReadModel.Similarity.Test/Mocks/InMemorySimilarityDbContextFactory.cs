@@ -27,7 +27,7 @@
 
         public Task Initialize() => ctxFactory.Initialize();
 
-        public SimilarityDbContext CreateDbContext() => ctxFactory.CreateDbContext();
+        public ISimilarityDbContext CreateDbContext() => ctxFactory.CreateDbContext();
 
         public void Dispose() => connection.Dispose();
     }
