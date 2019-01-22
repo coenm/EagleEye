@@ -1,12 +1,11 @@
-﻿namespace Photo.ReadModel.Similarity.Interface
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Interface
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.Similarity.Interface.Model;
     using JetBrains.Annotations;
-
-    using Photo.ReadModel.Similarity.Interface.Model;
 
     [PublicAPI]
     public interface ISimilarityReadModel

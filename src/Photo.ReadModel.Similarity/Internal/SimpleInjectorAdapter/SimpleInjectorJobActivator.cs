@@ -1,13 +1,10 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter
 {
     using System;
 
     using Hangfire;
-
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using SimpleInjector;
 
     /// <remarks>Based on <see href="https://github.com/devmondo/HangFire.SimpleInjector/blob/master/src/HangFire.SimpleInjector/SimpleInjectorJobActivator.cs"/>. (accessed at 2018-11-28).</remarks>

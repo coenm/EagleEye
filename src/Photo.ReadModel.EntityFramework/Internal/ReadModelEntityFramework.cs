@@ -1,15 +1,15 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.EntityFramework.Interface;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.EntityFramework.Interface;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
 
     internal class ReadModelEntityFramework : IReadModelEntityFramework
         {

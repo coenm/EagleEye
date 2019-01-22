@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet
 {
     using System;
     using System.Collections.Generic;
@@ -6,6 +6,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Lucene.Net.Analysis;
@@ -17,8 +19,7 @@
     using Lucene.Net.Spatial;
     using Lucene.Net.Spatial.Prefix;
     using Lucene.Net.Spatial.Prefix.Tree;
-    using Photo.ReadModel.SearchEngineLucene.Interface;
-    using Photo.ReadModel.SearchEngineLucene.Internal.Model;
+
     using Spatial4n.Core.Context;
 
     using Directory = Lucene.Net.Store.Directory;

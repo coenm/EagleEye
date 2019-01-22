@@ -1,20 +1,20 @@
-﻿namespace Photo.ReadModel.Similarity
+﻿namespace EagleEye.Photo.ReadModel.Similarity
 {
     using System;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Photo.ReadModel.Similarity.Interface;
+    using EagleEye.Photo.ReadModel.Similarity.Internal;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter;
     using Hangfire;
     using Hangfire.MemoryStorage;
     using Hangfire.SQLite;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.Similarity.Interface;
-    using Photo.ReadModel.Similarity.Internal;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Photo.ReadModel.Similarity.Internal.EventHandlers;
-    using Photo.ReadModel.Similarity.Internal.Processing;
-    using Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter;
     using SimpleInjector;
 
     public static class Bootstrapper

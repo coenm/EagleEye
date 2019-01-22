@@ -1,14 +1,14 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene
 {
     using System;
 
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.SearchEngineLucene.Interface;
-    using Photo.ReadModel.SearchEngineLucene.Internal;
-    using Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using SimpleInjector;
 
     public static class Bootstrapper

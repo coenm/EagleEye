@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EntityFramework.ContextOptions
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.ContextOptions
 {
     using System;
 

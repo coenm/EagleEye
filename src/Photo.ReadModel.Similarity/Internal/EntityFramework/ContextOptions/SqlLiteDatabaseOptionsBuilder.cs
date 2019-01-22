@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.EntityFramework.ContextOptions
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.ContextOptions
 {
     using System;
 

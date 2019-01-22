@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.Similarity.Interface.Model
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Interface.Model
 {
     using System;
 

@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet
 {
     internal static class LuceneNetVersion
     {

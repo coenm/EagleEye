@@ -4,9 +4,9 @@
     using System.Data.Common;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Microsoft.Data.Sqlite;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
 
     internal class InMemorySimilarityDbContextFactory : ISimilarityDbContextFactory, IDisposable
     {

@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Interface.Model
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Interface.Model
 {
     using JetBrains.Annotations;
 

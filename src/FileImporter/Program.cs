@@ -17,8 +17,8 @@
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
-    using global::Photo.ReadModel.EntityFramework.Interface;
-    using global::Photo.ReadModel.SearchEngineLucene.Interface;
+    using EagleEye.Photo.ReadModel.EntityFramework.Interface;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 

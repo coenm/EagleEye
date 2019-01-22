@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.Processing
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.Processing
 {
     using System;
 

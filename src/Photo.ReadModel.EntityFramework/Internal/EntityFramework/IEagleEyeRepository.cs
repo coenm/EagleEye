@@ -1,10 +1,10 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
 
     internal interface IEagleEyeRepository /*: IReadOnlyRepository<MediaItemDb>*/
     {

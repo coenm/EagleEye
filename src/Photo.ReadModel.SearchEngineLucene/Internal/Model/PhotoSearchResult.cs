@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Internal.Model
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model
 {
     internal class PhotoSearchResult : Photo
     {

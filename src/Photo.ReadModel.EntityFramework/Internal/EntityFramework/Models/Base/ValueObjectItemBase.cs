@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models.Base
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models.Base
 {
     using System;
     using System.ComponentModel.DataAnnotations;

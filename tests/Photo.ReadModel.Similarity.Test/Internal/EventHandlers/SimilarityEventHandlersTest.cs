@@ -8,15 +8,15 @@
     using System.Threading.Tasks;
 
     using EagleEye.Photo.Domain.Events;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
     using FakeItEasy;
     using FluentAssertions;
     using Hangfire;
     using Hangfire.Common;
     using Hangfire.States;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Photo.ReadModel.Similarity.Internal.EventHandlers;
-    using Photo.ReadModel.Similarity.Internal.Processing;
     using Photo.ReadModel.Similarity.Test.Mocks;
     using Xunit;
 

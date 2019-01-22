@@ -1,11 +1,11 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.Processing
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.Processing
 {
     using System;
     using System.Linq;
 
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
 
     [UsedImplicitly]
     internal class ClearPhotoHashResultsJob

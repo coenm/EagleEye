@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifTool;
-
+    using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
 
     using Xunit;
@@ -47,7 +47,7 @@
         }
 
         [Fact]
-        [Categories.ExifTool]
+        [ExifTool]
         public async Task KillingSutShouldInvokeProcessExitedEventTest()
         {
             // arrange
@@ -64,7 +64,7 @@
         }
 
         [Fact]
-        [Categories.ExifTool]
+        [ExifTool]
         public async Task SettingStayOpenToFalseShouldCloseSutTest()
         {
             // arrange

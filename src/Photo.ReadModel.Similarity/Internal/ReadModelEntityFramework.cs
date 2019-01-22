@@ -1,15 +1,11 @@
-﻿namespace Photo.ReadModel.Similarity.Internal
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Helpers.Guards;
-
-    using JetBrains.Annotations;
-
-    using Photo.ReadModel.Similarity.Interface;
-    using Photo.ReadModel.Similarity.Interface.Model;
+    using EagleEye.Photo.ReadModel.Similarity.Interface;
+    using EagleEye.Photo.ReadModel.Similarity.Interface.Model;
 
     internal class ReadModelEntityFramework : ISimilarityReadModel
     {

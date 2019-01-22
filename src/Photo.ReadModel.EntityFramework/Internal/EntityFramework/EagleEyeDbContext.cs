@@ -1,9 +1,9 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework
 {
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
 
     internal class EagleEyeDbContext : DbContext
     {

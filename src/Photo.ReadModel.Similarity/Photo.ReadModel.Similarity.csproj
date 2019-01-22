@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
-    <RootNamespace>Photo.ReadModel.Similarity</RootNamespace>
+    <RootNamespace>EagleEye.Photo.ReadModel.Similarity</RootNamespace>
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>

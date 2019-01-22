@@ -1,14 +1,14 @@
-﻿namespace Photo.ReadModel.EntityFramework.Test
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Test
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
     using FluentAssertions;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
     using Xunit;
 
     public class ExploringEntityFrameworkTests

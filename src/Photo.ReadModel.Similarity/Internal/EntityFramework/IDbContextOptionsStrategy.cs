@@ -1,7 +1,6 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework
 {
     using JetBrains.Annotations;
-
     using Microsoft.EntityFrameworkCore;
 
     internal interface IDbContextOptionsStrategy
