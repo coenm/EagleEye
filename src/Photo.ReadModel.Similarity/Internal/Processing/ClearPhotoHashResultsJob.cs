@@ -1,11 +1,13 @@
 ﻿namespace Photo.ReadModel.Similarity.Internal.Processing
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
 
     [UsedImplicitly]
     internal class ClearPhotoHashResultsJob

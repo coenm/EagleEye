@@ -21,7 +21,7 @@
         // Task<int> RemoveByIdAsync(params Guid[] itemIds);
         //
         // Task<int> SaveAsync(Photo item);
-        HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
+        [NotNull] HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
 
         Task<HashIdentifiers> GetAddHashIdentifierAsync([NotNull] ISimilarityDbContext db, [NotNull] string messageHashIdentifier, CancellationToken ct = default(CancellationToken));
 
