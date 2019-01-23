@@ -1,11 +1,11 @@
-﻿namespace Photo.ReadModel.EntityFramework.Interface
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Interface
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.EntityFramework.Interface.Model;
     using JetBrains.Annotations;
-    using Photo.ReadModel.EntityFramework.Interface.Model;
 
     [PublicAPI]
     public interface IReadModelEntityFramework

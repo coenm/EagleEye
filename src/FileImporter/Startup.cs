@@ -19,7 +19,7 @@
     using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
-    using global::Photo.ReadModel.SearchEngineLucene;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
@@ -83,9 +83,9 @@
             // strange stuff..
             var registrar = new RouteRegistrar(container);
             registrar.RegisterHandlers(EagleEye.Photo.Domain.Bootstrapper.GetEventHandlerTypesPhotoDomain());
-            registrar.RegisterHandlers(global::Photo.ReadModel.EntityFramework.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.GetEventHandlerTypes());
             registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
-            registrar.RegisterHandlers(global::Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
+            registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
 
         private static string GetUserDirectory()
@@ -144,7 +144,7 @@
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
             DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
-            global::Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
+            global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
         }
 
         private static void RegisterPhotoDomain([NotNull] Container container)
@@ -159,7 +159,7 @@
             DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
-            global::Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
+            global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,
                                                            connectionString);
         }

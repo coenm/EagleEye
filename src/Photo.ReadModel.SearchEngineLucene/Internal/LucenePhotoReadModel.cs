@@ -1,12 +1,12 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Internal
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal
 {
     using System.Collections.Generic;
     using System.Linq;
 
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.SearchEngineLucene.Interface;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
 
     internal class LucenePhotoReadModel : IReadModel
     {

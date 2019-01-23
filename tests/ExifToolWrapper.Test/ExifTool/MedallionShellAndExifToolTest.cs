@@ -9,12 +9,11 @@
 
     using EagleEye.ExifToolWrapper.ExifTool;
     using EagleEye.TestHelper;
+    using EagleEye.TestHelper.XUnit;
     using EagleEye.TestHelper.Xunit.Facts;
-
+    using EagleEye.TestHelper.XUnit.Facts;
     using FluentAssertions;
-
     using Medallion.Shell;
-
     using Xunit;
     using Xunit.Abstractions;
 
@@ -43,7 +42,7 @@
         }
 
         [Fact]
-        [Categories.ExifTool]
+        [ExifTool]
         public async Task RunExifToolToGetVersion()
         {
             // arrange
@@ -63,7 +62,7 @@
         }
 
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows)]
-        [Categories.ExifTool]
+        [ExifTool]
         public async Task RunExifToolWithCustomStream()
         {
             // arrange

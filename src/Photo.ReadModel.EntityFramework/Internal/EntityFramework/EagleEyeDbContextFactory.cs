@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework
 {
     using System.Threading.Tasks;
 

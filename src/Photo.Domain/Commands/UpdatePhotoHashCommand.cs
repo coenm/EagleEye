@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Photo.Domain.Commands
 {
     using System;
+
     using EagleEye.Photo.Domain.Commands.Base;
     using Helpers.Guards;
     using JetBrains.Annotations;

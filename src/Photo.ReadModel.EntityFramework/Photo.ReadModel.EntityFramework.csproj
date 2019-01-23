@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
-    <RootNamespace>Photo.ReadModel.EntityFramework</RootNamespace>
+    <RootNamespace>EagleEye.Photo.ReadModel.EntityFramework</RootNamespace>
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>

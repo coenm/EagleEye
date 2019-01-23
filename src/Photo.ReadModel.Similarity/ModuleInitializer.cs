@@ -1,11 +1,11 @@
-﻿namespace Photo.ReadModel.Similarity
+﻿namespace EagleEye.Photo.ReadModel.Similarity
 {
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
 
     [UsedImplicitly]
     internal class ModuleInitializer : IEagleEyeInitialize

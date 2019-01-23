@@ -184,7 +184,7 @@
         /// Verifies that the specified <paramref name="value1"/> is equal to <paramref name="value2"/> and throws an exception if it is not.
         /// </summary>
         /// <param name="value1">Fist value.</param>
-        /// <param name="value2">Second value</param>
+        /// <param name="value2">Second value.</param>
         /// <param name="parameterName">The name of the parameter that is to be checked.</param>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value1"/> is not equal to <paramref name="value2"/>.</exception>

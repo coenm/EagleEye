@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EventHandlers
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -7,11 +7,11 @@
 
     using CQRSlite.Events;
     using EagleEye.Photo.Domain.Events;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using NLog;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
 
     internal class MediaItemConsistency :
         ICancellableEventHandler<PhotoCreated>,

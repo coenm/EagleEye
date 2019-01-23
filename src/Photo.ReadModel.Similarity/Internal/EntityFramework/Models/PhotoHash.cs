@@ -1,8 +1,8 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.EntityFramework.Models
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models
 {
     using System.ComponentModel.DataAnnotations;
 
-    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models.Base;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models.Base;
 
     internal class PhotoHash : VersionedItemBase
     {

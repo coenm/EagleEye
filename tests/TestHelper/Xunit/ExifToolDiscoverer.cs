@@ -1,11 +1,11 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace EagleEye.Categories
+namespace EagleEye.TestHelper.XUnit
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
-    using Xunit.Abstractions;
-    using Xunit.Sdk;
+    using global::Xunit.Abstractions;
+    using global::Xunit.Sdk;
 
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "XUnit")]
     public class ExifToolDiscoverer : ITraitDiscoverer

@@ -1,11 +1,11 @@
-﻿namespace Photo.ReadModel.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework
 {
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework;
 
     [UsedImplicitly]
     internal class ModuleInitializer : IEagleEyeInitialize

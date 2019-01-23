@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using Photo.ReadModel.SearchEngineLucene.Internal.Model;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
 
     internal static class DataStore
     {

@@ -1,15 +1,15 @@
-﻿namespace Photo.ReadModel.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework
 {
     using System;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Photo.ReadModel.EntityFramework.Interface;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.EntityFramework.Interface;
-    using Photo.ReadModel.EntityFramework.Internal;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Photo.ReadModel.EntityFramework.Internal.EventHandlers;
     using SimpleInjector;
 
     public static class Bootstrapper

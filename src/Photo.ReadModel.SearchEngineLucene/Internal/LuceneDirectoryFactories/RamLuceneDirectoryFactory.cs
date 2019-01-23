@@ -1,7 +1,7 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories
 {
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using Lucene.Net.Store;
-    using Photo.ReadModel.SearchEngineLucene.Interface;
 
     public class RamLuceneDirectoryFactory : ILuceneDirectoryFactory
     {

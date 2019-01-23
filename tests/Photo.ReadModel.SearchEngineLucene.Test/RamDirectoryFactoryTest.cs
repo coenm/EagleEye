@@ -1,8 +1,8 @@
 ﻿namespace Photo.ReadModel.SearchEngineLucene.Test
 {
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
     using FluentAssertions;
     using Lucene.Net.Store;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
     using Xunit;
 
     public class RamDirectoryFactoryTest

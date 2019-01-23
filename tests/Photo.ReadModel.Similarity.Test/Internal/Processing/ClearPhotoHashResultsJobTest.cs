@@ -3,11 +3,11 @@
     using System;
     using System.Collections.Generic;
 
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
     using FakeItEasy;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Photo.ReadModel.Similarity.Internal.Processing;
     using Xunit;
 
     public class ClearPhotoHashResultsJobTest

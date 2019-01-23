@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.TestHelper.Xunit.Facts
 {
+    using EagleEye.TestHelper.XUnit.Facts;
     using global::Xunit;
 
     /// <summary>

@@ -1,5 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace EagleEye.Categories
+namespace EagleEye.TestHelper.XUnit
 {
     public static class TestHelperSettings
     {

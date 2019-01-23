@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Interface
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Interface
 {
     using System.Collections.Generic;
 

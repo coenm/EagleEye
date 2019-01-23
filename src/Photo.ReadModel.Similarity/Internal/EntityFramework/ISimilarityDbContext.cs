@@ -1,11 +1,11 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
 
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using Microsoft.EntityFrameworkCore;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
 
     internal interface ISimilarityDbContext : IDisposable
     {

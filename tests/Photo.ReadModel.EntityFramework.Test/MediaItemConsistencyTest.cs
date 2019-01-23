@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Test
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Test
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +6,11 @@
     using System.Threading.Tasks;
 
     using EagleEye.Photo.Domain.Events;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers;
     using FakeItEasy;
     using FluentAssertions;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
-    using Photo.ReadModel.EntityFramework.Internal.EventHandlers;
     using Xunit;
 
     public class MediaItemConsistencyTest

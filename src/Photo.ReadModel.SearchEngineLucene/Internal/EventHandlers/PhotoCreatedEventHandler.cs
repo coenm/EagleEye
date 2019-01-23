@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers
+﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers
 {
     using System;
     using System.Linq;
@@ -7,11 +7,11 @@
 
     using CQRSlite.Events;
     using EagleEye.Photo.Domain.Events;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using NLog;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
-    using Photo.ReadModel.SearchEngineLucene.Internal.Model;
 
     internal class PhotoCreatedEventHandler :
             ICancellableEventHandler<PhotoCreated>,

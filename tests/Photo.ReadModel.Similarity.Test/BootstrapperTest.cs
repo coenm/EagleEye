@@ -10,7 +10,7 @@
     using SimpleInjector;
     using Xunit;
 
-    using Sut = Photo.ReadModel.Similarity.Bootstrapper;
+    using Sut = EagleEye.Photo.ReadModel.Similarity.Bootstrapper;
 
     public class BootstrapperTest
     {

@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Interface.Model
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Interface.Model
 {
     using System;
     using System.Collections.Generic;

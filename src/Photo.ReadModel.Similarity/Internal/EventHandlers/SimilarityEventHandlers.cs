@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.EventHandlers
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers
 {
     using System.Linq;
     using System.Threading;
@@ -6,12 +6,12 @@
 
     using CQRSlite.Events;
     using EagleEye.Photo.Domain.Events;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
     using Hangfire;
     using Helpers.Guards;
     using JetBrains.Annotations;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Photo.ReadModel.Similarity.Internal.Processing;
 
     [UsedImplicitly]
     internal class SimilarityEventHandlers :

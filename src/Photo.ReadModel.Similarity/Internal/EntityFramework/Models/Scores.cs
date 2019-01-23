@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.EntityFramework.Models
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;

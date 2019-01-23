@@ -1,11 +1,10 @@
-﻿namespace Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter
 {
     using System;
 
     using Hangfire;
     using Helpers.Guards;
     using JetBrains.Annotations;
-
     using SimpleInjector;
     using SimpleInjector.Lifestyles;
 

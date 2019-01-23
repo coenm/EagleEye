@@ -3,9 +3,9 @@
     using System;
     using System.Diagnostics;
 
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using FluentAssertions;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using Photo.ReadModel.Similarity.Test.Mocks;
     using Xunit;
 
@@ -59,7 +59,7 @@
 
                 // assert
                 result.Should().BeEquivalentTo(
-                    new[] {photoHash11, photoHash12},
+                    new[] { photoHash11, photoHash12 },
                     config => config.Excluding(hash =>
                         hash.HashIdentifier)); // HashIdentifier is not included in the query
             }

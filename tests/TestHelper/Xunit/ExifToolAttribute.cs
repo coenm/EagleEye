@@ -1,10 +1,10 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace EagleEye.Categories
+namespace EagleEye.TestHelper.XUnit
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using Xunit.Sdk;
+    using global::Xunit.Sdk;
 
     [TraitDiscoverer(ExifToolDiscoverer.DiscovererTypeName, TestHelperSettings.AssemblyName)]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]

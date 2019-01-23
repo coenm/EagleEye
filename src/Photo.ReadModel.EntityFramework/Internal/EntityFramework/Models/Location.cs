@@ -1,8 +1,8 @@
-﻿namespace Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models
 {
     using System.ComponentModel.DataAnnotations;
 
-    using global::Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models.Base;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models.Base;
 
     internal class Location : ValueObjectItemBase
     {

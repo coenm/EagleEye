@@ -7,12 +7,12 @@
     public abstract class EventBase : IEvent
     {
         /// <summary>
-        /// The ID of the Aggregate being affected by this event
+        /// The ID of the Aggregate being affected by this event.
         /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
-        /// The Version of the Aggregate which results from this event
+        /// The Version of the Aggregate which results from this event.
         /// </summary>
         public int Version { get; set; }
 

@@ -2,11 +2,11 @@
 {
     using System;
 
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using FluentAssertions;
     using Lucene.Net.Search;
-    using Photo.ReadModel.SearchEngineLucene.Interface;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
-    using Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using Photo.ReadModel.SearchEngineLucene.Test.Data;
     using Xunit;
 
