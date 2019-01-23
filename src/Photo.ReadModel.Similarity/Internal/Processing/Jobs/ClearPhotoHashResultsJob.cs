@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.Processing
+﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs
 {
     using System;
     using System.Linq;

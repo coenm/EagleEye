@@ -12,6 +12,7 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using FakeItEasy;
     using FluentAssertions;
     using Hangfire;

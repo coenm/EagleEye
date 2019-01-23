@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Common;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,6 +14,16 @@
 
     internal class InternalSimilarityRepository : IInternalStatelessSimilarityRepository
     {
+        [CanBeNull]
+        [Pure]
+        public HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
+        {
+            DebugGuard.NotNull(db, nameof(db));
+            DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+
+            return db.HashIdentifiers.SingleOrDefault(item => item.HashIdentifier == identifier);
+        }
+
         [NotNull]
         [Pure]
         public HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
@@ -20,7 +31,7 @@
             DebugGuard.NotNull(db, nameof(db));
             DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
 
-            var dbItem = db.HashIdentifiers.FirstOrDefault(x => x.HashIdentifier == identifier);
+            var dbItem = GetHashIdentifier(db, identifier);
 
             if (dbItem != null)
                 return dbItem;
@@ -64,7 +75,21 @@
 
         [CanBeNull]
         [Pure]
-        public Task<PhotoHash> TryGetHashByIdAndHashIdentifierAsync(
+        public PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier)
+        {
+            DebugGuard.NotNull(db, nameof(db));
+            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+
+            return db.PhotoHashes.SingleOrDefault(
+                photoHash =>
+                    photoHash.Id == messageId
+                    &&
+                    photoHash.HashIdentifier == hashIdentifier);
+        }
+
+        [CanBeNull]
+        [Pure]
+        public Task<PhotoHash> TryGetPhotoHashByIdAndHashIdentifierAsync(
             [NotNull] ISimilarityDbContext db,
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
@@ -136,71 +161,30 @@
                 .ToListAsync(ct);
         }
 
-        // public Task<Photo> GetByIdAsync(Guid id)
-        // {
-        //     using (var db = contextFactory.CreateDbContext())
-        //     {
-        //         var result = db.Photos.FirstOrDefault(x => x.Id.Equals(id));
-        //         return Task.FromResult(result);
-        //     }
-        // }
-        //
-        // public Task<Photo> GetByFilenameAsync(Guid id)
-        // {
-        //     using (var db = contextFactory.CreateDbContext())
-        //     {
-        //         var result = db.Photos.FirstOrDefault(x => x.Id.Equals(id));
-        //         return Task.FromResult(result);
-        //     }
-        // }
-        //
-        // public Task<List<Photo>> GetAllAsync()
-        // {
-        //     using (var db = contextFactory.CreateDbContext())
-        //     {
-        //         var result = db.Photos.ToList();
-        //         return Task.FromResult(result);
-        //     }
-        // }
-        //
-        // public async Task<int> UpdateAsync(Photo item)
-        // {
-        //     using (var db = contextFactory.CreateDbContext())
-        //     {
-        //         db.Photos.Update(item);
-        //         return await db.SaveChangesAsync().ConfigureAwait(false);
-        //     }
-        // }
-        //
-        // public async Task<int> RemoveByIdAsync(params Guid[] itemIds)
-        // {
-        //     if (itemIds == null || itemIds.Any() == false)
-        //         return 0;
-        //
-        //     using (var db = contextFactory.CreateDbContext())
-        //     {
-        //         var items = await db.Photos
-        //                             .Where(x => itemIds.Contains(x.Id))
-        //                             .ToListAsync()
-        //                             .ConfigureAwait(false);
-        //
-        //         if (items.Any() == false)
-        //             return 0;
-        //
-        //         foreach (var item in items)
-        //             db.Photos.Remove(item);
-        //
-        //         return await db.SaveChangesAsync().ConfigureAwait(false);
-        //     }
-        // }
-        //
-        // public async Task<int> SaveAsync(Photo item)
-        // {
-        //     using (var db = contextFactory.CreateDbContext())
-        //     {
-        //         await db.Photos.AddAsync(item).ConfigureAwait(false);
-        //         return await db.SaveChangesAsync().ConfigureAwait(false);
-        //     }
-        // }
+        [NotNull]
+        [Pure]
+        public List<Scores> GetOutdatedScores([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier, int version)
+        {
+            DebugGuard.NotNull(db, nameof(db));
+            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+
+            return db.Scores
+                .Where(score =>
+                    score.HashIdentifier == hashIdentifier
+                    && (
+                        (score.PhotoA == photoId && score.VersionPhotoA <= version)
+                        ||
+                        (score.PhotoB == photoId && score.VersionPhotoB <= version)))
+                .ToList();
+        }
+
+        public void DeleteScores([NotNull] ISimilarityDbContext db, [NotNull] IEnumerable<Scores> scores)
+        {
+            DebugGuard.NotNull(db, nameof(db));
+            DebugGuard.NotNull(scores, nameof(scores));
+
+            if (scores.Any())
+                db.Scores.RemoveRange(scores);
+        }
     }
 }

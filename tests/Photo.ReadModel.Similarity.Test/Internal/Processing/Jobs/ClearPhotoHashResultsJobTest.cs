@@ -6,6 +6,7 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using FakeItEasy;
     using Microsoft.EntityFrameworkCore;
     using Xunit;

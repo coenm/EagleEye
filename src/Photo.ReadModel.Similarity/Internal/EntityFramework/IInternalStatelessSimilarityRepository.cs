@@ -21,16 +21,23 @@
         // Task<int> RemoveByIdAsync(params Guid[] itemIds);
         //
         // Task<int> SaveAsync(Photo item);
-        [NotNull] HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
+        [Pure] [NotNull] HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
+        [Pure] [CanBeNull] HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
 
         Task<HashIdentifiers> GetAddHashIdentifierAsync([NotNull] ISimilarityDbContext db, [NotNull] string messageHashIdentifier, CancellationToken ct = default(CancellationToken));
 
         Task<List<PhotoHash>> GetPhotoHashesUntilVersionAsync([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier, int messageVersion, CancellationToken ct = default(CancellationToken));
 
-        Task<PhotoHash> TryGetHashByIdAndHashIdentifierAsync([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier, CancellationToken ct);
+        [Pure] [CanBeNull] PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier);
+
+        Task<PhotoHash> TryGetPhotoHashByIdAndHashIdentifierAsync([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier, CancellationToken ct);
 
         [NotNull] List<Scores> GetHashScoresByIdAndBeforeVersion([NotNull] ISimilarityDbContext db, int hashIdentifierId, Guid id, int version);
 
         [NotNull] List<PhotoHash> GetPhotoHashesByHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] HashIdentifiers hashIdentifier);
+
+        [NotNull] List<Scores> GetOutdatedScores(ISimilarityDbContext db, Guid photoId, HashIdentifiers hashIdentifier, int version);
+
+        void DeleteScores([NotNull] ISimilarityDbContext db, [NotNull] IEnumerable<Scores> scores);
     }
 }

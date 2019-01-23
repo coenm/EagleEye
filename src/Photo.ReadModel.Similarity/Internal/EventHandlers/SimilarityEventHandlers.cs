@@ -9,6 +9,7 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using Hangfire;
     using Helpers.Guards;
     using JetBrains.Annotations;
@@ -65,7 +66,7 @@
                 var hashIdentifier = await repository.GetAddHashIdentifierAsync(db, message.HashIdentifier, ct)
                     .ConfigureAwait(false);
 
-                var existingItem = await repository.TryGetHashByIdAndHashIdentifierAsync(db, message.Id, hashIdentifier, ct)
+                var existingItem = await repository.TryGetPhotoHashByIdAndHashIdentifierAsync(db, message.Id, hashIdentifier, ct)
                     .ConfigureAwait(false);
 
                 if (existingItem != null)
