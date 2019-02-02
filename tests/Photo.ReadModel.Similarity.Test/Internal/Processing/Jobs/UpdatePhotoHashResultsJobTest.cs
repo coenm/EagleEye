@@ -1,7 +1,7 @@
 ﻿namespace Photo.ReadModel.Similarity.Test.Internal.Processing
 {
     using System;
-
+    using System.Threading;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
@@ -20,6 +20,7 @@
         private readonly int version;
         private readonly string hashIdentifierString;
         private ISimilarityJobConfiguration configuration;
+        private HashIdentifiers hashIdentifier;
 
         public UpdatePhotoHashResultsJobTest()
         {
@@ -36,6 +37,9 @@
             configuration = A.Fake<ISimilarityJobConfiguration>();
             A.CallTo(() => configuration.ThresholdPercentageSimilarityStorage).Returns(50);
 
+            hashIdentifier = A.Fake<HashIdentifiers>();
+            A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).Returns(hashIdentifier);
+
             sut = new UpdatePhotoHashResultsJob(repository, contextFactory, configuration);
 
             guid = Guid.NewGuid();
@@ -43,20 +47,25 @@
             hashIdentifierString = "sdf";
         }
 
-/*
         [Fact]
-        public void Execute_ShouldDoSomething()
+        public void Execute_WhenNoHashIdentifierFound_ThenNothingIsProcessedOrSaved()
         {
-            // todo implement test.
-
             // arrange
+            A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).Returns(null);
 
             // act
             sut.Execute(guid, version, hashIdentifierString);
 
             // assert
-            Assert.True(true);
+            A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).MustHaveHappenedOnceExactly();
+            A.CallTo(repository).MustHaveHappenedOnceExactly();
+            AssertDataContextIsNotSaved();
         }
-*/
+
+        private void AssertDataContextIsNotSaved()
+        {
+            A.CallTo(() => dbContext.SaveChanges()).MustNotHaveHappened();
+            A.CallTo(() => dbContext.SaveChangesAsync(A<CancellationToken>._)).MustNotHaveHappened();
+        }
     }
 }
