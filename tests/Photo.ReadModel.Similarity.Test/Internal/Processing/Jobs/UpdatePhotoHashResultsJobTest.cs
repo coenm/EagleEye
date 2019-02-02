@@ -1,6 +1,7 @@
 ﻿namespace Photo.ReadModel.Similarity.Test.Internal.Processing
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
@@ -16,7 +17,7 @@
         private readonly ISimilarityDbContext dbContext;
         private readonly DbSet<Scores> dbScores;
 
-        private readonly Guid guid;
+        private readonly Guid photoGuid;
         private readonly int version;
         private readonly string hashIdentifierString;
         private ISimilarityJobConfiguration configuration;
@@ -42,7 +43,7 @@
 
             sut = new UpdatePhotoHashResultsJob(repository, contextFactory, configuration);
 
-            guid = Guid.NewGuid();
+            photoGuid = Guid.NewGuid();
             version = 3;
             hashIdentifierString = "sdf";
         }
@@ -54,11 +55,47 @@
             A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).Returns(null);
 
             // act
-            sut.Execute(guid, version, hashIdentifierString);
+            sut.Execute(photoGuid, version, hashIdentifierString);
 
             // assert
             A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).MustHaveHappenedOnceExactly();
             A.CallTo(repository).MustHaveHappenedOnceExactly();
+            AssertDataContextIsNotSaved();
+        }
+
+        [Fact]
+        public void Execute_WhenNoPhotoHashIsFound_ThenNothingIsProcessedOrSaved()
+        {
+            // arrange
+            A.CallTo(() => repository.GetPhotoHashByIdAndHashIdentifier(dbContext, photoGuid, hashIdentifier)).Returns(null);
+
+            // act
+            sut.Execute(photoGuid, version, hashIdentifierString);
+
+            // assert
+            A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => repository.GetPhotoHashByIdAndHashIdentifier(dbContext, photoGuid, hashIdentifier)).MustHaveHappenedOnceExactly());
+            A.CallTo(repository).MustHaveHappenedTwiceExactly();
+            AssertDataContextIsNotSaved();
+        }
+
+        [Fact(Skip= "WIP")]
+        public void Execute_WhenNoOutdatedScoresAreFound_ThenNoScoresAreDeleted()
+        {
+            // arrange
+            var emptyListOfScores = new List<Scores>();
+            A.CallTo(() => repository.GetOutdatedScores(dbContext, photoGuid, hashIdentifier, version)).Returns(emptyListOfScores);
+
+            // act
+            sut.Execute(photoGuid, version, hashIdentifierString);
+
+            // assert
+            A.CallTo(() => repository.DeleteScores(dbContext, A<IEnumerable<Scores>>._)).MustNotHaveHappened();
+
+            A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).MustHaveHappenedOnceExactly()
+                .Then(A.CallTo(() => repository.GetPhotoHashByIdAndHashIdentifier(dbContext, photoGuid, hashIdentifier)).MustHaveHappenedOnceExactly());
+            A.CallTo(repository).MustHaveHappenedTwiceExactly();
+
             AssertDataContextIsNotSaved();
         }
 

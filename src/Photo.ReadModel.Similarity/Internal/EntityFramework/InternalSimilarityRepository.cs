@@ -75,14 +75,14 @@
 
         [CanBeNull]
         [Pure]
-        public PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier)
+        public PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoHashId, [NotNull] HashIdentifiers hashIdentifier)
         {
             DebugGuard.NotNull(db, nameof(db));
             DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
 
             return db.PhotoHashes.SingleOrDefault(
                 photoHash =>
-                    photoHash.Id == messageId
+                    photoHash.Id == photoHashId
                     &&
                     photoHash.HashIdentifier == hashIdentifier);
         }

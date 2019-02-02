@@ -61,38 +61,39 @@
 
                     var value = CoenM.ImageHash.CompareHash.Similarity(currentPhotoHashValue, hashUnsignedLongPhotoB);
 
-                    if (value >= configuration.ThresholdPercentageSimilarityStorage)
-                    {
-                        Scores score;
-                        if (photoId.CompareTo(item.Id) < 0)
-                        {
-                            score = new Scores
-                            {
-                                VersionPhotoA = version,
-                                VersionPhotoB = item.Version,
-                                PhotoA = photoId,
-                                PhotoB = item.Id,
-                                HashIdentifier = hashIdentifier,
-                                Score = value,
-                            };
-                        }
-                        else
-                        {
-                            score = new Scores
-                            {
-                                VersionPhotoB = version,
-                                VersionPhotoA = item.Version,
-                                PhotoB = photoId,
-                                PhotoA = item.Id,
-                                HashIdentifier = hashIdentifier,
-                                Score = value,
-                            };
-                        }
+                    if (value < configuration.ThresholdPercentageSimilarityStorage)
+                        continue;
 
-                        db.Scores.Add(score);
+                    Scores score;
+                    if (photoId.CompareTo(item.Id) < 0)
+                    {
+                        score = new Scores
+                        {
+                            VersionPhotoA = version,
+                            VersionPhotoB = item.Version,
+                            PhotoA = photoId,
+                            PhotoB = item.Id,
+                            HashIdentifier = hashIdentifier,
+                            Score = value,
+                        };
                     }
+                    else
+                    {
+                        score = new Scores
+                        {
+                            VersionPhotoB = version,
+                            VersionPhotoA = item.Version,
+                            PhotoB = photoId,
+                            PhotoA = item.Id,
+                            HashIdentifier = hashIdentifier,
+                            Score = value,
+                        };
+                    }
+
+                    db.Scores.Add(score);
                 }
 
+                // if saving goes wrong, then this Job will fail and re-scheduled.
                 db.SaveChanges();
             }
         }
