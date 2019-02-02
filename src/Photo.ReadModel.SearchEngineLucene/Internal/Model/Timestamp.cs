@@ -82,7 +82,8 @@
                 throw new ArgumentNullException(nameof(value));
 
             return new Timestamp(value, TimestampPrecision.Second);
-//            return new Timestamp(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+
+            // return new Timestamp(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
         }
 
         public override string ToString()
