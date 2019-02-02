@@ -8,6 +8,7 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using EagleEye.Photo.ReadModel.Similarity.Internal.SimpleInjectorAdapter;
     using Hangfire;
     using Hangfire.MemoryStorage;
@@ -48,6 +49,8 @@
 
             // BackgroundJobClient contains multiple public constructors.
             container.Register<IBackgroundJobClient>(() => new BackgroundJobClient(), Lifestyle.Singleton);
+
+            container.Register<ISimilarityJobConfiguration>(() => new StaticSimilarityJobConfiguration(80d), Lifestyle.Singleton);
 
             // todo
             container.RegisterSingleton<HangFireServerEagleEyeProcess, HangFireServerEagleEyeProcess>();

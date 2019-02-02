@@ -19,6 +19,7 @@
         private readonly Guid guid;
         private readonly int version;
         private readonly string hashIdentifierString;
+        private ISimilarityJobConfiguration configuration;
 
         public UpdatePhotoHashResultsJobTest()
         {
@@ -32,25 +33,30 @@
 
             repository = A.Fake<IInternalStatelessSimilarityRepository>();
 
-            sut = new UpdatePhotoHashResultsJob(repository, contextFactory);
+            configuration = A.Fake<ISimilarityJobConfiguration>();
+            A.CallTo(() => configuration.ThresholdPercentageSimilarityStorage).Returns(50);
+
+            sut = new UpdatePhotoHashResultsJob(repository, contextFactory, configuration);
 
             guid = Guid.NewGuid();
             version = 3;
             hashIdentifierString = "sdf";
         }
 
-//        [Fact]
-//        public void Execute_ShouldDoSomething()
-//        {
-//            // todo implement test.
-//
-//            // arrange
-//
-//            // act
-//            sut.Execute(guid, version, hashIdentifierString);
-//
-//            // assert
-//            Assert.True(true);
-//        }
+/*
+        [Fact]
+        public void Execute_ShouldDoSomething()
+        {
+            // todo implement test.
+
+            // arrange
+
+            // act
+            sut.Execute(guid, version, hashIdentifierString);
+
+            // assert
+            Assert.True(true);
+        }
+*/
     }
 }

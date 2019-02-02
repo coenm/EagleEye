@@ -13,15 +13,19 @@
     {
         [NotNull] private readonly IInternalStatelessSimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
+        [NotNull] private readonly ISimilarityJobConfiguration configuration;
 
         public UpdatePhotoHashResultsJob(
             [NotNull] IInternalStatelessSimilarityRepository repository,
-            [NotNull] ISimilarityDbContextFactory contextFactory)
+            [NotNull] ISimilarityDbContextFactory contextFactory,
+            [NotNull] ISimilarityJobConfiguration configuration)
         {
             Guard.NotNull(repository, nameof(repository));
             Guard.NotNull(contextFactory, nameof(contextFactory));
+            Guard.NotNull(configuration, nameof(configuration));
             this.repository = repository;
             this.contextFactory = contextFactory;
+            this.configuration = configuration;
         }
 
         public void Execute(Guid photoId, int version, string hashIdentifierString)
@@ -57,18 +61,33 @@
 
                     var value = CoenM.ImageHash.CompareHash.Similarity(currentPhotoHashValue, hashUnsignedLongPhotoB);
 
-                    if (value >= 80)
+                    if (value >= configuration.ThresholdPercentageSimilarityStorage)
                     {
-                        // todo photoA, photoB ordered.
-                        var score = new Scores
+                        Scores score;
+                        if (photoId.CompareTo(item.Id) < 0)
                         {
-                            VersionPhotoA = version,
-                            VersionPhotoB = item.Version,
-                            PhotoA = photoId,
-                            PhotoB = item.Id,
-                            HashIdentifier = hashIdentifier,
-                            Score = value,
-                        };
+                            score = new Scores
+                            {
+                                VersionPhotoA = version,
+                                VersionPhotoB = item.Version,
+                                PhotoA = photoId,
+                                PhotoB = item.Id,
+                                HashIdentifier = hashIdentifier,
+                                Score = value,
+                            };
+                        }
+                        else
+                        {
+                            score = new Scores
+                            {
+                                VersionPhotoB = version,
+                                VersionPhotoA = item.Version,
+                                PhotoB = photoId,
+                                PhotoA = item.Id,
+                                HashIdentifier = hashIdentifier,
+                                Score = value,
+                            };
+                        }
 
                         db.Scores.Add(score);
                     }
