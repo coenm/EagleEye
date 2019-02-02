@@ -27,7 +27,7 @@
     <PackageReference Include="Hangfire.SQLite" Version="1.4.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.1" />
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0001" />
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0002" />
     <PackageReference Include="CqrsLite" Version="0.27.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
     <PackageReference Include="NLog" Version="4.5.11" />
