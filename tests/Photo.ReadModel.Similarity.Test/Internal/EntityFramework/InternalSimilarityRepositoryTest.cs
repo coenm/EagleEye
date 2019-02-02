@@ -14,12 +14,12 @@
         private readonly InternalSimilarityRepository sut;
         private readonly InMemorySimilarityDbContextFactory ctxFactory;
 
-        private HashIdentifiers hashIdentifier1;
-        private HashIdentifiers hashIdentifier2;
-        private HashIdentifiers hashIdentifier3;
-        private PhotoHash photoHash11;
-        private PhotoHash photoHash12;
-        private PhotoHash photoHash21;
+        private readonly HashIdentifiers hashIdentifier1;
+        private readonly HashIdentifiers hashIdentifier2;
+        private readonly HashIdentifiers hashIdentifier3;
+        private readonly PhotoHash photoHash11;
+        private readonly PhotoHash photoHash12;
+        private readonly PhotoHash photoHash21;
 
         public InternalSimilarityRepositoryTest()
         {

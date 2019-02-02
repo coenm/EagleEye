@@ -10,18 +10,8 @@
 
     internal interface IInternalStatelessSimilarityRepository
     {
-        // Task<Photo> GetByIdAsync(Guid id);
-        //
-        // Task<Photo> GetByFilenameAsync(Guid id);
-        //
-        // Task<List<Photo>> GetAllAsync();
-        //
-        // Task<int> UpdateAsync(Photo item);
-        //
-        // Task<int> RemoveByIdAsync(params Guid[] itemIds);
-        //
-        // Task<int> SaveAsync(Photo item);
         [Pure] [NotNull] HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
+
         [Pure] [CanBeNull] HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
 
         Task<HashIdentifiers> GetAddHashIdentifierAsync([NotNull] ISimilarityDbContext db, [NotNull] string messageHashIdentifier, CancellationToken ct = default(CancellationToken));

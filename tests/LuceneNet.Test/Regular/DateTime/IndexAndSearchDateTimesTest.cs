@@ -66,17 +66,14 @@
             Assert.Equal(new[] { "alice", "calvin", "eve" }, names);
         }
 
-        private static IEnumerable<PersonDto> Persons
+        private static IEnumerable<PersonDto> GetPersons()
         {
-            get
-            {
-                yield return new PersonDto("alice", new System.DateTime(2000, 1, 2));
-                yield return new PersonDto("bob", new System.DateTime(2002, 1, 12));
-                yield return new PersonDto("calvin", new System.DateTime(2007, 6, 2));
-                yield return new PersonDto("dwane", new System.DateTime(2007, 11, 2));
-                yield return new PersonDto("eve", new System.DateTime(2001, 6, 2));
-                yield return new PersonDto("fred", new System.DateTime(1999, 12, 2));
-            }
+            yield return new PersonDto("alice", new System.DateTime(2000, 1, 2));
+            yield return new PersonDto("bob", new System.DateTime(2002, 1, 12));
+            yield return new PersonDto("calvin", new System.DateTime(2007, 6, 2));
+            yield return new PersonDto("dwane", new System.DateTime(2007, 11, 2));
+            yield return new PersonDto("eve", new System.DateTime(2001, 6, 2));
+            yield return new PersonDto("fred", new System.DateTime(1999, 12, 2));
         }
 
         private static void IndexDocs(IndexWriter writer, PersonDto person)
@@ -111,7 +108,7 @@
         {
             using (var writer = new IndexWriter(directory, indexWriterConfig))
             {
-                foreach (var person in Persons)
+                foreach (var person in GetPersons())
                 {
                     IndexDocs(writer, person);
                 }
