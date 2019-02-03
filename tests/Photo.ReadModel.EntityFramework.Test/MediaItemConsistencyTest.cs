@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Test
+﻿namespace Photo.ReadModel.EntityFramework.Test
 {
     using System;
     using System.Collections.Generic;

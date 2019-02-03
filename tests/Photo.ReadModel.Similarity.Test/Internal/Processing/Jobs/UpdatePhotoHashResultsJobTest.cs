@@ -1,8 +1,9 @@
-﻿namespace Photo.ReadModel.Similarity.Test.Internal.Processing
+﻿namespace Photo.ReadModel.Similarity.Test.Internal.Processing.Jobs
 {
     using System;
     using System.Collections.Generic;
     using System.Threading;
+
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
@@ -15,17 +16,21 @@
         private readonly UpdatePhotoHashResultsJob sut;
         private readonly IInternalStatelessSimilarityRepository repository;
         private readonly ISimilarityDbContext dbContext;
-        private readonly DbSet<Scores> dbScores;
-
         private readonly Guid photoGuid;
         private readonly int version;
         private readonly string hashIdentifierString;
-        private ISimilarityJobConfiguration configuration;
-        private HashIdentifiers hashIdentifier;
+        private readonly ISimilarityJobConfiguration configuration;
+        private readonly HashIdentifiers hashIdentifier;
+        private readonly List<PhotoHash> photoHashes;
+        private readonly PhotoHash photoHash;
 
         public UpdatePhotoHashResultsJobTest()
         {
-            dbScores = A.Fake<DbSet<Scores>>();
+            photoGuid = Guid.NewGuid();
+            version = 3;
+            hashIdentifierString = "sdf";
+
+            var dbScores = A.Fake<DbSet<Scores>>();
 
             dbContext = A.Fake<ISimilarityDbContext>();
             A.CallTo(() => dbContext.Scores).Returns(dbScores);
@@ -38,14 +43,27 @@
             configuration = A.Fake<ISimilarityJobConfiguration>();
             A.CallTo(() => configuration.ThresholdPercentageSimilarityStorage).Returns(50);
 
-            hashIdentifier = A.Fake<HashIdentifiers>();
+            hashIdentifier = new HashIdentifiers
+            {
+                HashIdentifier = hashIdentifierString,
+                Id = 8,
+            };
             A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).Returns(hashIdentifier);
 
-            sut = new UpdatePhotoHashResultsJob(repository, contextFactory, configuration);
+            photoHash = new PhotoHash
+            {
+                Id = photoGuid,
+                HashIdentifier = hashIdentifier,
+                HashIdentifiersId = hashIdentifier.Id,
+                Version = 1,
+                Hash = new byte[8],
+            };
+            A.CallTo(() => repository.GetPhotoHashByIdAndHashIdentifier(dbContext, photoGuid, hashIdentifier)).Returns(photoHash);
 
-            photoGuid = Guid.NewGuid();
-            version = 3;
-            hashIdentifierString = "sdf";
+            photoHashes = new List<PhotoHash>();
+            A.CallTo(() => repository.GetPhotoHashesByHashIdentifier(dbContext, hashIdentifier)).Returns(photoHashes);
+
+            sut = new UpdatePhotoHashResultsJob(repository, contextFactory, configuration);
         }
 
         [Fact]
@@ -79,7 +97,7 @@
             AssertDataContextIsNotSaved();
         }
 
-        [Fact(Skip= "WIP")]
+        [Fact]
         public void Execute_WhenNoOutdatedScoresAreFound_ThenNoScoresAreDeleted()
         {
             // arrange
@@ -90,13 +108,8 @@
             sut.Execute(photoGuid, version, hashIdentifierString);
 
             // assert
+            A.CallTo(() => repository.GetOutdatedScores(dbContext, photoGuid, hashIdentifier, version)).MustHaveHappenedOnceExactly();
             A.CallTo(() => repository.DeleteScores(dbContext, A<IEnumerable<Scores>>._)).MustNotHaveHappened();
-
-            A.CallTo(() => repository.GetHashIdentifier(dbContext, hashIdentifierString)).MustHaveHappenedOnceExactly()
-                .Then(A.CallTo(() => repository.GetPhotoHashByIdAndHashIdentifier(dbContext, photoGuid, hashIdentifier)).MustHaveHappenedOnceExactly());
-            A.CallTo(repository).MustHaveHappenedTwiceExactly();
-
-            AssertDataContextIsNotSaved();
         }
 
         private void AssertDataContextIsNotSaved()

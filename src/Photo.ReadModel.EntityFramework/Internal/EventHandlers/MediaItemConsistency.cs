@@ -68,7 +68,8 @@
                 return;
             }
 
-            // todo check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             if (message.Tags != null && message.Tags.Any())
             {
@@ -101,7 +102,8 @@
                 return;
             }
 
-            // todo check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             if (message.Persons != null && message.Persons.Any())
             {
@@ -134,7 +136,8 @@
                 return;
             }
 
-            // check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             photo.Tags?.RemoveAll(x => message.Tags.Contains(x.Value));
             photo.EventTimestamp = message.TimeStamp;
@@ -155,7 +158,8 @@
                 return;
             }
 
-            // check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             photo.People?.RemoveAll(x => message.Persons.Contains(x.Value));
             photo.EventTimestamp = message.TimeStamp;
@@ -176,7 +180,8 @@
                 return;
             }
 
-            // check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             photo.Location = null; // not sure if this is the way to do this.
             photo.EventTimestamp = message.TimeStamp;
@@ -198,7 +203,8 @@
                 return;
             }
 
-            // check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             photo.Location = new EntityFramework.Models.Location()
             {
@@ -229,7 +235,8 @@
                 return;
             }
 
-            // check versions?
+            if (!VersionsMatch(message.Version, photo.Version))
+                return;
 
             // todo, something with precision?
 
@@ -239,6 +246,12 @@
             photo.Version = message.Version;
 
             await repository.UpdateAsync(photo).ConfigureAwait(false);
+        }
+
+        private bool VersionsMatch(int messageVersion, int currentVersion)
+        {
+            // todo implement this method?
+            return true;
         }
     }
 }

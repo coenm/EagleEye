@@ -1,7 +1,6 @@
-﻿namespace EagleEye.TestHelper.Xunit.Facts
+﻿namespace EagleEye.TestHelper.XUnit.Facts
 {
-    using EagleEye.TestHelper.XUnit.Facts;
-    using global::Xunit;
+    using Xunit;
 
     /// <summary>
     /// Conditional Fact attribute. Test is only executed when ran (or skipped based on TestHostMode) on given TestHost.

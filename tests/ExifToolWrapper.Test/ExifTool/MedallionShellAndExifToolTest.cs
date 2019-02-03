@@ -10,7 +10,6 @@
     using EagleEye.ExifToolWrapper.ExifTool;
     using EagleEye.TestHelper;
     using EagleEye.TestHelper.XUnit;
-    using EagleEye.TestHelper.Xunit.Facts;
     using EagleEye.TestHelper.XUnit.Facts;
     using FluentAssertions;
     using Medallion.Shell;

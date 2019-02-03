@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Test
+﻿namespace Photo.ReadModel.EntityFramework.Test
 {
     using System;
     using System.Collections.Generic;
@@ -112,7 +112,7 @@
         private class InMemoryEagleEyeDbContextFactory : EagleEyeDbContextFactory, IEagleEyeDbContextFactory
         {
             private readonly object syncLock = new object();
-            private EagleEyeDbContext ctx = null;
+            private EagleEyeDbContext ctx;
 
             public InMemoryEagleEyeDbContextFactory()
                 : base(new DbContextOptionsBuilder<EagleEyeDbContext>()

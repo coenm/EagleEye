@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Photo.ReadModel.EntityFramework.Test.Data
+﻿namespace Photo.ReadModel.EntityFramework.Test.Data
 {
     internal static class DataStore
     {
