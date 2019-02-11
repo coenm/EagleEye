@@ -7,9 +7,7 @@
     using System.Text;
 
     using EagleEye.Picasa.Picasa;
-
     using FluentAssertions;
-
     using Xunit;
 
     using Sut = EagleEye.Picasa.Picasa.PicasaIniParser;

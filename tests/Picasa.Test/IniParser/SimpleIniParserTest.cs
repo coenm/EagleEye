@@ -6,9 +6,7 @@
     using System.Text;
 
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Xunit;
 
     using Sut = EagleEye.Picasa.IniParser.SimpleIniParser;
@@ -18,6 +16,7 @@
         [Fact]
         public void ParseNullStreamShouldThrowArgumentNullExceptionTest()
         {
+            // ReSharper disable once AssignNullToNotNullAttribute, Justification: goal of test.
             Assert.Throws<ArgumentNullException>(() => Sut.Parse(null));
         }
 

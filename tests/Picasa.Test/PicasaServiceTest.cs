@@ -8,13 +8,9 @@
 
     using EagleEye.Core.Interfaces;
     using EagleEye.Picasa.Picasa;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using JetBrains.Annotations;
-
     using Xunit;
 
     public class PicasaServiceTest : IDisposable
@@ -139,9 +135,9 @@
             {
             }
 
-            public void SetGetFileAndPersonDataImplementation(Func<Stream, IEnumerable<FileWithPersons>> getFileAndPersonFunc = null)
+            public void SetGetFileAndPersonDataImplementation(Func<Stream, IEnumerable<FileWithPersons>> func = null)
             {
-                this.getFileAndPersonFunc = getFileAndPersonFunc;
+                getFileAndPersonFunc = func;
             }
 
             protected override IEnumerable<FileWithPersons> GetFileAndPersonData(Stream stream)

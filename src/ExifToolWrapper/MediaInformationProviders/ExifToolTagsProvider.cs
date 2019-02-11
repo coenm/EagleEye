@@ -8,7 +8,6 @@
     using EagleEye.Core.Interfaces;
     using Helpers.Guards;
     using JetBrains.Annotations;
-
     using Newtonsoft.Json.Linq;
 
     public class ExifToolTagsProvider : IMediaInformationProvider

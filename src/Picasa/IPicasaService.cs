@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.Picasa.Picasa;
-
     using JetBrains.Annotations;
 
     public interface IPicasaService : IDisposable

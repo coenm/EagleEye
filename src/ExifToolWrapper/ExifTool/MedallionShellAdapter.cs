@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
 
     using JetBrains.Annotations;
-
     using Medallion.Shell;
 
     public class MedallionShellAdapter : IMedallionShell

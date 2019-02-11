@@ -1,9 +1,7 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
     using EagleEye.Picasa.Picasa;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class FileWithPersonsTest

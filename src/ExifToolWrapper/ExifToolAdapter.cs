@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.ExifToolWrapper.ExifTool;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 

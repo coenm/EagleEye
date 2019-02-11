@@ -18,13 +18,13 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
     public class ExifToolDateTakenProvider : IMediaInformationProvider
     {
         private static readonly List<MetadataHeaderKeyPair> Keys = new List<MetadataHeaderKeyPair>
-                                                                        {
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Exif, MetadataHeaderKeyPair.Keys.ExifIfd, "DateTimeOriginal"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Xmp, MetadataHeaderKeyPair.Keys.XmpExif, "DateTimeOriginal"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecDateTimeOriginal"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Xmp, MetadataHeaderKeyPair.Keys.XmpExif, "DateTimeDigitized"),
-                                                                            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecCreateDate"),
-                                                                        };
+        {
+            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Exif, MetadataHeaderKeyPair.Keys.ExifIfd, "DateTimeOriginal"),
+            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Xmp, MetadataHeaderKeyPair.Keys.XmpExif, "DateTimeOriginal"),
+            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecDateTimeOriginal"),
+            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Xmp, MetadataHeaderKeyPair.Keys.XmpExif, "DateTimeDigitized"),
+            new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecCreateDate"),
+        };
 
         private readonly IExifTool exiftool;
 

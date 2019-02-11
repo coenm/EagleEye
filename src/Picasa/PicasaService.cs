@@ -9,7 +9,6 @@
 
     using EagleEye.Core.Interfaces;
     using EagleEye.Picasa.Picasa;
-
     using JetBrains.Annotations;
 
     public class PicasaService : IPicasaService
@@ -59,15 +58,14 @@
                     return cachedTask;
 
                 var task = Task.Run(() =>
-                                    {
-                                        using (var stream = fileService.OpenRead(picasaFilename))
-                                        {
-                                            return GetFileAndPersonData(stream);
-                                        }
-                                    });
+                {
+                    using (var stream = fileService.OpenRead(picasaFilename))
+                    {
+                        return GetFileAndPersonData(stream);
+                    }
+                });
 
                 tasks.TryAdd(picasaFilename, task);
-
                 return task;
             }
         }
