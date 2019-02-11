@@ -1,11 +1,11 @@
 ﻿namespace EagleEye.Core.Test.MediaInformationProviders
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     using EagleEye.Core.MediaInformationProviders;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class MimeTypeProviderTest
@@ -20,7 +20,7 @@
         }
 
         [Fact]
-        public void CanProvideInformation_ReturnsTrueTest()
+        public void CanProvideInformation_ShouldReturnTrue_WhenFilenameIsNotNullOrEmpty()
         {
             // arrange
 
@@ -32,12 +32,41 @@
         }
 
         [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void CanProvideInformation_ShouldReturnFalse_WhenFilenameIsNullOrEmpty(string filename)
+        {
+            // arrange
+
+            // act
+            var result = sut.CanProvideInformation(filename);
+
+            // assert
+            result.Should().BeFalse();
+        }
+
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Goal of test")]
+        [Fact]
+        public void ProvideAsync_ShouldThrowException_WhenMediaIsNull()
+        {
+            // arrange
+            MediaObject nullMedia = null;
+
+            // act
+            Func<Task> act = async () => await sut.ProvideAsync("dummy", nullMedia);
+
+            // assert
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Theory]
         [InlineData("a.jpg", "image/jpeg")]
         [InlineData("a.JPg", "image/jpeg")]
         [InlineData("a.jpeg", "image/jpeg")]
         [InlineData("a.mp4", "video/mp4")]
         [InlineData("a.mov", "video/quicktime")]
-        public async Task ProvideAsync_SetsCorrectMimeTypeBasedOnFileExtensionTest(string filename, string expectedMimeType)
+        public async Task ProvideAsync_ShouldSetsCorrectMimeTypeBasedOnFileExtensionTest(string filename, string expectedMimeType)
         {
             // arrange
 
