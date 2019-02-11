@@ -3,7 +3,6 @@
     using System.Collections.Generic;
 
     using EagleEye.FileImporter.Imaging;
-
     using Helpers.Guards;
 
     public class CalculateIndexService

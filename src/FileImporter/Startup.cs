@@ -11,7 +11,6 @@
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
-    using EagleEye.Core.DefaultImplementations;
     using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.Interfaces;
     using EagleEye.FileImporter.Indexing;

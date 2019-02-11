@@ -8,6 +8,7 @@
     using Helpers.Guards;
     using JetBrains.Annotations;
 
+    [UsedImplicitly]
     public class SimilarityService
     {
         private readonly ISimilarityRepository similarityRepository;
