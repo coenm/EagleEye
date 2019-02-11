@@ -6,11 +6,8 @@
     using System.Threading.Tasks;
 
     using EagleEye.TestHelper;
-
     using FluentAssertions;
-
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolAdapterTest : IDisposable

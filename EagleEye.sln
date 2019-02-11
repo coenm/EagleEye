@@ -61,6 +61,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.Similarity"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photo.ReadModel.Similarity.Test", "tests\Photo.ReadModel.Similarity.Test\Photo.ReadModel.Similarity.Test.csproj", "{2A173FCD-26CC-4772-8C41-96D4827E10DA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetadataExtractor.Test", "tests\MetadataExtractor.Test\MetadataExtractor.Test.csproj", "{3ADE9E02-9C86-47D7-BEFD-28DA5A34F2F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,10 @@ Global
 		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A173FCD-26CC-4772-8C41-96D4827E10DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ADE9E02-9C86-47D7-BEFD-28DA5A34F2F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ADE9E02-9C86-47D7-BEFD-28DA5A34F2F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ADE9E02-9C86-47D7-BEFD-28DA5A34F2F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ADE9E02-9C86-47D7-BEFD-28DA5A34F2F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +175,7 @@ Global
 		{18F1330A-4E71-4BB6-8B3F-1B8247FE41AB} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 		{0C9177B2-DE99-427B-8F29-DF9AE1B5A4FB} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
 		{2A173FCD-26CC-4772-8C41-96D4827E10DA} = {0364CB15-A4A9-4100-A70C-64B5F5088069}
+		{3ADE9E02-9C86-47D7-BEFD-28DA5A34F2F2} = {CF601582-9B4B-41A0-A91D-30A8E4E52441}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7C2606B-F2C8-4C33-8571-8D27AC814D68}
