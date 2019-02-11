@@ -5,13 +5,14 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
-
     using EagleEye.Core.DefaultImplementations;
+    using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.Interfaces;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
@@ -111,7 +112,6 @@
             Guard.NotNull(container, nameof(container));
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
-
 
         public static async Task InitializeAllServices([NotNull] Container container)
         {

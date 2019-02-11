@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.DefaultImplementations
+﻿namespace EagleEye.Core.DefaultImplementations.EventStore
 {
     using System;
     using System.Collections.Generic;
@@ -8,11 +8,8 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
-
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using Newtonsoft.Json;
 
     // This is a quick implementation to store the events to json files.

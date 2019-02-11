@@ -5,13 +5,10 @@
     using CQRSlite.Commands;
     using CQRSlite.Messages;
     using CQRSlite.Queries;
-
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Decorators;
     using Helpers.Guards;
-
     using JetBrains.Annotations;
-
     using SimpleInjector;
 
     public static class Bootstrapper

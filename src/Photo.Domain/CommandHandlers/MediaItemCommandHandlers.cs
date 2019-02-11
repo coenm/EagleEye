@@ -6,12 +6,9 @@
 
     using CQRSlite.Commands;
     using CQRSlite.Domain;
-
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.Commands;
-
     using Helpers.Guards;
-
     using JetBrains.Annotations;
     using NLog;
 

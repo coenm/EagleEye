@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Photo.Domain.EventStore
+﻿namespace EagleEye.Core.DefaultImplementations.EventStore
 {
     using System;
     using System.Collections.Generic;
@@ -7,9 +7,7 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
-
     using Helpers.Guards;
-
     using JetBrains.Annotations;
 
     public class InMemoryEventStore : IEventStore

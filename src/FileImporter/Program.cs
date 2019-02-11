@@ -21,7 +21,6 @@
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
-
     using ShellProgressBar;
     using SimpleInjector;
 
