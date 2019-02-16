@@ -11,7 +11,8 @@
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.Domain.Events;
-
+    using EagleEye.Photo.Domain.Services;
+    using FakeItEasy;
     using FluentAssertions;
 
     using Xunit;
@@ -26,7 +27,8 @@
             var repository = new Repository(new InMemoryEventStore(publisher));
             var session = new Session(repository);
             var handler = new MediaItemCommandHandlers(session);
-            var handler2 = new CreatePhotoCommandHandler(session);
+            var uniqueFilenameService = A.Fake<IUniqueFilenameService>();
+            var handler2 = new CreatePhotoCommandHandler(session, uniqueFilenameService);
             var events = new List<IEvent>();
             publisher.RegisterHandler<PhotoCreated>((evt, ct) =>
                                                         {
