@@ -31,6 +31,7 @@
             container.RegisterDecorator(typeof(ICancellableCommandHandler<>), typeof(VerifyTokenCommandHandlerDecorator<>), Lifestyle.Transient);
 
             container.Register<MediaItemCommandHandlers>();
+            container.Register<CreatePhotoCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()

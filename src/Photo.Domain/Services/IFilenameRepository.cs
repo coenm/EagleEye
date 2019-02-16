@@ -5,7 +5,5 @@
         bool Contains(string filename);
 
         void Add(string filename);
-
-        void Remove(string filename);
     }
 }

@@ -26,6 +26,7 @@
             var repository = new Repository(new InMemoryEventStore(publisher));
             var session = new Session(repository);
             var handler = new MediaItemCommandHandlers(session);
+            var handler2 = new CreatePhotoCommandHandler(session);
             var events = new List<IEvent>();
             publisher.RegisterHandler<PhotoCreated>((evt, ct) =>
                                                         {
@@ -42,7 +43,7 @@
             var hash = new byte[32];
             var command = new CreatePhotoCommand("aap", hash, "image/jpeg", new[] { "zoo", "holiday" }, null);
             var guid = command.Id;
-            await handler.Handle(command, default(CancellationToken)).ConfigureAwait(false);
+            await handler2.Handle(command, default(CancellationToken)).ConfigureAwait(false);
 
             var addTagsCommand = new AddTagsToPhotoCommand(guid, 1, "summer", "holiday");
             await handler.Handle(addTagsCommand, default(CancellationToken)).ConfigureAwait(false);
