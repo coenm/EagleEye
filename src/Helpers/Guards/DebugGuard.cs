@@ -194,5 +194,17 @@
         {
             Guard.IsFalse(target, parameterName, message);
         }
+
+        /// <summary>
+        /// Ensures that the <paramref name="target"/> is not <c>Guid.Empty</c>.
+        /// </summary>
+        /// <param name="target">The target value, which cannot <c>Guid.Empty</c>.</param>
+        /// <param name="parameterName">The name of the parameter that is to be checked.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="target"/> is <c>Guid.Empty</c>.</exception>
+        [Conditional("DEBUG")]
+        public static void NotEmpty(Guid target, string parameterName)
+        {
+            Guard.NotEmpty(target, parameterName);
+        }
     }
 }

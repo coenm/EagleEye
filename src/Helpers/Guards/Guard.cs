@@ -226,6 +226,20 @@
                 ThrowArgumentException(message, parameterName);
         }
 
+        /// <summary>
+        /// Ensures that the <paramref name="target"/> is not <c>Guid.Empty</c>.
+        /// </summary>
+        /// <param name="target">The target value, which cannot <c>Guid.Empty</c>.</param>
+        /// <param name="parameterName">The name of the parameter that is to be checked.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="target"/> is <c>Guid.Empty</c>.</exception>
+        [MethodImpl(InliningOptions.ColdPath)]
+        [ContractAnnotation("=> value:notnull")]
+        public static void NotEmpty(Guid target, string parameterName)
+        {
+            if (target == Guid.Empty)
+                ThrowArgumentException("Guid should not be Guid.Empty.", parameterName);
+        }
+
         [MethodImpl(InliningOptions.ColdPath)]
         private static void ThrowArgumentException(string message, string parameterName)
         {
