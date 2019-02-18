@@ -16,16 +16,15 @@
             ICancellableEventHandler<PhotoCreated>,
             ICancellableEventHandler<TagsAddedToPhoto>,
             ICancellableEventHandler<TagsRemovedFromPhoto>,
-            ICancellableEventHandler<PersonsAddedToPhoto>,
             ICancellableEventHandler<PersonsRemovedFromPhoto>,
             ICancellableEventHandler<LocationClearedFromPhoto>,
             ICancellableEventHandler<LocationSetToPhoto>,
             ICancellableEventHandler<DateTimeTakenChanged>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        [NotNull] private readonly PhotoIndex photoIndex;
+        [NotNull] private readonly IPhotoIndex photoIndex;
 
-        public PhotoCreatedEventHandler([NotNull] PhotoIndex photoIndex)
+        public PhotoCreatedEventHandler([NotNull] IPhotoIndex photoIndex)
         {
             Guard.NotNull(photoIndex, nameof(photoIndex));
             this.photoIndex = photoIndex;
@@ -34,12 +33,6 @@
         public Task Handle([NotNull] PhotoCreated message, CancellationToken token = default(CancellationToken))
         {
             DebugGuard.NotNull(message, nameof(message));
-
-            var storedItem = photoIndex.Search(message.Id);
-
-            // should be null
-
-            // not interested in message.FileHash.
 
             var photo = new Photo
             {
@@ -54,13 +47,6 @@
         }
 
         public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
-        {
-            DebugGuard.NotNull(message, nameof(message));
-
-            await Task.Delay(0, token).ConfigureAwait(false);
-        }
-
-        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
             DebugGuard.NotNull(message, nameof(message));
 

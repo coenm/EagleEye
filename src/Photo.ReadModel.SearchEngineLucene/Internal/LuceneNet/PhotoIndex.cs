@@ -24,7 +24,7 @@
 
     using Directory = Lucene.Net.Store.Directory;
 
-    internal class PhotoIndex : IDisposable
+    internal class PhotoIndex : IPhotoIndex, IDisposable
     {
         private const string KeyId = "id";
         private const string KeyVersion = "version";
@@ -105,7 +105,6 @@
             searcherManager = new SearcherManager(indexWriter, true, null);
         }
 
-        [PublicAPI]
         public Task<bool> ReIndexMediaFileAsync([NotNull] Photo data)
         {
             Guard.NotNull(data, nameof(data));
@@ -194,7 +193,6 @@
             return Task.FromResult(true);
         }
 
-        [PublicAPI]
         public int Count([CanBeNull] Query query = null, [CanBeNull] Filter filter = null)
         {
             // Execute the search with a fresh indexSearcher
@@ -226,7 +224,6 @@
             throw new Exception("No items found.");
         }
 
-        [CanBeNull]
         public PhotoSearchResult Search(Guid guid)
         {
             if (guid == Guid.Empty)
@@ -237,7 +234,6 @@
             return Search(query, null, out _).SingleOrDefault();
         }
 
-        [PublicAPI]
         [NotNull]
         public List<PhotoSearchResult> Search(string queryString, out int totalHits)
         {
@@ -247,7 +243,6 @@
             return Search(query, null, out totalHits);
         }
 
-        [PublicAPI]
         [NotNull]
         public List<PhotoSearchResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {

@@ -2,6 +2,8 @@
 {
     using System;
 
+    using JetBrains.Annotations;
+
     public abstract class PersonsEventBase : EventBase
     {
         internal PersonsEventBase(Guid id, params string[] persons)
@@ -10,6 +12,6 @@
             Persons = persons;
         }
 
-        public string[] Persons { get; set; }
+        [NotNull] public string[] Persons { get; set; }
     }
 }

@@ -27,11 +27,12 @@
             if (useInMemoryIndex == false)
                 Guard.NotNull(baseDirectory, nameof(baseDirectory));
 
-            container.RegisterSingleton<PhotoIndex>();
+            container.RegisterSingleton<IPhotoIndex, PhotoIndex>();
 
             container.Register<IReadModel, LucenePhotoReadModel>();
 
             container.Register<PhotoCreatedEventHandler>();
+            container.Register<PersonsAddedToPhotoEventHandler>();
 
             if (useInMemoryIndex)
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();
@@ -44,6 +45,7 @@
             return new[]
             {
                 typeof(PhotoCreatedEventHandler),
+                typeof(PersonsAddedToPhotoEventHandler),
             };
         }
     }

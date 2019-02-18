@@ -10,7 +10,7 @@
     using Photo.ReadModel.SearchEngineLucene.Test.Data;
     using Xunit;
 
-    public class MediaIndexSearchTest : IDisposable
+    public class MediaIndexSearchTest
     {
         private readonly PhotoIndex sut;
 
@@ -21,11 +21,6 @@
 
             var data = DataStore.File001;
             sut.ReIndexMediaFileAsync(data).GetAwaiter().GetResult();
-        }
-
-        public void Dispose()
-        {
-            sut?.Dispose();
         }
 
         [Fact]

@@ -11,11 +11,11 @@
     using Photo.ReadModel.SearchEngineLucene.Test.Data;
     using Xunit;
 
-    public class MediaIndexTest : IDisposable
+    public class PhotoIndexTest : IDisposable
     {
         private readonly PhotoIndex sut;
 
-        public MediaIndexTest()
+        public PhotoIndexTest()
         {
             ILuceneDirectoryFactory indexDirectoryFactory = new RamLuceneDirectoryFactory();
             sut = new PhotoIndex(indexDirectoryFactory);

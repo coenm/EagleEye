@@ -11,9 +11,9 @@
     internal class LucenePhotoReadModel : IReadModel
     {
         [NotNull]
-        private readonly PhotoIndex photoIndex;
+        private readonly IPhotoIndex photoIndex;
 
-        public LucenePhotoReadModel(PhotoIndex photoIndex)
+        public LucenePhotoReadModel(IPhotoIndex photoIndex)
         {
             Guard.NotNull(photoIndex, nameof(photoIndex));
             this.photoIndex = photoIndex;

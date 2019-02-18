@@ -42,6 +42,7 @@
         {
             return new Type[]
             {
+                typeof(CreatePhotoCommandHandler),
                 typeof(MediaItemCommandHandlers),
             };
         }
