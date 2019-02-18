@@ -42,11 +42,11 @@
         private const string KeyTag = "tag";
         private const string KeyLocGps = "gps";
 
-        private readonly Analyzer analyzer;
-        private readonly IndexWriter indexWriter;
-        private readonly SearcherManager searcherManager;
-        private readonly QueryParser queryParser;
-        private readonly Directory indexDirectory;
+        [NotNull] private readonly Analyzer analyzer;
+        [NotNull] private readonly IndexWriter indexWriter;
+        [NotNull] private readonly SearcherManager searcherManager;
+        [NotNull] private readonly QueryParser queryParser;
+        [NotNull] private readonly Directory indexDirectory;
 
         private SpatialContext spatialContext;
         private SpatialStrategy spatialStrategy;
@@ -58,6 +58,7 @@
             indexDirectory = indexDirectoryFactory.Create();
 
             InitSpatial();
+
             analyzer = new StandardAnalyzer(LuceneNetVersion.Version);
 /*
             _analyzer = new PerFieldAnalyzerWrapper(
@@ -250,6 +251,8 @@
         [NotNull]
         public List<PhotoSearchResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {
+            Guard.NotNull(query, nameof(query));
+
             var results = new List<PhotoSearchResult>();
             totalHits = 0;
 
@@ -308,10 +311,10 @@
 
         public void Dispose()
         {
-            analyzer?.Dispose();
-            indexWriter?.Dispose();
-            searcherManager?.Dispose();
-            indexDirectory?.Dispose();
+            analyzer.Dispose();
+            indexWriter.Dispose();
+            searcherManager.Dispose();
+            indexDirectory.Dispose();
         }
 
         [CanBeNull]
@@ -367,28 +370,21 @@
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
             DebugGuard.NotNullOrWhiteSpace(filename, nameof(filename));
-
-            var term = new Term(KeyFilename, filename);
-
-            try
-            {
-                indexWriter.DeleteDocuments(term);
-                indexWriter.Flush(true, true);
-                indexWriter.Commit();
-            }
-            catch (OutOfMemoryException)
-            {
-                indexWriter.Dispose();
-                throw;
-            }
+            DeleteByTerm(new Term(KeyFilename, filename));
         }
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
+            DebugGuard.NotEmpty(guid, nameof(guid));
             if (guid == Guid.Empty)
                 return;
 
-            var term = new Term(KeyId, guid.ToString());
+            DeleteByTerm(new Term(KeyId, guid.ToString()));
+        }
+
+        private void DeleteByTerm([NotNull] Term term)
+        {
+            DebugGuard.NotNull(term, nameof(term));
 
             try
             {
