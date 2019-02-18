@@ -47,12 +47,6 @@
                 DateTimeTaken = null,
             };
 
-            if (message.Tags != null)
-                photo.Tags = message.Tags.Select(x => new Tag { Value = x }).ToList();
-
-            if (message.Persons != null)
-                photo.People = message.Persons.Select(x => new Person { Value = x }).ToList();
-
             await repository.SaveAsync(photo).ConfigureAwait(false);
         }
 

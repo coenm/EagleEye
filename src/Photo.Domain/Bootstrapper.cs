@@ -7,6 +7,7 @@
     using CQRSlite.Queries;
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Decorators;
+    using EagleEye.Photo.Domain.Services;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
@@ -29,6 +30,9 @@
             container.Register(typeof(ICancellableQueryHandler<,>), thisAssembly, Lifestyle.Transient);
 
             container.RegisterDecorator(typeof(ICancellableCommandHandler<>), typeof(VerifyTokenCommandHandlerDecorator<>), Lifestyle.Transient);
+
+            container.Register<IUniqueFilenameService, UniqueFilenameService>(Lifestyle.Singleton);
+            container.Register<IFilenameRepository, InMemoryFilenameRepository>(Lifestyle.Singleton);
 
             container.Register<MediaItemCommandHandlers>();
             container.Register<CreatePhotoCommandHandler>();

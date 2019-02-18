@@ -5,11 +5,8 @@
     using System.Linq;
 
     using CQRSlite.Domain;
-
     using EagleEye.Photo.Domain.Events;
-
     using Helpers.Guards;
-
     using JetBrains.Annotations;
 
     public class Photo : AggregateRoot
@@ -30,20 +27,18 @@
             Guid id,
             [NotNull] string filename,
             [NotNull] string mimeType,
-            [NotNull] byte[] fileSha256,
-            [CanBeNull] string[] tags,
-            [CanBeNull] string[] persons)
-            : this()
+            [NotNull] byte[] fileSha256)
+        : this()
         {
             Guard.NotNullOrWhiteSpace(filename, nameof(filename));
             Guard.NotNull(fileSha256, nameof(fileSha256));
             Guard.MustBeEqualTo(fileSha256.Length, Sha256ByteSize, $"{nameof(fileSha256)}.{nameof(fileSha256.Length)}");
 
             Id = id;
-
-            ApplyChange(new PhotoCreated(id, filename, mimeType, fileSha256, tags, persons));
+            ApplyChange(new PhotoCreated(id, filename, mimeType, fileSha256));
         }
 
+        /* Also */ [UsedImplicitly] // by CQRS lite framework
         private Photo()
         {
             tags = new List<string>();
@@ -197,8 +192,6 @@
             Id = e.Id;
             filename = e.FileName;
             fileHash = e.FileHash;
-            tags.AddRange(e.Tags);
-            persons.AddRange(e.Persons);
         }
 
         [UsedImplicitly]

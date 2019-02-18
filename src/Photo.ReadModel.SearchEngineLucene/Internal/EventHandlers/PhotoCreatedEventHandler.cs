@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers
 {
     using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -48,8 +47,6 @@
                 Version = message.Version,
                 FileName = message.FileName,
                 FileMimeType = message.MimeType,
-                Tags = message.Tags?.ToList(),
-                Persons = message.Persons?.ToList(),
                 DateTimeTaken = null, // todo
             };
 

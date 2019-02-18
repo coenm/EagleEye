@@ -15,8 +15,10 @@
 
         public string FileMimeType { get; set; }
 
+        [CanBeNull]
         public List<string> Persons { get; set; }
 
+        [CanBeNull]
         public List<string> Tags { get; set; }
 
         public string LocationCountryCode { get; set; }

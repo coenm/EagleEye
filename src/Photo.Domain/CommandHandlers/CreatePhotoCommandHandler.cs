@@ -41,9 +41,7 @@
                     message.Id,
                     message.FileName,
                     message.PhotoMimeType,
-                    message.FileSha256,
-                    message.Tags,
-                    message.Persons);
+                    message.FileSha256);
 
                 await session.Add(item, token).ConfigureAwait(false);
                 await session.Commit(token).ConfigureAwait(false);

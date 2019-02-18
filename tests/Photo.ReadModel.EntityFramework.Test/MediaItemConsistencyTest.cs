@@ -43,14 +43,12 @@
             var version = 0;
             var filename = "a.jpg";
             var fileMimeType = "image/jpeg";
-            var initialTags = new[] { "soccer", "sports" };
-            var initialPersons = new[] { "alice", "bob" };
             var initTimestamp = DateTimeOffset.UtcNow;
             var fileHash = new byte[32];
-            var expectedPhoto = CreatePhoto(guid, version, filename, fileHash, initTimestamp, initialTags, initialPersons);
+            var expectedPhoto = CreatePhoto(guid, version, filename, fileHash, initTimestamp, null, null);
 
             // act
-            await sut.Handle(new PhotoCreated(guid, filename, fileMimeType, fileHash, initialTags, initialPersons)
+            await sut.Handle(new PhotoCreated(guid, filename, fileMimeType, fileHash)
             {
                 TimeStamp = initTimestamp,
             }).ConfigureAwait(false);
@@ -98,16 +96,16 @@
         private static Photo CreatePhoto(Guid id, int version, string filename, byte[] fileSha, DateTimeOffset eventTimestamp, string[] tags, string[] people)
         {
             return new Photo
-                   {
-                       Id = id,
-                       Version = version,
-                       Filename = filename,
-                       FileSha256 = fileSha,
-                       EventTimestamp = eventTimestamp,
-                       Tags = CreateTags(tags),
-                       People = CreatePeoples(people),
-                       FileMimeType = "image/jpeg",
-                   };
+            {
+                Id = id,
+                Version = version,
+                Filename = filename,
+                FileSha256 = fileSha,
+                EventTimestamp = eventTimestamp,
+                Tags = CreateTags(tags),
+                People = CreatePeoples(people),
+                FileMimeType = "image/jpeg",
+            };
         }
 
         private static List<Tag> CreateTags(params string[] tags)
