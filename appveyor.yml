@@ -2,7 +2,7 @@ image:
 - Ubuntu
 - Visual Studio 2017
 
-configuration: Debug	
+configuration: Debug
 #platform: Any CPU
 
 environment:
@@ -11,8 +11,8 @@ environment:
   github_oauth_token:
     secure: H1vW5fnfAOt5/c5f1qnaatUjFVAPc2oZnxDBFutJZL58LxAyJNRLtfIBrcHnSg8y
   COVERALLS_REPO_TOKEN:
-    secure: Ie2pOwyCBkeqIZsFKrdmFau++9ERzWFD22tWnpbK99cghf0uXB7g3FN0kWbNUpKn	
-  
+    secure: Ie2pOwyCBkeqIZsFKrdmFau++9ERzWFD22tWnpbK99cghf0uXB7g3FN0kWbNUpKn
+
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
@@ -30,8 +30,8 @@ install:
 # Install and run gitversion. (use param "/l console" to show debug info)
 #- cmd: choco install gitversion.portable -pre -y
 - cmd: choco install gitversion.portable -y
-- cmd: IF [%APPVEYOR_PULL_REQUEST_NUMBER%]==[] ( 
-       C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /b %APPVEYOR_REPO_BRANCH% /c %APPVEYOR_REPO_COMMIT% 
+- cmd: IF [%APPVEYOR_PULL_REQUEST_NUMBER%]==[] (
+       C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /b %APPVEYOR_REPO_BRANCH% /c %APPVEYOR_REPO_COMMIT%
     ) ELSE (
        C:\ProgramData\chocolatey\lib\gitversion.portable\tools\gitversion.exe /output buildserver /c %APPVEYOR_REPO_COMMIT%
     )
@@ -44,7 +44,7 @@ install:
 - cmd: nuget install Codecov -Version 1.0.3 -OutputDirectory C:\NuGetTools\
 - sh: npm install --save-dev coveralls
 
-# Install Exiftool	
+# Install Exiftool
 - cmd: powershell .\.scripts\InstallExiftool.ps1
 - sh: chmod +x .scripts/InstallExiftool.sh && .scripts/InstallExiftool.sh
 
@@ -56,7 +56,7 @@ before_build:
 
 build:
   verbosity: minimal
-  
+
 test_script:
 - cmd: powershell .\.scripts\TestCoverage.ps1
 - sh: chmod +x .scripts/TestCoverage.sh && .scripts/TestCoverage.sh
