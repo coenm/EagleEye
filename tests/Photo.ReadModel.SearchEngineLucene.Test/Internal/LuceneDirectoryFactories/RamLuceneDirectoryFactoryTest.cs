@@ -1,11 +1,11 @@
-﻿namespace Photo.ReadModel.SearchEngineLucene.Test
+﻿namespace Photo.ReadModel.SearchEngineLucene.Test.Internal.LuceneDirectoryFactories
 {
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
     using FluentAssertions;
     using Lucene.Net.Store;
     using Xunit;
 
-    public class RamDirectoryFactoryTest
+    public class RamLuceneDirectoryFactoryTest
     {
         [Fact]
         public void Create_ReturnsRAMDirectoryTest()
