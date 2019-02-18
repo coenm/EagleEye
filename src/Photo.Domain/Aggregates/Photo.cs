@@ -9,7 +9,7 @@
     using Helpers.Guards;
     using JetBrains.Annotations;
 
-    public class Photo : AggregateRoot
+    internal class Photo : AggregateRoot
     {
         private const int Sha256ByteSize = 256 / 8;
         [NotNull] private readonly Dictionary<string, byte[]> photoHashes;

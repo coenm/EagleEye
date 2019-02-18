@@ -1,12 +1,12 @@
 ﻿namespace EagleEye.Photo.Domain.CommandHandlers
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
     using CQRSlite.Commands;
     using CQRSlite.Domain;
     using EagleEye.Photo.Domain.Aggregates;
+    using EagleEye.Photo.Domain.CommandHandlers.Exceptions;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.Domain.Services;
     using Helpers.Guards;
@@ -31,37 +31,22 @@
         {
             token.ThrowIfCancellationRequested();
 
-            var claim = uniqueFilenameService.Claim(message.FileName);
-            if (claim == null)
-                throw new Exception();
+            var item = new Photo(
+                message.Id,
+                message.FileName,
+                message.PhotoMimeType,
+                message.FileSha256);
 
-            try
+            var filenameClaim = uniqueFilenameService.Claim(message.FileName);
+            if (filenameClaim == null)
+                throw new PhotoAlreadyExistsException(message.FileName);
+
+            using (filenameClaim)
             {
-                var item = new Photo(
-                    message.Id,
-                    message.FileName,
-                    message.PhotoMimeType,
-                    message.FileSha256);
-
                 await session.Add(item, token).ConfigureAwait(false);
                 await session.Commit(token).ConfigureAwait(false);
 
-                claim.Commit();
-
-                /*
-                var item = new MediaItem(message.Id, message.Name);
-
-                await _session.Add(item).ConfigureAwait(false);
-                await _session.Commit().ConfigureAwait(false);
-
-                var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
-                item.Remove(message.Count);
-                await _session.Commit(token);
-                */
-            }
-            finally
-            {
-                claim.Dispose();
+                filenameClaim.Commit();
             }
         }
     }
