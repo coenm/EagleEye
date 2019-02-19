@@ -30,7 +30,9 @@
             [NotNull] byte[] fileSha256)
         : this()
         {
+            Guard.NotEmpty(id, nameof(id));
             Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Guard.NotNullOrWhiteSpace(mimeType, nameof(mimeType));
             Guard.NotNull(fileSha256, nameof(fileSha256));
             Guard.MustBeEqualTo(fileSha256.Length, Sha256ByteSize, $"{nameof(fileSha256)}.{nameof(fileSha256.Length)}");
 
@@ -46,12 +48,17 @@
             photoHashes = new Dictionary<string, byte[]>();
         }
 
+        public IReadOnlyList<string> Persons => persons.AsReadOnly();
+
         public void AddTags(params string[] tags)
         {
             if (tags == null)
                 return;
 
-            var addedTags = tags.Distinct().Where(tag => !this.tags.Contains(tag)).ToArray();
+            var addedTags = tags.Distinct()
+                                .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                                .Where(tag => !this.tags.Contains(tag))
+                                .ToArray();
 
             if (addedTags.Any())
                 ApplyChange(new TagsAddedToPhoto(Id, addedTags));
@@ -76,6 +83,7 @@
                 return;
 
             var added = persons.Distinct()
+                               .Where(item => !string.IsNullOrWhiteSpace(item))
                                .Where(item => !this.persons.Contains(item))
                                .ToArray();
 
@@ -197,7 +205,7 @@
         [UsedImplicitly]
         private void Apply(PersonsAddedToPhoto e)
         {
-            persons.AddRange(e.Persons ?? new string[0]);
+            persons.AddRange(e.Persons);
         }
 
         [UsedImplicitly]
