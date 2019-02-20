@@ -4,16 +4,12 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
-    using EagleEye.Core.Data;
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolTagsProvider : IMediaInformationProvider
+    public class ExifToolTagsProvider : IPhotoTagProvider
     {
         private readonly IExifTool exiftool;
         private readonly Dictionary<string, string> headers;
@@ -30,23 +26,26 @@
                           };
         }
 
+        public string Name => nameof(ExifToolTagsProvider);
+
         public uint Priority { get; } = 100;
 
-        public bool CanProvideInformation(string filename)
+        public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
+
+        public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
         {
-            return true;
-        }
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
-        public async Task ProvideAsync(string filename, MediaObject media)
-        {
-            var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var resultExiftool = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
-            if (result == null)
-                return;
+            if (resultExiftool == null)
+                return previousResult;
 
-            var tags = GetTagsFromFullJsonObject(result);
+            var tags = GetTagsFromFullJsonObject(resultExiftool);
 
-            media.AddTags(tags);
+            var newResult = previousResult?.ToList() ?? new List<string>();
+            newResult.AddRange(tags);
+            return newResult.Distinct().ToList();
         }
 
         private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
@@ -67,6 +66,7 @@
             return result;
         }
 
+        [CanBeNull]
         private List<string> GetTagsFromFullJsonObject(JObject data)
         {
             var result = new List<string>();

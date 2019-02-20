@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.Core.Interfaces.PhotoInformationProviders
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using JetBrains.Annotations;
@@ -13,6 +12,6 @@
 
         bool CanProvideInformation([NotNull] string filename);
 
-        Task<List<string>> ProvideAsync([NotNull] string filename);
+        Task<string> ProvideAsync([NotNull] string filename, [CanBeNull] string previousResult);
     }
 }

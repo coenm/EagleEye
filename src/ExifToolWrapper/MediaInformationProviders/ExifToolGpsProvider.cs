@@ -4,16 +4,13 @@
     using System.Globalization;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
     using EagleEye.Core.Data;
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolGpsProvider : IMediaInformationProvider
+    public class ExifToolGpsProvider : IPhotoLocationProvider
     {
         private readonly IExifTool exiftool;
         private readonly NumberFormatInfo numberFormat;
@@ -25,25 +22,26 @@
             numberFormat = new NumberFormatInfo();
         }
 
+        public string Name => nameof(ExifToolGpsProvider);
+
         public uint Priority { get; } = 100;
 
-        public bool CanProvideInformation(string filename)
-        {
-            return true;
-        }
+        public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task ProvideAsync(string filename, MediaObject media)
+        public async Task<Location> ProvideAsync(string filename, [CanBeNull] Location previousResult)
         {
             var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
-                return;
+                return previousResult;
 
             var coordinate = GetGpsCoordinatesFromFullJsonObject(result);
             if (coordinate == null)
-                return;
+                return previousResult;
 
-            media.Location.SetCoordinate(coordinate);
+            var newResult = previousResult ?? new Location();
+            newResult.SetCoordinate(coordinate);
+            return newResult;
         }
 
         private Coordinate GetGpsCoordinatesFromFullJsonObject(JObject data)

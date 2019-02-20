@@ -4,17 +4,11 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
-    using EagleEye.Core.Data;
     using EagleEye.ExifToolWrapper.MediaInformationProviders;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolPersonsProviderTest
@@ -43,13 +37,13 @@
 
         private readonly ExifToolPersonsProvider sut;
         private readonly IExifTool exiftool;
-        private readonly MediaObject media;
+        private readonly List<string> persons;
 
         public ExifToolPersonsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolPersonsProvider(exiftool);
-            media = new MediaObject(Filename);
+            persons = new List<string>();
         }
 
         [Fact]
@@ -72,10 +66,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, persons).ConfigureAwait(false);
 
             // assert
-            media.Persons.Should().BeEmpty();
+            persons.Should().BeEmpty();
         }
 
         [Theory]
@@ -87,10 +81,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, persons).ConfigureAwait(false);
 
             // assert
-            media.Persons.Should().BeEmpty();
+            persons.Should().BeEmpty();
         }
 
         [Theory]
@@ -110,10 +104,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, persons).ConfigureAwait(false);
 
             // assert
-            media.Persons.Should().BeEquivalentTo(expectedPersons);
+            persons.Should().BeEquivalentTo(expectedPersons);
         }
 
         private static string ConvertToJsonArray(string data)

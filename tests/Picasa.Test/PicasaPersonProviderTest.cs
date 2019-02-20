@@ -1,9 +1,8 @@
 ﻿namespace EagleEye.Picasa.Test
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
-    using EagleEye.Core.Data;
     using EagleEye.Picasa.Picasa;
     using FakeItEasy;
     using FluentAssertions;
@@ -40,31 +39,34 @@
         public async Task ProvideAsyncShouldAddPersonsToMediaObjectTest()
         {
             // arrange
-            var mediaObject = new MediaObject(DummyFilename);
+            var persons = new List<string>();
+            A.CallTo(() => picasaService.CanProvideData(DummyFilename))
+                .Returns(true);
             A.CallTo(() => picasaService.GetDataAsync(DummyFilename))
              .Returns(Task.FromResult(new FileWithPersons(DummyFilename, "Alice", "Bob")));
 
             // act
-            await sut.ProvideAsync(DummyFilename, mediaObject).ConfigureAwait(false);
+            await sut.ProvideAsync(DummyFilename, persons).ConfigureAwait(false);
 
             // assert
-            mediaObject.Persons.Should().BeEquivalentTo("Alice", "Bob");
+            persons.Should().BeEquivalentTo("Alice", "Bob");
         }
 
         [Fact]
         public async Task ProvideAsyncShouldNotThrowWhenPicasaServiceReturnsNullTest()
         {
             // arrange
-            var mediaObject = new MediaObject(DummyFilename);
+            var persons = new List<string>();
+            A.CallTo(() => picasaService.CanProvideData(DummyFilename))
+                .Returns(true);
             A.CallTo(() => picasaService.GetDataAsync(DummyFilename))
              .Returns(Task.FromResult(null as FileWithPersons));
 
             // act
-            await sut.ProvideAsync(DummyFilename, mediaObject).ConfigureAwait(false);
+            await sut.ProvideAsync(DummyFilename, persons).ConfigureAwait(false);
 
             // assert
-            // Todo improve assert
-            mediaObject.Should().NotBeNull();
+            persons.Should().NotBeNull();
         }
     }
 }

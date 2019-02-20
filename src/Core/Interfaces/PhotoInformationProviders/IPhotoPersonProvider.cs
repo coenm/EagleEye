@@ -13,6 +13,6 @@
 
         bool CanProvideInformation([NotNull] string filename);
 
-        Task<List<string>> ProvideAsync([NotNull] string filename);
+        Task<List<string>> ProvideAsync([NotNull] string filename, [CanBeNull] List<string> previousResult);
     }
 }

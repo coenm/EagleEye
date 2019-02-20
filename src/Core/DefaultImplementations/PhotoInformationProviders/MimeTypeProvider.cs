@@ -4,6 +4,7 @@
 
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using Helpers.Guards;
+    using JetBrains.Annotations;
 
     public class MimeTypeProvider : IPhotoMimeTypeProvider
     {
@@ -13,13 +14,11 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public Task<string> ProvideAsync(string filename)
+        public Task<string> ProvideAsync(string filename, [CanBeNull] string previousResult)
         {
             DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
-            var mime = MimeTypes.GetMimeType(filename);
-
-            return Task.FromResult(mime);
+            return Task.FromResult(MimeTypes.GetMimeType(filename));
         }
     }
 }

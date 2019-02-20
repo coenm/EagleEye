@@ -4,17 +4,11 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
-    using EagleEye.Core.Data;
     using EagleEye.ExifToolWrapper.MediaInformationProviders;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolTagsProviderTest
@@ -50,13 +44,13 @@
 
         private readonly ExifToolTagsProvider sut;
         private readonly IExifTool exiftool;
-        private readonly MediaObject media;
+        private readonly List<string> tags;
 
         public ExifToolTagsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolTagsProvider(exiftool);
-            media = new MediaObject(Filename);
+            tags = new List<string>();
         }
 
         [Fact]
@@ -79,10 +73,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, tags).ConfigureAwait(false);
 
             // assert
-            media.Tags.Should().BeEmpty();
+            tags.Should().BeEmpty();
         }
 
         [Theory]
@@ -94,10 +88,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, tags).ConfigureAwait(false);
 
             // assert
-            media.Tags.Should().BeEmpty();
+            tags.Should().BeEmpty();
         }
 
         [Theory]
@@ -118,10 +112,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, tags).ConfigureAwait(false);
 
             // assert
-            media.Tags.Should().BeEquivalentTo(expectedTags);
+            result.Should().BeEquivalentTo(expectedTags);
         }
 
         private static string ConvertToJsonArray(string data)

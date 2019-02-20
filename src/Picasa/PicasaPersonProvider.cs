@@ -1,18 +1,13 @@
 ﻿namespace EagleEye.Picasa
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
-    using EagleEye.Core.Data;
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
 
-    public class PicasaPersonProvider : IPhotoPersonProvider, IMediaInformationProvider
+    public class PicasaPersonProvider : IPhotoPersonProvider
     {
         private readonly IPicasaService picasaService;
 
@@ -31,22 +26,20 @@
             return picasaService.CanProvideData(filename);
         }
 
-        public async Task<List<string>> ProvideAsync(string filename)
+        public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
         {
-            var result = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
-            if (result == null)
-                return new List<string>();
+            var persons = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
 
-            return result.Persons.ToList();
-        }
+            if (persons == null)
+                return previousResult;
 
-        public async Task ProvideAsync(string filename, MediaObject media)
-        {
-            var result = await ProvideAsync(filename).ConfigureAwait(false);
+            if (previousResult == null)
+                return null;
 
-            foreach (var person in result)
-                media.AddPerson(person);
+            previousResult.AddRange(persons.Persons);
+            return previousResult;
         }
     }
 }

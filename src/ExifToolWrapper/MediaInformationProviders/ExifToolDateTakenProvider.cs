@@ -7,17 +7,14 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
     using System.Globalization;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
     using EagleEye.Core.Data;
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ExifToolWrapper.MediaInformationProviders.Parsing;
     using Helpers.Guards;
     using JetBrains.Annotations;
-
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolDateTakenProvider : IMediaInformationProvider
+    public class ExifToolDateTakenProvider : IPhotoDateTimeTakenProvider
     {
         private static readonly List<MetadataHeaderKeyPair> Keys = new List<MetadataHeaderKeyPair>
         {
@@ -36,11 +33,25 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
             this.exiftool = exiftool;
         }
 
+        public string Name => nameof(ExifToolDateTakenProvider);
+
         public uint Priority { get; } = 100;
 
-        public bool CanProvideInformation(string filename)
+        public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
+
+        public async Task<Timestamp> ProvideAsync(string filename, [CanBeNull] Timestamp previousResult)
         {
-            return true;
+            var data = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+
+            if (data == null)
+                return previousResult;
+
+            var dateTimeTaken = GetDateTimeFromFullJsonObject(data);
+
+            if (dateTimeTaken == null)
+                return previousResult;
+
+            return dateTimeTaken;
         }
 
         public async Task ProvideAsync(string filename, MediaObject media)

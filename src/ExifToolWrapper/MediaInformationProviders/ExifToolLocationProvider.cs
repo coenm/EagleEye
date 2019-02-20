@@ -2,16 +2,13 @@
 {
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
     using EagleEye.Core.Data;
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolLocationProvider : IMediaInformationProvider
+    public class ExifToolLocationProvider : IPhotoLocationProvider
     {
         private readonly IExifTool exiftool;
 
@@ -21,43 +18,44 @@
             this.exiftool = exiftool;
         }
 
+        public string Name => nameof(ExifToolLocationProvider);
+
         public uint Priority { get; } = 100;
 
-        public bool CanProvideInformation(string filename)
-        {
-            return true;
-        }
+        public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task ProvideAsync(string filename, MediaObject media)
+        public async Task<Location> ProvideAsync(string filename, [CanBeNull] Location previousResult)
         {
             var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
-                return;
+                return previousResult;
 
             string s;
+
+            var newResult = previousResult ?? new Location();
 
             if (result["XMP"] is JObject data)
             {
                 s = TryGetString(data, "CountryCode");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.CountryCode = s;
+                    newResult.CountryCode = s;
 
                 s = TryGetString(data, "Location");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.SubLocation = s;
+                    newResult.SubLocation = s;
 
                 s = TryGetString(data, "Country");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.CountryName = s;
+                    newResult.CountryName = s;
 
                 s = TryGetString(data, "State");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.State = s;
+                    newResult.State = s;
 
                 s = TryGetString(data, "City");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.City = s;
+                    newResult.City = s;
             }
 
             data = result["XMP-iptcCore"] as JObject;
@@ -65,11 +63,11 @@
             {
                 s = TryGetString(data, "CountryCode");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.CountryCode = s;
+                    newResult.CountryCode = s;
 
                 s = TryGetString(data, "Location");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.SubLocation = s;
+                    newResult.SubLocation = s;
             }
 
             data = result["XMP-photoshop"] as JObject;
@@ -77,16 +75,18 @@
             {
                 s = TryGetString(data, "Country");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.CountryName = s;
+                    newResult.CountryName = s;
 
                 s = TryGetString(data, "State");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.State = s;
+                    newResult.State = s;
 
                 s = TryGetString(data, "City");
                 if (!string.IsNullOrWhiteSpace(s))
-                    media.Location.City = s;
+                    newResult.City = s;
             }
+
+            return previousResult;
         }
 
         private string TryGetString([NotNull] JObject data, [NotNull] string key)

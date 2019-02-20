@@ -3,17 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
     using EagleEye.Core.Data;
     using EagleEye.ExifToolWrapper.MediaInformationProviders;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolGpsProviderTest
@@ -44,13 +39,13 @@
 
         private readonly ExifToolGpsProvider sut;
         private readonly IExifTool exiftool;
-        private readonly MediaObject media;
+        private readonly Location location;
 
         public ExifToolGpsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolGpsProvider(exiftool);
-            media = new MediaObject(Filename);
+            location = new Location();
         }
 
         [Fact]
@@ -73,10 +68,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Coordinate.Should().BeNull();
+            result.Coordinate.Should().BeNull();
         }
 
         [Theory]
@@ -88,10 +83,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Coordinate.Should().BeNull();
+            result.Coordinate.Should().BeNull();
         }
 
         [Theory]
@@ -106,10 +101,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
+            result.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
         }
 
         private static string ConvertToJsonArray(string data)

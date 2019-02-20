@@ -4,16 +4,12 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
-    using EagleEye.Core.Data;
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolPersonsProvider : IPhotoPersonProvider, IMediaInformationProvider
+    public class ExifToolPersonsProvider : IPhotoPersonProvider
     {
         private readonly IExifTool exiftool;
         private readonly Dictionary<string, string> headers;
@@ -33,28 +29,23 @@
 
         public uint Priority { get; } = 100;
 
-        public bool CanProvideInformation(string filename)
+        public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
+
+        public async Task<List<string>> ProvideAsync([NotNull] string filename, [CanBeNull] List<string> previousResult)
         {
-            return true;
-        }
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
-        public async Task<List<string>> ProvideAsync(string filename)
-        {
-            var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var exiftoolResult = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
-            if (result == null)
-                return new List<string>(0);
+            if (exiftoolResult == null)
+                return previousResult;
 
-            var persons = GetTagsFromFullJsonObject(result);
+            var persons = GetTagsFromFullJsonObject(exiftoolResult);
+            if (previousResult == null)
+                return persons.ToList();
 
-            return persons.ToList();
-        }
-
-        public async Task ProvideAsync(string filename, MediaObject media)
-        {
-            var result = await ProvideAsync(filename).ConfigureAwait(false);
-
-            media.AddPersons(result);
+            previousResult.AddRange(persons);
+            return previousResult;
         }
 
         private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)

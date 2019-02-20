@@ -3,17 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
     using EagleEye.Core.Data;
     using EagleEye.ExifToolWrapper.MediaInformationProviders;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolLocationProviderTest
@@ -44,13 +39,13 @@
 
         private readonly ExifToolLocationProvider sut;
         private readonly IExifTool exiftool;
-        private readonly MediaObject media;
+        private readonly Location location;
 
         public ExifToolLocationProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolLocationProvider(exiftool);
-            media = new MediaObject(Filename);
+            location = new Location();
         }
 
         [Fact]
@@ -73,10 +68,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Should().BeEquivalentTo(new Location());
+            result.Should().BeEquivalentTo(new Location());
         }
 
         [Theory]
@@ -88,10 +83,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Should().BeEquivalentTo(new Location());
+            result.Should().BeEquivalentTo(new Location());
         }
 
         [Fact]
@@ -109,10 +104,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Should().BeEquivalentTo(expectedLocation);
+            result.Should().BeEquivalentTo(expectedLocation);
         }
 
         [Fact]
@@ -129,10 +124,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Should().BeEquivalentTo(expectedLocation);
+            result.Should().BeEquivalentTo(expectedLocation);
         }
 
         [Theory]
@@ -153,10 +148,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
 
             // assert
-            media.Location.Should().BeEquivalentTo(expectedLocation);
+            result.Should().BeEquivalentTo(expectedLocation);
         }
 
         private static string ConvertToJsonArray(string data)
