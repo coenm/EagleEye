@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core
+﻿namespace EagleEye.Core.Data
 {
     using System;
 

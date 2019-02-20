@@ -5,7 +5,10 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core;
+    using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.PhotoInformationProviders;
+
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
@@ -27,7 +30,7 @@
                           };
         }
 
-        public int Priority { get; } = 100;
+        public uint Priority { get; } = 100;
 
         public bool CanProvideInformation(string filename)
         {

@@ -12,7 +12,7 @@
     using CQRSlite.Events;
     using CQRSlite.Routing;
     using EagleEye.Core.DefaultImplementations.EventStore;
-    using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.Module;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;

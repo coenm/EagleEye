@@ -1,12 +1,13 @@
-﻿namespace EagleEye.Core.Interfaces
+﻿namespace EagleEye.Core.Interfaces.PhotoInformationProviders
 {
     using System.Threading.Tasks;
 
+    using EagleEye.Core.Data;
     using JetBrains.Annotations;
 
     public interface IMediaInformationProvider
     {
-        int Priority { get; }
+        uint Priority { get; }
 
         bool CanProvideInformation([NotNull] string filename);
 

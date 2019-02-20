@@ -8,7 +8,9 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
     using System.Threading.Tasks;
 
     using EagleEye.Core;
+    using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ExifToolWrapper.MediaInformationProviders.Parsing;
     using Helpers.Guards;
     using JetBrains.Annotations;
@@ -34,7 +36,7 @@ namespace EagleEye.ExifToolWrapper.MediaInformationProviders
             this.exiftool = exiftool;
         }
 
-        public int Priority { get; } = 100;
+        public uint Priority { get; } = 100;
 
         public bool CanProvideInformation(string filename)
         {

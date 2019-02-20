@@ -3,6 +3,7 @@
     using System;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;

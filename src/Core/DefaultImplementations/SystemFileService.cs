@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.Core;
 
     public class SystemFileService : IFileService
     {
@@ -12,14 +12,8 @@
 
         public static SystemFileService Instance { get; } = new SystemFileService();
 
-        public Stream OpenRead(string filename)
-        {
-            return File.OpenRead(filename);
-        }
+        public Stream OpenRead(string filename) => File.OpenRead(filename);
 
-        public bool FileExists(string filename)
-        {
-            return File.Exists(filename);
-        }
+        public bool FileExists(string filename) => File.Exists(filename);
     }
 }

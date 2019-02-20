@@ -1,9 +1,9 @@
-﻿namespace EagleEye.Core.Test
+﻿namespace EagleEye.Core.Test.Data
 {
     using System;
 
+    using EagleEye.Core.Data;
     using FluentAssertions;
-
     using Xunit;
 
     public class TimestampTest

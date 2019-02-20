@@ -1,22 +1,42 @@
-﻿namespace EagleEye.Core.Test.MediaInformationProviders
+﻿namespace EagleEye.Core.Test.DefaultImplementations.PhotoInformationProviders
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.MediaInformationProviders;
+    using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
     using FluentAssertions;
     using Xunit;
 
     public class MimeTypeProviderTest
     {
         private readonly MimeTypeProvider sut;
-        private readonly MediaObject media;
 
         public MimeTypeProviderTest()
         {
             sut = new MimeTypeProvider();
-            media = new MediaObject("a.jpg");
+        }
+
+        [Fact]
+        public void Priority_ShouldBeSet()
+        {
+            // arrange
+
+            // act
+            var result = sut.Priority;
+
+            // assert
+            result.Should().BeGreaterOrEqualTo(0);
+        }
+
+        [Fact]
+        public void Name_ShouldNotBeNullOrWhiteSpace()
+        {
+            // arrange
+
+            // act
+            var result = sut.Name;
+
+            // assert
+            result.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -46,20 +66,6 @@
             result.Should().BeFalse();
         }
 
-        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute", Justification = "Goal of test")]
-        [Fact]
-        public void ProvideAsync_ShouldThrowException_WhenMediaIsNull()
-        {
-            // arrange
-            MediaObject nullMedia = null;
-
-            // act
-            Func<Task> act = async () => await sut.ProvideAsync("dummy", nullMedia);
-
-            // assert
-            act.Should().Throw<ArgumentNullException>();
-        }
-
         [Theory]
         [InlineData("a.jpg", "image/jpeg")]
         [InlineData("a.JPg", "image/jpeg")]
@@ -71,10 +77,10 @@
             // arrange
 
             // act
-            await sut.ProvideAsync(filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(filename).ConfigureAwait(false);
 
             // assert
-            media.FileInformation.Type.Should().Be(expectedMimeType);
+            result.Should().Be(expectedMimeType);
         }
     }
 }

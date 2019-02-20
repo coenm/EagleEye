@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.Similarity.Test
+﻿namespace Photo.ReadModel.EntityFramework.Test
 {
     using System;
     using System.Linq;
@@ -12,18 +12,18 @@
     using SimpleInjector;
     using Xunit;
 
-    using Sut = EagleEye.Photo.ReadModel.Similarity.Bootstrapper;
+    using Sut = EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper;
 
     public class BootstrapperTest
     {
         [Fact]
-        public void Bootstrap_ShouldBeValid_WhenGivenTwoInMemoryDatabases()
+        public void Bootstrap_ShouldBeValid_WhenGivenInMemoryDatabase()
         {
             // arrange
             var container = new Container();
 
             // act
-            Sut.Bootstrap(container, "InMemory a", "InMemory b");
+            Sut.BootstrapEntityFrameworkReadModel(container, "InMemory a");
 
             // assert
             Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);
@@ -37,7 +37,7 @@
             var container = new Container();
 
             // act
-            Sut.Bootstrap(container, "InMemory a", "InMemory b");
+            Sut.BootstrapEntityFrameworkReadModel(container, "InMemory a");
 
             // assert
             var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>();
@@ -52,7 +52,7 @@
             container.Collection.Append<IEagleEyeInitialize, FakeEagleEyeInitialize>();
 
             // act
-            Sut.Bootstrap(container, "InMemory a", "InMemory b");
+            Sut.BootstrapEntityFrameworkReadModel(container, "InMemory a");
 
             // assert
             var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
@@ -64,7 +64,7 @@
         {
             // arrange
             var container = new Container();
-            Sut.Bootstrap(container, "InMemory a", "InMemory b");
+            Sut.BootstrapEntityFrameworkReadModel(container, "InMemory a");
 
             // act
             var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>().ToArray();

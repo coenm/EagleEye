@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core;
+    using EagleEye.Core.Data;
     using EagleEye.Picasa.Picasa;
     using FakeItEasy;
     using FluentAssertions;

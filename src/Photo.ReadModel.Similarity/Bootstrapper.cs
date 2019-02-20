@@ -3,6 +3,7 @@
     using System;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.Similarity.Interface;
     using EagleEye.Photo.ReadModel.Similarity.Internal;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;

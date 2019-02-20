@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.Interfaces
+﻿namespace EagleEye.Core.Interfaces.Core
 {
     using System;
 

@@ -2,7 +2,7 @@
 {
     using System;
 
-    using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.Core;
 
     public class SystemDateTimeService : IDateTimeService
     {

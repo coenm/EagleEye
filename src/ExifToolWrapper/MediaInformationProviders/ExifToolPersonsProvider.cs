@@ -5,12 +5,15 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core;
+    using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.PhotoInformationProviders;
+
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolPersonsProvider : IMediaInformationProvider
+    public class ExifToolPersonsProvider : IPhotoPersonProvider, IMediaInformationProvider
     {
         private readonly IExifTool exiftool;
         private readonly Dictionary<string, string> headers;
@@ -26,23 +29,32 @@
                           };
         }
 
-        public int Priority { get; } = 100;
+        public string Name => nameof(ExifToolPersonsProvider);
+
+        public uint Priority { get; } = 100;
 
         public bool CanProvideInformation(string filename)
         {
             return true;
         }
 
-        public async Task ProvideAsync(string filename, MediaObject media)
+        public async Task<List<string>> ProvideAsync(string filename)
         {
             var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
-                return;
+                return new List<string>(0);
 
             var persons = GetTagsFromFullJsonObject(result);
 
-            media.AddPersons(persons);
+            return persons.ToList();
+        }
+
+        public async Task ProvideAsync(string filename, MediaObject media)
+        {
+            var result = await ProvideAsync(filename).ConfigureAwait(false);
+
+            media.AddPersons(result);
         }
 
         private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)

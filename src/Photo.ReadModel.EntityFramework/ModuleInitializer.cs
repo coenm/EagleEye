@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces;
+    using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using Helpers.Guards;
     using JetBrains.Annotations;
