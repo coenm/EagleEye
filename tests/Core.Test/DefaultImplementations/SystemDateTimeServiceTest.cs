@@ -3,9 +3,7 @@
     using System;
 
     using EagleEye.Core.DefaultImplementations;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class SystemDateTimeServiceTest

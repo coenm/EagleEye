@@ -50,14 +50,18 @@
 
         public IReadOnlyList<string> Persons => persons.AsReadOnly();
 
+        public IReadOnlyList<string> Tags => tags.AsReadOnly();
+
         public void AddTags(params string[] tags)
         {
             if (tags == null)
                 return;
 
             var addedTags = tags.Distinct()
-                                .Where(tag => !string.IsNullOrWhiteSpace(tag))
-                                .Where(tag => !this.tags.Contains(tag))
+                                .Where(item =>
+                                           !string.IsNullOrWhiteSpace(item)
+                                           &&
+                                           !this.tags.Contains(item))
                                 .ToArray();
 
             if (addedTags.Any())
@@ -83,8 +87,10 @@
                 return;
 
             var added = persons.Distinct()
-                               .Where(item => !string.IsNullOrWhiteSpace(item))
-                               .Where(item => !this.persons.Contains(item))
+                               .Where(item =>
+                                          !string.IsNullOrWhiteSpace(item)
+                                          &&
+                                          !this.persons.Contains(item))
                                .ToArray();
 
             if (added.Any())
@@ -94,9 +100,6 @@
         public void RemovePersons(params string[] persons)
         {
             if (persons == null)
-                return;
-
-            if (persons.Length == 0)
                 return;
 
             var removed = persons.Distinct()
@@ -161,14 +164,18 @@
         }
 
         [UsedImplicitly]
-        private void Apply(FileHashUpdated e)
+        private void Apply([NotNull] FileHashUpdated e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             fileHash = e.Hash.ToArray();
         }
 
         [UsedImplicitly]
-        private void Apply(PhotoHashUpdated e)
+        private void Apply([NotNull] PhotoHashUpdated e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             if (photoHashes.ContainsKey(e.HashIdentifier))
                 photoHashes[e.HashIdentifier] = e.Hash.ToArray();
             else
@@ -176,26 +183,34 @@
         }
 
         [UsedImplicitly]
-        private void Apply(PhotoHashCleared e)
+        private void Apply([NotNull] PhotoHashCleared e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             photoHashes.Remove(e.HashIdentifier);
         }
 
         [UsedImplicitly]
-        private void Apply(LocationClearedFromPhoto e)
+        private void Apply([NotNull] LocationClearedFromPhoto e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             location = null;
         }
 
         [UsedImplicitly]
-        private void Apply(LocationSetToPhoto e)
+        private void Apply([NotNull] LocationSetToPhoto e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             location = e.Location;
         }
 
         [UsedImplicitly]
-        private void Apply(PhotoCreated e)
+        private void Apply([NotNull] PhotoCreated e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             created = true;
             Id = e.Id;
             filename = e.FileName;
@@ -203,40 +218,44 @@
         }
 
         [UsedImplicitly]
-        private void Apply(PersonsAddedToPhoto e)
+        private void Apply([NotNull] PersonsAddedToPhoto e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             persons.AddRange(e.Persons);
         }
 
         [UsedImplicitly]
-        private void Apply(PersonsRemovedFromPhoto e)
+        private void Apply([NotNull] PersonsRemovedFromPhoto e)
         {
-            if (e.Persons == null)
-                return;
+            DebugGuard.NotNull(e, nameof(e));
 
             foreach (var t in e.Persons)
                 persons.Remove(t);
         }
 
         [UsedImplicitly]
-        private void Apply(TagsAddedToPhoto e)
+        private void Apply([NotNull] TagsAddedToPhoto e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             tags.AddRange(e.Tags ?? new string[0]);
         }
 
         [UsedImplicitly]
-        private void Apply(TagsRemovedFromPhoto e)
+        private void Apply([NotNull] TagsRemovedFromPhoto e)
         {
-            if (e.Tags == null)
-                return;
+            DebugGuard.NotNull(e, nameof(e));
 
             foreach (var t in e.Tags)
                 tags.Remove(t);
         }
 
         [UsedImplicitly]
-        private void Apply(DateTimeTakenChanged e)
+        private void Apply([NotNull] DateTimeTakenChanged e)
         {
+            DebugGuard.NotNull(e, nameof(e));
+
             dateTimeTaken = e.DateTimeTaken;
             dateTimeTakenPrecision = e.Precision;
         }

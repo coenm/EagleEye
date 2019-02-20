@@ -4,9 +4,7 @@
 
     using EagleEye.Core.DefaultImplementations;
     using EagleEye.TestHelper;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class SystemFileServiceTest

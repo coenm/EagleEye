@@ -2,6 +2,8 @@
 {
     using System;
 
+    using JetBrains.Annotations;
+
     public abstract class TagsEventBase : EventBase
     {
         internal TagsEventBase(Guid id, params string[] tags)
@@ -10,6 +12,7 @@
             Tags = tags;
         }
 
+        [NotNull]
         public string[] Tags { get; set; }
     }
 }

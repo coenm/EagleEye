@@ -3,9 +3,7 @@
     using System;
 
     using FluentAssertions;
-
     using SimpleInjector;
-
     using Xunit;
 
     public class StartupTest

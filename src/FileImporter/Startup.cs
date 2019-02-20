@@ -88,12 +88,6 @@
             registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
 
-        private static string GetUserDirectory()
-        {
-            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            return Path.Combine(userDir, "EagleEye");
-        }
-
         public static string CreateFullFilename([NotNull] string filename)
         {
             Guard.NotNullOrWhiteSpace(filename, nameof(filename));
@@ -135,6 +129,12 @@
             {
                 eagleEyeProcess.Stop();
             }
+        }
+
+        private static string GetUserDirectory()
+        {
+            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return Path.Combine(userDir, "EagleEye");
         }
 
         private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, string connectionStringHangFire)

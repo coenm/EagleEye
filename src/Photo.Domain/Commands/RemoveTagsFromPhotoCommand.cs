@@ -3,7 +3,6 @@
     using System;
 
     using EagleEye.Photo.Domain.Commands.Base;
-
     using JetBrains.Annotations;
 
     [PublicAPI]
