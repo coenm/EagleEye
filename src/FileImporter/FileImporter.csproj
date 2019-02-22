@@ -49,7 +49,6 @@
     <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.Similarity\Photo.ReadModel.Similarity.csproj" />
-    <ProjectReference Include="..\Picasa\Picasa.csproj" />
   </ItemGroup>
 
 </Project>

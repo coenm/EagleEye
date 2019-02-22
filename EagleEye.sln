@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuceneNet.Test", "tests\Luc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExifToolWrapper", "src\ExifToolWrapper\ExifToolWrapper.csproj", "{34632040-7AF4-4A39-A10D-91DEF204BB4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Picasa", "src\Picasa\Picasa.csproj", "{C084E7AB-DA0D-485A-ACDE-53D3966BA0A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.Picasa", "src\EagleEye.Plugin.Picasa\EagleEye.Plugin.Picasa.csproj", "{C084E7AB-DA0D-485A-ACDE-53D3966BA0A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Picasa.Test", "tests\Picasa.Test\Picasa.Test.csproj", "{2610322E-3632-48E1-B51D-DAC9297156B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.Picasa.Test", "tests\EagleEye.Plugin.Picasa.Test\EagleEye.Plugin.Picasa.Test.csproj", "{2610322E-3632-48E1-B51D-DAC9297156B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{863E4047-13FE-4924-AFDB-DA88661679B4}"
 EndProject

@@ -6,7 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Picasa.Picasa;
     using FakeItEasy;

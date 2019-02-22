@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Picasa\Picasa.csproj" />
+    <ProjectReference Include="..\..\src\EagleEye.Plugin.Picasa\EagleEye.Plugin.Picasa.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
