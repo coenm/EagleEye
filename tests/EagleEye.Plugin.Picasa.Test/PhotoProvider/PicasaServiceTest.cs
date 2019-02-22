@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Picasa.Test
+﻿namespace EagleEye.Picasa.Test.PhotoProvider
 {
     using System;
     using System.Collections.Generic;
@@ -7,10 +7,15 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.Core;
+    using EagleEye.Picasa.PhotoProvider;
     using EagleEye.Picasa.Picasa;
+
     using FakeItEasy;
+
     using FluentAssertions;
+
     using JetBrains.Annotations;
+
     using Xunit;
 
     public class PicasaServiceTest : IDisposable

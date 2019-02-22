@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Picasa
+﻿namespace EagleEye.Picasa.PhotoProvider
 {
     using System;
     using System.Threading.Tasks;
@@ -6,7 +6,7 @@
     using EagleEye.Picasa.Picasa;
     using JetBrains.Annotations;
 
-    public interface IPicasaService : IDisposable
+    internal interface IPicasaService : IDisposable
     {
         bool CanProvideData([NotNull] string filename);
 

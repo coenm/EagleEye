@@ -1,11 +1,15 @@
-﻿namespace EagleEye.Picasa.Test
+﻿namespace EagleEye.Picasa.Test.PhotoProvider
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using EagleEye.Picasa.PhotoProvider;
     using EagleEye.Picasa.Picasa;
+
     using FakeItEasy;
+
     using FluentAssertions;
+
     using Xunit;
 
     public class PicasaPersonProviderTest

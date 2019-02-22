@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Picasa
+﻿namespace EagleEye.Picasa.PhotoProvider
 {
     using System;
     using System.Collections.Concurrent;
@@ -7,12 +7,11 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Picasa.Picasa;
     using JetBrains.Annotations;
 
-    public class PicasaService : IPicasaService
+    internal class PicasaService : IPicasaService
     {
         private static readonly string[] PicasaFileNames = { ".picasa.ini", "Picasa.ini" };
         private readonly IFileService fileService;

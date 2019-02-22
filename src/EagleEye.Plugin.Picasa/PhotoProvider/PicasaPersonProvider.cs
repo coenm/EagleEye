@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Picasa
+﻿namespace EagleEye.Picasa.PhotoProvider
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -7,7 +7,7 @@
     using Helpers.Guards;
     using JetBrains.Annotations;
 
-    public class PicasaPersonProvider : IPhotoPersonProvider
+    internal class PicasaPersonProvider : IPhotoPersonProvider
     {
         private readonly IPicasaService picasaService;
 
