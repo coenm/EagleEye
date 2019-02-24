@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.PhotoProvider
 {
     using System;
     using System.Globalization;
@@ -10,7 +10,7 @@
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolGpsProvider : IPhotoLocationProvider
+    internal class ExifToolGpsProvider : IPhotoLocationProvider
     {
         private readonly IExifTool exiftool;
         private readonly NumberFormatInfo numberFormat;

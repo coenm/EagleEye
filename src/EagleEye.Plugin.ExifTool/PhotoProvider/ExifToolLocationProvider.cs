@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.PhotoProvider
 {
     using System.Threading.Tasks;
 
@@ -8,7 +8,7 @@
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolLocationProvider : IPhotoLocationProvider
+    internal class ExifToolLocationProvider : IPhotoLocationProvider
     {
         private readonly IExifTool exiftool;
 

@@ -3,15 +3,11 @@
     using System;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.ExifTool;
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolCacheDecoratorTest : IDisposable

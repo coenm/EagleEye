@@ -5,15 +5,19 @@
     using System.Threading.Tasks;
 
     using EagleEye.ExifTool.ExifTool;
+    using Helpers.Guards;
+    using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolAdapter : IExifTool
+    internal class ExifToolAdapter : IExifTool
     {
         private readonly OpenedExifTool exiftoolImpl;
 
-        public ExifToolAdapter(string exiftoolExecutable)
+        public ExifToolAdapter([NotNull] string exiftoolExecutable)
         {
+            Guard.NotNull(exiftoolExecutable, nameof(exiftoolExecutable));
+
             exiftoolImpl = new OpenedExifTool(exiftoolExecutable);
             exiftoolImpl.Init();
         }

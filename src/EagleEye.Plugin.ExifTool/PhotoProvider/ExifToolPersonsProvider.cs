@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.PhotoProvider
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -9,7 +9,7 @@
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolPersonsProvider : IPhotoPersonProvider
+    internal class ExifToolPersonsProvider : IPhotoPersonProvider
     {
         private readonly IExifTool exiftool;
         private readonly Dictionary<string, string> headers;

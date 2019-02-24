@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.PhotoProvider
 {
     using System;
     using System.Collections.Generic;
@@ -7,12 +7,12 @@
 
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using EagleEye.ExifTool.MediaInformationProviders.Parsing;
+    using EagleEye.ExifTool.PhotoProvider.Parsing;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    public class ExifToolDateTakenProvider : IPhotoDateTimeTakenProvider
+    internal class ExifToolDateTakenProvider : IPhotoDateTimeTakenProvider
     {
         private static readonly List<MetadataHeaderKeyPair> Keys = new List<MetadataHeaderKeyPair>
         {

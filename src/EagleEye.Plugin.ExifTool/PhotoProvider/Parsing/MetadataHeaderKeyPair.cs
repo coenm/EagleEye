@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.MediaInformationProviders.Parsing
+﻿namespace EagleEye.ExifTool.PhotoProvider.Parsing
 {
     using Helpers.Guards;
     using JetBrains.Annotations;

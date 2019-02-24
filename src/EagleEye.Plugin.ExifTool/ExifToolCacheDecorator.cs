@@ -2,14 +2,14 @@
 {
     using System;
     using System.Threading.Tasks;
-    using EagleEye.Core.Interfaces.Core;
 
+    using EagleEye.Core.Interfaces.Core;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
     using Nito.AsyncEx;
 
-    public class ExifToolCacheDecorator : IExifTool
+    internal class ExifToolCacheDecorator : IExifTool
     {
         private readonly AsyncLock syncLock = new AsyncLock();
         private readonly IExifTool exiftool;

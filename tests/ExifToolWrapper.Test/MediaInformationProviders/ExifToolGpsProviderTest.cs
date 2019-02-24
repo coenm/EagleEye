@@ -5,7 +5,7 @@
 
     using EagleEye.Core.Data;
     using EagleEye.ExifTool;
-    using EagleEye.ExifTool.MediaInformationProviders;
+    using EagleEye.ExifTool.PhotoProvider;
     using FakeItEasy;
     using FluentAssertions;
     using Newtonsoft.Json;
