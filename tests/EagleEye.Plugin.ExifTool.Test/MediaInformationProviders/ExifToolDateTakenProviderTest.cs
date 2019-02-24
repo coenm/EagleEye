@@ -1,19 +1,15 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
 {
     using System;
     using System.Threading.Tasks;
 
-    using EagleEye.Core;
     using EagleEye.Core.Data;
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.PhotoProvider;
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class ExifToolDateTakenProviderTest

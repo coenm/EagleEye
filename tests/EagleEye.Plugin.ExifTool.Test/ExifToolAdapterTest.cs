@@ -1,9 +1,10 @@
-﻿namespace EagleEye.ExifToolWrapper.Test
+﻿namespace EagleEye.ExifTool.Test
 {
     using System;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
     using EagleEye.ExifTool;
     using EagleEye.TestHelper;
     using FluentAssertions;

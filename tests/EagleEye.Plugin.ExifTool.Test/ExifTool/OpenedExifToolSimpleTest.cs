@@ -1,14 +1,13 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
+﻿namespace EagleEye.ExifTool.Test.ExifTool
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
+
     using EagleEye.ExifTool.ExifTool;
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class OpenedExifToolSimpleTest

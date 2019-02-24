@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
 {
     using System;
     using System.Threading.Tasks;

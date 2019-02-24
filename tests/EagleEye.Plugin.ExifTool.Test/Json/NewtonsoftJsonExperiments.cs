@@ -1,12 +1,10 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.Json
+﻿namespace EagleEye.ExifTool.Test.Json
 {
     using EagleEye.ExifTool;
     using EagleEye.TestHelper.XUnit.Facts;
     using FluentAssertions;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
     using Xunit;
 
     public class NewtonsoftJsonExperiments

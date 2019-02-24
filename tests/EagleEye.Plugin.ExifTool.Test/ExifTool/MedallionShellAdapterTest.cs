@@ -1,14 +1,14 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
+﻿namespace EagleEye.ExifTool.Test.ExifTool
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using EagleEye.ExifTool.ExifTool;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
-
     using Xunit;
     using Xunit.Abstractions;
 

@@ -1,9 +1,9 @@
-﻿namespace EagleEye.ExifToolWrapper.Test
+﻿namespace EagleEye.ExifTool.Test
 {
     using System;
     using System.Threading.Tasks;
-
     using EagleEye.Core.Interfaces.Core;
+
     using EagleEye.ExifTool;
     using FakeItEasy;
     using FluentAssertions;

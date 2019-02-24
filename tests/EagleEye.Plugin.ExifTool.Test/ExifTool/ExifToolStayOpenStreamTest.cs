@@ -1,14 +1,14 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
+﻿namespace EagleEye.ExifTool.Test.ExifTool
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
+
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.ExifTool;
     using FluentAssertions;
-
     using Xunit;
 
     public class ExifToolStayOpenStreamTest : IDisposable

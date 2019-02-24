@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.BufferBlockExperiments
+﻿namespace EagleEye.ExifTool.Test.BufferBlockExperiments
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,6 @@
     using System.Threading.Tasks.Dataflow;
 
     using FluentAssertions;
-
     using Xunit;
     using Xunit.Categories;
 

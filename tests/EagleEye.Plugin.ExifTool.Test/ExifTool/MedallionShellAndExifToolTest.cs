@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
+﻿namespace EagleEye.ExifTool.Test.ExifTool
 {
     using System;
     using System.Collections.Generic;

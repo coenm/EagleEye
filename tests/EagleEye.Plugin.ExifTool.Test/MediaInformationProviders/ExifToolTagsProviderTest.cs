@@ -1,8 +1,9 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.PhotoProvider;
     using FakeItEasy;

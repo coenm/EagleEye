@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.Test.ExifTool
+﻿namespace EagleEye.ExifTool.Test.ExifTool
 {
     using System;
     using System.Diagnostics;
@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+
     using EagleEye.ExifTool.ExifTool;
     using EagleEye.TestHelper;
     using EagleEye.TestHelper.XUnit;
