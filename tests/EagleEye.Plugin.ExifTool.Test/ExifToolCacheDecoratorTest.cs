@@ -2,8 +2,8 @@
 {
     using System;
     using System.Threading.Tasks;
-    using EagleEye.Core.Interfaces.Core;
 
+    using EagleEye.Core.Interfaces.Core;
     using EagleEye.ExifTool;
     using FakeItEasy;
     using FluentAssertions;
