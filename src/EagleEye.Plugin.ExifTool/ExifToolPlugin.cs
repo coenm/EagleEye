@@ -7,6 +7,7 @@
     using JetBrains.Annotations;
     using SimpleInjector;
 
+    [UsedImplicitly]
     internal class ExifToolPlugin : IEagleEyePlugin
     {
         public string Name => nameof(ExifToolPlugin);
