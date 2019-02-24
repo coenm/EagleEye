@@ -22,6 +22,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
+    <PackageReference Include="MedallionShell" Version="1.5.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="NLog" Version="4.5.11" />
     <PackageReference Include="SimpleInjector" Version="4.4.3" />
     <PackageReference Include="SimpleInjector.Packaging" Version="4.4.3" />
@@ -33,7 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\ExifToolWrapper\ExifToolWrapper.csproj" />
   </ItemGroup>
 
   <ItemGroup>

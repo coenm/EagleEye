@@ -61,7 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ExifToolWrapper\ExifToolWrapper.csproj" />
+    <ProjectReference Include="..\..\src\EagleEye.Plugin.ExifTool\EagleEye.Plugin.ExifTool.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
