@@ -5,7 +5,7 @@
 
     using JetBrains.Annotations;
 
-    public static class ExifToolExecutable
+    internal static class ExifToolExecutable
     {
         private const string WindowsEol = "\r\n";
 

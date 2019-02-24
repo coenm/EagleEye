@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\ExifToolWrapper\ExifToolWrapper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
