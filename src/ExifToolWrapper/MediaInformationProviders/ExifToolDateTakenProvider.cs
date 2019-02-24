@@ -1,6 +1,4 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ExifToolWrapper.Test")]
-
-namespace EagleEye.ExifToolWrapper.MediaInformationProviders
+﻿namespace EagleEye.ExifToolWrapper.MediaInformationProviders
 {
     using System;
     using System.Collections.Generic;
