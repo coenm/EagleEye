@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.ExifTool
+﻿namespace EagleEye.ExifTool.ExifTool
 {
     using System;
     using System.Collections.Concurrent;

@@ -5,7 +5,7 @@
 
     using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Core;
-
+    using EagleEye.ExifTool;
     using FakeItEasy;
 
     using FluentAssertions;

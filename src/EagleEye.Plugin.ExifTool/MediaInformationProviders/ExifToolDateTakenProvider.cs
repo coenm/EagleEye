@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.MediaInformationProviders
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
 
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using EagleEye.ExifToolWrapper.MediaInformationProviders.Parsing;
+    using EagleEye.ExifTool.MediaInformationProviders.Parsing;
     using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;

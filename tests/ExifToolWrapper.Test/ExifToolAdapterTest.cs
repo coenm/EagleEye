@@ -4,7 +4,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-
+    using EagleEye.ExifTool;
     using EagleEye.TestHelper;
     using FluentAssertions;
     using Newtonsoft.Json.Linq;

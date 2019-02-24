@@ -1,9 +1,7 @@
-﻿namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifTool
 {
     using System;
     using System.Threading.Tasks;
-
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Core;
 
     using Helpers.Guards;

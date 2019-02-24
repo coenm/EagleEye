@@ -20,7 +20,7 @@
 
         private static string GetExifToolExecutable()
         {
-            var osFilename = ExifToolWrapper.ExifToolExecutable.GetExecutableName();
+            var osFilename = EagleEye.ExifTool.ExifToolExecutable.GetExecutableName();
 
             // first try to grab local Exiftool, otherwise assume global exiftool
             var fullFilename = TestEnvironment.GetFullPath("tools", osFilename);

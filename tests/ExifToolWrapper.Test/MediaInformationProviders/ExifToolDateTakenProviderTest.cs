@@ -5,8 +5,8 @@
 
     using EagleEye.Core;
     using EagleEye.Core.Data;
-    using EagleEye.ExifToolWrapper.MediaInformationProviders;
-
+    using EagleEye.ExifTool;
+    using EagleEye.ExifTool.MediaInformationProviders;
     using FakeItEasy;
 
     using FluentAssertions;

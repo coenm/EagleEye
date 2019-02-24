@@ -5,9 +5,8 @@
     using System.IO;
     using System.Linq;
     using System.Text;
-
-    using EagleEye.ExifToolWrapper.ExifTool;
-
+    using EagleEye.ExifTool;
+    using EagleEye.ExifTool.ExifTool;
     using FluentAssertions;
 
     using Xunit;

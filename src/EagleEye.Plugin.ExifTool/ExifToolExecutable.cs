@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifTool
 {
     using System.Runtime.InteropServices;
     using System.Text;

@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.ExifToolWrapper.Test.Json
 {
+    using EagleEye.ExifTool;
     using EagleEye.TestHelper.XUnit.Facts;
     using FluentAssertions;
 

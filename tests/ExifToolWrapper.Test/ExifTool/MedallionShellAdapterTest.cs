@@ -5,8 +5,7 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-
-    using EagleEye.ExifToolWrapper.ExifTool;
+    using EagleEye.ExifTool.ExifTool;
     using EagleEye.TestHelper.XUnit;
     using FluentAssertions;
 

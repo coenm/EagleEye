@@ -1,10 +1,10 @@
-﻿namespace EagleEye.ExifToolWrapper
+﻿namespace EagleEye.ExifTool
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.ExifToolWrapper.ExifTool;
+    using EagleEye.ExifTool.ExifTool;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 

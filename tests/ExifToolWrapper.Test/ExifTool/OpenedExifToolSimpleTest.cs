@@ -4,9 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
-
-    using EagleEye.ExifToolWrapper.ExifTool;
-
+    using EagleEye.ExifTool.ExifTool;
     using FakeItEasy;
 
     using FluentAssertions;

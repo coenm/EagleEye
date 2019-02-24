@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifToolWrapper.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.MediaInformationProviders
 {
     using System;
     using System.Globalization;
