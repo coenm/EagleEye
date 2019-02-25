@@ -30,9 +30,7 @@
             DebugGuard.NotNull(message, nameof(message));
             Guard.NotNull(message.Persons, nameof(message.Persons));
 
-            var storedItem = photoIndex.Search(message.Id) as Photo;
-
-            if (storedItem == null)
+            if (!(photoIndex.Search(message.Id) is Photo storedItem))
                 return;
 
             storedItem.Version = message.Version;

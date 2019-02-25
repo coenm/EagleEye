@@ -6,7 +6,6 @@
 
     using EagleEye.FileImporter.Indexing;
     using EagleEye.TestHelper;
-
     using Xunit;
 
     public class EverythingTest
