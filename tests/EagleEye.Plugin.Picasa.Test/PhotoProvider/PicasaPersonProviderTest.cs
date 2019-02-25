@@ -5,11 +5,8 @@
 
     using EagleEye.Picasa.PhotoProvider;
     using EagleEye.Picasa.Picasa;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class PicasaPersonProviderTest
