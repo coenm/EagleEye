@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.ExifTool;
     using EagleEye.TestHelper;
