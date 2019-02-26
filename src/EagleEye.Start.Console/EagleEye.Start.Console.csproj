@@ -24,6 +24,11 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Costura.Fody" Version="3.3.2" />
+    <PackageReference Include="Fody" Version="4.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
     <PackageReference Include="NLog" Version="4.5.11" />
     <PackageReference Include="SimpleInjector" Version="4.4.3" />
@@ -36,6 +41,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\EagleEye.Plugin.DirectoryStructure\EagleEye.Plugin.DirectoryStructure.csproj" />
+    <ProjectReference Include="..\EagleEye.Plugin.ExifTool\EagleEye.Plugin.ExifTool.csproj" />
+    <ProjectReference Include="..\EagleEye.Plugin.Picasa\EagleEye.Plugin.Picasa.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
