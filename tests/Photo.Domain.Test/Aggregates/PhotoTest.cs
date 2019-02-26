@@ -86,7 +86,6 @@
             act.Should().Throw<ArgumentException>();
         }
 
-
         [Fact]
         public void AddPersons_ShouldDoNothing_WhenNoValueProvided()
         {
