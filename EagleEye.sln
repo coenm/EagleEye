@@ -69,6 +69,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.DirectorySt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.DirectoryStructure.Test", "tests\EagleEye.Plugin.DirectoryStructure.Test\EagleEye.Plugin.DirectoryStructure.Test.csproj", "{C296504E-3002-445B-910D-FC261CF44CC7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Start.Console", "src\EagleEye.Start.Console\EagleEye.Start.Console.csproj", "{6CB5B567-1D62-4C8D-9610-306E87503885}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{C296504E-3002-445B-910D-FC261CF44CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C296504E-3002-445B-910D-FC261CF44CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C296504E-3002-445B-910D-FC261CF44CC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CB5B567-1D62-4C8D-9610-306E87503885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CB5B567-1D62-4C8D-9610-306E87503885}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB5B567-1D62-4C8D-9610-306E87503885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CB5B567-1D62-4C8D-9610-306E87503885}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
