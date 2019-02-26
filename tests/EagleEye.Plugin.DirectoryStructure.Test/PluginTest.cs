@@ -37,9 +37,8 @@
             var plugins = container.GetAllInstances<IEagleEyePlugin>().ToArray();
 
             // assert
-            assemblies.Should().HaveCount(1);
-            plugins.Should().HaveCount(1);
-            plugins.Single().Should().BeOfType<DirectoryStructurePlugin>();
+            assemblies.Should().ContainSingle();
+            plugins.Should().ContainSingle().Which.Should().BeOfType<DirectoryStructurePlugin>();
         }
     }
 }

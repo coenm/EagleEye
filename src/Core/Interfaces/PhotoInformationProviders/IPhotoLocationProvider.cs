@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Core.Interfaces.PhotoInformationProviders
 {
     using System.Threading.Tasks;
+
     using EagleEye.Core.Data;
     using JetBrains.Annotations;
 
