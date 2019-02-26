@@ -97,7 +97,7 @@
 
             while (queue.Count > 0)
             {
-                _ = await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
+                await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
             }
 
             // assert
@@ -120,7 +120,7 @@
 
             while (queue.Count > 0)
             {
-                _ = await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
+                await queue.ReceiveAsync(CancellationToken.None).ConfigureAwait(false);
             }
 
             // assert

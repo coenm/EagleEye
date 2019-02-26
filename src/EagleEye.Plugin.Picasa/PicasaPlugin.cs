@@ -7,9 +7,10 @@
     using JetBrains.Annotations;
     using SimpleInjector;
 
+    [UsedImplicitly]
     internal class PicasaPlugin : IEagleEyePlugin
     {
-        public string Name => "PicasaPlugin";
+        public string Name => nameof(PicasaPlugin);
 
         public void EnablePlugin([NotNull] Container container)
         {

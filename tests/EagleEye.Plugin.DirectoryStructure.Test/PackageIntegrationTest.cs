@@ -10,11 +10,11 @@
     using SimpleInjector;
     using Xunit;
 
-    public class PluginTest
+    public class PackageIntegrationTest
     {
         private readonly Container container;
 
-        public PluginTest()
+        public PackageIntegrationTest()
         {
             container = new Container();
         }
