@@ -203,5 +203,78 @@
             // assert
             result.Should().Be(expectedResult);
         }
+
+        [Theory]
+        [ClassData(typeof(TimestampVersusTimestampExpectation))]
+        public void Equals_ShouldActAsValueObject_WhenComparedToTimestamp(Timestamp timestamp1, Timestamp timestamp2, bool expectedResult, string reason)
+        {
+            // arrange
+
+            // act
+            var result = timestamp1.Equals(timestamp2);
+
+            // assert
+            result.Should().Be(expectedResult, reason);
+        }
+
+        [Theory]
+        [ClassData(typeof(TimestampVersusTimestampExpectation))]
+        public void Equals_ShouldActAsValueObject_WhenComparedToObject(Timestamp timestamp1, Timestamp timestamp2, bool expectedResult, string reason)
+        {
+            // arrange
+
+            // act
+            var result = timestamp1.Equals((object)timestamp2);
+
+            // assert
+            result.Should().Be(expectedResult, reason);
+        }
+
+        [Theory]
+        [InlineData(null, "null should not be equal to Timestamp.")]
+        [InlineData("not a timestamp", "Other type of object should not be equal to Timestamp.")]
+        public void Equals_ShouldReturnFalse_WhenComparedToSomethingElseThanTimestampObject(object timestamp2, string reason)
+        {
+            // arrange
+            var timestamp1 = new Timestamp(2000);
+
+            // act
+            var result = timestamp1.Equals(timestamp2);
+
+            // assert
+            result.Should().BeFalse(reason);
+        }
+
+        [Theory]
+        [ClassData(typeof(TimestampVersusTimestampExpectation))]
+        public void GetHashCode_ShouldActAsValueObject(Timestamp timestamp1, Timestamp timestamp2, bool expectedResult, string reason)
+        {
+            // arrange
+
+            // act
+            var hashCode1 = timestamp1.GetHashCode();
+            var hashCode2 = timestamp2.GetHashCode();
+
+            // assert
+            (hashCode1 == hashCode2).Should().Be(expectedResult, reason);
+        }
+
+        private class TimestampVersusTimestampExpectation : TheoryData<Timestamp, Timestamp, bool, string>
+        {
+            public TimestampVersusTimestampExpectation()
+            {
+                var timestampYear1999 = new Timestamp(1999);
+                var timestampYear2000 = new Timestamp(2000);
+                var timestampMonth200002 = new Timestamp(2000, 02);
+
+                Add(timestampYear2000, timestampYear2000, true, "Same object should be equal (reference equal).");
+
+                Add(timestampYear2000, new Timestamp(2000), true, "Value objects are the same (same year).");
+                Add(timestampYear2000, timestampYear1999, false, "Value objects have different year.");
+                Add(timestampYear2000, timestampMonth200002, false, "Value objects have same year but different month.");
+
+                Add(timestampMonth200002, new Timestamp(2000, 02), true, "Value objects are the same (same year and month)");
+            }
+        }
     }
 }

@@ -137,7 +137,7 @@
             return Path.Combine(userDir, "EagleEye");
         }
 
-        private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, string connectionStringHangFire)
+        private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
             DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));

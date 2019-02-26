@@ -2,6 +2,9 @@
 {
     using System;
 
+    using Helpers.Guards;
+    using JetBrains.Annotations;
+
     public class Timestamp
     {
         public Timestamp(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
@@ -70,7 +73,7 @@
 
         public TimestampPrecision Precision { get; }
 
-        public static Timestamp FromDateTime(DateTime value)
+        public static Timestamp FromDateTime([NotNull] DateTime value)
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
@@ -99,12 +102,13 @@
             }
         }
 
-        public bool Equals(Timestamp other)
+        public bool Equals([NotNull] Timestamp other)
         {
+            Guard.NotNull(other, nameof(other));
             return Value.Equals(other.Value) && Precision == other.Precision;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals([CanBeNull] object obj)
         {
             if (ReferenceEquals(null, obj))
                 return false;
@@ -112,7 +116,7 @@
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-            return Equals((Timestamp) obj);
+            return Equals((Timestamp)obj);
         }
 
         public override int GetHashCode()
