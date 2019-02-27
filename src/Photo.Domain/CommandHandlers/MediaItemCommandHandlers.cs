@@ -102,7 +102,7 @@
         public async Task Handle(UpdatePhotoHashCommand message, CancellationToken token = new CancellationToken())
         {
             var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
-            item.UpdatePhotoHash(message.HashIdentifier, message.FileHash);
+            item.UpdatePhotoHash(message.HashIdentifier, message.PhotoHash);
             await session.Commit(token).ConfigureAwait(false);
         }
 

@@ -3,9 +3,10 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using EagleEye.Core.Data;
     using JetBrains.Annotations;
 
-    public interface IPhotoTagProvider
+    public interface IPhotoHashProvider
     {
         string Name { get; }
 
@@ -13,6 +14,6 @@
 
         bool CanProvideInformation([NotNull] string filename);
 
-        Task<List<string>> ProvideAsync([NotNull] string filename, [CanBeNull] List<string> previousResult);
+        Task<List<PhotoHash>> ProvideAsync([NotNull] string filename, [CanBeNull] List<PhotoHash> previousResult);
     }
 }

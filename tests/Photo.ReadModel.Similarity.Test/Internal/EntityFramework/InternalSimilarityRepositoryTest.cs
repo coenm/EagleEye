@@ -38,9 +38,9 @@
 
                 ctx.HashIdentifiers.AddRange(hashIdentifier1, hashIdentifier2, hashIdentifier3);
 
-                photoHash11 = CreatePhotoHash(guid1, hashIdentifier1, new byte[1], 2);
-                photoHash12 = CreatePhotoHash(guid2, hashIdentifier1, new byte[2], 4);
-                photoHash21 = CreatePhotoHash(guid1, hashIdentifier2, new byte[3], 6);
+                photoHash11 = CreatePhotoHash(guid1, hashIdentifier1, 1, 2);
+                photoHash12 = CreatePhotoHash(guid2, hashIdentifier1, 2, 4);
+                photoHash21 = CreatePhotoHash(guid1, hashIdentifier2, 3, 6);
 
                 ctx.PhotoHashes.AddRange(photoHash11, photoHash12, photoHash21);
                 ctx.SaveChanges();
@@ -76,7 +76,7 @@
         }
 
         [DebuggerStepThrough]
-        private static PhotoHash CreatePhotoHash(Guid guid, HashIdentifiers hashIdentifier, byte[] hash, int version)
+        private static PhotoHash CreatePhotoHash(Guid guid, HashIdentifiers hashIdentifier, ulong hash, int version)
         {
             return new PhotoHash
             {

@@ -7,7 +7,7 @@
     internal class PhotoHash : VersionedItemBase
     {
         [Required]
-        public byte[] Hash { get; set; }
+        public ulong Hash { get; set; }
 
         [Required] // foreign key
         public int HashIdentifiersId { get; set; }

@@ -11,7 +11,6 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
-    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using FakeItEasy;
     using FluentAssertions;
@@ -59,7 +58,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = new byte[0];
+            ulong hashValue = 16;
 
             // act
             await sut.Handle(CreatePhotoHashUpdatedEvent(guid, HashAlgorithm1, hashValue, Version, timestamp), CancellationToken.None);
@@ -94,7 +93,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = new byte[] { 0x12 };
+            var hashValue = (ulong)12;
 
             var alreadyExistingHashIdentifier = CreateHashIdentifiers(1, HashAlgorithm1);
 
@@ -106,7 +105,7 @@
                 {
                     Id = guid,
                     HashIdentifier = alreadyExistingHashIdentifier,
-                    Hash = new byte[0],
+                    Hash = 0,
                     HashIdentifiersId = 1,
                     Version = Version,
                 });
@@ -178,9 +177,9 @@
 
             var hashIdentifier1 = CreateHashIdentifiers(1, HashAlgorithm1);
             var hashIdentifier2 = CreateHashIdentifiers(2, HashAlgorithm2);
-            var photoHash11 = CreatePhotoHash(guid1, hashIdentifier1, new byte[1], 2);
-            var photoHash12 = CreatePhotoHash(guid2, hashIdentifier1, new byte[2], 4);
-            var photoHash21 = CreatePhotoHash(guid1, hashIdentifier2, new byte[3], 6);
+            var photoHash11 = CreatePhotoHash(guid1, hashIdentifier1, 1, 2);
+            var photoHash12 = CreatePhotoHash(guid2, hashIdentifier1, 2, 4);
+            var photoHash21 = CreatePhotoHash(guid1, hashIdentifier2, 3, 6);
 
             using (var ctx = contextFactory.CreateDbContext())
             {
@@ -212,7 +211,7 @@
         }
 
         [DebuggerStepThrough]
-        private static PhotoHash CreatePhotoHash(Guid guid, HashIdentifiers hashIdentifier, byte[] hash, int version)
+        private static PhotoHash CreatePhotoHash(Guid guid, HashIdentifiers hashIdentifier, ulong hash, int version)
         {
             return new PhotoHash
             {
@@ -235,7 +234,7 @@
         }
 
         [DebuggerStepThrough]
-        private static PhotoHashUpdated CreatePhotoHashUpdatedEvent(Guid guid, string hashAlgorithm, byte[] hashValue, int version, DateTimeOffset timestamp)
+        private static PhotoHashUpdated CreatePhotoHashUpdatedEvent(Guid guid, string hashAlgorithm, ulong hashValue, int version, DateTimeOffset timestamp)
         {
             return new PhotoHashUpdated(guid, hashAlgorithm, hashValue)
             {

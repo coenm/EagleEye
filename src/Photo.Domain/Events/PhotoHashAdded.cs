@@ -5,10 +5,10 @@
 
     using EagleEye.Photo.Domain.Events.Base;
 
-    public class PhotoHashUpdated : EventBase
+    public class PhotoHashAdded : EventBase
     {
         [DebuggerStepThrough]
-        public PhotoHashUpdated(Guid id, string hashIdentifier, ulong hash)
+        public PhotoHashAdded(Guid id, string hashIdentifier, ulong hash)
         {
             Id = id;
             HashIdentifier = hashIdentifier;

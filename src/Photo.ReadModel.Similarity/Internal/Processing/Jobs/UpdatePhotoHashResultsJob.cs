@@ -51,13 +51,11 @@
                     .Where(item => item.Id != photoId)
                     .ToList();
 
-                var currentPhotoHashValue = GetUnsignedLongHashValue(currentItem.Hash);
+                var currentPhotoHashValue = currentItem.Hash;
 
                 foreach (var item in allPhotoHashes)
                 {
-                    var hashUnsignedLongPhotoB = GetUnsignedLongHashValue(item.Hash);
-
-                    // byte[] b = BitConverter.GetBytes(i);
+                    var hashUnsignedLongPhotoB = item.Hash;
 
                     var value = CoenM.ImageHash.CompareHash.Similarity(currentPhotoHashValue, hashUnsignedLongPhotoB);
 
@@ -96,19 +94,6 @@
                 // if saving goes wrong, then this Job will fail and re-scheduled.
                 db.SaveChanges();
             }
-        }
-
-        private ulong GetUnsignedLongHashValue([NotNull] byte[] hashValue)
-        {
-            DebugGuard.NotNull(hashValue, nameof(hashValue));
-            DebugGuard.MustBeEqualTo(hashValue.Length, 8, $"{nameof(hashValue)}.{nameof(hashValue.Length)}");
-
-            // If the system architecture is little-endian (that is, little end first),
-            // reverse the byte array.
-            // if (BitConverter.IsLittleEndian)
-            //     Array.Reverse(bytes);
-
-            return BitConverter.ToUInt64(hashValue, 0);
         }
     }
 }

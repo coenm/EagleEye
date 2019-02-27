@@ -12,7 +12,7 @@
     internal class Photo : AggregateRoot
     {
         private const int Sha256ByteSize = 256 / 8;
-        [NotNull] private readonly Dictionary<string, byte[]> photoHashes;
+        [NotNull] private readonly Dictionary<string, ulong> photoHashes;
         [NotNull] private readonly List<string> tags;
         [NotNull] private readonly List<string> persons;
         private DateTime? dateTimeTaken;
@@ -45,7 +45,7 @@
         {
             tags = new List<string>();
             persons = new List<string>();
-            photoHashes = new Dictionary<string, byte[]>();
+            photoHashes = new Dictionary<string, ulong>();
         }
 
         public IReadOnlyList<string> Persons => persons.AsReadOnly();
@@ -146,12 +146,13 @@
                 ApplyChange(new FileHashUpdated(Id, fileHash));
         }
 
-        public void UpdatePhotoHash([NotNull] string hashIdentifier, [NotNull] byte[] fileHash)
+        public void UpdatePhotoHash([NotNull] string hashIdentifier, ulong fileHash)
         {
             Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
-            Guard.NotNullOrEmpty(fileHash, nameof(fileHash));
 
-            if (!photoHashes.ContainsKey(hashIdentifier) || !photoHashes[hashIdentifier].SequenceEqual(fileHash))
+            if (!photoHashes.ContainsKey(hashIdentifier))
+                ApplyChange(new PhotoHashAdded(Id, hashIdentifier, fileHash));
+            else if (photoHashes[hashIdentifier] != fileHash)
                 ApplyChange(new PhotoHashUpdated(Id, hashIdentifier, fileHash));
         }
 
@@ -172,14 +173,19 @@
         }
 
         [UsedImplicitly]
+        private void Apply([NotNull] PhotoHashAdded e)
+        {
+            DebugGuard.NotNull(e, nameof(e));
+
+            photoHashes.Add(e.HashIdentifier, e.Hash);
+        }
+
+        [UsedImplicitly]
         private void Apply([NotNull] PhotoHashUpdated e)
         {
             DebugGuard.NotNull(e, nameof(e));
 
-            if (photoHashes.ContainsKey(e.HashIdentifier))
-                photoHashes[e.HashIdentifier] = e.Hash.ToArray();
-            else
-                photoHashes.Add(e.HashIdentifier, e.Hash.ToArray());
+            photoHashes[e.HashIdentifier] = e.Hash;
         }
 
         [UsedImplicitly]
