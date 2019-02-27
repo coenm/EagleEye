@@ -14,7 +14,6 @@
     using EagleEye.Photo.Domain.Services;
     using FakeItEasy;
     using FluentAssertions;
-
     using Xunit;
 
     public class DomainIntegrationTests

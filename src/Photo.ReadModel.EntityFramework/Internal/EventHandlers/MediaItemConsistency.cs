@@ -99,7 +99,7 @@
             if (!VersionsMatch(message.Version, photo.Version))
                 return;
 
-            if (message.Persons != null && message.Persons.Any())
+            if (message.Persons.Any())
             {
                 var origValues = photo.People?.Select(x => x.Value).ToList() ?? new List<string>();
 

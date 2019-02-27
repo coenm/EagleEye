@@ -7,6 +7,16 @@
 
     public class Timestamp
     {
+        /// <summary>
+        /// Construct a Timestamp.
+        /// </summary>
+        /// <param name="year">Year. Should be after christ.</param>
+        /// <param name="month">Month where January is month 1, and December is month 12.</param>
+        /// <param name="day">Days of the month, ranging from 1 to 31 with respect to the month (and year, when it is a leap year).</param>
+        /// <param name="hour">Hour, ranging from 0 till 23.</param>
+        /// <param name="minutes">Minutes, ranging from 0 till 59.</param>
+        /// <param name="seconds">Seconds, ranging from 0 till 59.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the arguments is out of range.</exception>
         public Timestamp(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
         {
             if (year < 0)

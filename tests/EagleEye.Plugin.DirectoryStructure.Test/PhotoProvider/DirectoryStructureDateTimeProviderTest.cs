@@ -1,11 +1,14 @@
 ﻿namespace EagleEye.DirectoryStructure.Test.PhotoProvider
 {
+    using System.Globalization;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Data;
     using EagleEye.DirectoryStructure.PhotoProvider;
     using FluentAssertions;
     using Xunit;
+    using Xunit.Categories;
 
     public class DirectoryStructureDateTimeProviderTest
     {
@@ -31,19 +34,6 @@
         }
 
         [Theory]
-        [ClassData(typeof(WrongFilenameTimestampExpectation))]
-        public void CanProvideInformation_ShouldReturnFalse(string filename)
-        {
-            // arrange
-
-            // act
-            var result = sut.CanProvideInformation(filename);
-
-            // assert
-            result.Should().BeFalse();
-        }
-
-        [Theory]
         [ClassData(typeof(CorrectFilenameTimestampExpectation))]
         public async Task ProvideAsync_ShouldReturnExpectedTimestamp(string filename, Timestamp expectedTimestamp)
         {
@@ -54,6 +44,58 @@
 
             // assert
             result.Should().Be(expectedTimestamp);
+        }
+
+        [Theory]
+        [Exploratory]
+        [InlineData("2000 -file.jpg", 2000, -1, -1)]
+        [InlineData("2000 file.jpg", 2000, -1, -1)]
+        [InlineData("2000-10 file.jpg", 2000, 10, -1)]
+        [InlineData("2000-10-31 file.jpg", 2000, 10, 31)]
+        [InlineData("2000-01-31 file.jpg", 2000, 01, 31)]
+        [InlineData("2000-1-31 file.jpg", 2000, 1, 31)]
+        [InlineData("2000-12.31 file.jpg", 2000, 12, -1)]
+        [InlineData("2000-12-311 file.jpg", 2000, 12, -1)]
+        [InlineData("2000-12-31.jpg", 2000, 12, 31)]
+        [InlineData("2000 12 31.jpg", 2000, 12, 31)]
+        public void ExperimentRegexDateTime(string filename, int expectedYear, int expectedMonth, int expectedDay)
+        {
+            var regex = new Regex(
+                @"^(?<year>19|20[\d]{2})((?<seperator>[\. -_])(?<month>0[1-9]{1}|1[012]|[1-9])(\k<seperator>(?<day>[12][\d]|3[01]|0[1-9]|[1-9]))?)?[^\d].*$",
+                RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline);
+
+            var result = regex.Match(filename);
+
+            var year = result.Groups["year"];
+            var month = result.Groups["month"];
+            var day = result.Groups["day"];
+
+            year.Success.Should().BeTrue();
+            year.Value.Should().Be(expectedYear.ToString());
+
+            if (expectedMonth == -1)
+            {
+                month.Success.Should().BeFalse();
+            }
+            else
+            {
+                month.Success.Should().BeTrue();
+                var couldParse = int.TryParse(month.Value, NumberStyles.None, new NumberFormatInfo(), out var monthValue);
+                couldParse.Should().BeTrue();
+                monthValue.Should().Be(expectedMonth);
+            }
+
+            if (expectedDay == -1)
+            {
+                day.Success.Should().BeFalse();
+            }
+            else
+            {
+                day.Success.Should().BeTrue();
+                var couldParse = int.TryParse(day.Value, NumberStyles.None, new NumberFormatInfo(), out var dayValue);
+                couldParse.Should().BeTrue();
+                dayValue.Should().Be(expectedDay);
+            }
         }
 
         private class CorrectFilenameTimestampExpectation : TheoryData<string, Timestamp>

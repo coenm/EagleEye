@@ -8,7 +8,6 @@
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using Hangfire;
     using Helpers.Guards;
@@ -104,7 +103,14 @@
 
         public Task Handle(PhotoHashAdded message, CancellationToken token = new CancellationToken())
         {
-            throw new System.NotImplementedException();
+            // no this is not okay.. todo coenm
+            return Handle(
+                new PhotoHashUpdated(message.Id, message.HashIdentifier, message.Hash)
+                {
+                    Version = message.Version,
+                    TimeStamp = message.TimeStamp,
+                },
+                token);
         }
     }
 }
