@@ -33,7 +33,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+  
+  <Import Project="..\..\Fody.props" /> 
+  
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />

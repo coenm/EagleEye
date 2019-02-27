@@ -34,6 +34,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <Import Project="..\..\Fody.props" />
+  
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>

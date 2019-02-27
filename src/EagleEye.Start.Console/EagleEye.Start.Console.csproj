@@ -34,8 +34,13 @@
     <PackageReference Include="System.Memory" Version="4.5.2" />
   </ItemGroup>
 
+  <Import Project="..\..\Fody.props" /> 
+  
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\EagleEye.Plugin.DirectoryStructure\EagleEye.Plugin.DirectoryStructure.csproj" />
+    <ProjectReference Include="..\EagleEye.Plugin.ExifTool\EagleEye.Plugin.ExifTool.csproj" />
+    <ProjectReference Include="..\EagleEye.Plugin.Picasa\EagleEye.Plugin.Picasa.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
