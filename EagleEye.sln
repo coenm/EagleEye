@@ -71,6 +71,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.DirectorySt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Start.Console", "src\EagleEye.Start.Console\EagleEye.Start.Console.csproj", "{6CB5B567-1D62-4C8D-9610-306E87503885}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.ImageHash", "src\EagleEye.Plugin.ImageHash\EagleEye.Plugin.ImageHash.csproj", "{D8D9479D-7A38-4783-A751-F7E9B68F5A8E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.ImageHash.Test", "tests\EagleEye.Plugin.ImageHash.Test\EagleEye.Plugin.ImageHash.Test.csproj", "{FC3EC46F-D01B-44F8-A422-049FCC466513}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,6 +181,14 @@ Global
 		{6CB5B567-1D62-4C8D-9610-306E87503885}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CB5B567-1D62-4C8D-9610-306E87503885}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CB5B567-1D62-4C8D-9610-306E87503885}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D9479D-7A38-4783-A751-F7E9B68F5A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D9479D-7A38-4783-A751-F7E9B68F5A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D9479D-7A38-4783-A751-F7E9B68F5A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D9479D-7A38-4783-A751-F7E9B68F5A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,6 +210,8 @@ Global
 		{99467D6C-2618-4960-84AF-7A9AEDC028FB} = {299AE50B-D262-4C21-A90A-F197FE9E9116}
 		{2CA82315-4571-4C06-8EC9-0E3D2694DC59} = {299AE50B-D262-4C21-A90A-F197FE9E9116}
 		{C296504E-3002-445B-910D-FC261CF44CC7} = {299AE50B-D262-4C21-A90A-F197FE9E9116}
+		{D8D9479D-7A38-4783-A751-F7E9B68F5A8E} = {299AE50B-D262-4C21-A90A-F197FE9E9116}
+		{FC3EC46F-D01B-44F8-A422-049FCC466513} = {299AE50B-D262-4C21-A90A-F197FE9E9116}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7C2606B-F2C8-4C33-8571-8D27AC814D68}
