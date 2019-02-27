@@ -16,6 +16,7 @@
         {
             Guard.NotNull(container, nameof(container));
 
+
             container.Collection.Append(typeof(IPhotoHashProvider), typeof(PhotoHashProvider));
         }
     }

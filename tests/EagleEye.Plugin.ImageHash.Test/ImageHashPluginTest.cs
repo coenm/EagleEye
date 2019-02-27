@@ -2,6 +2,8 @@
 {
     using System;
 
+    using EagleEye.Core.Interfaces.Core;
+    using FakeItEasy;
     using FluentAssertions;
     using SimpleInjector;
     using Xunit;
@@ -30,9 +32,23 @@
         }
 
         [Fact]
-        public void EnablePlugin()
+        public void EnablePlugin_ShouldThrowOnEmptyContainer()
         {
             // arrange
+
+            // act
+            sut.EnablePlugin(container);
+
+            // assert
+            Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);
+            assert.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void EnablePlugin_ShouldSucceedWhenDependenciesAreRegisteredInContainer()
+        {
+            // arrange
+            container.Register(A.Dummy<IFileService>, Lifestyle.Singleton);
 
             // act
             sut.EnablePlugin(container);
