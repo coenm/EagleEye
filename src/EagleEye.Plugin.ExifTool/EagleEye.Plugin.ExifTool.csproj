@@ -21,12 +21,6 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="3.3.2" />
-    <PackageReference Include="Fody" Version="4.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="FodyHelpers" Version="4.0.2" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
     <PackageReference Include="MedallionShell" Version="1.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
@@ -40,6 +34,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <Import Project="..\..\Fody.props" />
+  
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
