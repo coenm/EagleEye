@@ -9,18 +9,17 @@
     [PublicAPI]
     public class UpdatePhotoHashCommand : CommandBase
     {
-        public UpdatePhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier, [NotNull] byte[] fileHash)
+        public UpdatePhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier, ulong fileHash)
             : base(id, expectedVersion)
         {
             Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
-            Guard.NotNull(fileHash, nameof(fileHash));
 
             HashIdentifier = hashIdentifier;
-            FileHash = fileHash;
+            PhotoHash = fileHash;
         }
 
         public string HashIdentifier { get; set; }
 
-        public byte[] FileHash { get; }
+        public ulong PhotoHash { get; }
     }
 }

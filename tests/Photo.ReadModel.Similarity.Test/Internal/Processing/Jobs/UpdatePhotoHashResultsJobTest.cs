@@ -56,7 +56,7 @@
                 HashIdentifier = hashIdentifier,
                 HashIdentifiersId = hashIdentifier.Id,
                 Version = 1,
-                Hash = new byte[8],
+                Hash = 8,
             };
             A.CallTo(() => repository.GetPhotoHashByIdAndHashIdentifier(dbContext, photoGuid, hashIdentifier)).Returns(photoHash);
 

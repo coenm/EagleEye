@@ -17,7 +17,8 @@
     [UsedImplicitly]
     internal class SimilarityEventHandlers :
         ICancellableEventHandler<PhotoHashCleared>,
-        ICancellableEventHandler<PhotoHashUpdated>
+        ICancellableEventHandler<PhotoHashUpdated>,
+        ICancellableEventHandler<PhotoHashAdded>
     {
         [NotNull] private readonly IInternalStatelessSimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
@@ -99,6 +100,11 @@
             }
 
             hangFireClient.Enqueue<UpdatePhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
+        }
+
+        public Task Handle(PhotoHashAdded message, CancellationToken token = new CancellationToken())
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

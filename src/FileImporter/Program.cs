@@ -92,7 +92,7 @@
                 var commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
-                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", new byte[32]);
+                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", 324);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
 
 
@@ -102,9 +102,7 @@
                 commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
-                var hash = new byte[32];
-                hash[3] = 0x22;
-                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", hash);
+                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", 2343434);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
 
 
