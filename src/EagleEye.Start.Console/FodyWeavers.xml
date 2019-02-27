@@ -4,6 +4,7 @@
     <ExcludeAssemblies>
       EagleEye.Plugin.DirectoryStructure
       EagleEye.Plugin.ExifTool
+      EagleEye.Plugin.ImageHash
       EagleEye.Plugin.Picasa
     </ExcludeAssemblies>
   </Costura>
