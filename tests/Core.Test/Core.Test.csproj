@@ -45,6 +45,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.csproj" />
+    <ProjectReference Include="..\..\src\EagleEye.Plugin.DirectoryStructure\EagleEye.Plugin.DirectoryStructure.csproj" />
+    <ProjectReference Include="..\..\src\EagleEye.Plugin.ExifTool\EagleEye.Plugin.ExifTool.csproj" />
+    <ProjectReference Include="..\..\src\EagleEye.Plugin.ImageHash\EagleEye.Plugin.ImageHash.csproj" />
+    <ProjectReference Include="..\..\src\EagleEye.Plugin.Picasa\EagleEye.Plugin.Picasa.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
