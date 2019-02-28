@@ -93,7 +93,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = (ulong)12;
+            var hashValue = 12UL;
 
             var alreadyExistingHashIdentifier = CreateHashIdentifiers(1, HashAlgorithm1);
 
