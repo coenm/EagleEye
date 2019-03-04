@@ -37,9 +37,10 @@
             }
         }
 
-        public static void Bootstrap([NotNull] Container container, IEnumerable<IEagleEyePlugin> plugins)
+        public static void Bootstrap([NotNull] Container container, [NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
             Guard.NotNull(container, nameof(container));
+            Guard.NotNull(plugins, nameof(plugins));
 
             RegisterCore(container);
 
