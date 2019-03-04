@@ -76,6 +76,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.ImageHash",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Plugin.ImageHash.Test", "tests\EagleEye.Plugin.ImageHash.Test\EagleEye.Plugin.ImageHash.Test.csproj", "{FC3EC46F-D01B-44F8-A422-049FCC466513}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Bootstrap", "src\EagleEye.Bootstrap\EagleEye.Bootstrap.csproj", "{9AF1AD68-A9C3-4ACE-959F-2FDE8CACC4E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.Bootstrap.Test", "tests\EagleEye.Bootstrap.Test\EagleEye.Bootstrap.Test.csproj", "{BD2C0B35-AACC-493E-9A54-CE0A3D9C65EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +194,14 @@ Global
 		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC3EC46F-D01B-44F8-A422-049FCC466513}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AF1AD68-A9C3-4ACE-959F-2FDE8CACC4E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AF1AD68-A9C3-4ACE-959F-2FDE8CACC4E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AF1AD68-A9C3-4ACE-959F-2FDE8CACC4E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AF1AD68-A9C3-4ACE-959F-2FDE8CACC4E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD2C0B35-AACC-493E-9A54-CE0A3D9C65EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD2C0B35-AACC-493E-9A54-CE0A3D9C65EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD2C0B35-AACC-493E-9A54-CE0A3D9C65EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD2C0B35-AACC-493E-9A54-CE0A3D9C65EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

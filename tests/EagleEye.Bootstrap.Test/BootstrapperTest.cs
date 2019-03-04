@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.Test.Bootstrapper
+﻿namespace EagleEye.Bootstrap.Test
 {
     using System;
     using System.Linq;
@@ -8,7 +8,7 @@
     using SimpleInjector;
     using Xunit;
 
-    using Sut = EagleEye.Core.Bootstrapper.Bootstrapper;
+    using Sut = EagleEye.Bootstrap.Bootstrapper;
 
     public class BootstrapperTest
     {

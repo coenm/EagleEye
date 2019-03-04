@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Core.Bootstrapper
+﻿namespace EagleEye.Bootstrap
 {
     using System.Collections.Generic;
     using System.IO;
