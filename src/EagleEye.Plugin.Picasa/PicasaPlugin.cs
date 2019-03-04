@@ -16,7 +16,7 @@
         {
             Guard.NotNull(container, nameof(container));
 
-            container.Register<IPicasaService, PicasaService>();
+            container.Register<IPicasaService, PicasaService>(Lifestyle.Singleton);
             container.Collection.Append(typeof(IPhotoPersonProvider), typeof(PicasaPersonProvider));
         }
     }

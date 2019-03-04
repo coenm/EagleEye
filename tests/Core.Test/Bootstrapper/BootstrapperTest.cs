@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.Core.Test.Bootstrapper
 {
+    using System;
     using System.Linq;
 
     using FluentAssertions;
@@ -29,16 +30,17 @@
         }
 
         [Fact]
-        public void Bootstrap_ShouldNotThrow_WIP()
+        public void Bootstrap_ShouldNotThrow()
         {
             // arrange
+            var plugins = Sut.FindAvailablePlugins();
 
             // act
-            var plugins = Sut.FindAvailablePlugins();
             Sut.Bootstrap(Container, plugins);
+            Action act = () => Container.Verify(VerificationOption.VerifyAndDiagnose);
 
             // assert
-            Container.Verify(VerificationOption.VerifyAndDiagnose);
+            act.Should().NotThrow();
         }
     }
 }
