@@ -36,7 +36,7 @@
             var plugins = Sut.FindAvailablePlugins();
 
             // act
-            Sut.Bootstrap(Container, plugins);
+            Sut.Bootstrap(Container, "dummy base directory", plugins);
             Action act = () => Container.Verify(VerificationOption.VerifyAndDiagnose);
 
             // assert
