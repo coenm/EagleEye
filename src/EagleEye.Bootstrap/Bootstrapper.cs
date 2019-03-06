@@ -21,9 +21,16 @@
     using NLog;
     using SimpleInjector;
 
-    public static class Bootstrapper
+    public class Bootstrapper
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
+        [NotNull] private readonly Container container;
+
+        private Bootstrapper()
+        {
+            container = new Container();
+        }
 
         public static IEnumerable<IEagleEyePlugin> FindAvailablePlugins()
         {
@@ -43,27 +50,63 @@
             }
         }
 
-        public static void Bootstrap(
-            [NotNull] Container container,
+        public static Bootstrapper Initialize(
             [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
-            Guard.NotNull(container, nameof(container));
             Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
             Guard.NotNull(plugins, nameof(plugins));
 
-            RegisterCore(container, baseDirectory);
+            var bootstrapper = new Bootstrapper();
 
-            RegisterPlugins(container, plugins);
+            bootstrapper.RegisterCore(baseDirectory);
 
-            RegisterReadModels(container);
+            bootstrapper.RegisterPlugins(plugins);
 
-            // wip
+            return bootstrapper;
         }
 
-        private static void RegisterCore([NotNull] Container container, [NotNull] string baseDirectory)
+        public Container Finalize()
+        {
+            return container;
+        }
+
+        private void RegisterPhotoDomain()
         {
             DebugGuard.NotNull(container, nameof(container));
+
+            Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
+        }
+
+        public void RegisterSearchEngineReadModel([CanBeNull] string indexBaseDirectory)
+        {
+            Photo.ReadModel.SearchEngineLucene.Bootstrapper.BootstrapSearchEngineLuceneReadModel(
+                container,
+                string.IsNullOrWhiteSpace(indexBaseDirectory),
+                indexBaseDirectory);
+        }
+
+        public void RegisterSimilarityReadModel([NotNull] string connectionString, [NotNull] string connectionStringHangFire)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+
+            Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
+        }
+
+        public void RegisterPhotoDatabaseReadModel([CanBeNull] string connectionString)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+
+            Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
+                container,
+                connectionString);
+        }
+
+        private void RegisterCore([NotNull] string baseDirectory)
+        {
             DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
@@ -71,12 +114,13 @@
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
 
-            RegisterCqrsLite(container, baseDirectory);
+            RegisterCqrsLite(baseDirectory);
+
+            RegisterPhotoDomain();
         }
 
-        private static void RegisterCqrsLite([NotNull] Container container, [NotNull] string baseDirectory)
+        private void RegisterCqrsLite([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             container.Register<Router>(Lifestyle.Singleton);
@@ -100,14 +144,8 @@
             container.Register<ISession, Session>(Lifestyle.Singleton); // check.
         }
 
-        private static void RegisterReadModels([NotNull] Container container)
+        private void RegisterPlugins([NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
-            DebugGuard.NotNull(container, nameof(container));
-        }
-
-        private static void RegisterPlugins([NotNull] Container container, [NotNull] IEnumerable<IEagleEyePlugin> plugins)
-        {
-            DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNull(plugins, nameof(plugins));
 
             foreach (var plugin in plugins)

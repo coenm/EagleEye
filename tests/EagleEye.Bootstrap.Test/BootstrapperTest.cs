@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Bootstrap.Test
 {
     using System;
+    using System.IO;
     using System.Linq;
 
     using FluentAssertions;
@@ -12,8 +13,6 @@
 
     public class BootstrapperTest
     {
-        [NotNull] private static readonly Container Container = new Container();
-
         /// <summary>
         /// This test depends on the dependency projects.
         /// </summary>
@@ -33,11 +32,12 @@
         public void Bootstrap_ShouldNotThrow()
         {
             // arrange
+            var tempPath = Path.GetTempPath();
             var plugins = Sut.FindAvailablePlugins();
 
             // act
-            Sut.Bootstrap(Container, "dummy base directory", plugins);
-            Action act = () => Container.Verify(VerificationOption.VerifyAndDiagnose);
+            var container = Sut.Initialize(tempPath, plugins).Finalize();
+            Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
             // assert
             act.Should().NotThrow();
