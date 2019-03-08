@@ -26,6 +26,9 @@
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
         [NotNull] private readonly Container container;
+        private bool readModelSearchEngineEnabled;
+        private bool readModelSimilarityEnabled;
+        private bool readModelDatabaseEnabled;
 
         private Bootstrapper()
         {
@@ -68,41 +71,64 @@
 
         public Container Finalize()
         {
+            // make sure that the CqrsLite lib has knowledge how to create the event handlers.
+            // in the feature, this should be different.
+            var registrar = new RouteRegistrar(container);
+
+            registrar.RegisterHandlers(Photo.Domain.Bootstrapper.GetEventHandlerTypesPhotoDomain());
+
+            if (readModelSearchEngineEnabled)
+                registrar.RegisterHandlers(Photo.ReadModel.SearchEngineLucene.Bootstrapper.GetEventHandlerTypes());
+
+            if (readModelDatabaseEnabled)
+                registrar.RegisterHandlers(Photo.ReadModel.EntityFramework.Bootstrapper.GetEventHandlerTypes());
+
+            if (readModelSimilarityEnabled)
+                registrar.RegisterHandlers(Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
+
             return container;
-        }
-
-        private void RegisterPhotoDomain()
-        {
-            DebugGuard.NotNull(container, nameof(container));
-
-            Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
         public void RegisterSearchEngineReadModel([CanBeNull] string indexBaseDirectory)
         {
+            DebugGuard.NotNullOrWhiteSpace(indexBaseDirectory, nameof(indexBaseDirectory));
+
+            if (readModelSearchEngineEnabled)
+                return;
+
             Photo.ReadModel.SearchEngineLucene.Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,
                 string.IsNullOrWhiteSpace(indexBaseDirectory),
                 indexBaseDirectory);
+
+            readModelSearchEngineEnabled = true;
         }
 
         public void RegisterSimilarityReadModel([NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
-            DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
             DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
+            if (readModelSimilarityEnabled)
+                return;
+
             Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
+
+            readModelSimilarityEnabled = true;
         }
 
         public void RegisterPhotoDatabaseReadModel([CanBeNull] string connectionString)
         {
-            DebugGuard.NotNull(container, nameof(container));
             DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+
+            if (readModelDatabaseEnabled)
+                return;
 
             Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                 container,
                 connectionString);
+
+            readModelDatabaseEnabled = true;
         }
 
         private void RegisterCore([NotNull] string baseDirectory)
@@ -141,7 +167,14 @@
             // Repository has two public constructors.
             container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton);
             container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
-            container.Register<ISession, Session>(Lifestyle.Singleton); // check.
+            container.Register<ISession, Session>(Lifestyle.Singleton);
+        }
+
+        private void RegisterPhotoDomain()
+        {
+            DebugGuard.NotNull(container, nameof(container));
+
+            Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
         private void RegisterPlugins([NotNull] IEnumerable<IEagleEyePlugin> plugins)
@@ -150,7 +183,7 @@
 
             foreach (var plugin in plugins)
             {
-                plugin.EnablePlugin(container);
+                plugin?.EnablePlugin(container);
             }
         }
     }
