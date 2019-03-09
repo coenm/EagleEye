@@ -14,11 +14,11 @@
     {
         private readonly OpenedExifTool exiftoolImpl;
 
-        public ExifToolAdapter([NotNull] string exiftoolExecutable)
+        public ExifToolAdapter([NotNull] IExifToolConfig config)
         {
-            Guard.NotNull(exiftoolExecutable, nameof(exiftoolExecutable));
+            Guard.NotNull(config, nameof(config));
 
-            exiftoolImpl = new OpenedExifTool(exiftoolExecutable);
+            exiftoolImpl = new OpenedExifTool(config.ExifToolExe);
             exiftoolImpl.Init();
         }
 

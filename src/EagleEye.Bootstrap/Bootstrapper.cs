@@ -186,5 +186,10 @@
                 plugin?.EnablePlugin(container);
             }
         }
+
+        public void AddRegistrations(Action<Container> action)
+        {
+            action?.Invoke(container);
+        }
     }
 }

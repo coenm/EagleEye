@@ -6,7 +6,10 @@
     using System.Linq;
 
     using EagleEye.Core.Interfaces.Module;
+    using EagleEye.ExifTool;
+    using EagleEye.ExifTool.Test;
     using FluentAssertions;
+    using Helpers.Guards;
     using SimpleInjector;
     using Xunit;
 
@@ -44,7 +47,10 @@
             // arrange
 
             // act
-            var container = Sut.Initialize(tempPath, plugins).Finalize();
+            var sut = Sut.Initialize(tempPath, plugins);
+            sut.AddRegistrations(MakeSureExifToolCanBeFound);
+            var container = sut.Finalize();
+
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
             // assert
@@ -59,6 +65,7 @@
             // act
             var sut = Sut.Initialize(tempPath, plugins);
             sut.RegisterPhotoDatabaseReadModel("InMemory a");
+            sut.AddRegistrations(MakeSureExifToolCanBeFound);
             var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
@@ -76,6 +83,7 @@
             // act
             var sut = Sut.Initialize(tempPath, plugins);
             sut.RegisterSearchEngineReadModel(searchEngineDirectory);
+            sut.AddRegistrations(MakeSureExifToolCanBeFound);
             var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
@@ -94,12 +102,32 @@
             // act
             var sut = Sut.Initialize(tempPath, plugins);
             sut.RegisterSimilarityReadModel(connectionString, connectionStringHangFire);
+            sut.AddRegistrations(MakeSureExifToolCanBeFound);
             var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
             // assert
             act.Should().NotThrow();
+        }
+
+        private void MakeSureExifToolCanBeFound(Container container)
+        {
+            DebugGuard.NotNull(container, nameof(container));
+
+            container.RegisterDecorator<IExifToolConfig, TmpExifToolConfigDecorator>(Lifestyle.Singleton);
+        }
+
+        private class TmpExifToolConfigDecorator : IExifToolConfig
+        {
+            private readonly IExifToolConfig decoratee;
+
+            public TmpExifToolConfigDecorator(IExifToolConfig decoratee)
+            {
+                this.decoratee = decoratee;
+            }
+
+            public string ExifToolExe => ExifToolSystemConfiguration.ExifToolExecutable;
         }
     }
 }
