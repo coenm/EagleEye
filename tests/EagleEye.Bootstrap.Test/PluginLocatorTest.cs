@@ -5,20 +5,40 @@
 
     using FluentAssertions;
     using Xunit;
+    using Xunit.Abstractions;
 
     using Sut = EagleEye.Bootstrap.PluginLocator;
 
-    public class PluginLocatorTest
+    public class PluginLocatorTest : IDisposable
     {
+        private readonly ITestOutputHelper output;
+
+        private string tmpDirectory;
+
+        public PluginLocatorTest(ITestOutputHelper output)
+        {
+
+            tmpDirectory = Path.GetTempPath();
+            tmpDirectory = Path.Combine(tmpDirectory, DateTime.Now.Ticks.ToString() + new Random().Next(int.MaxValue));
+            Directory.CreateDirectory(tmpDirectory);
+
+            this.output = output;
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(tmpDirectory);
+        }
+
         [Fact]
         public void FindPluginAssemblies_ShouldReturnEmptyList_WhenDirectoryDoesNotContainPluginAssemblies()
         {
             // arrange
             // assume that this directory doesn't have any plugin assemblies.
-            var directory = Path.GetTempPath();
+            output.WriteLine($"Directory : {tmpDirectory}");
 
             // act
-            var result = Sut.FindPluginAssemblies(directory);
+            var result = Sut.FindPluginAssemblies(tmpDirectory);
 
             // assert
             result.Should().BeEmpty();
@@ -37,7 +57,5 @@
             // assert
             result.Should().NotBeEmpty();
         }
-
-
     }
 }
