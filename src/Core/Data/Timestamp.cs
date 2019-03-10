@@ -2,13 +2,12 @@
 {
     using System;
 
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
-    public class Timestamp
+    public class Timestamp : IEquatable<Timestamp>
     {
         /// <summary>
-        /// Construct a Timestamp.
+        /// Initializes a new instance of the <see cref="Timestamp"/> class.
         /// </summary>
         /// <param name="year">Year. Should be after christ.</param>
         /// <param name="month">Month where January is month 1, and December is month 12.</param>
@@ -112,9 +111,12 @@
             }
         }
 
-        public bool Equals([NotNull] Timestamp other)
+        public bool Equals([CanBeNull] Timestamp other)
         {
-            Guard.NotNull(other, nameof(other));
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
             return Value.Equals(other.Value) && Precision == other.Precision;
         }
 
