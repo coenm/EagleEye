@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
-    <RootNamespace>EagleEye.Core</RootNamespace>
+    <RootNamespace>EagleEye.Bootstrap</RootNamespace>
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
@@ -29,13 +29,18 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NLog" Version="4.5.11" />
     <PackageReference Include="SimpleInjector" Version="4.4.3" />
+    <PackageReference Include="SimpleInjector.Packaging" Version="4.4.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Helpers\Helpers.csproj" />
+    <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
+    <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
+    <ProjectReference Include="..\Photo.ReadModel.Similarity\Photo.ReadModel.Similarity.csproj" />
   </ItemGroup>
 
 </Project>

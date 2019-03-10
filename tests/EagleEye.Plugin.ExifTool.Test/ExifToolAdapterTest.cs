@@ -24,7 +24,8 @@
 
             imageFilename.Should().NotBeNullOrEmpty();
 
-            sut = new ExifToolAdapter(ExifToolSystemConfiguration.ExifToolExecutable);
+            var config = new StaticExiftoolConfig(ExifToolSystemConfiguration.ExifToolExecutable);
+            sut = new ExifToolAdapter(config);
         }
 
         [Fact]
