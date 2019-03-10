@@ -47,6 +47,19 @@
         }
 
         [Theory]
+        [ClassData(typeof(WrongFilenameTimestampExpectation))]
+        public async Task ProvideAsync_ShouldReturnNull_WhenInputDoesNotMatch(string filename)
+        {
+            // arrange
+
+            // act
+            var result = await sut.ProvideAsync(filename, null);
+
+            // assert
+            result.Should().BeNull();
+        }
+
+        [Theory]
         [Exploratory]
         [InlineData("2000 -file.jpg", 2000, -1, -1)]
         [InlineData("2000 file.jpg", 2000, -1, -1)]
@@ -61,7 +74,7 @@
         public void ExperimentRegexDateTime(string filename, int expectedYear, int expectedMonth, int expectedDay)
         {
             var regex = new Regex(
-                @"^(?<year>19|20[\d]{2})((?<seperator>[\. -_])(?<month>0[1-9]{1}|1[012]|[1-9])(\k<seperator>(?<day>[12][\d]|3[01]|0[1-9]|[1-9]))?)?[^\d].*$",
+                @"^(?<year>19[\d]{2}|20[\d]{2})((?<seperator>[\. -_])(?<month>0[1-9]{1}|1[012]|[1-9])(\k<seperator>(?<day>[12][\d]|3[01]|0[1-9]|[1-9]))?)?[^\d].*$",
                 RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
             var result = regex.Match(filename);
@@ -106,6 +119,13 @@
                 Add("a/bb/dd/2000 file.jpg", new Timestamp(2000));
                 Add("2000 file.jpg", new Timestamp(2000));
                 Add("2000  file.jpg", new Timestamp(2000));
+                Add("2000-11  file.jpg", new Timestamp(2000, 11));
+                Add("2000-13  file.jpg", new Timestamp(2000)); // 13the month doesn't exists. Maybe it is better to ignore the year also.
+                Add("1999-2  file.jpg", new Timestamp(1999, 2));
+                Add("1999-02  file.jpg", new Timestamp(1999, 2));
+                Add("1980-02-99  file.jpg", new Timestamp(1980, 2)); // 99the day not part of date. Maybe better to ignore found year and month.
+                Add("2020-02-29 file.jpg", new Timestamp(2020, 2, 29)); // leap year
+                Add("2021-02-29 file.jpg", new Timestamp(2021, 2)); // no leap year.
             }
         }
 
