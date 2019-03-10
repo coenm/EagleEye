@@ -10,6 +10,8 @@
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
+
+    using EagleEye.Core;
     using EagleEye.Core.DefaultImplementations;
     using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
@@ -143,6 +145,8 @@
             RegisterCqrsLite(baseDirectory);
 
             RegisterPhotoDomain();
+
+            container.Register<PhotoProcessor>(Lifestyle.Transient);
         }
 
         private void RegisterCqrsLite([NotNull] string baseDirectory)

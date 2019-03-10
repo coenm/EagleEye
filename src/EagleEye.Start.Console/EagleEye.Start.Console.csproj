@@ -38,6 +38,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\EagleEye.Bootstrap\EagleEye.Bootstrap.csproj" />
     <ProjectReference Include="..\EagleEye.Plugin.DirectoryStructure\EagleEye.Plugin.DirectoryStructure.csproj" />
     <ProjectReference Include="..\EagleEye.Plugin.ExifTool\EagleEye.Plugin.ExifTool.csproj" />
     <ProjectReference Include="..\EagleEye.Plugin.ImageHash\EagleEye.Plugin.ImageHash.csproj" />
