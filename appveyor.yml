@@ -12,6 +12,7 @@ environment:
     secure: H1vW5fnfAOt5/c5f1qnaatUjFVAPc2oZnxDBFutJZL58LxAyJNRLtfIBrcHnSg8y
   COVERALLS_REPO_TOKEN:
     secure: Ie2pOwyCBkeqIZsFKrdmFau++9ERzWFD22tWnpbK99cghf0uXB7g3FN0kWbNUpKn
+  IGNORE_NORMALISATION_GIT_HEAD_MOVE: 1
 
 dotnet_csproj:
   patch: true
