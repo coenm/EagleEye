@@ -7,7 +7,8 @@
 
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.ExifTool;
-    using EagleEye.ExifTool.Test;
+    using EagleEye.TestHelper;
+    using FakeItEasy;
     using FluentAssertions;
     using Helpers.Guards;
     using SimpleInjector;
@@ -115,19 +116,8 @@
         {
             DebugGuard.NotNull(container, nameof(container));
 
-            container.RegisterDecorator<IExifToolConfig, TmpExifToolConfigDecorator>(Lifestyle.Singleton);
-        }
-
-        private class TmpExifToolConfigDecorator : IExifToolConfig
-        {
-            private readonly IExifToolConfig decoratee;
-
-            public TmpExifToolConfigDecorator(IExifToolConfig decoratee)
-            {
-                this.decoratee = decoratee;
-            }
-
-            public string ExifToolExe => ExifToolSystemConfiguration.ExifToolExecutable;
+            container.Options.AllowOverridingRegistrations = true;
+            container.Register<IExifTool>(A.Dummy<IExifTool>, Lifestyle.Singleton);
         }
     }
 }

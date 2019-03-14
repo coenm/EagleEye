@@ -1,5 +1,7 @@
 # $ErrorActionPreference = "Stop"
 
+Write-Host "Start of Codecov.ps1"
+
 # Save the current location.
 $CurrentDir = $(Get-Location).Path;
 Write-Host "CurrentDir: " $CurrentDir
@@ -17,10 +19,18 @@ Get-ChildItem -Recurse ($nugetToolsDir) | Where-Object {$_.Name -like "codecov.e
 
 if (! ( Test-Path $codecovExe )) 
 {
-  Write-Warning "$codecovExe  DOES NOT EXISTS"
+	throw "Could not upload the coverage results because codecov.exe wasn't found."
 }
 
-Write-Host "CodeCov.exe " $codecovExe
+pushd
+cd ..
+$coverageResults = Get-ChildItem -Recurse | Where-Object{$_.Name -like "coverageInOpencoverFormat.xml" } | % { '"{0}"' -f $_.FullName }; # access $_.DirectoryName for the directory.
+popd
 
-$outputOpenCoverXmlFile = (join-path $RootDir "coverage-dotnet.xml")
-iex "$codecovExe -f $outputOpenCoverXmlFile"
+$allCoverageResults = [String]::Join(" ", $coverageResults);
+
+iex "$codecovExe -f $allCoverageResults"
+	
+if ($LastExitCode -ne 0) {
+	throw "Could not upload the coverage file."
+}

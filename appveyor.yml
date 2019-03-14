@@ -1,6 +1,6 @@
 image:
-- Ubuntu
 - Visual Studio 2017
+- Ubuntu
 
 configuration: Debug
 #platform: Any CPU
@@ -38,11 +38,8 @@ install:
     )
 - sh: chmod +x .scripts/InstallGitVersion.sh && .scripts/InstallGitVersion.sh
 
-# Install OpenCover (windows)
-- cmd: choco install opencover.portable -y
-
 # Install (latest) codecov (choco is behind of nuget) and coveralls in linux.
-- cmd: nuget install Codecov -Version 1.0.3 -OutputDirectory C:\NuGetTools\
+- cmd: nuget install Codecov -OutputDirectory C:\NuGetTools\
 - sh: npm install --save-dev coveralls
 
 # Install Exiftool
@@ -59,7 +56,7 @@ build:
   verbosity: minimal
 
 test_script:
-- cmd: powershell .\.scripts\TestCoverage.ps1
+- ps: .scripts\TestCoverage.ps1
 - sh: chmod +x .scripts/TestCoverage.sh && .scripts/TestCoverage.sh
 
 after_test:
