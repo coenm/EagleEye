@@ -1,72 +1,76 @@
-# $ErrorActionPreference = "Stop"
+if ($isWindows) {
 
-# Save the current location.
-$CurrentDir = $(Get-Location).Path;
-Write-Host "CurrentDir: " $CurrentDir
+	# Save the current location.
+	$CurrentDir = $(Get-Location).Path;
+	Write-Host "CurrentDir: " $CurrentDir
 
-# Get location of powershell file
-Write-Host "PSScriptRoot: " $PSScriptRoot
+	# Get location of powershell file
+	Write-Host "PSScriptRoot: " $PSScriptRoot
 
-# we know this script is located in the .scripts\ folder of the root.
-$RootDir = [IO.Path]::GetFullPath( (join-path $PSScriptRoot "..\") )
-Write-Host "ROOT: " $RootDir
+	# we know this script is located in the .scripts\ folder of the root.
+	$RootDir = [IO.Path]::GetFullPath( (join-path $PSScriptRoot "..\") )
+	Write-Host "ROOT: " $RootDir
 
-# Expected OpenCover location appveyor.
-$opencoverExe = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
-# Search for opencover in the chocolatery directory.
-Get-ChildItem -Recurse ('C:\ProgramData\chocolatey\bin') | Where-Object {$_.Name -like "OpenCover.Console.exe"} | % { $opencoverExe = $_.FullName};
+	$outputOpenCoverXmlFile = (join-path $RootDir "coverage-dotnet.xml")
 
-$dotnetExe = 'dotnet.exe'
-$outputOpenCoverXmlFile = (join-path $RootDir "coverage-dotnet.xml")
+	# Should be release of debug (set by AppVeyor)
+	$configuration = $env:CONFIGURATION
 
-# Should be release of debug (set by AppVeyor)
-$configuration = $env:CONFIGURATION
+	Write-Host "(Environment) Configuration:" $configuration 
+	Write-Host "Location xml coverage result: " $outputOpenCoverXmlFile
 
-Write-Host "(Environment) Configuration:" $configuration 
-Write-Host "Location opencover.exe: " $opencoverExe
-Write-Host "Location dotnet.exe: " $dotnetExe
-Write-Host "Location xml coverage result: " $outputOpenCoverXmlFile
-
-$dotnetTestArgs = '-c ' + $configuration + '--no-build --filter Category!=ExifTool --logger:trx' # ;LogFileName=' + $outputTrxFile
-$opencoverFilter = "+[*]EagleEye.* -[*.Test]EagleEye.*"
-
-pushd
-cd ..
-$testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % { $_.FullName }; # access $_.DirectoryName for the directory.
-popd
+	#remove extension from filename as coverlet will add the extension
+	$TMP_LCOV = (join-path $RootDir "single_coverage_results")
+	$TMP_LCOV_EXT = (join-path $RootDir "single_coverage_results.info")
 
 
-Try
-{
+	$MERGED_LCOV = (join-path $RootDir "coverage_results.info")
+	  
+	# exclude the Testhelper project:  [TestHelper]*
+	# exclude all tests projects:      [*.Test]EagleEye.*
+	$COVERLET_EXCLUDE_FILTER = "[TestHelper]*,[*.Test]EagleEye.*,[xunit.*]*"
+	$COVERLET_INCLUDE_FILTER = "[*]EagleEye.*,[EagleEye*]*"
+	$COVERLET_EXCLUDE_ATTRIBUTE = "DebuggerNonUserCodeAttribute"
+	
+	
+	# see https://github.com/tonerdo/coverlet/blob/master/README.md
+	$COVERLET_EXCLUDE_FILTER_ESCAPED = $COVERLET_EXCLUDE_FILTER -replace ",", "%2c"
+	$COVERLET_INCLUDE_FILTER_ESCAPED = $COVERLET_INCLUDE_FILTER -replace ",", "%2c"
+	$COVERLET_EXCLUDE_ATTRIBUTE_ESCAPED = $COVERLET_EXCLUDE_ATTRIBUTE -replace ",", "%2c"
+
+	pushd
+	cd ..
+	$testProjectLocations = Get-ChildItem -Recurse | Where-Object{$_.Name -like "*Test.csproj" } | % { $_.FullName }; # access $_.DirectoryName for the directory.
+	popd
+
+	$ExitCode = 0
 
 	ForEach ($testProjectLocation in $testProjectLocations)
 	{
-		Write-Host "Run tests for project " (Resolve-Path $testProjectLocation).Path;
-
-		$command = "${opencoverExe} "`
-            + "-threshold:1 "`
-            + "-register:user "`
-            + "-oldStyle "`
-            + "-mergebyhash "`
-            + "-mergeoutput "`
-            + "-returntargetcode "`
-            + "-hideskipped:All "`
-            + "-excludebyfile:*\*Designer.cs "`
-            + "-target:""${dotnetExe}"" "`
-            + "-targetargs:""test ${testProjectLocation} ${dotnetTestArgs}"" "`
-            + "-output:${outputOpenCoverXmlFile} "`
-            + "-excludebyattribute:System.Diagnostics.DebuggerNonUserCodeAttribute "`
-            + "-filter:""${opencoverFilter}"""
+		Write-Host "Test project: " (Resolve-Path $testProjectLocation).Path;
+		
+		$command = "dotnet.exe test "`
+            + "/p:CollectCoverage=true "`
+            + "/p:Exclude=""${COVERLET_EXCLUDE_FILTER_ESCAPED}"" "`
+            + "/p:Include=""${COVERLET_INCLUDE_FILTER_ESCAPED}"" "`
+            + "/p:ExcludeByAttribute=""${COVERLET_EXCLUDE_ATTRIBUTE_ESCAPED}"" "`
+            + "/p:ExcludeByFile=""*\*Designer.cs"" "`
+            + "/p:CoverletOutputFormat=opencover "`
+            + "/p:CoverletOutput=./coverageInOpencoverFormat.xml "`
+            + "/p:configuration=Release "`
+            + " ""${testProjectLocation}"""
 		
 		Write-Output $command
-
 		iex $command
-		
-		Write-Host "Command finished, ready for the next one"
+
+		if ($LastExitCode -ne 0) {
+			Write-Host  "At least one test failed. Setting exitcode to make sure this script will fail."
+			$ExitCode = $LastExitCode
+		}
+	}	
+	
+	if ($ExitCode -ne 0) {
+		throw "Done but with failing tests.."
 	}
 }
-Finally
-{
-	Write-Output "Done testing.."
-	popd
-}
+Write-Output "End of TestCoverage.ps1"

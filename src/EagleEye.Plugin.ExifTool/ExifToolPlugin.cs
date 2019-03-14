@@ -16,7 +16,7 @@
         {
             Guard.NotNull(container, nameof(container));
 
-            container.Register<IExifToolConfig>(() => new StaticExiftoolConfig("Exiftool"), Lifestyle.Singleton); // todo coenm fix this
+            container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName()), Lifestyle.Singleton); // todo coenm fix this
             container.Register<IExifTool, ExifToolAdapter>(Lifestyle.Singleton);
             container.RegisterDecorator<IExifTool, ExifToolCacheDecorator>(Lifestyle.Singleton);
 
