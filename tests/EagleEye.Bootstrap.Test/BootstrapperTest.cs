@@ -7,7 +7,6 @@
 
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.ExifTool;
-    using EagleEye.TestHelper;
     using FakeItEasy;
     using FluentAssertions;
     using Helpers.Guards;

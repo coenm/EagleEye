@@ -142,7 +142,7 @@
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance);
 
-            container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
+            container.Collection.Append<IPhotoMimeTypeProvider, MimeTypeProvider>();
 
             RegisterCqrsLite(baseDirectory);
 
