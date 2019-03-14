@@ -39,19 +39,21 @@
 
         public static IEnumerable<IEagleEyePlugin> FindAvailablePlugins()
         {
-            var container = new Container();
-            var pluginAssemblies = PluginLocator.FindPluginAssemblies(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
-
-            container.RegisterPackages(pluginAssemblies);
-
-            try
+            using (var container = new Container())
             {
-                return container.GetAllInstances<IEagleEyePlugin>();
-            }
-            catch (ActivationException e)
-            {
-                Logger.Warn(e, () => $"Could not find plugins due to an ActivationException. {e.Message}");
-                return Enumerable.Empty<IEagleEyePlugin>();
+                var pluginAssemblies = PluginLocator.FindPluginAssemblies(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+
+                container.RegisterPackages(pluginAssemblies);
+
+                try
+                {
+                    return container.GetAllInstances<IEagleEyePlugin>();
+                }
+                catch (ActivationException e)
+                {
+                    Logger.Warn(e, () => $"Could not find plugins due to an ActivationException. {e.Message}");
+                    return Enumerable.Empty<IEagleEyePlugin>();
+                }
             }
         }
 

@@ -21,6 +21,7 @@ MERGED_LCOV=${ROOT_PATH}/coverage_results.info
 COVERLET_EXCLUDE_FILTER=[TestHelper]*,[*.Test]EagleEye.*,[xunit.*]*
 COVERLET_INCLUDE_FILTER=[*]EagleEye.*,[EagleEye*]*
 
+EXIT_CODE=0
 
 TEST_PROJECTS=$(find . -type f -name *Test.csproj)
 
@@ -32,6 +33,12 @@ do
 	echo dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:Include=\"$COVERLET_INCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
 	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:Include=\"$COVERLET_INCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
 	
+	LAST_EXIT_CODE=$?
+	if [ "$LAST_EXIT_CODE" -ne "0" ]; then
+		echo "At least one test failed. Setting exitcode to make sure this script will fail."
+		EXIT_CODE=$LAST_EXIT_CODE
+  	fi
+		
 	if [ -f "$TMP_LCOV_EXT" ]
 	then
 		#cat ${TMP_LCOV_EXT}
@@ -52,6 +59,11 @@ do
 		rm $TMP_LCOV_EXT
 	fi
 done
+
+if [ "$EXIT_CODE" -ne "0" ]; then
+    echo "Done but with failing tests.."
+    exit ${EXIT_CODE}
+fi
 
 echo Upload coverage results to coverall
 cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
