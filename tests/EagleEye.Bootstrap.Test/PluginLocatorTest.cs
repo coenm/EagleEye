@@ -13,11 +13,10 @@
     {
         private readonly ITestOutputHelper output;
 
-        private string tmpDirectory;
+        private readonly string tmpDirectory;
 
         public PluginLocatorTest(ITestOutputHelper output)
         {
-
             tmpDirectory = Path.GetTempPath();
             tmpDirectory = Path.Combine(tmpDirectory, DateTime.Now.Ticks.ToString() + new Random().Next(int.MaxValue));
             Directory.CreateDirectory(tmpDirectory);

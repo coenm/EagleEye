@@ -25,8 +25,10 @@
         [Required]
         public byte[] FileSha256 { get; set; }
 
-        // [Required]
-        // public uint FileSize { get; set; }
+/*
+        [Required]
+        public uint FileSize { get; set; }
+*/
 
         [CanBeNull]
         public List<Tag> Tags { get; set; }

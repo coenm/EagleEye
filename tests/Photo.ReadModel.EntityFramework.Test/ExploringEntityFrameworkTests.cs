@@ -92,7 +92,7 @@
 
         private static EagleEyeDbContext CreateMediaItemDbContext()
         {
-            var sut = new InMemoryEagleEyeDbContextFactory();
+            var sut = InMemoryEagleEyeDbContextFactory.CreateSqlLiteInMemory();
             return sut.CreateMediaItemDbContext();
         }
 
@@ -114,12 +114,25 @@
             private readonly object syncLock = new object();
             private EagleEyeDbContext ctx;
 
-            public InMemoryEagleEyeDbContextFactory()
-                : base(new DbContextOptionsBuilder<EagleEyeDbContext>()
-                    // .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                    .UseSqlite("Data Source=:memory:;")
-                    .Options)
+            private InMemoryEagleEyeDbContextFactory(DbContextOptions<EagleEyeDbContext> dbContextOptions)
+                : base(dbContextOptions)
             {
+            }
+
+            public static InMemoryEagleEyeDbContextFactory CreateSqlLiteInMemory()
+            {
+                return new InMemoryEagleEyeDbContextFactory(
+                    new DbContextOptionsBuilder<EagleEyeDbContext>()
+                        .UseSqlite("Data Source=:memory:;")
+                        .Options);
+            }
+
+            public static InMemoryEagleEyeDbContextFactory CreateInMemory()
+            {
+                return new InMemoryEagleEyeDbContextFactory(
+                    new DbContextOptionsBuilder<EagleEyeDbContext>()
+                        .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                        .Options);
             }
 
             public new EagleEyeDbContext CreateMediaItemDbContext()

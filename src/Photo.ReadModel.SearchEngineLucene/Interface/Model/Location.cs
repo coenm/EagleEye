@@ -28,7 +28,9 @@
 
         [CanBeNull] public string SubLocation { get; }
 
-        //        public Coordinate Coordinate { get; private set; }
+        /*
+         public Coordinate Coordinate { get; private set; }
+         */
 
         [CanBeNull]
         internal static Location Create(

@@ -135,6 +135,11 @@
             readModelDatabaseEnabled = true;
         }
 
+        public void AddRegistrations(Action<Container> action)
+        {
+            action?.Invoke(container);
+        }
+
         private void RegisterCore([NotNull] string baseDirectory)
         {
             DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
@@ -191,11 +196,6 @@
             {
                 plugin?.EnablePlugin(container);
             }
-        }
-
-        public void AddRegistrations(Action<Container> action)
-        {
-            action?.Invoke(container);
         }
     }
 }

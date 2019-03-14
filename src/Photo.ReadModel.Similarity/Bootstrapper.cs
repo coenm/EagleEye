@@ -43,7 +43,6 @@
             container.Register<DbContextOptions<SimilarityDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
             container.Register<ISimilarityDbContextFactory, SimilarityDbContextFactory>(Lifestyle.Singleton);
 
-            container.Register<ISimilarityReadModel, ReadModelEntityFramework>();
             container.Register<SimilarityEventHandlers>();
 
             container.Collection.Register<IEagleEyeInitialize>(typeof(DatabaseInitializer));
