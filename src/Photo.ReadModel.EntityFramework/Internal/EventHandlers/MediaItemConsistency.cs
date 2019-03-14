@@ -233,7 +233,6 @@
                 return;
 
             // todo, something with precision?
-
             photo.DateTimeTaken = message.DateTimeTaken;
 
             photo.EventTimestamp = message.TimeStamp;

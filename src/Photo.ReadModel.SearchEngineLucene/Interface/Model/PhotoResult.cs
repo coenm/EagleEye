@@ -12,7 +12,6 @@
             Guid id,
             [NotNull] string filename,
             string mimeType,
-            // [NotNull] byte[] fileSha256, // by design.
             [NotNull] IReadOnlyList<string> tags,
             [NotNull] IReadOnlyList<string> persons,
             [CanBeNull] Location location,

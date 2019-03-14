@@ -28,6 +28,14 @@
             startedServices = new IEagleEyeProcess[0];
         }
 
+        private enum State
+        {
+            Empty = 0,
+            Initialized = 1,
+            Started = 2,
+            Stopped = 3,
+        }
+
         public async Task InitializeServices()
         {
             if (state == State.Empty)
@@ -88,14 +96,6 @@
             {
                 return Enumerable.Empty<T>();
             }
-        }
-
-        private enum State
-        {
-            Empty = 0,
-            Initialized = 1,
-            Started = 2,
-            Stopped = 3,
         }
     }
 }
