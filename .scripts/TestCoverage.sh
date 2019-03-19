@@ -54,4 +54,4 @@ echo COVERAGE_RESULT_STRING : "${COVERAGE_RESULT_STRING}"
 
 # Upload to Coveralls
 echo Upload coverage results to coverall
-csmacnz.Coveralls --multiple --input $COVERAGE_RESULT_STRING
+csmacnz.Coveralls --multiple --input $COVERAGE_RESULT_STRING --useRelativePaths --basePath $ROOT_PATH
