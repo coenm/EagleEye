@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Get absolute path this script is in and use this path as a base for all other (relatve) filenames.
 # !! Please make sure there are no spaces inside the path !!
@@ -9,61 +9,49 @@ ROOT_PATH=$(cd ${SCRIPTPATH}/../; pwd)
 
 cd ${ROOT_PATH}
 
-#remove extension from filename as coverlet will add the extension
-TMP_LCOV=${ROOT_PATH}/single_coverage_results
-TMP_LCOV_EXT=${TMP_LCOV}.info
-
-
-MERGED_LCOV=${ROOT_PATH}/coverage_results.info
-
 # exclude the Testhelper project:  [TestHelper]*
 # exclude all tests projects:      [*.Test]EagleEye.*
 COVERLET_EXCLUDE_FILTER=[TestHelper]*,[*.Test]EagleEye.*,[xunit.*]*
 COVERLET_INCLUDE_FILTER=[*]EagleEye.*,[EagleEye*]*
+COVERLET_EXCLUDE_ATTRIBUTE=DebuggerNonUserCodeAttribute
 
-EXIT_CODE=0
-
+# Get all test projects.
 TEST_PROJECTS=$(find . -type f -name *Test.csproj)
 
-# this for loop only works if the path doesn't contain any spaces!
+# Test coverage filename
+SINGLE_COVERAGE_FILENAME=coverageInOpencoverFormat.xml
+
+# Store the exitcode for each test run so we can exit if one of the test projects has at least one failing test.
+EXIT_CODE=0
+
+# This for loop only works if the path doesn't contain any spaces! (TODO?)
 for TEST_PROJECT in $TEST_PROJECTS
 do
 	echo Testing project: ${TEST_PROJECT}
-	
-	echo dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:Include=\"$COVERLET_INCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
-	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=$TMP_LCOV /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:Include=\"$COVERLET_INCLUDE_FILTER\" /p:configuration=Release $TEST_PROJECT
+	dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./$SINGLE_COVERAGE_FILENAME /p:Exclude=\"$COVERLET_EXCLUDE_FILTER\" /p:Include=\"$COVERLET_INCLUDE_FILTER\" /p:ExcludeByAttribute=\"$COVERLET_EXCLUDE_ATTRIBUTE_ESCAPED\" /p:ExcludeByFile=\"*\*Designer.cs\" /p:configuration=Release $TEST_PROJECT
 	
 	LAST_EXIT_CODE=$?
 	if [ "$LAST_EXIT_CODE" -ne "0" ]; then
 		echo "At least one test failed. Setting exitcode to make sure this script will fail."
 		EXIT_CODE=$LAST_EXIT_CODE
   	fi
-		
-	if [ -f "$TMP_LCOV_EXT" ]
-	then
-		#cat ${TMP_LCOV_EXT}
-		#echo Upload coverage results to coverall
-		#cat ${TMP_LCOV_EXT} | ./node_modules/coveralls/bin/coveralls.js
-	
-		echo Coverage file exists.. merge into final merge results.
-		
-		if [ -f "$MERGED_LCOV" ]
-		then
-			echo '\n' >> ${MERGED_LCOV}
-		else
-			touch $MERGED_LCOV
-		fi
-		
-		cat ${TMP_LCOV_EXT} >> ${MERGED_LCOV}
-		#echo '\n' >> ${MERGED_LCOV}
-		rm $TMP_LCOV_EXT
-	fi
 done
 
 if [ "$EXIT_CODE" -ne "0" ]; then
-    echo "Done but with failing tests.."
+    echo "One of the test projects failed. Stop the script. "
     exit ${EXIT_CODE}
 fi
 
+# Find all coverage result files and format them to be used in csmacnz.Coveralls
+COVERAGE_RESULTS=$(find . -type f -name $SINGLE_COVERAGE_FILENAME -printf 'opencover=%p;')
+
+# Join all found result files to one string.
+COVERAGE_RESULT_STRING=$( printf "%s" "${COVERAGE_RESULTS[@]}" ) 
+
+# Remove last seperation (semicolon character)
+COVERAGE_RESULT_STRING=${COVERAGE_RESULT_STRING::-1}
+echo COVERAGE_RESULT_STRING : "${COVERAGE_RESULT_STRING}"
+
+# Upload to Coveralls
 echo Upload coverage results to coverall
-cat ${MERGED_LCOV} | ./node_modules/coveralls/bin/coveralls.js
+csmacnz.Coveralls --multiple --input $COVERAGE_RESULT_STRING
