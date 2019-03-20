@@ -40,7 +40,7 @@ install:
 
 # Install (latest) codecov (choco is behind of nuget) and coveralls in linux.
 - cmd: nuget install Codecov -OutputDirectory C:\NuGetTools\
-- sh: npm install --save-dev coveralls
+- sh: dotnet tool install -g coveralls.net --version 1.0.0
 
 # Install Exiftool
 - cmd: powershell .\.scripts\InstallExiftool.ps1
