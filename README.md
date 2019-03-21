@@ -23,29 +23,14 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - [x] Test frameworks: [xUnit](https://github.com/xunit), [FakeItEasy](https://fakeiteasy.github.io/), [FluentAssertions](https://fluentassertions.com/);
 - [x] [Jetbrains Annotations](https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html), ~~Maybe use [Code Contract](https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/code-contracts)?~~
 - [x] CI: [AppVeyor](https://www.appveyor.com/) (windows CI and Ubuntu); ~~[Travis](https://travis-ci.org/) (Linux CI);~~
-- [x] Coverage: [OpenCover](https://github.com/OpenCover/opencover) (windows); [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
+- [x] Coverage: ~~[OpenCover](https://github.com/OpenCover/opencover) (windows);~~ [Coverlet](https://github.com/tonerdo/coverlet/) (cross platform);
 - [x] Coverage Report: [CodeCov](https://codecov.io), [Coveralls](https://coveralls.io);
 - [ ] Docker;
 - [ ] [SonarQube](https://about.sonarcloud.io/);
 - [x] CQRS ES (using CQRSlite);
-- [x] Entity framework. Now, it is placed in Core library (as read-model). Should have its own project.
+- [x] Entity framework;
+- [x] Fody;
 - [ ] Misc: NLog, Humanizer, Lucene.NET, NetMq (ZeroMq).
-
-
-## AppVeyor
-- Download and run [GitVersion](https://gitversion.readthedocs.io/en/latest/);
-- Download OpenCover (Windows only) (Coverlet, the coverage tool used in Ubuntu is fetched using Nuget);
-- Download CodeCov (Windows) and Coveralls (Ubuntu) to publish the coverage result to the web services;
-- Download Exiftool;
-- Patches assembly versions according to found version;
-- Restore packages;
-- Build solution;
-- Run unittests measuring using OpenCover (Windows) and [Coverlet](https://github.com/tonerdo/coverlet/) (Ubuntu);
-- Push coverage results to [CodeCov](https://codecov.io) or to [Coveralls](https://coveralls.io)
-
-Todo: 
-- Remove Coverlet package from test projects and download it only in ~~Travis~~ Appveyor/Ubuntu.
-
 
 # The badges
 | Branch | AppVeyor | Windows coverage | Ubuntu coverage |
@@ -57,7 +42,6 @@ Todo:
 ```
 git clone https://github.com/coenm/EagleEye.git
 git submodule update --init --recursive
-
 dotnet restore
 dotnet build
 ```
