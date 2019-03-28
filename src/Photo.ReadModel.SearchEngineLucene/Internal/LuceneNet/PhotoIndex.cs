@@ -364,13 +364,13 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
             DeleteByTerm(new Term(KeyFilename, filename));
         }
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
-            Helpers.Guards.Guard.NotEmpty(guid, nameof(guid));
+//            Dawn.Guard.Argument(guid, nameof(guid)).NotEqual(Guid.Empty);
             if (guid == Guid.Empty)
                 return;
 

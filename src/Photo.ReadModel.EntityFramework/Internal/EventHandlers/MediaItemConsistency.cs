@@ -6,10 +6,10 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
+    using Dawn;
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
-    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using NLog;
 
@@ -187,7 +187,7 @@
         public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
         {
             Dawn.Guard.Argument(message, nameof(message)).NotNull();
-            Helpers.Guards.Guard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
+            Dawn.Guard.Argument(message.Location, $"{nameof(message)}.{nameof(message.Location)}").NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
