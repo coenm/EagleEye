@@ -5,7 +5,7 @@
     using System.Linq;
 
     using EagleEye.FileImporter.Indexing;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
 
     /// <summary>
     /// Stores data in file.
@@ -18,20 +18,20 @@
 
         public SingleImageDataRepository(IPersistentSerializer<List<ImageData>> storage)
         {
-            Guard.NotNull(storage, nameof(storage));
+            Helpers.Guards.Guard.NotNull(storage, nameof(storage));
             this.storage = storage;
             data = this.storage.Load();
         }
 
         public ImageData Get(string identifier)
         {
-            Guard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(identifier, nameof(identifier));
             return data.FirstOrDefault(i => i.Identifier.Equals(identifier, StringComparison.InvariantCulture));
         }
 
         public IEnumerable<ImageData> Find(Predicate<ImageData> predicate, int take = 0, int skip = 0)
         {
-            Guard.NotNull(predicate, nameof(predicate));
+            Helpers.Guards.Guard.NotNull(predicate, nameof(predicate));
 
             var result = data.Where(index => predicate(index));
 
@@ -52,7 +52,7 @@
             int take = 0,
             int skip = 0)
         {
-            Guard.NotNull(src, nameof(src));
+            Helpers.Guards.Guard.NotNull(src, nameof(src));
 
             var result = data.Where(index =>
                 {
@@ -102,13 +102,13 @@
 
         public IEnumerable<ImageData> FindByContentHash(byte[] imageHash)
         {
-            Guard.NotNull(imageHash, nameof(imageHash));
+            Helpers.Guards.Guard.NotNull(imageHash, nameof(imageHash));
             return Find(index => index.Hashes.ImageHash.SequenceEqual(imageHash));
         }
 
         public IEnumerable<ImageData> FindImageHashesNotInList(IEnumerable<byte[]> imageHashes)
         {
-            Guard.NotNull(imageHashes, nameof(imageHashes));
+            Helpers.Guards.Guard.NotNull(imageHashes, nameof(imageHashes));
 
             var hashes = imageHashes.ToArray();
 
@@ -120,7 +120,7 @@
 
         public int Count(Predicate<ImageData> predicate)
         {
-            Guard.NotNull(predicate, nameof(predicate));
+            Helpers.Guards.Guard.NotNull(predicate, nameof(predicate));
 
             return data.Count(index => predicate(index));
         }
@@ -132,7 +132,7 @@
 
         public void Delete(ImageData item)
         {
-            Guard.NotNull(item, nameof(item));
+            Helpers.Guards.Guard.NotNull(item, nameof(item));
 
             lock (syncLock)
             {
@@ -148,7 +148,7 @@
 
         public void AddOrUpdate(ImageData item)
         {
-            Guard.NotNull(item, nameof(item));
+            Helpers.Guards.Guard.NotNull(item, nameof(item));
 
             lock (syncLock)
             {

@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using Newtonsoft.Json;
 
@@ -23,8 +23,8 @@
 
         public FileBasedEventStore([NotNull] IEventPublisher publisher, [NotNull] string basePath)
         {
-            Guard.NotNull(publisher, nameof(publisher));
-            Guard.NotNullOrWhiteSpace(basePath, nameof(basePath));
+            Helpers.Guards.Guard.NotNull(publisher, nameof(publisher));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(basePath, nameof(basePath));
             this.publisher = publisher;
             this.basePath = basePath;
             settings = new JsonSerializerSettings

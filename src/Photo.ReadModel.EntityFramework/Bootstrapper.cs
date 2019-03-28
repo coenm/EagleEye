@@ -7,7 +7,7 @@
     using EagleEye.Photo.ReadModel.EntityFramework.Internal;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using SimpleInjector;
@@ -20,8 +20,8 @@
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapEntityFrameworkReadModel([NotNull] Container container, [NotNull] string connectionString)
         {
-            Guard.NotNull(container, nameof(container));
-            Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
             var thisAssembly = typeof(Bootstrapper).Assembly;
 

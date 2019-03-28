@@ -3,7 +3,7 @@
     using System;
 
     using Hangfire;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -14,7 +14,7 @@
 
         public SimpleInjectorJobActivator([NotNull] Container container)
         {
-            Guard.NotNull(container, nameof(container));
+            Helpers.Guards.Guard.NotNull(container, nameof(container));
             this.container = container;
         }
 

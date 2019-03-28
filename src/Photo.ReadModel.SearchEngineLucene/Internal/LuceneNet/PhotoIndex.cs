@@ -8,7 +8,7 @@
 
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using Lucene.Net.Analysis;
     using Lucene.Net.Analysis.Standard;
@@ -53,7 +53,7 @@
 
         public PhotoIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
-            Guard.NotNull(indexDirectoryFactory, nameof(indexDirectoryFactory));
+            Helpers.Guards.Guard.NotNull(indexDirectoryFactory, nameof(indexDirectoryFactory));
 
             indexDirectory = indexDirectoryFactory.Create();
 
@@ -107,7 +107,7 @@
 
         public Task<bool> ReIndexMediaFileAsync([NotNull] Photo data)
         {
-            Guard.NotNull(data, nameof(data));
+            Helpers.Guards.Guard.NotNull(data, nameof(data));
 
             RemoveFromIndexByFilename(data.FileName);
             RemoveFromIndexByGuid(data.Id);
@@ -246,7 +246,7 @@
         [NotNull]
         public List<PhotoSearchResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {
-            Guard.NotNull(query, nameof(query));
+            Helpers.Guards.Guard.NotNull(query, nameof(query));
 
             var results = new List<PhotoSearchResult>();
             totalHits = 0;
@@ -350,7 +350,7 @@
 
         private Guid GetId([NotNull] Document doc)
         {
-            DebugGuard.NotNull(doc, nameof(doc));
+            DebugHelpers.Guards.Guard.NotNull(doc, nameof(doc));
 
             var guidString = doc.GetField(KeyId)?.GetStringValue();
             if (string.IsNullOrWhiteSpace(guidString))
@@ -364,13 +364,13 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            DebugGuard.NotNullOrWhiteSpace(filename, nameof(filename));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
             DeleteByTerm(new Term(KeyFilename, filename));
         }
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
-            DebugGuard.NotEmpty(guid, nameof(guid));
+            DebugHelpers.Guards.Guard.NotEmpty(guid, nameof(guid));
             if (guid == Guid.Empty)
                 return;
 
@@ -379,7 +379,7 @@
 
         private void DeleteByTerm([NotNull] Term term)
         {
-            DebugGuard.NotNull(term, nameof(term));
+            DebugHelpers.Guards.Guard.NotNull(term, nameof(term));
 
             try
             {

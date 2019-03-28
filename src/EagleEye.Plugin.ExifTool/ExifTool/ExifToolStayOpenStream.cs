@@ -5,7 +5,7 @@
     using System.IO;
     using System.Text;
 
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
 
     public class ExifToolStayOpenStream : Stream
     {
@@ -21,7 +21,7 @@
 
         public ExifToolStayOpenStream(Encoding encoding, int bufferSize = OneMb)
         {
-            Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
+            Helpers.Guards.Guard.MustBeGreaterThan(bufferSize, 0, nameof(bufferSize));
 
             this.bufferSize = bufferSize;
             this.encoding = encoding ?? new UTF8Encoding();

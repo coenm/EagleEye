@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +31,7 @@
         public DbContextOptionsBuilder<SimilarityDbContext> Create([CanBeNull] string connectionString)
         {
             // By contract, the param can be null, however, by design, this strategy only works when it is not null (see CanHandle)
-            Guard.NotNull(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.NotNull(connectionString, nameof(connectionString));
 
             return new DbContextOptionsBuilder<SimilarityDbContext>()
                 .UseInMemoryDatabase(GetNameFromConnectionString(connectionString));
@@ -40,8 +40,8 @@
         [NotNull]
         private string GetNameFromConnectionString([NotNull] string connectionString)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.MustBeGreaterThanOrEqualTo(connectionString.Length, Key.Length, $"{nameof(connectionString)}.{nameof(connectionString.Length)}");
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugHelpers.Guards.Guard.MustBeGreaterThanOrEqualTo(connectionString.Length, Key.Length, $"{nameof(connectionString)}.{nameof(connectionString.Length)}");
 
             // todo spaces, semicolons etc. etc?
             return connectionString.Substring(Key.Length).Trim();

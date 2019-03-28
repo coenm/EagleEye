@@ -26,7 +26,7 @@
         public static void NotNull<T>(T value, string parameterName)
             where T : class
         {
-            Guard.NotNull(value, parameterName);
+            Helpers.Guards.Guard.NotNull(value, parameterName);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@
         [ContractAnnotation("=> value:notnull")]
         public static void NotNullOrWhiteSpace(string value, string parameterName)
         {
-            Guard.NotNullOrWhiteSpace(value, parameterName);
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(value, parameterName);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
         [ContractAnnotation("=> value:notnull")]
         public static void NotNullOrEmpty<T>(ICollection<T> value, string parameterName)
         {
-            Guard.NotNullOrEmpty(value, parameterName);
+            Helpers.Guards.Guard.NotNullOrEmpty(value, parameterName);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@
         public static void HasValue<T>(T? value, string parameterName)
             where T : struct
         {
-            Guard.HasValue(value, parameterName);
+            Helpers.Guards.Guard.HasValue(value, parameterName);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@
         public static void MustBeLessThan<TValue>(TValue value, TValue max, string parameterName)
             where TValue : IComparable<TValue>
         {
-            Guard.MustBeLessThan(value, max, parameterName);
+            Helpers.Guards.Guard.MustBeLessThan(value, max, parameterName);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@
         public static void MustBeLessThanOrEqualTo<TValue>(TValue value, TValue max, string parameterName)
             where TValue : IComparable<TValue>
         {
-            Guard.MustBeLessThanOrEqualTo(value, max, parameterName);
+            Helpers.Guards.Guard.MustBeLessThanOrEqualTo(value, max, parameterName);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@
         public static void MustBeGreaterThan<TValue>(TValue value, TValue min, string parameterName)
             where TValue : IComparable<TValue>
         {
-            Guard.MustBeGreaterThan(value, min, parameterName);
+            Helpers.Guards.Guard.MustBeGreaterThan(value, min, parameterName);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@
         public static void MustBeGreaterThanOrEqualTo<TValue>(TValue value, TValue min, string parameterName)
             where TValue : IComparable<TValue>
         {
-            Guard.MustBeGreaterThanOrEqualTo(value, min, parameterName);
+            Helpers.Guards.Guard.MustBeGreaterThanOrEqualTo(value, min, parameterName);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@
         public static void MustBeBetweenOrEqualTo<TValue>(TValue value, TValue min, TValue max, string parameterName)
            where TValue : IComparable<TValue>
         {
-            Guard.MustBeBetweenOrEqualTo(value, min, max, parameterName);
+            Helpers.Guards.Guard.MustBeBetweenOrEqualTo(value, min, max, parameterName);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@
         public static void MustBeEqualTo<TValue>(TValue value1, TValue value2, string parameterName)
             where TValue : IComparable<TValue>
         {
-            Guard.MustBeEqualTo(value1, value2, parameterName);
+            Helpers.Guards.Guard.MustBeEqualTo(value1, value2, parameterName);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@
         [Conditional("DEBUG")]
         public static void IsTrue(bool target, string parameterName, string message)
         {
-            Guard.IsTrue(target, parameterName, message);
+            Helpers.Guards.Guard.IsTrue(target, parameterName, message);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@
         [Conditional("DEBUG")]
         public static void IsFalse(bool target, string parameterName, string message)
         {
-            Guard.IsFalse(target, parameterName, message);
+            Helpers.Guards.Guard.IsFalse(target, parameterName, message);
         }
 
         /// <summary>
@@ -204,7 +204,7 @@
         [Conditional("DEBUG")]
         public static void NotEmpty(Guid target, string parameterName)
         {
-            Guard.NotEmpty(target, parameterName);
+            Helpers.Guards.Guard.NotEmpty(target, parameterName);
         }
     }
 }

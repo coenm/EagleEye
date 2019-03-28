@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.LuceneNet.Test
 {
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     internal class SearchResults<T>
@@ -8,7 +8,7 @@
     {
         public SearchResults([NotNull] T data, float score)
         {
-            Guard.NotNull(data, nameof(data));
+            Helpers.Guards.Guard.NotNull(data, nameof(data));
             Data = data;
             Score = score;
         }

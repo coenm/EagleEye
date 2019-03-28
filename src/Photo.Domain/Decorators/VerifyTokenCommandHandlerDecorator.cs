@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Commands;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     internal class VerifyTokenCommandHandlerDecorator<T>
@@ -15,7 +15,7 @@
 
         public VerifyTokenCommandHandlerDecorator([NotNull] ICancellableCommandHandler<T> decoratee)
         {
-            Guard.NotNull(decoratee, nameof(decoratee));
+            Helpers.Guards.Guard.NotNull(decoratee, nameof(decoratee));
             this.decoratee = decoratee;
         }
 

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using NLog;
@@ -15,7 +15,7 @@
 
         public DbContextOptionsFactory([NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
         {
-            Guard.NotNull(strategies, nameof(strategies));
+            Helpers.Guards.Guard.NotNull(strategies, nameof(strategies));
             this.strategies = strategies.ToList();
         }
 

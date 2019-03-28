@@ -4,7 +4,7 @@
     using System.Linq;
 
     using EagleEye.FileImporter.Similarity;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
 
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
@@ -15,14 +15,14 @@
 
         public SingleFileSimilarityRepository(IPersistentSerializer<List<SimilarityResultStorage>> storage)
         {
-            Guard.NotNull(storage, nameof(storage));
+            Helpers.Guards.Guard.NotNull(storage, nameof(storage));
             this.storage = storage;
             data = this.storage.Load();
         }
 
         public IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash)
         {
-            Guard.NotNull(contentHash, nameof(contentHash));
+            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
 
             return data
                    .Where(index => index.ImageHash.Contains(contentHash))
@@ -31,7 +31,7 @@
 
         public IEnumerable<SimilarityResult> FindSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95, int take = 0, int skip = 0)
         {
-            Guard.NotNull(contentHash, nameof(contentHash));
+            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
 
             // ReSharper disable once InconsistentlySynchronizedField
             IEnumerable<SimilarityResultStorage> result = data.Where(index =>
@@ -68,7 +68,7 @@
 
         public void Delete(byte[] contentHash)
         {
-            Guard.NotNull(contentHash, nameof(contentHash));
+            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
 
             lock (syncLock)
             {
@@ -86,8 +86,8 @@
 
         public void AddOrUpdate(byte[] contentHash, SimilarityResult similarity)
         {
-            Guard.NotNull(contentHash, nameof(contentHash));
-            Guard.NotNull(similarity, nameof(similarity));
+            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
+            Helpers.Guards.Guard.NotNull(similarity, nameof(similarity));
 
             lock (syncLock)
             {

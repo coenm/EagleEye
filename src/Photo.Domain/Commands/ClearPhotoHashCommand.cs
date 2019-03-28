@@ -3,7 +3,7 @@
     using System;
 
     using EagleEye.Photo.Domain.Commands.Base;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     [PublicAPI]
@@ -12,7 +12,7 @@
         public ClearPhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier)
             : base(id, expectedVersion)
         {
-            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
 
             HashIdentifier = hashIdentifier;
         }

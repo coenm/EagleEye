@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     internal class PicasaPersonProvider : IPhotoPersonProvider
@@ -13,7 +13,7 @@
 
         public PicasaPersonProvider([NotNull] IPicasaService picasaService)
         {
-            Guard.NotNull(picasaService, nameof(picasaService));
+            Helpers.Guards.Guard.NotNull(picasaService, nameof(picasaService));
             this.picasaService = picasaService;
         }
 
@@ -28,7 +28,7 @@
 
         public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            DebugHelpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             var persons = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
 

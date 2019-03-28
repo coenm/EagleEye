@@ -16,7 +16,7 @@
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using NLog;
     using SimpleInjector;
@@ -59,8 +59,8 @@
             [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
-            Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
-            Guard.NotNull(plugins, nameof(plugins));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Helpers.Guards.Guard.NotNull(plugins, nameof(plugins));
 
             var bootstrapper = new Bootstrapper();
 
@@ -93,7 +93,7 @@
 
         public void RegisterSearchEngineReadModel([CanBeNull] string indexBaseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(indexBaseDirectory, nameof(indexBaseDirectory));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(indexBaseDirectory, nameof(indexBaseDirectory));
 
             if (readModelSearchEngineEnabled)
                 return;
@@ -108,8 +108,8 @@
 
         public void RegisterSimilarityReadModel([NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
             if (readModelSimilarityEnabled)
                 return;
@@ -121,7 +121,7 @@
 
         public void RegisterPhotoDatabaseReadModel([CanBeNull] string connectionString)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
             if (readModelDatabaseEnabled)
                 return;
@@ -140,7 +140,7 @@
 
         private void RegisterCore([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance);
@@ -154,7 +154,7 @@
 
         private void RegisterCqrsLite([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             container.Register<Router>(Lifestyle.Singleton);
             container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);
@@ -179,14 +179,14 @@
 
         private void RegisterPhotoDomain()
         {
-            DebugGuard.NotNull(container, nameof(container));
+            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
 
             Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
         private void RegisterPlugins([NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
-            DebugGuard.NotNull(plugins, nameof(plugins));
+            DebugHelpers.Guards.Guard.NotNull(plugins, nameof(plugins));
 
             foreach (var plugin in plugins)
             {

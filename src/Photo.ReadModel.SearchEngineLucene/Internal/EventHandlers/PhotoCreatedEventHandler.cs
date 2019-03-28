@@ -8,7 +8,7 @@
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using NLog;
 
@@ -26,13 +26,13 @@
 
         public PhotoCreatedEventHandler([NotNull] IPhotoIndex photoIndex)
         {
-            Guard.NotNull(photoIndex, nameof(photoIndex));
+            Helpers.Guards.Guard.NotNull(photoIndex, nameof(photoIndex));
             this.photoIndex = photoIndex;
         }
 
         public Task Handle([NotNull] PhotoCreated message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
 
             var photo = new Photo
             {
@@ -48,43 +48,43 @@
 
         public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
-            DebugGuard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public Task Handle(DateTimeTakenChanged message, CancellationToken token = new CancellationToken())
         {
-            DebugGuard.NotNull(message, nameof(message));
+            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
 
             var storedItem = photoIndex.Search(message.Id);
 

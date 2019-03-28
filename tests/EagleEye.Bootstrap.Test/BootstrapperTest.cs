@@ -10,7 +10,7 @@
     using EagleEye.TestHelper;
     using FakeItEasy;
     using FluentAssertions;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using SimpleInjector;
     using Xunit;
 
@@ -114,7 +114,7 @@
 
         private void MakeSureExifToolCanBeFound(Container container)
         {
-            DebugGuard.NotNull(container, nameof(container));
+            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
 
             container.Options.AllowOverridingRegistrations = true;
             container.Register<IExifTool>(A.Dummy<IExifTool>, Lifestyle.Singleton);

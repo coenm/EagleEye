@@ -8,7 +8,7 @@
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Decorators;
     using EagleEye.Photo.Domain.Services;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -19,7 +19,7 @@
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapPhotoDomain([NotNull] Container container)
         {
-            Guard.NotNull(container, nameof(container));
+            Helpers.Guards.Guard.NotNull(container, nameof(container));
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register(typeof(IHandler<>), thisAssembly, Lifestyle.Transient);

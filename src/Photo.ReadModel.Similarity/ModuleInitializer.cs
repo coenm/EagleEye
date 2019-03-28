@@ -5,7 +5,7 @@
     using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -15,7 +15,7 @@
 
         public ModuleInitializer([NotNull] ISimilarityDbContextFactory dbContextFactory)
         {
-            Guard.NotNull(dbContextFactory, nameof(dbContextFactory));
+            Helpers.Guards.Guard.NotNull(dbContextFactory, nameof(dbContextFactory));
             this.dbContextFactory = dbContextFactory;
         }
 

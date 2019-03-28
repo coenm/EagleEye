@@ -20,7 +20,7 @@
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.ReadModel.SearchEngineLucene;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -37,9 +37,9 @@
             [NotNull] string indexFilename,
             [NotNull] string connectionStringHangFire)
         {
-            Guard.NotNull(container, nameof(container));
-            Guard.NotNullOrWhiteSpace(indexFilename, nameof(indexFilename));
-            Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(indexFilename, nameof(indexFilename));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
             string userDir = GetUserDirectory();
 
@@ -90,25 +90,25 @@
 
         public static string CreateFullFilename([NotNull] string filename)
         {
-            Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
             return Path.Combine(GetUserDirectory(), filename);
         }
 
         public static string CreateSqlLiteFileConnectionString([NotNull] string fullFilename)
         {
-            Guard.NotNullOrWhiteSpace(fullFilename, nameof(fullFilename));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(fullFilename, nameof(fullFilename));
             return $"Filename={fullFilename};";
         }
 
         public static void VerifyContainer([NotNull] Container container)
         {
-            Guard.NotNull(container, nameof(container));
+            Helpers.Guards.Guard.NotNull(container, nameof(container));
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
         public static async Task InitializeAllServices([NotNull] Container container)
         {
-            Guard.NotNull(container, nameof(container));
+            Helpers.Guards.Guard.NotNull(container, nameof(container));
             var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
             await Task.WhenAll(instancesToInitialize.Select(instance => instance.InitializeAsync())).ConfigureAwait(false);
         }
@@ -139,24 +139,24 @@
 
         private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
-            DebugGuard.NotNull(container, nameof(container));
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
             global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
         }
 
         private static void RegisterPhotoDomain([NotNull] Container container)
         {
-            DebugGuard.NotNull(container, nameof(container));
+            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
 
             EagleEye.Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
         private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
         {
-            DebugGuard.NotNull(container, nameof(container));
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
+            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
             global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,
@@ -165,7 +165,7 @@
 
         private static void RegisterSearchEngineReadModel([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
         {
-            DebugGuard.NotNull(container, nameof(container));
+            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
 
             Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,

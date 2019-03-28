@@ -7,7 +7,7 @@
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ImageHash.Internal;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -18,7 +18,7 @@
 
         public PhotoHashProvider([NotNull] IFileService fileService)
         {
-            Guard.NotNull(fileService, nameof(fileService));
+            Helpers.Guards.Guard.NotNull(fileService, nameof(fileService));
             this.fileService = fileService;
         }
 
@@ -33,7 +33,7 @@
 
         public Task<List<PhotoHash>> ProvideAsync(string filename, List<PhotoHash> previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            DebugHelpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             using (var stream = fileService.OpenRead(filename))
             {

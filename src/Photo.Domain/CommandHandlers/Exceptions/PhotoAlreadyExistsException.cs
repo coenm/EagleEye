@@ -2,14 +2,14 @@
 {
     using System;
 
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     public class PhotoAlreadyExistsException : Exception
     {
         public PhotoAlreadyExistsException([NotNull] string filename)
         {
-            Guard.NotNull(filename, nameof(filename));
+            Helpers.Guards.Guard.NotNull(filename, nameof(filename));
             Filename = filename;
         }
 

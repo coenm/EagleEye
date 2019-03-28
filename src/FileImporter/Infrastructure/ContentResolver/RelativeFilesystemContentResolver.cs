@@ -3,7 +3,7 @@
     using System.IO;
 
     using EagleEye.FileImporter.Indexing;
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
 
     public class RelativeFilesystemContentResolver : IContentResolver
     {
@@ -11,7 +11,7 @@
 
         public RelativeFilesystemContentResolver(string baseDirectory)
         {
-            Guard.NotNull(baseDirectory, nameof(baseDirectory));
+            Helpers.Guards.Guard.NotNull(baseDirectory, nameof(baseDirectory));
             this.baseDirectory = baseDirectory;
         }
 

@@ -2,7 +2,7 @@
 {
     using System.Collections.Concurrent;
 
-    using Helpers.Guards;
+    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     internal class InMemoryFilenameRepository : IFilenameRepository
@@ -16,13 +16,13 @@
 
         public bool Contains([NotNull] string filename)
         {
-            Guard.NotNull(filename, nameof(filename));
+            Helpers.Guards.Guard.NotNull(filename, nameof(filename));
             return registeredFileNames.ContainsKey(filename);
         }
 
         public void Add([NotNull] string filename)
         {
-            Guard.NotNull(filename, nameof(filename));
+            Helpers.Guards.Guard.NotNull(filename, nameof(filename));
             registeredFileNames.TryAdd(filename, null);
         }
     }
