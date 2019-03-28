@@ -21,6 +21,7 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
     <AssemblyName>EagleEye.Plugin.ExifTool.Test</AssemblyName>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />

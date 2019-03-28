@@ -16,6 +16,7 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
     <AssemblyName>EagleEye.Plugin.Picasa</AssemblyName>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
