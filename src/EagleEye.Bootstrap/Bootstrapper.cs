@@ -59,7 +59,7 @@
             [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotEmpty();
             Dawn.Guard.Argument(plugins, nameof(plugins)).NotNull();
 
             var bootstrapper = new Bootstrapper();

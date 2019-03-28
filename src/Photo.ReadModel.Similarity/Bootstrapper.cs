@@ -32,8 +32,8 @@
             [NotNull] string hangFireConnectionString)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(hangFireConnectionString, nameof(hangFireConnectionString));
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(hangFireConnectionString, nameof(hangFireConnectionString)).NotNull().NotEmpty();
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register<IInternalStatelessSimilarityRepository, InternalSimilarityRepository>(Lifestyle.Singleton);

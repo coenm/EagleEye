@@ -21,7 +21,7 @@
         [CanBeNull]
         public IClaimFilenameToken Claim([NotNull] string filename)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
 
             lock (syncLock)
             {

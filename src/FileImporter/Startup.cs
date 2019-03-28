@@ -38,8 +38,8 @@
             [NotNull] string connectionStringHangFire)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(indexFilename, nameof(indexFilename));
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            Dawn.Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotEmpty();
 
             string userDir = GetUserDirectory();
 
@@ -90,13 +90,13 @@
 
         public static string CreateFullFilename([NotNull] string filename)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
             return Path.Combine(GetUserDirectory(), filename);
         }
 
         public static string CreateSqlLiteFileConnectionString([NotNull] string fullFilename)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(fullFilename, nameof(fullFilename));
+            Dawn.Guard.Argument(fullFilename, nameof(fullFilename)).NotNull().NotEmpty();
             return $"Filename={fullFilename};";
         }
 

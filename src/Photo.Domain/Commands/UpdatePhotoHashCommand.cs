@@ -12,7 +12,7 @@
         public UpdatePhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier, ulong fileHash)
             : base(id, expectedVersion)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotEmpty();
 
             HashIdentifier = hashIdentifier;
             PhotoHash = fileHash;

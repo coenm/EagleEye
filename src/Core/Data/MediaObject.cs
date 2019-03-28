@@ -12,7 +12,7 @@
 
         public MediaObject(string filename)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Dawn.Guard.Argument(persons, nameof(persons)).NotNull().NotEmpty();
 
             FileInformation = new FileInformation(filename);
             Location = new Location();

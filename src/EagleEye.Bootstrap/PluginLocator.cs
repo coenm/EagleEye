@@ -16,7 +16,7 @@
         [NotNull]
         public static IEnumerable<Assembly> FindPluginAssemblies([NotNull] string baseDirectory)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotEmpty();
 
             Logger.Debug(() => $"Plugin base directory {baseDirectory}");
 

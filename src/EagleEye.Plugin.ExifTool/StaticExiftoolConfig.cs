@@ -7,7 +7,7 @@
     {
         public StaticExiftoolConfig([NotNull] string exifToolExe)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(exifToolExe, nameof(exifToolExe));
+            Dawn.Guard.Argument(exifToolExe, nameof(exifToolExe)).NotNull().NotEmpty();
             ExifToolExe = exifToolExe;
         }
 
