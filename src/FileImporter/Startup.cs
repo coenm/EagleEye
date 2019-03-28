@@ -140,8 +140,8 @@
         private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
             global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
         }
@@ -156,7 +156,7 @@
         private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
             global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,

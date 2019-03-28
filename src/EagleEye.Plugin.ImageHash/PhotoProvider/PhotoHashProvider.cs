@@ -33,7 +33,7 @@
 
         public Task<List<PhotoHash>> ProvideAsync(string filename, List<PhotoHash> previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            Helpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             using (var stream = fileService.OpenRead(filename))
             {

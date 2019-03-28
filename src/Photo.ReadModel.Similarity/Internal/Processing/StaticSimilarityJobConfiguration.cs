@@ -1,13 +1,13 @@
 ﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.Processing
 {
+    using Dawn;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
-    using Helpers.Guards; using Dawn;
 
     internal class StaticSimilarityJobConfiguration : ISimilarityJobConfiguration
     {
         public StaticSimilarityJobConfiguration(double thresholdPercentageSimilarityStorage)
         {
-            Helpers.Guards.Guard.MustBeBetweenOrEqualTo(thresholdPercentageSimilarityStorage, 0d, 100d, nameof(thresholdPercentageSimilarityStorage));
+            Dawn.Guard.Argument(thresholdPercentageSimilarityStorage, nameof(thresholdPercentageSimilarityStorage)).InRange(0d, 100d);
 
             ThresholdPercentageSimilarityStorage = thresholdPercentageSimilarityStorage;
         }

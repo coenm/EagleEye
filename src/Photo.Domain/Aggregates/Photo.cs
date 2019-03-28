@@ -30,11 +30,10 @@
             [NotNull] byte[] fileSha256)
         : this()
         {
-            Helpers.Guards.Guard.NotEmpty(id, nameof(id));
+            Dawn.Guard.Argument(id, nameof(id)).NotEqual(Guid.Empty);
             Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
             Dawn.Guard.Argument(mimeType, nameof(mimeType)).NotNull().NotEmpty();
-            Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
-            Helpers.Guards.Guard.MustBeEqualTo(fileSha256.Length, Sha256ByteSize, $"{nameof(fileSha256)}.{nameof(fileSha256.Length)}");
+            Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull().Count(Sha256ByteSize);
 
             Id = id;
             ApplyChange(new PhotoCreated(id, filename, mimeType, fileSha256));
@@ -140,7 +139,7 @@
 
         public void UpdateFileHash([NotNull] byte[] fileHash)
         {
-            Helpers.Guards.Guard.NotNullOrEmpty(fileHash, nameof(fileHash));
+            Dawn.Guard.Argument(fileHash, nameof(fileHash)).NotNull().NotEmpty();
 
             if (!this.fileHash.SequenceEqual(fileHash))
                 ApplyChange(new FileHashUpdated(Id, fileHash));

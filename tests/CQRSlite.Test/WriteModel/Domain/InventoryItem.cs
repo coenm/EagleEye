@@ -4,7 +4,7 @@
 
     using CQRSlite.Domain;
     using CQRSlite.Test.Events;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class InventoryItem : AggregateRoot
@@ -23,7 +23,7 @@
 
         public void ChangeName([NotNull] string newName)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(newName, nameof(newName));
+            Dawn.Guard.Argument(newName, nameof(newName)).NotNull().NotEmpty();
             ApplyChange(new InventoryItemRenamed(Id, newName));
         }
 

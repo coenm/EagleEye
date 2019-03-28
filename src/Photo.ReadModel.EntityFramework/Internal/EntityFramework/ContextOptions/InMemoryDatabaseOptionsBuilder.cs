@@ -40,8 +40,8 @@
         [NotNull]
         private string GetNameFromConnectionString([NotNull] string connectionString)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.MustBeGreaterThanOrEqualTo(connectionString.Length, Key.Length, $"{nameof(connectionString)}.{nameof(connectionString.Length)}");
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.MustBeGreaterThanOrEqualTo(connectionString.Length, Key.Length, $"{nameof(connectionString)}.{nameof(connectionString.Length)}");
 
             // todo spaces, semicolons etc. etc?
             return connectionString.Substring(Key.Length).Trim();

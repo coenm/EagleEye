@@ -33,7 +33,7 @@
 
         public async Task<List<string>> ProvideAsync([NotNull] string filename, [CanBeNull] List<string> previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            Helpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             var exiftoolResult = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 

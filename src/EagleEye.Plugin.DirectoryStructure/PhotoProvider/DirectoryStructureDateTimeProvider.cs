@@ -37,7 +37,7 @@
 
         public Task<Timestamp> ProvideAsync(string filename, Timestamp previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            Helpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             filename = filename.Trim();
 

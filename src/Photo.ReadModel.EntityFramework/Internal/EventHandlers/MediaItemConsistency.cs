@@ -187,7 +187,7 @@
         public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
         {
             Dawn.Guard.Argument(message, nameof(message)).NotNull();
-            DebugGuard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
+            Helpers.Guards.Guard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 

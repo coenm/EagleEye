@@ -25,7 +25,7 @@
 
         public void Execute(Guid id, int version, string hashIdentifierString)
         {
-            DebugGuard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
 
             using (var db = contextFactory.CreateDbContext())
             {

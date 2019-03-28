@@ -43,7 +43,7 @@
         [NotNull]
         private static IEnumerable<Assembly> GetPluginAssembliesInDirectory([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             return new DirectoryInfo(baseDirectory)
                 .GetFiles()

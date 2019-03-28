@@ -364,13 +364,13 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            DebugGuard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
             DeleteByTerm(new Term(KeyFilename, filename));
         }
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
-            DebugGuard.NotEmpty(guid, nameof(guid));
+            Helpers.Guards.Guard.NotEmpty(guid, nameof(guid));
             if (guid == Guid.Empty)
                 return;
 

@@ -93,7 +93,7 @@
 
         public void RegisterSearchEngineReadModel([CanBeNull] string indexBaseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(indexBaseDirectory, nameof(indexBaseDirectory));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(indexBaseDirectory, nameof(indexBaseDirectory));
 
             if (readModelSearchEngineEnabled)
                 return;
@@ -108,8 +108,8 @@
 
         public void RegisterSimilarityReadModel([NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
 
             if (readModelSimilarityEnabled)
                 return;
@@ -121,7 +121,7 @@
 
         public void RegisterPhotoDatabaseReadModel([CanBeNull] string connectionString)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
             if (readModelDatabaseEnabled)
                 return;
@@ -140,7 +140,7 @@
 
         private void RegisterCore([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance);
@@ -154,7 +154,7 @@
 
         private void RegisterCqrsLite([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
             container.Register<Router>(Lifestyle.Singleton);
             container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);
