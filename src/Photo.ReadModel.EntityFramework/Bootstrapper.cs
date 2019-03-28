@@ -20,7 +20,7 @@
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapEntityFrameworkReadModel([NotNull] Container container, [NotNull] string connectionString)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
             Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
 
             var thisAssembly = typeof(Bootstrapper).Assembly;

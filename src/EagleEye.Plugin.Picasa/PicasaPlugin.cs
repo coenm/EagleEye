@@ -14,7 +14,7 @@
 
         public void EnablePlugin([NotNull] Container container)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
 
             container.Register<IPicasaService, PicasaService>(Lifestyle.Singleton);
             container.Collection.Append(typeof(IPhotoPersonProvider), typeof(PicasaPersonProvider));

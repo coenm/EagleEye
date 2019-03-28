@@ -18,7 +18,7 @@
 
         public PhotoHashProvider([NotNull] IFileService fileService)
         {
-            Helpers.Guards.Guard.NotNull(fileService, nameof(fileService));
+            Dawn.Guard.Argument(fileService, nameof(fileService)).NotNull();
             this.fileService = fileService;
         }
 
@@ -33,7 +33,7 @@
 
         public Task<List<PhotoHash>> ProvideAsync(string filename, List<PhotoHash> previousResult)
         {
-            DebugHelpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             using (var stream = fileService.OpenRead(filename))
             {

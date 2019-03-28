@@ -14,7 +14,7 @@
 
         public SimpleInjectorJobActivator([NotNull] Container container)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
             this.container = container;
         }
 

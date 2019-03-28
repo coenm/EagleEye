@@ -11,13 +11,13 @@
 
         public CalculateIndexService(IContentResolver contentResolver)
         {
-            Helpers.Guards.Guard.NotNull(contentResolver, nameof(contentResolver));
+            Dawn.Guard.Argument(contentResolver, nameof(contentResolver)).NotNull();
             this.contentResolver = contentResolver;
         }
 
         public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
         {
-            Helpers.Guards.Guard.NotNull(fileIdentifiers, nameof(fileIdentifiers));
+            Dawn.Guard.Argument(fileIdentifiers, nameof(fileIdentifiers)).NotNull();
 
             var result = new ImageData[fileIdentifiers.Count];
 

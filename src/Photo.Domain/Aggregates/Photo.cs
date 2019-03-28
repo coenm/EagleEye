@@ -33,7 +33,7 @@
             Helpers.Guards.Guard.NotEmpty(id, nameof(id));
             Helpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
             Helpers.Guards.Guard.NotNullOrWhiteSpace(mimeType, nameof(mimeType));
-            Helpers.Guards.Guard.NotNull(fileSha256, nameof(fileSha256));
+            Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
             Helpers.Guards.Guard.MustBeEqualTo(fileSha256.Length, Sha256ByteSize, $"{nameof(fileSha256)}.{nameof(fileSha256.Length)}");
 
             Id = id;
@@ -167,7 +167,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] FileHashUpdated e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             fileHash = e.Hash.ToArray();
         }
@@ -175,7 +175,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoHashAdded e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             photoHashes.Add(e.HashIdentifier, e.Hash);
         }
@@ -183,7 +183,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoHashUpdated e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             photoHashes[e.HashIdentifier] = e.Hash;
         }
@@ -191,7 +191,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoHashCleared e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             photoHashes.Remove(e.HashIdentifier);
         }
@@ -199,7 +199,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] LocationClearedFromPhoto e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             location = null;
         }
@@ -207,7 +207,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] LocationSetToPhoto e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             location = e.Location;
         }
@@ -215,7 +215,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoCreated e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             created = true;
             Id = e.Id;
@@ -226,7 +226,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PersonsAddedToPhoto e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             persons.AddRange(e.Persons);
         }
@@ -234,7 +234,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PersonsRemovedFromPhoto e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             foreach (var t in e.Persons)
                 persons.Remove(t);
@@ -243,7 +243,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] TagsAddedToPhoto e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             tags.AddRange(e.Tags ?? new string[0]);
         }
@@ -251,7 +251,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] TagsRemovedFromPhoto e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             foreach (var t in e.Tags)
                 tags.Remove(t);
@@ -260,7 +260,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] DateTimeTakenChanged e)
         {
-            DebugHelpers.Guards.Guard.NotNull(e, nameof(e));
+            Dawn.Guard.Argument(e, nameof(e)).NotNull();
 
             dateTimeTaken = e.DateTimeTaken;
             dateTimeTakenPrecision = e.Precision;

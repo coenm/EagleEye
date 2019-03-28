@@ -19,7 +19,7 @@
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapPhotoDomain([NotNull] Container container)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register(typeof(IHandler<>), thisAssembly, Lifestyle.Transient);

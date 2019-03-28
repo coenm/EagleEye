@@ -11,7 +11,7 @@
 
         public RelativeFilesystemContentResolver(string baseDirectory)
         {
-            Helpers.Guards.Guard.NotNull(baseDirectory, nameof(baseDirectory));
+            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull();
             this.baseDirectory = baseDirectory;
         }
 

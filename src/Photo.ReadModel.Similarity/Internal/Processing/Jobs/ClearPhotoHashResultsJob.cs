@@ -17,15 +17,15 @@
             [NotNull] IInternalStatelessSimilarityRepository repository,
             [NotNull] ISimilarityDbContextFactory contextFactory)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
-            Helpers.Guards.Guard.NotNull(contextFactory, nameof(contextFactory));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
+            Dawn.Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
             this.repository = repository;
             this.contextFactory = contextFactory;
         }
 
         public void Execute(Guid id, int version, string hashIdentifierString)
         {
-            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
+            DebugGuard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
 
             using (var db = contextFactory.CreateDbContext())
             {

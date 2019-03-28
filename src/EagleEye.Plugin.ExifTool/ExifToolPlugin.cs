@@ -14,7 +14,7 @@
 
         public void EnablePlugin([NotNull] Container container)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
 
             container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName()), Lifestyle.Singleton); // todo coenm fix this
             container.Register<IExifTool, ExifToolAdapter>(Lifestyle.Singleton);

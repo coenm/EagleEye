@@ -9,7 +9,7 @@
     {
         public PhotoAlreadyExistsException([NotNull] string filename)
         {
-            Helpers.Guards.Guard.NotNull(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
             Filename = filename;
         }
 

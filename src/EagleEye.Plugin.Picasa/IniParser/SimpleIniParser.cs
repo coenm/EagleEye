@@ -18,7 +18,7 @@
 
         public static List<IniData> Parse([NotNull] Stream input)
         {
-            Helpers.Guards.Guard.NotNull(input, nameof(input));
+            Dawn.Guard.Argument(input, nameof(input)).NotNull();
 
             var content = GetContent(input);
             return ParseContent(content);
@@ -26,7 +26,7 @@
 
         private static string[] GetContent([NotNull] Stream stream)
         {
-            DebugHelpers.Guards.Guard.NotNull(stream, nameof(stream));
+            Dawn.Guard.Argument(stream, nameof(stream)).NotNull();
 
             try
             {

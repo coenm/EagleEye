@@ -17,7 +17,7 @@
 
         public ReadModelEntityFramework([NotNull] IEagleEyeRepository repository)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
         }
 
@@ -40,7 +40,7 @@
 
         private Interface.Model.Photo MapPhoto([NotNull] Photo photo)
         {
-            DebugHelpers.Guards.Guard.NotNull(photo, nameof(photo));
+            Dawn.Guard.Argument(photo, nameof(photo)).NotNull();
 
             return new Interface.Model.Photo(
                 photo.Id,

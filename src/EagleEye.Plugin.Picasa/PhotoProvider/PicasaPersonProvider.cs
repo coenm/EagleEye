@@ -13,7 +13,7 @@
 
         public PicasaPersonProvider([NotNull] IPicasaService picasaService)
         {
-            Helpers.Guards.Guard.NotNull(picasaService, nameof(picasaService));
+            Dawn.Guard.Argument(picasaService, nameof(picasaService)).NotNull();
             this.picasaService = picasaService;
         }
 
@@ -28,7 +28,7 @@
 
         public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
         {
-            DebugHelpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             var persons = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
 

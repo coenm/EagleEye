@@ -13,7 +13,7 @@
 
         public UniqueFilenameService([NotNull] IFilenameRepository repository)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
             claimedFileNames = new List<string>();
         }
@@ -39,7 +39,7 @@
 
         private void RemoveClaim([NotNull] string filename)
         {
-            DebugHelpers.Guards.Guard.NotNull(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
 
             lock (syncLock)
             {
@@ -49,7 +49,7 @@
 
         private void CommitClaim([NotNull] string filename)
         {
-            DebugHelpers.Guards.Guard.NotNull(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
 
             lock (syncLock)
             {
@@ -64,8 +64,8 @@
 
             public ClaimFilenameToken([NotNull] UniqueFilenameService parent, [NotNull] string filename)
             {
-                DebugHelpers.Guards.Guard.NotNull(parent, nameof(parent));
-                DebugHelpers.Guards.Guard.NotNull(filename, nameof(filename));
+                Dawn.Guard.Argument(parent, nameof(parent)).NotNull();
+                Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
                 this.parent = parent;
                 this.filename = filename;
             }

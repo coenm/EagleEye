@@ -16,8 +16,8 @@
 
         public SimilarityService([NotNull] ISimilarityRepository similarityRepository, [NotNull] IImageDataRepository imageRepository)
         {
-            Helpers.Guards.Guard.NotNull(similarityRepository, nameof(similarityRepository));
-            Helpers.Guards.Guard.NotNull(imageRepository, nameof(imageRepository));
+            Dawn.Guard.Argument(similarityRepository, nameof(similarityRepository)).NotNull();
+            Dawn.Guard.Argument(imageRepository, nameof(imageRepository)).NotNull();
 
             this.imageRepository = imageRepository;
             this.similarityRepository = similarityRepository;
@@ -25,7 +25,7 @@
 
         public void Update([NotNull] ImageData image, [CanBeNull] IProgress<FilenameProgressData> progress)
         {
-            Helpers.Guards.Guard.NotNull(image, nameof(image));
+            Dawn.Guard.Argument(image, nameof(image)).NotNull();
 
             if (progress == null)
                 progress = new Progress<FilenameProgressData>(i => { });

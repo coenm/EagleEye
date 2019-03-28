@@ -14,7 +14,7 @@
     {
         public override void WriteJson([NotNull] JsonWriter writer, [CanBeNull] object value, JsonSerializer serializer)
         {
-            Helpers.Guards.Guard.NotNull(writer, nameof(writer));
+            Dawn.Guard.Argument(writer, nameof(writer)).NotNull();
 
             if (value == null)
             {
@@ -30,7 +30,7 @@
 
         public override object ReadJson([NotNull] JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            Helpers.Guards.Guard.NotNull(reader, nameof(reader));
+            Dawn.Guard.Argument(reader, nameof(reader)).NotNull();
 
             do
             {

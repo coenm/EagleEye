@@ -21,8 +21,8 @@
             [NotNull] ISession session,
             [NotNull] IUniqueFilenameService uniqueFilenameService)
         {
-            Helpers.Guards.Guard.NotNull(session, nameof(session));
-            Helpers.Guards.Guard.NotNull(uniqueFilenameService, nameof(uniqueFilenameService));
+            Dawn.Guard.Argument(session, nameof(session)).NotNull();
+            Dawn.Guard.Argument(uniqueFilenameService, nameof(uniqueFilenameService)).NotNull();
             this.session = session;
             this.uniqueFilenameService = uniqueFilenameService;
         }

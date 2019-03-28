@@ -29,7 +29,7 @@
 
         public MediaItemCommandHandlers([NotNull] ISession session)
         {
-            Helpers.Guards.Guard.NotNull(session, nameof(session));
+            Dawn.Guard.Argument(session, nameof(session)).NotNull();
             this.session = session;
         }
 

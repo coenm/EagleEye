@@ -15,7 +15,7 @@
 
         public ModuleInitializer([NotNull] IEagleEyeDbContextFactory dbContextFactory)
         {
-            Helpers.Guards.Guard.NotNull(dbContextFactory, nameof(dbContextFactory));
+            Dawn.Guard.Argument(dbContextFactory, nameof(dbContextFactory)).NotNull();
             this.dbContextFactory = dbContextFactory;
         }
 

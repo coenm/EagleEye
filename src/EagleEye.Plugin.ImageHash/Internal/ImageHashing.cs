@@ -33,7 +33,7 @@
         /// <exception cref="InvalidDataException">Thrown when <paramref name="input"/> is not a valid image stream.</exception>
         [NotNull] public static List<PhotoHash> Calculate([NotNull] Stream input)
         {
-            Helpers.Guards.Guard.NotNull(input, nameof(input));
+            Dawn.Guard.Argument(input, nameof(input)).NotNull();
 
             var result = new List<PhotoHash>(3);
 

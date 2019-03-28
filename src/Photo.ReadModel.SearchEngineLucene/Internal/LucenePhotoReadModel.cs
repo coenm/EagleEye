@@ -15,7 +15,7 @@
 
         public LucenePhotoReadModel(IPhotoIndex photoIndex)
         {
-            Helpers.Guards.Guard.NotNull(photoIndex, nameof(photoIndex));
+            Dawn.Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
@@ -44,7 +44,7 @@
         [NotNull]
         private Interface.Model.PhotoResult MapToPhotoResult([NotNull] Model.PhotoSearchResult photo)
         {
-            DebugHelpers.Guards.Guard.NotNull(photo, nameof(photo));
+            Dawn.Guard.Argument(photo, nameof(photo)).NotNull();
 
             // todo datetime taken.
             return new Interface.Model.PhotoResult(
@@ -66,7 +66,7 @@
         [NotNull]
         private Interface.Model.PhotoIdResult MapToPhotoIdResult([NotNull] Model.PhotoSearchResult photo)
         {
-            DebugHelpers.Guards.Guard.NotNull(photo, nameof(photo));
+            Dawn.Guard.Argument(photo, nameof(photo)).NotNull();
             return new Interface.Model.PhotoIdResult(photo.Id, photo.Score);
         }
     }

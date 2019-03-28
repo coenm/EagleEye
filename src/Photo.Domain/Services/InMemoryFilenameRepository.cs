@@ -16,13 +16,13 @@
 
         public bool Contains([NotNull] string filename)
         {
-            Helpers.Guards.Guard.NotNull(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
             return registeredFileNames.ContainsKey(filename);
         }
 
         public void Add([NotNull] string filename)
         {
-            Helpers.Guards.Guard.NotNull(filename, nameof(filename));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
             registeredFileNames.TryAdd(filename, null);
         }
     }

@@ -8,7 +8,7 @@
     {
         public SearchResults([NotNull] T data, float score)
         {
-            Helpers.Guards.Guard.NotNull(data, nameof(data));
+            Dawn.Guard.Argument(data, nameof(data)).NotNull();
             Data = data;
             Score = score;
         }

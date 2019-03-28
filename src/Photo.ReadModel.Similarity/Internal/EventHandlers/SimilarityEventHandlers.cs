@@ -28,9 +28,9 @@
             [NotNull] ISimilarityDbContextFactory contextFactory,
             [NotNull] IBackgroundJobClient hangFireClient)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
-            Helpers.Guards.Guard.NotNull(contextFactory, nameof(contextFactory));
-            Helpers.Guards.Guard.NotNull(hangFireClient, nameof(hangFireClient));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
+            Dawn.Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
+            Dawn.Guard.Argument(hangFireClient, nameof(hangFireClient)).NotNull();
             this.repository = repository;
             this.contextFactory = contextFactory;
             this.hangFireClient = hangFireClient;
@@ -38,7 +38,7 @@
 
         public async Task Handle(PhotoHashCleared message, CancellationToken ct)
         {
-            Helpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             using (var db = contextFactory.CreateDbContext())
             {
@@ -59,7 +59,7 @@
 
         public async Task Handle(PhotoHashUpdated message, CancellationToken ct)
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             using (var db = contextFactory.CreateDbContext())
             {

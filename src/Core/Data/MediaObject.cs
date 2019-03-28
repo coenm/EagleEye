@@ -43,7 +43,7 @@
 
         public void AddPersons([NotNull] IEnumerable<string> persons)
         {
-            Helpers.Guards.Guard.NotNull(persons, nameof(persons));
+            Dawn.Guard.Argument(persons, nameof(persons)).NotNull();
 
             foreach (var person in persons)
                 AddPerson(person);
@@ -64,7 +64,7 @@
 
         public void AddTags([NotNull] IEnumerable<string> tags)
         {
-            Helpers.Guards.Guard.NotNull(tags, nameof(tags));
+            Dawn.Guard.Argument(tags, nameof(tags)).NotNull();
 
             foreach (var tag in tags)
                 AddTag(tag);

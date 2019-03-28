@@ -15,14 +15,14 @@
 
         public SingleFileSimilarityRepository(IPersistentSerializer<List<SimilarityResultStorage>> storage)
         {
-            Helpers.Guards.Guard.NotNull(storage, nameof(storage));
+            Dawn.Guard.Argument(storage, nameof(storage)).NotNull();
             this.storage = storage;
             data = this.storage.Load();
         }
 
         public IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash)
         {
-            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
+            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
 
             return data
                    .Where(index => index.ImageHash.Contains(contentHash))
@@ -31,7 +31,7 @@
 
         public IEnumerable<SimilarityResult> FindSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95, int take = 0, int skip = 0)
         {
-            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
+            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
 
             // ReSharper disable once InconsistentlySynchronizedField
             IEnumerable<SimilarityResultStorage> result = data.Where(index =>
@@ -68,7 +68,7 @@
 
         public void Delete(byte[] contentHash)
         {
-            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
+            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
 
             lock (syncLock)
             {
@@ -86,8 +86,8 @@
 
         public void AddOrUpdate(byte[] contentHash, SimilarityResult similarity)
         {
-            Helpers.Guards.Guard.NotNull(contentHash, nameof(contentHash));
-            Helpers.Guards.Guard.NotNull(similarity, nameof(similarity));
+            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
+            Dawn.Guard.Argument(similarity, nameof(similarity)).NotNull();
 
             lock (syncLock)
             {

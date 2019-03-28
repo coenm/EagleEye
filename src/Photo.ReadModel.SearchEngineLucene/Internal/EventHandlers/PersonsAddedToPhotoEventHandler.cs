@@ -21,14 +21,14 @@
 
         public PersonsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
         {
-            Helpers.Guards.Guard.NotNull(photoIndex, nameof(photoIndex));
+            Dawn.Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
         public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
-            Helpers.Guards.Guard.NotNull(message.Persons, nameof(message.Persons));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Dawn.Guard.Argument(message.Persons, nameof(message.Persons)).NotNull();
 
             if (!(photoIndex.Search(message.Id) is Photo storedItem))
                 return;

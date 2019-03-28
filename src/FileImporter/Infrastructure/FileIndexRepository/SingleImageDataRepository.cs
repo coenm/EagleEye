@@ -18,7 +18,7 @@
 
         public SingleImageDataRepository(IPersistentSerializer<List<ImageData>> storage)
         {
-            Helpers.Guards.Guard.NotNull(storage, nameof(storage));
+            Dawn.Guard.Argument(storage, nameof(storage)).NotNull();
             this.storage = storage;
             data = this.storage.Load();
         }
@@ -31,7 +31,7 @@
 
         public IEnumerable<ImageData> Find(Predicate<ImageData> predicate, int take = 0, int skip = 0)
         {
-            Helpers.Guards.Guard.NotNull(predicate, nameof(predicate));
+            Dawn.Guard.Argument(predicate, nameof(predicate)).NotNull();
 
             var result = data.Where(index => predicate(index));
 
@@ -52,7 +52,7 @@
             int take = 0,
             int skip = 0)
         {
-            Helpers.Guards.Guard.NotNull(src, nameof(src));
+            Dawn.Guard.Argument(src, nameof(src)).NotNull();
 
             var result = data.Where(index =>
                 {
@@ -102,13 +102,13 @@
 
         public IEnumerable<ImageData> FindByContentHash(byte[] imageHash)
         {
-            Helpers.Guards.Guard.NotNull(imageHash, nameof(imageHash));
+            Dawn.Guard.Argument(imageHash, nameof(imageHash)).NotNull();
             return Find(index => index.Hashes.ImageHash.SequenceEqual(imageHash));
         }
 
         public IEnumerable<ImageData> FindImageHashesNotInList(IEnumerable<byte[]> imageHashes)
         {
-            Helpers.Guards.Guard.NotNull(imageHashes, nameof(imageHashes));
+            Dawn.Guard.Argument(imageHashes, nameof(imageHashes)).NotNull();
 
             var hashes = imageHashes.ToArray();
 
@@ -120,7 +120,7 @@
 
         public int Count(Predicate<ImageData> predicate)
         {
-            Helpers.Guards.Guard.NotNull(predicate, nameof(predicate));
+            Dawn.Guard.Argument(predicate, nameof(predicate)).NotNull();
 
             return data.Count(index => predicate(index));
         }
@@ -132,7 +132,7 @@
 
         public void Delete(ImageData item)
         {
-            Helpers.Guards.Guard.NotNull(item, nameof(item));
+            Dawn.Guard.Argument(item, nameof(item)).NotNull();
 
             lock (syncLock)
             {
@@ -148,7 +148,7 @@
 
         public void AddOrUpdate(ImageData item)
         {
-            Helpers.Guards.Guard.NotNull(item, nameof(item));
+            Dawn.Guard.Argument(item, nameof(item)).NotNull();
 
             lock (syncLock)
             {

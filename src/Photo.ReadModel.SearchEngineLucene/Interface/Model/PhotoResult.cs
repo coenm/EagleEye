@@ -19,9 +19,9 @@
             float score)
             : base(id, score)
         {
-            DebugHelpers.Guards.Guard.NotNull(filename, nameof(filename));
-            DebugHelpers.Guards.Guard.NotNull(tags, nameof(tags));
-            DebugHelpers.Guards.Guard.NotNull(persons, nameof(persons));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
+            Dawn.Guard.Argument(tags, nameof(tags)).NotNull();
+            Dawn.Guard.Argument(persons, nameof(persons)).NotNull();
 
             Filename = filename;
             MimeType = mimeType;

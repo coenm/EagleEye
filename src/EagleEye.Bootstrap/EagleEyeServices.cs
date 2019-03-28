@@ -21,7 +21,7 @@
 
         public EagleEyeServices([NotNull] Container container)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
 
             this.container = container;
             state = State.Empty;
@@ -86,7 +86,7 @@
         private static IEnumerable<T> GetAllInstancesOrEmpty<T>([NotNull] Container container)
             where T : class
         {
-            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
 
             try
             {

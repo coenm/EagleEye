@@ -31,7 +31,7 @@
             [NotNull] string connectionString,
             [NotNull] string hangFireConnectionString)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
             Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
             Helpers.Guards.Guard.NotNullOrWhiteSpace(hangFireConnectionString, nameof(hangFireConnectionString));
             var thisAssembly = typeof(Bootstrapper).Assembly;

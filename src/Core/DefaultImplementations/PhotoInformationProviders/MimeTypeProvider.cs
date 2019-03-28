@@ -16,7 +16,7 @@
 
         public Task<string> ProvideAsync(string filename, [CanBeNull] string previousResult)
         {
-            DebugHelpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             return Task.FromResult(MimeTypes.GetMimeType(filename));
         }

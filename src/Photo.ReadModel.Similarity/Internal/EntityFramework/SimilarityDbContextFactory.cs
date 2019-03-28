@@ -11,7 +11,7 @@
 
         public SimilarityDbContextFactory(DbContextOptions<SimilarityDbContext> options)
         {
-            Helpers.Guards.Guard.NotNull(options, nameof(options));
+            Dawn.Guard.Argument(options, nameof(options)).NotNull();
             this.options = options;
         }
 

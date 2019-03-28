@@ -18,7 +18,7 @@
         {
             Helpers.Guards.Guard.NotNullOrWhiteSpace(fileName, nameof(fileName));
             Helpers.Guards.Guard.NotNullOrWhiteSpace(photoMimeType, nameof(photoMimeType));
-            Helpers.Guards.Guard.NotNull(fileSha256, nameof(fileSha256));
+            Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
 
             Id = Guid.NewGuid();
 

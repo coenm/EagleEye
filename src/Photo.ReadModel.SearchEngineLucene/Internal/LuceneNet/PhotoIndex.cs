@@ -53,7 +53,7 @@
 
         public PhotoIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
-            Helpers.Guards.Guard.NotNull(indexDirectoryFactory, nameof(indexDirectoryFactory));
+            Dawn.Guard.Argument(indexDirectoryFactory, nameof(indexDirectoryFactory)).NotNull();
 
             indexDirectory = indexDirectoryFactory.Create();
 
@@ -107,7 +107,7 @@
 
         public Task<bool> ReIndexMediaFileAsync([NotNull] Photo data)
         {
-            Helpers.Guards.Guard.NotNull(data, nameof(data));
+            Dawn.Guard.Argument(data, nameof(data)).NotNull();
 
             RemoveFromIndexByFilename(data.FileName);
             RemoveFromIndexByGuid(data.Id);
@@ -246,7 +246,7 @@
         [NotNull]
         public List<PhotoSearchResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {
-            Helpers.Guards.Guard.NotNull(query, nameof(query));
+            Dawn.Guard.Argument(query, nameof(query)).NotNull();
 
             var results = new List<PhotoSearchResult>();
             totalHits = 0;
@@ -350,7 +350,7 @@
 
         private Guid GetId([NotNull] Document doc)
         {
-            DebugHelpers.Guards.Guard.NotNull(doc, nameof(doc));
+            Dawn.Guard.Argument(doc, nameof(doc)).NotNull();
 
             var guidString = doc.GetField(KeyId)?.GetStringValue();
             if (string.IsNullOrWhiteSpace(guidString))
@@ -364,13 +364,13 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            DebugGuard.NotNullOrWhiteSpace(filename, nameof(filename));
             DeleteByTerm(new Term(KeyFilename, filename));
         }
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
-            DebugHelpers.Guards.Guard.NotEmpty(guid, nameof(guid));
+            DebugGuard.NotEmpty(guid, nameof(guid));
             if (guid == Guid.Empty)
                 return;
 
@@ -379,7 +379,7 @@
 
         private void DeleteByTerm([NotNull] Term term)
         {
-            DebugHelpers.Guards.Guard.NotNull(term, nameof(term));
+            Dawn.Guard.Argument(term, nameof(term)).NotNull();
 
             try
             {

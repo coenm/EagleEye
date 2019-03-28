@@ -124,7 +124,7 @@
 
         private IEnumerable<SearchResults<PersonDto>> Search(Query query, Filter filter)
         {
-            Helpers.Guards.Guard.NotNull(query, nameof(query));
+            Dawn.Guard.Argument(query, nameof(query)).NotNull();
 
             var results = new List<SearchResults<PersonDto>>();
 

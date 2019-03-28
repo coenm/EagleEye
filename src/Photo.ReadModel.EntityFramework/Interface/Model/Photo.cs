@@ -19,10 +19,10 @@
             DateTime? taken,
             int version)
         {
-            DebugHelpers.Guards.Guard.NotNull(filename, nameof(filename));
-            DebugHelpers.Guards.Guard.NotNull(fileSha256, nameof(fileSha256));
-            DebugHelpers.Guards.Guard.NotNull(tags, nameof(tags));
-            DebugHelpers.Guards.Guard.NotNull(persons, nameof(persons));
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
+            Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
+            Dawn.Guard.Argument(tags, nameof(tags)).NotNull();
+            Dawn.Guard.Argument(persons, nameof(persons)).NotNull();
 
             Id = id;
             Filename = filename;

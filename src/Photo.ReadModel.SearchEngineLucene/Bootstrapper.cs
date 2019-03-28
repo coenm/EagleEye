@@ -23,9 +23,9 @@
             bool useInMemoryIndex = true,
             [CanBeNull] string baseDirectory = null)
         {
-            Helpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
             if (useInMemoryIndex == false)
-                Helpers.Guards.Guard.NotNull(baseDirectory, nameof(baseDirectory));
+                Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull();
 
             container.RegisterSingleton<IPhotoIndex, PhotoIndex>();
 

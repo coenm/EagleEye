@@ -8,7 +8,7 @@
 
         public PersistentFileIndexService(IImageDataRepository repository)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
         }
 

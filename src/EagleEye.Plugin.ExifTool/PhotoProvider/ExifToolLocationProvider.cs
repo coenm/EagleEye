@@ -14,7 +14,7 @@
 
         public ExifToolLocationProvider([NotNull] IExifTool exiftool)
         {
-            Helpers.Guards.Guard.NotNull(exiftool, nameof(exiftool));
+            Dawn.Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
         }
 

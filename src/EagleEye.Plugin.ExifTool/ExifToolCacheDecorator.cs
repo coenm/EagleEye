@@ -21,8 +21,8 @@
 
         public ExifToolCacheDecorator([NotNull] IExifTool exiftool, [NotNull] IDateTimeService dateTimeService)
         {
-            Helpers.Guards.Guard.NotNull(exiftool, nameof(exiftool));
-            Helpers.Guards.Guard.NotNull(dateTimeService, nameof(dateTimeService));
+            Dawn.Guard.Argument(exiftool, nameof(exiftool)).NotNull();
+            Dawn.Guard.Argument(dateTimeService, nameof(dateTimeService)).NotNull();
             cacheValidity = TimeSpan.FromMinutes(5); // todo make this configurable.
             this.exiftool = exiftool;
             this.dateTimeService = dateTimeService;

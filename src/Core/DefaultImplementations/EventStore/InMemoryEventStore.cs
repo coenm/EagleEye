@@ -17,7 +17,7 @@
 
         public InMemoryEventStore([NotNull] IEventPublisher publisher)
         {
-            Helpers.Guards.Guard.NotNull(publisher, nameof(publisher));
+            Dawn.Guard.Argument(publisher, nameof(publisher)).NotNull();
             this.publisher = publisher;
         }
 

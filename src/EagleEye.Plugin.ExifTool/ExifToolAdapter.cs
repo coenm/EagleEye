@@ -16,7 +16,7 @@
 
         public ExifToolAdapter([NotNull] IExifToolConfig config)
         {
-            Helpers.Guards.Guard.NotNull(config, nameof(config));
+            Dawn.Guard.Argument(config, nameof(config)).NotNull();
 
             exiftoolImpl = new OpenedExifTool(config.ExifToolExe);
             exiftoolImpl.Init();

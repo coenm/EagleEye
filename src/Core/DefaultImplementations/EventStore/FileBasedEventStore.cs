@@ -23,7 +23,7 @@
 
         public FileBasedEventStore([NotNull] IEventPublisher publisher, [NotNull] string basePath)
         {
-            Helpers.Guards.Guard.NotNull(publisher, nameof(publisher));
+            Dawn.Guard.Argument(publisher, nameof(publisher)).NotNull();
             Helpers.Guards.Guard.NotNullOrWhiteSpace(basePath, nameof(basePath));
             this.publisher = publisher;
             this.basePath = basePath;

@@ -12,7 +12,7 @@
         public UpdateFileHashCommand(Guid id, int expectedVersion, [NotNull] byte[] fileHash)
         : base(id, expectedVersion)
         {
-            Helpers.Guards.Guard.NotNull(fileHash, nameof(fileHash));
+            Dawn.Guard.Argument(fileHash, nameof(fileHash)).NotNull();
 
             FileHash = fileHash;
         }

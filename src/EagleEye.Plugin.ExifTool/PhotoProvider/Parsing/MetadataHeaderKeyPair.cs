@@ -7,9 +7,9 @@
     {
         public MetadataHeaderKeyPair([NotNull] string header1, [NotNull] string header2, [NotNull] string key)
         {
-            DebugHelpers.Guards.Guard.NotNull(header1, nameof(header1));
-            DebugHelpers.Guards.Guard.NotNull(header2, nameof(header2));
-            DebugHelpers.Guards.Guard.NotNull(key, nameof(key));
+            Dawn.Guard.Argument(header1, nameof(header1)).NotNull();
+            Dawn.Guard.Argument(header2, nameof(header2)).NotNull();
+            Dawn.Guard.Argument(key, nameof(key)).NotNull();
             Header1 = header1;
             Header2 = header2;
             Key = key;

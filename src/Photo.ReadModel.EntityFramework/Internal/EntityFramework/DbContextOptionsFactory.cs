@@ -17,7 +17,7 @@
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration", Justification = "Used by Guard for null check")]
         public DbContextOptionsFactory([NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
         {
-            Helpers.Guards.Guard.NotNull(strategies, nameof(strategies));
+            Dawn.Guard.Argument(strategies, nameof(strategies)).NotNull();
             this.strategies = strategies.ToList();
         }
 

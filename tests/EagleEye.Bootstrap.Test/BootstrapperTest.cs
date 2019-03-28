@@ -114,7 +114,7 @@
 
         private void MakeSureExifToolCanBeFound(Container container)
         {
-            DebugHelpers.Guards.Guard.NotNull(container, nameof(container));
+            Dawn.Guard.Argument(container, nameof(container)).NotNull();
 
             container.Options.AllowOverridingRegistrations = true;
             container.Register<IExifTool>(A.Dummy<IExifTool>, Lifestyle.Singleton);

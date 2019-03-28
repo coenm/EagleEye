@@ -28,13 +28,13 @@
 
         public MediaItemConsistency([NotNull] IEagleEyeRepository repository)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
         }
 
         public async Task Handle([NotNull] PhotoCreated message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = new Photo
             {
@@ -52,7 +52,7 @@
 
         public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -86,7 +86,7 @@
 
         public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -120,7 +120,7 @@
 
         public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -142,7 +142,7 @@
 
         public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -164,7 +164,7 @@
 
         public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -186,8 +186,8 @@
 
         public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
-            DebugHelpers.Guards.Guard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            DebugGuard.NotNull(message.Location, $"{nameof(message)}.{nameof(message.Location)}");
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 
@@ -219,7 +219,7 @@
 
         public async Task Handle(DateTimeTakenChanged message, CancellationToken token = new CancellationToken())
         {
-            DebugHelpers.Guards.Guard.NotNull(message, nameof(message));
+            Dawn.Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = await repository.GetByIdAsync(message.Id).ConfigureAwait(false);
 

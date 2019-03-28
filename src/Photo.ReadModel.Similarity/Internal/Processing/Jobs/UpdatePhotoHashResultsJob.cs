@@ -20,9 +20,9 @@
             [NotNull] ISimilarityDbContextFactory contextFactory,
             [NotNull] ISimilarityJobConfiguration configuration)
         {
-            Helpers.Guards.Guard.NotNull(repository, nameof(repository));
-            Helpers.Guards.Guard.NotNull(contextFactory, nameof(contextFactory));
-            Helpers.Guards.Guard.NotNull(configuration, nameof(configuration));
+            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
+            Dawn.Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
+            Dawn.Guard.Argument(configuration, nameof(configuration)).NotNull();
             this.repository = repository;
             this.contextFactory = contextFactory;
             this.configuration = configuration;
@@ -30,7 +30,7 @@
 
         public void Execute(Guid photoId, int version, string hashIdentifierString)
         {
-            DebugHelpers.Guards.Guard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
+            DebugGuard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
 
             using (var db = contextFactory.CreateDbContext())
             {

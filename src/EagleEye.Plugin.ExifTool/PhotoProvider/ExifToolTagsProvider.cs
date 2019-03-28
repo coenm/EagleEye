@@ -16,7 +16,7 @@
 
         public ExifToolTagsProvider([NotNull] IExifTool exiftool)
         {
-            Helpers.Guards.Guard.NotNull(exiftool, nameof(exiftool));
+            Dawn.Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
             headers = new Dictionary<string, string>
                           {
@@ -34,7 +34,7 @@
 
         public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
         {
-            DebugHelpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
+            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
 
             var resultExiftool = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 

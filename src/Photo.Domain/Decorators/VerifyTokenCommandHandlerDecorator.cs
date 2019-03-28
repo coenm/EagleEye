@@ -15,7 +15,7 @@
 
         public VerifyTokenCommandHandlerDecorator([NotNull] ICancellableCommandHandler<T> decoratee)
         {
-            Helpers.Guards.Guard.NotNull(decoratee, nameof(decoratee));
+            Dawn.Guard.Argument(decoratee, nameof(decoratee)).NotNull();
             this.decoratee = decoratee;
         }
 
