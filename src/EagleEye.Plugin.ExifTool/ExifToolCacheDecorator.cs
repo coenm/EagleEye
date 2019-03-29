@@ -3,8 +3,8 @@
     using System;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces.Core;
     using Dawn;
+    using EagleEye.Core.Interfaces.Core;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
     using Nito.AsyncEx;

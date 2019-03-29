@@ -2,10 +2,9 @@
 {
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces;
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]

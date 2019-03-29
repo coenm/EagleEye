@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using EagleEye.FileImporter.Similarity;
     using Dawn;
+    using EagleEye.FileImporter.Similarity;
 
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {

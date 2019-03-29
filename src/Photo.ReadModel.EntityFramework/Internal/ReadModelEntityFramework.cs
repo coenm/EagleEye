@@ -5,10 +5,10 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
-    using Dawn;
     using JetBrains.Annotations;
 
     internal class ReadModelEntityFramework : IReadModelEntityFramework

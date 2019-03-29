@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using Dawn;
+    using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 

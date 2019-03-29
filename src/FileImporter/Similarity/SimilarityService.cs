@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.FileImporter.Indexing;
     using Dawn;
+    using EagleEye.FileImporter.Indexing;
     using JetBrains.Annotations;
 
     [UsedImplicitly]

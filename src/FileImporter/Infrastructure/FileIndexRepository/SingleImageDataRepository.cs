@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using EagleEye.FileImporter.Indexing;
     using Dawn;
+    using EagleEye.FileImporter.Indexing;
 
     /// <summary>
     /// Stores data in file.

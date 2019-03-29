@@ -4,8 +4,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.ExifTool.ExifTool;
     using Dawn;
+    using EagleEye.ExifTool.ExifTool;
     using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

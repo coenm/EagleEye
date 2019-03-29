@@ -5,10 +5,10 @@
     using System.Globalization;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ExifTool.PhotoProvider.Parsing;
-    using Dawn;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 

@@ -5,12 +5,11 @@
     using System.IO;
     using System.Linq;
 
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.ExifTool;
-    using EagleEye.TestHelper;
     using FakeItEasy;
     using FluentAssertions;
-    using Dawn;
     using SimpleInjector;
     using Xunit;
 

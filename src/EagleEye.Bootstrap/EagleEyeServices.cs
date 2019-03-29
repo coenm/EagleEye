@@ -5,8 +5,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces.Module;
     using Dawn;
+    using EagleEye.Core.Interfaces.Module;
     using JetBrains.Annotations;
     using SimpleInjector;
 

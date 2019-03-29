@@ -2,8 +2,8 @@
 {
     using System.IO;
 
-    using EagleEye.FileImporter.Indexing;
     using Dawn;
+    using EagleEye.FileImporter.Indexing;
 
     public class RelativeFilesystemContentResolver : IContentResolver
     {

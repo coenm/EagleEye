@@ -1,9 +1,9 @@
 ﻿namespace EagleEye.ExifTool
 {
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ExifTool.PhotoProvider;
-    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 

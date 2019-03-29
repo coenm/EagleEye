@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
 
-    using EagleEye.FileImporter.Imaging;
     using Dawn;
+    using EagleEye.FileImporter.Imaging;
 
     public class CalculateIndexService
     {
