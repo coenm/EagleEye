@@ -15,48 +15,6 @@
     public static class Guard
     {
         /// <summary>
-        /// Verifies that the specified value is greater than a minimum value
-        /// and throws an exception if it is not.
-        /// </summary>
-        /// <param name="value">The target value, which should be validated.</param>
-        /// <param name="min">The minimum value.</param>
-        /// <param name="parameterName">The name of the parameter that is to be checked.</param>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is less than the minimum value.</exception>
-        [MethodImpl(InliningOptions.ShortMethod)]
-        public static void MustBeGreaterThan<TValue>(TValue value, TValue min, string parameterName)
-            where TValue : IComparable<TValue>
-        {
-            if (value.CompareTo(min) <= 0)
-            {
-                ThrowArgumentOutOfRangeException(
-                    parameterName,
-                    $"Value {value} must be greater than {min}.");
-            }
-        }
-
-        /// <summary>
-        /// Verifies that the specified value is greater than or equal to a minimum value
-        /// and throws an exception if it is not.
-        /// </summary>
-        /// <param name="value">The target value, which should be validated.</param>
-        /// <param name="min">The minimum value.</param>
-        /// <param name="parameterName">The name of the parameter that is to be checked.</param>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is less than the minimum value.</exception>
-        [MethodImpl(InliningOptions.ShortMethod)]
-        public static void MustBeGreaterThanOrEqualTo<TValue>(TValue value, TValue min, string parameterName)
-            where TValue : IComparable<TValue>
-        {
-            if (value.CompareTo(min) < 0)
-            {
-                ThrowArgumentOutOfRangeException(
-                    parameterName,
-                    $"Value {value} must be greater than or equal to {min}.");
-            }
-        }
-
-        /// <summary>
         /// Verifies that the specified value is greater than or equal to a minimum value and less than
         /// or equal to a maximum value and throws an exception if it is not.
         /// </summary>
