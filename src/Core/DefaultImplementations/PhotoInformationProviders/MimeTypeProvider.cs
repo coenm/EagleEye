@@ -3,7 +3,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     public class MimeTypeProvider : IPhotoMimeTypeProvider
@@ -16,8 +15,6 @@
 
         public Task<string> ProvideAsync(string filename, [CanBeNull] string previousResult)
         {
-            Helpers.Guards.Guard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
-
             return Task.FromResult(MimeTypes.GetMimeType(filename));
         }
     }
