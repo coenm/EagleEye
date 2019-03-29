@@ -7,7 +7,7 @@
     {
         public StaticSimilarityJobConfiguration(double thresholdPercentageSimilarityStorage)
         {
-            Dawn.Guard.Argument(thresholdPercentageSimilarityStorage, nameof(thresholdPercentageSimilarityStorage)).InRange(0d, 100d);
+            Guard.Argument(thresholdPercentageSimilarityStorage, nameof(thresholdPercentageSimilarityStorage)).InRange(0d, 100d);
 
             ThresholdPercentageSimilarityStorage = thresholdPercentageSimilarityStorage;
         }

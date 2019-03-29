@@ -4,7 +4,7 @@
     using System.Linq;
 
     using EagleEye.FileImporter.Similarity;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
 
     public class SingleFileSimilarityRepository : ISimilarityRepository
     {
@@ -15,14 +15,14 @@
 
         public SingleFileSimilarityRepository(IPersistentSerializer<List<SimilarityResultStorage>> storage)
         {
-            Dawn.Guard.Argument(storage, nameof(storage)).NotNull();
+            Guard.Argument(storage, nameof(storage)).NotNull();
             this.storage = storage;
             data = this.storage.Load();
         }
 
         public IEnumerable<byte[]> FindAllRecordedMatches(byte[] contentHash)
         {
-            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
+            Guard.Argument(contentHash, nameof(contentHash)).NotNull();
 
             return data
                    .Where(index => index.ImageHash.Contains(contentHash))
@@ -31,7 +31,7 @@
 
         public IEnumerable<SimilarityResult> FindSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95, int take = 0, int skip = 0)
         {
-            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
+            Guard.Argument(contentHash, nameof(contentHash)).NotNull();
 
             // ReSharper disable once InconsistentlySynchronizedField
             IEnumerable<SimilarityResultStorage> result = data.Where(index =>
@@ -68,7 +68,7 @@
 
         public void Delete(byte[] contentHash)
         {
-            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
+            Guard.Argument(contentHash, nameof(contentHash)).NotNull();
 
             lock (syncLock)
             {
@@ -86,8 +86,8 @@
 
         public void AddOrUpdate(byte[] contentHash, SimilarityResult similarity)
         {
-            Dawn.Guard.Argument(contentHash, nameof(contentHash)).NotNull();
-            Dawn.Guard.Argument(similarity, nameof(similarity)).NotNull();
+            Guard.Argument(contentHash, nameof(contentHash)).NotNull();
+            Guard.Argument(similarity, nameof(similarity)).NotNull();
 
             lock (syncLock)
             {

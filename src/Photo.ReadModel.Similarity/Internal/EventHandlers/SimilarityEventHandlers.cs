@@ -10,7 +10,7 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using Hangfire;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -28,9 +28,9 @@
             [NotNull] ISimilarityDbContextFactory contextFactory,
             [NotNull] IBackgroundJobClient hangFireClient)
         {
-            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
-            Dawn.Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
-            Dawn.Guard.Argument(hangFireClient, nameof(hangFireClient)).NotNull();
+            Guard.Argument(repository, nameof(repository)).NotNull();
+            Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
+            Guard.Argument(hangFireClient, nameof(hangFireClient)).NotNull();
             this.repository = repository;
             this.contextFactory = contextFactory;
             this.hangFireClient = hangFireClient;
@@ -38,7 +38,7 @@
 
         public async Task Handle(PhotoHashCleared message, CancellationToken ct)
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             using (var db = contextFactory.CreateDbContext())
             {
@@ -59,7 +59,7 @@
 
         public async Task Handle(PhotoHashUpdated message, CancellationToken ct)
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             using (var db = contextFactory.CreateDbContext())
             {

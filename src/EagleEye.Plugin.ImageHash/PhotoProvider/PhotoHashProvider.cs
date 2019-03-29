@@ -18,7 +18,7 @@
 
         public PhotoHashProvider([NotNull] IFileService fileService)
         {
-            Dawn.Guard.Argument(fileService, nameof(fileService)).NotNull();
+            Guard.Argument(fileService, nameof(fileService)).NotNull();
             this.fileService = fileService;
         }
 

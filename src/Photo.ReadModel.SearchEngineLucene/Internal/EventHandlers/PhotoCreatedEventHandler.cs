@@ -26,13 +26,13 @@
 
         public PhotoCreatedEventHandler([NotNull] IPhotoIndex photoIndex)
         {
-            Dawn.Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
+            Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
         public Task Handle([NotNull] PhotoCreated message, CancellationToken token = default(CancellationToken))
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             var photo = new Photo
             {
@@ -48,43 +48,43 @@
 
         public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default(CancellationToken))
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
-            Dawn.Guard.Argument(message.Location, $"{nameof(message)}.{nameof(message.Location)}").NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message.Location, $"{nameof(message)}.{nameof(message.Location)}").NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public Task Handle(DateTimeTakenChanged message, CancellationToken token = new CancellationToken())
         {
-            Dawn.Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message, nameof(message)).NotNull();
 
             var storedItem = photoIndex.Search(message.Id);
 

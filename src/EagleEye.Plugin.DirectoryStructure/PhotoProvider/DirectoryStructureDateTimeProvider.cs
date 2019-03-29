@@ -8,7 +8,6 @@
 
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]

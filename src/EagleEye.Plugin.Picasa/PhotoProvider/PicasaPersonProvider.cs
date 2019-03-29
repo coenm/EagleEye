@@ -13,7 +13,7 @@
 
         public PicasaPersonProvider([NotNull] IPicasaService picasaService)
         {
-            Dawn.Guard.Argument(picasaService, nameof(picasaService)).NotNull();
+            Guard.Argument(picasaService, nameof(picasaService)).NotNull();
             this.picasaService = picasaService;
         }
 

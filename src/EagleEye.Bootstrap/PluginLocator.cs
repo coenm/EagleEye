@@ -16,7 +16,7 @@
         [NotNull]
         public static IEnumerable<Assembly> FindPluginAssemblies([NotNull] string baseDirectory)
         {
-            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             Logger.Debug(() => $"Plugin base directory {baseDirectory}");
 
@@ -43,7 +43,7 @@
         [NotNull]
         private static IEnumerable<Assembly> GetPluginAssembliesInDirectory([NotNull] string baseDirectory)
         {
-            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             return new DirectoryInfo(baseDirectory)
                 .GetFiles()

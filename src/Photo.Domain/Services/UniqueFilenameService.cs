@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     internal class UniqueFilenameService : IUniqueFilenameService
@@ -13,7 +13,7 @@
 
         public UniqueFilenameService([NotNull] IFilenameRepository repository)
         {
-            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
+            Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
             claimedFileNames = new List<string>();
         }
@@ -21,7 +21,7 @@
         [CanBeNull]
         public IClaimFilenameToken Claim([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
 
             lock (syncLock)
             {
@@ -39,7 +39,7 @@
 
         private void RemoveClaim([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
+            Guard.Argument(filename, nameof(filename)).NotNull();
 
             lock (syncLock)
             {
@@ -49,7 +49,7 @@
 
         private void CommitClaim([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
+            Guard.Argument(filename, nameof(filename)).NotNull();
 
             lock (syncLock)
             {
@@ -64,8 +64,8 @@
 
             public ClaimFilenameToken([NotNull] UniqueFilenameService parent, [NotNull] string filename)
             {
-                Dawn.Guard.Argument(parent, nameof(parent)).NotNull();
-                Dawn.Guard.Argument(filename, nameof(filename)).NotNull();
+                Guard.Argument(parent, nameof(parent)).NotNull();
+                Guard.Argument(filename, nameof(filename)).NotNull();
                 this.parent = parent;
                 this.filename = filename;
             }

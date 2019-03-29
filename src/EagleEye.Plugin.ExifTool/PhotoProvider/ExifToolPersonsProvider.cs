@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
@@ -16,7 +16,7 @@
 
         public ExifToolPersonsProvider([NotNull] IExifTool exiftool)
         {
-            Dawn.Guard.Argument(exiftool, nameof(exiftool)).NotNull();
+            Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
             headers = new Dictionary<string, string>
                           {

@@ -31,7 +31,7 @@
         public DbContextOptionsBuilder<SimilarityDbContext> Create([CanBeNull] string connectionString)
         {
             // By contract, the param can be null, however, by design, this strategy only works when it is not null (see CanHandle)
-            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull();
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull();
 
             return new DbContextOptionsBuilder<SimilarityDbContext>()
                 .UseInMemoryDatabase(GetNameFromConnectionString(connectionString));
@@ -40,7 +40,7 @@
         [NotNull]
         private string GetNameFromConnectionString([NotNull] string connectionString)
         {
-            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace().MinLength(Key.Length);
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace().MinLength(Key.Length);
 
             // todo spaces, semicolons etc. etc?
             return connectionString.Substring(Key.Length).Trim();

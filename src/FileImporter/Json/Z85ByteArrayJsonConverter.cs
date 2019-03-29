@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using Newtonsoft.Json;
 
@@ -14,7 +14,7 @@
     {
         public override void WriteJson([NotNull] JsonWriter writer, [CanBeNull] object value, JsonSerializer serializer)
         {
-            Dawn.Guard.Argument(writer, nameof(writer)).NotNull();
+            Guard.Argument(writer, nameof(writer)).NotNull();
 
             if (value == null)
             {
@@ -30,7 +30,7 @@
 
         public override object ReadJson([NotNull] JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            Dawn.Guard.Argument(reader, nameof(reader)).NotNull();
+            Guard.Argument(reader, nameof(reader)).NotNull();
 
             do
             {

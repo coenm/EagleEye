@@ -3,7 +3,7 @@
     using System;
 
     using CQRSlite.Commands;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     [PublicAPI]
@@ -16,9 +16,9 @@
             [CanBeNull] string[] tags,
             [CanBeNull] string[] persons)
         {
-            Dawn.Guard.Argument(fileName, nameof(fileName)).NotNull().NotWhiteSpace();
-            Dawn.Guard.Argument(photoMimeType, nameof(photoMimeType)).NotNull().NotWhiteSpace();
-            Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
+            Guard.Argument(fileName, nameof(fileName)).NotNull().NotWhiteSpace();
+            Guard.Argument(photoMimeType, nameof(photoMimeType)).NotNull().NotWhiteSpace();
+            Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
 
             Id = Guid.NewGuid();
 

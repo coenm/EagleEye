@@ -8,7 +8,7 @@
 
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using Lucene.Net.Analysis;
     using Lucene.Net.Analysis.Standard;
@@ -53,7 +53,7 @@
 
         public PhotoIndex([NotNull] ILuceneDirectoryFactory indexDirectoryFactory)
         {
-            Dawn.Guard.Argument(indexDirectoryFactory, nameof(indexDirectoryFactory)).NotNull();
+            Guard.Argument(indexDirectoryFactory, nameof(indexDirectoryFactory)).NotNull();
 
             indexDirectory = indexDirectoryFactory.Create();
 
@@ -107,7 +107,7 @@
 
         public Task<bool> ReIndexMediaFileAsync([NotNull] Photo data)
         {
-            Dawn.Guard.Argument(data, nameof(data)).NotNull();
+            Guard.Argument(data, nameof(data)).NotNull();
 
             RemoveFromIndexByFilename(data.FileName);
             RemoveFromIndexByGuid(data.Id);
@@ -246,7 +246,7 @@
         [NotNull]
         public List<PhotoSearchResult> Search([NotNull] Query query, [CanBeNull] Filter filter, out int totalHits)
         {
-            Dawn.Guard.Argument(query, nameof(query)).NotNull();
+            Guard.Argument(query, nameof(query)).NotNull();
 
             var results = new List<PhotoSearchResult>();
             totalHits = 0;
@@ -350,7 +350,7 @@
 
         private Guid GetId([NotNull] Document doc)
         {
-            Dawn.Guard.Argument(doc, nameof(doc)).NotNull();
+            Guard.Argument(doc, nameof(doc)).NotNull();
 
             var guidString = doc.GetField(KeyId)?.GetStringValue();
             if (string.IsNullOrWhiteSpace(guidString))
@@ -364,13 +364,13 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
             DeleteByTerm(new Term(KeyFilename, filename));
         }
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
-//            Dawn.Guard.Argument(guid, nameof(guid)).NotEqual(Guid.Empty);
+//            Guard.Argument(guid, nameof(guid)).NotEqual(Guid.Empty);
             if (guid == Guid.Empty)
                 return;
 
@@ -379,7 +379,7 @@
 
         private void DeleteByTerm([NotNull] Term term)
         {
-            Dawn.Guard.Argument(term, nameof(term)).NotNull();
+            Guard.Argument(term, nameof(term)).NotNull();
 
             try
             {

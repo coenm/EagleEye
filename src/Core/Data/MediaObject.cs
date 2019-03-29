@@ -12,7 +12,7 @@
 
         public MediaObject(string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
 
             FileInformation = new FileInformation(filename);
             Location = new Location();
@@ -43,7 +43,7 @@
 
         public void AddPersons([NotNull] IEnumerable<string> persons)
         {
-            Dawn.Guard.Argument(persons, nameof(persons)).NotNull();
+            Guard.Argument(persons, nameof(persons)).NotNull();
 
             foreach (var person in persons)
                 AddPerson(person);
@@ -64,7 +64,7 @@
 
         public void AddTags([NotNull] IEnumerable<string> tags)
         {
-            Dawn.Guard.Argument(tags, nameof(tags)).NotNull();
+            Guard.Argument(tags, nameof(tags)).NotNull();
 
             foreach (var tag in tags)
                 AddTag(tag);

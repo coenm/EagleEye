@@ -3,7 +3,7 @@
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ExifTool.PhotoProvider;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -14,7 +14,7 @@
 
         public void EnablePlugin([NotNull] Container container)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
 
             container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName()), Lifestyle.Singleton); // todo coenm fix this
             container.Register<IExifTool, ExifToolAdapter>(Lifestyle.Singleton);

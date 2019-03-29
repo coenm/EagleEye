@@ -37,9 +37,9 @@
             [NotNull] string indexFilename,
             [NotNull] string connectionStringHangFire)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Dawn.Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
-            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
+            Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
 
             string userDir = GetUserDirectory();
 
@@ -90,25 +90,25 @@
 
         public static string CreateFullFilename([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
             return Path.Combine(GetUserDirectory(), filename);
         }
 
         public static string CreateSqlLiteFileConnectionString([NotNull] string fullFilename)
         {
-            Dawn.Guard.Argument(fullFilename, nameof(fullFilename)).NotNull().NotWhiteSpace();
+            Guard.Argument(fullFilename, nameof(fullFilename)).NotNull().NotWhiteSpace();
             return $"Filename={fullFilename};";
         }
 
         public static void VerifyContainer([NotNull] Container container)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
             container.Verify(VerificationOption.VerifyAndDiagnose);
         }
 
         public static async Task InitializeAllServices([NotNull] Container container)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
             var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
             await Task.WhenAll(instancesToInitialize.Select(instance => instance.InitializeAsync())).ConfigureAwait(false);
         }
@@ -139,24 +139,24 @@
 
         private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
-            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
+            Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
 
             global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
         }
 
         private static void RegisterPhotoDomain([NotNull] Container container)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
 
             EagleEye.Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
         private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
 
             global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,
@@ -165,7 +165,7 @@
 
         private static void RegisterSearchEngineReadModel([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
 
             Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,

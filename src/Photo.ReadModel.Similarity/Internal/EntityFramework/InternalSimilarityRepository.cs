@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +18,8 @@
         [Pure]
         public HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             return db.HashIdentifiers.SingleOrDefault(item => item.HashIdentifier == identifier);
         }
@@ -28,8 +28,8 @@
         [Pure]
         public HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             var dbItem = GetHashIdentifier(db, identifier);
 
@@ -52,8 +52,8 @@
             [NotNull] string identifier,
             CancellationToken ct = default(CancellationToken))
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             ct.ThrowIfCancellationRequested();
 
@@ -77,8 +77,8 @@
         [Pure]
         public PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoHashId, [NotNull] HashIdentifiers hashIdentifier)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             return db.PhotoHashes.SingleOrDefault(
                 photoHash =>
@@ -95,8 +95,8 @@
             [NotNull] HashIdentifiers hashIdentifier,
             CancellationToken ct = default(CancellationToken))
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             ct.ThrowIfCancellationRequested();
 
@@ -113,7 +113,7 @@
         [NotNull]
         public List<Scores> GetHashScoresByIdAndBeforeVersion([NotNull] ISimilarityDbContext db, int hashIdentifierId, Guid id, int version)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
 
             return db.Scores
                 .Where(score =>
@@ -129,8 +129,8 @@
         [NotNull]
         public List<PhotoHash> GetPhotoHashesByHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] HashIdentifiers hashIdentifier)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             return db.PhotoHashes
                 .Where(photoHash => photoHash.HashIdentifier == hashIdentifier)
@@ -146,8 +146,8 @@
             int messageVersion,
             CancellationToken ct = default(CancellationToken))
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             ct.ThrowIfCancellationRequested();
 
@@ -165,8 +165,8 @@
         [Pure]
         public List<Scores> GetOutdatedScores([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier, int version)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             return db.Scores
                 .Where(score =>
@@ -180,8 +180,8 @@
 
         public void DeleteScores([NotNull] ISimilarityDbContext db, [NotNull] IEnumerable<Scores> scores)
         {
-            Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Dawn.Guard.Argument(scores, nameof(scores)).NotNull();
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(scores, nameof(scores)).NotNull();
 
             if (scores.Any())
                 db.Scores.RemoveRange(scores);

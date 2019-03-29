@@ -5,7 +5,7 @@
 
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -20,9 +20,9 @@
             [NotNull] ISimilarityDbContextFactory contextFactory,
             [NotNull] ISimilarityJobConfiguration configuration)
         {
-            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
-            Dawn.Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
-            Dawn.Guard.Argument(configuration, nameof(configuration)).NotNull();
+            Guard.Argument(repository, nameof(repository)).NotNull();
+            Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
+            Guard.Argument(configuration, nameof(configuration)).NotNull();
             this.repository = repository;
             this.contextFactory = contextFactory;
             this.configuration = configuration;
@@ -30,7 +30,7 @@
 
         public void Execute(Guid photoId, int version, string hashIdentifierString)
         {
-            Dawn.Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
+            Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
 
             using (var db = contextFactory.CreateDbContext())
             {

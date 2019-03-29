@@ -21,7 +21,7 @@
 
         public ExifToolStayOpenStream(Encoding encoding, int bufferSize = OneMb)
         {
-            Dawn.Guard.Argument(bufferSize, nameof(bufferSize)).Min(1);
+            Guard.Argument(bufferSize, nameof(bufferSize)).Min(1);
 
             this.bufferSize = bufferSize;
             this.encoding = encoding ?? new UTF8Encoding();

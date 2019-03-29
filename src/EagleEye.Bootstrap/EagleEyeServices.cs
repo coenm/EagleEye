@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.Module;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -21,7 +21,7 @@
 
         public EagleEyeServices([NotNull] Container container)
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
 
             this.container = container;
             state = State.Empty;
@@ -86,7 +86,7 @@
         private static IEnumerable<T> GetAllInstancesOrEmpty<T>([NotNull] Container container)
             where T : class
         {
-            Dawn.Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(container, nameof(container)).NotNull();
 
             try
             {

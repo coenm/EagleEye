@@ -8,7 +8,7 @@
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ExifTool.PhotoProvider.Parsing;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
@@ -27,7 +27,7 @@
 
         public ExifToolDateTakenProvider([NotNull] IExifTool exiftool)
         {
-            Dawn.Guard.Argument(exiftool, nameof(exiftool)).NotNull();
+            Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
         }
 

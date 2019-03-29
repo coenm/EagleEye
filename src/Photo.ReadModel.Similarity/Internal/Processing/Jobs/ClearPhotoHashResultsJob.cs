@@ -4,7 +4,7 @@
     using System.Linq;
 
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -17,15 +17,15 @@
             [NotNull] IInternalStatelessSimilarityRepository repository,
             [NotNull] ISimilarityDbContextFactory contextFactory)
         {
-            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
-            Dawn.Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
+            Guard.Argument(repository, nameof(repository)).NotNull();
+            Guard.Argument(contextFactory, nameof(contextFactory)).NotNull();
             this.repository = repository;
             this.contextFactory = contextFactory;
         }
 
         public void Execute(Guid id, int version, string hashIdentifierString)
         {
-            Dawn.Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
+            Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
 
             using (var db = contextFactory.CreateDbContext())
             {

@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class InMemoryEventStore : IEventStore
@@ -17,7 +17,7 @@
 
         public InMemoryEventStore([NotNull] IEventPublisher publisher)
         {
-            Dawn.Guard.Argument(publisher, nameof(publisher)).NotNull();
+            Guard.Argument(publisher, nameof(publisher)).NotNull();
             this.publisher = publisher;
         }
 

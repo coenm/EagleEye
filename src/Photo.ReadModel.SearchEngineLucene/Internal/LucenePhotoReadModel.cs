@@ -5,7 +5,7 @@
 
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     internal class LucenePhotoReadModel : IReadModel
@@ -15,7 +15,7 @@
 
         public LucenePhotoReadModel(IPhotoIndex photoIndex)
         {
-            Dawn.Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
+            Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
@@ -44,7 +44,7 @@
         [NotNull]
         private Interface.Model.PhotoResult MapToPhotoResult([NotNull] Model.PhotoSearchResult photo)
         {
-            Dawn.Guard.Argument(photo, nameof(photo)).NotNull();
+            Guard.Argument(photo, nameof(photo)).NotNull();
 
             // todo datetime taken.
             return new Interface.Model.PhotoResult(
@@ -66,7 +66,7 @@
         [NotNull]
         private Interface.Model.PhotoIdResult MapToPhotoIdResult([NotNull] Model.PhotoSearchResult photo)
         {
-            Dawn.Guard.Argument(photo, nameof(photo)).NotNull();
+            Guard.Argument(photo, nameof(photo)).NotNull();
             return new Interface.Model.PhotoIdResult(photo.Id, photo.Score);
         }
     }

@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using Helpers.Guards; using Dawn;
+    using Dawn;
 
     public class SearchService
     {
@@ -10,7 +10,7 @@
 
         public SearchService(IImageDataRepository repository)
         {
-            Dawn.Guard.Argument(repository, nameof(repository)).NotNull();
+            Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
         }
 
