@@ -9,7 +9,7 @@
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using NLog;
 
@@ -21,14 +21,14 @@
 
         public PersonsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
         {
-            Guard.NotNull(photoIndex, nameof(photoIndex));
+            Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
         public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default(CancellationToken))
         {
-            DebugGuard.NotNull(message, nameof(message));
-            Guard.NotNull(message.Persons, nameof(message.Persons));
+            Guard.Argument(message, nameof(message)).NotNull();
+            Guard.Argument(message.Persons, nameof(message.Persons)).NotNull();
 
             if (!(photoIndex.Search(message.Id) is Photo storedItem))
                 return;

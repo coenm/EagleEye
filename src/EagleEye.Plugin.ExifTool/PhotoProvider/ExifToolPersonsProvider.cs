@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
@@ -16,7 +16,7 @@
 
         public ExifToolPersonsProvider([NotNull] IExifTool exiftool)
         {
-            Guard.NotNull(exiftool, nameof(exiftool));
+            Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
             headers = new Dictionary<string, string>
                           {
@@ -33,8 +33,6 @@
 
         public async Task<List<string>> ProvideAsync([NotNull] string filename, [CanBeNull] List<string> previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
-
             var exiftoolResult = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (exiftoolResult == null)

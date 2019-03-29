@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.FileImporter.Indexing;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -16,8 +16,8 @@
 
         public SimilarityService([NotNull] ISimilarityRepository similarityRepository, [NotNull] IImageDataRepository imageRepository)
         {
-            Guard.NotNull(similarityRepository, nameof(similarityRepository));
-            Guard.NotNull(imageRepository, nameof(imageRepository));
+            Guard.Argument(similarityRepository, nameof(similarityRepository)).NotNull();
+            Guard.Argument(imageRepository, nameof(imageRepository)).NotNull();
 
             this.imageRepository = imageRepository;
             this.similarityRepository = similarityRepository;
@@ -25,7 +25,7 @@
 
         public void Update([NotNull] ImageData image, [CanBeNull] IProgress<FilenameProgressData> progress)
         {
-            Guard.NotNull(image, nameof(image));
+            Guard.Argument(image, nameof(image)).NotNull();
 
             if (progress == null)
                 progress = new Progress<FilenameProgressData>(i => { });

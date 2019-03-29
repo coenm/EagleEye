@@ -2,10 +2,9 @@
 {
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces;
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -15,7 +14,7 @@
 
         public ModuleInitializer([NotNull] IEagleEyeDbContextFactory dbContextFactory)
         {
-            Guard.NotNull(dbContextFactory, nameof(dbContextFactory));
+            Guard.Argument(dbContextFactory, nameof(dbContextFactory)).NotNull();
             this.dbContextFactory = dbContextFactory;
         }
 

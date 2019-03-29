@@ -4,8 +4,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.ExifTool.ExifTool;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -16,7 +16,7 @@
 
         public ExifToolAdapter([NotNull] IExifToolConfig config)
         {
-            Guard.NotNull(config, nameof(config));
+            Guard.Argument(config, nameof(config)).NotNull();
 
             exiftoolImpl = new OpenedExifTool(config.ExifToolExe);
             exiftoolImpl.Init();

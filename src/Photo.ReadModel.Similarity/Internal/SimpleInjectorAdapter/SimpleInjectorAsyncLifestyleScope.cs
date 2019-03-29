@@ -3,7 +3,7 @@
     using System;
 
     using Hangfire;
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
     using SimpleInjector.Lifestyles;
@@ -15,7 +15,7 @@
 
         public SimpleInjectorAsyncLifestyleScope([NotNull] Container container)
         {
-            Guard.NotNull(container, nameof(container));
+            Guard.Argument(container, nameof(container)).NotNull();
 
             this.container = container;
             scope = AsyncScopedLifestyle.BeginScope(container);

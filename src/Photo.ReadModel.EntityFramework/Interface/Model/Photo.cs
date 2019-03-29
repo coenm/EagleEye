@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class Photo
@@ -19,10 +19,10 @@
             DateTime? taken,
             int version)
         {
-            DebugGuard.NotNull(filename, nameof(filename));
-            DebugGuard.NotNull(fileSha256, nameof(fileSha256));
-            DebugGuard.NotNull(tags, nameof(tags));
-            DebugGuard.NotNull(persons, nameof(persons));
+            Guard.Argument(filename, nameof(filename)).NotNull();
+            Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
+            Guard.Argument(tags, nameof(tags)).NotNull();
+            Guard.Argument(persons, nameof(persons)).NotNull();
 
             Id = id;
             Filename = filename;

@@ -5,10 +5,10 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     internal class ReadModelEntityFramework : IReadModelEntityFramework
@@ -17,7 +17,7 @@
 
         public ReadModelEntityFramework([NotNull] IEagleEyeRepository repository)
         {
-            Guard.NotNull(repository, nameof(repository));
+            Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
         }
 
@@ -40,7 +40,7 @@
 
         private Interface.Model.Photo MapPhoto([NotNull] Photo photo)
         {
-            DebugGuard.NotNull(photo, nameof(photo));
+            Guard.Argument(photo, nameof(photo)).NotNull();
 
             return new Interface.Model.Photo(
                 photo.Id,

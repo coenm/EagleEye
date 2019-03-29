@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +31,7 @@
         public DbContextOptionsBuilder<EagleEyeDbContext> Create([CanBeNull] string connectionString)
         {
             // By contract, the param can be null, however, by design, this strategy only works when it is not null (see CanHandle)
-            Guard.NotNull(connectionString, nameof(connectionString));
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull();
 
             return new DbContextOptionsBuilder<EagleEyeDbContext>()
                 .UseInMemoryDatabase(GetNameFromConnectionString(connectionString));
@@ -40,8 +40,7 @@
         [NotNull]
         private string GetNameFromConnectionString([NotNull] string connectionString)
         {
-            DebugGuard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            DebugGuard.MustBeGreaterThanOrEqualTo(connectionString.Length, Key.Length, $"{nameof(connectionString)}.{nameof(connectionString.Length)}");
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace().MinLength(Key.Length);
 
             // todo spaces, semicolons etc. etc?
             return connectionString.Substring(Key.Length).Trim();

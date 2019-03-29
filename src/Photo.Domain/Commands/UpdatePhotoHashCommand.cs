@@ -3,7 +3,7 @@
     using System;
 
     using EagleEye.Photo.Domain.Commands.Base;
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     [PublicAPI]
@@ -12,7 +12,7 @@
         public UpdatePhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier, ulong fileHash)
             : base(id, expectedVersion)
         {
-            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             HashIdentifier = hashIdentifier;
             PhotoHash = fileHash;

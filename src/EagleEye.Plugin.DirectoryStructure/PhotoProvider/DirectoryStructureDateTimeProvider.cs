@@ -8,7 +8,6 @@
 
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -37,8 +36,6 @@
 
         public Task<Timestamp> ProvideAsync(string filename, Timestamp previousResult)
         {
-            DebugGuard.IsTrue(CanProvideInformation(filename), nameof(CanProvideInformation), "Cannot provide information.");
-
             filename = filename.Trim();
 
             try

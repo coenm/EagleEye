@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     public static class SimpleIniParser
@@ -18,7 +18,7 @@
 
         public static List<IniData> Parse([NotNull] Stream input)
         {
-            Guard.NotNull(input, nameof(input));
+            Guard.Argument(input, nameof(input)).NotNull();
 
             var content = GetContent(input);
             return ParseContent(content);
@@ -26,7 +26,7 @@
 
         private static string[] GetContent([NotNull] Stream stream)
         {
-            DebugGuard.NotNull(stream, nameof(stream));
+            Guard.Argument(stream, nameof(stream)).NotNull();
 
             try
             {
@@ -104,7 +104,7 @@
 
         private static (string key, string value) GetKeyValueFromIni(string line)
         {
-            Guard.NotNullOrWhiteSpace(line, nameof(line));
+            Guard.Argument(line, nameof(line)).NotNull().NotWhiteSpace();
 
             line = line.Trim();
 

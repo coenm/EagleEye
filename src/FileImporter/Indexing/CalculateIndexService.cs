@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using Dawn;
     using EagleEye.FileImporter.Imaging;
-    using Helpers.Guards;
 
     public class CalculateIndexService
     {
@@ -11,13 +11,13 @@
 
         public CalculateIndexService(IContentResolver contentResolver)
         {
-            Guard.NotNull(contentResolver, nameof(contentResolver));
+            Guard.Argument(contentResolver, nameof(contentResolver)).NotNull();
             this.contentResolver = contentResolver;
         }
 
         public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
         {
-            Guard.NotNull(fileIdentifiers, nameof(fileIdentifiers));
+            Guard.Argument(fileIdentifiers, nameof(fileIdentifiers)).NotNull();
 
             var result = new ImageData[fileIdentifiers.Count];
 

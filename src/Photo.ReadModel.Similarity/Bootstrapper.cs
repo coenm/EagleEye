@@ -14,7 +14,7 @@
     using Hangfire;
     using Hangfire.MemoryStorage;
     using Hangfire.SQLite;
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using SimpleInjector;
@@ -31,9 +31,9 @@
             [NotNull] string connectionString,
             [NotNull] string hangFireConnectionString)
         {
-            Guard.NotNull(container, nameof(container));
-            Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            Guard.NotNullOrWhiteSpace(hangFireConnectionString, nameof(hangFireConnectionString));
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
+            Guard.Argument(hangFireConnectionString, nameof(hangFireConnectionString)).NotNull().NotWhiteSpace();
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register<IInternalStatelessSimilarityRepository, InternalSimilarityRepository>(Lifestyle.Singleton);

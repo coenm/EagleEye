@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Helpers.Guards;
+    using Dawn;
     using Microsoft.EntityFrameworkCore;
 
     internal class SimilarityDbContextFactory : ISimilarityDbContextFactory
@@ -11,7 +11,7 @@
 
         public SimilarityDbContextFactory(DbContextOptions<SimilarityDbContext> options)
         {
-            Guard.NotNull(options, nameof(options));
+            Guard.Argument(options, nameof(options)).NotNull();
             this.options = options;
         }
 

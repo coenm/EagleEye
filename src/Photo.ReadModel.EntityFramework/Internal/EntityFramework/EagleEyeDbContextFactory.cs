@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Helpers.Guards;
+    using Dawn;
     using Microsoft.EntityFrameworkCore;
 
     internal class EagleEyeDbContextFactory : IEagleEyeDbContextFactory
@@ -11,7 +11,7 @@
 
         public EagleEyeDbContextFactory(DbContextOptions<EagleEyeDbContext> options)
         {
-            Guard.NotNull(options, nameof(options));
+            Guard.Argument(options, nameof(options)).NotNull();
             this.options = options;
         }
 

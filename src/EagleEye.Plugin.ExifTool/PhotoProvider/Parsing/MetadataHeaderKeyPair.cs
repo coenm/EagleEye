@@ -1,15 +1,15 @@
 ﻿namespace EagleEye.ExifTool.PhotoProvider.Parsing
 {
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     internal struct MetadataHeaderKeyPair
     {
         public MetadataHeaderKeyPair([NotNull] string header1, [NotNull] string header2, [NotNull] string key)
         {
-            DebugGuard.NotNull(header1, nameof(header1));
-            DebugGuard.NotNull(header2, nameof(header2));
-            DebugGuard.NotNull(key, nameof(key));
+            Guard.Argument(header1, nameof(header1)).NotNull();
+            Guard.Argument(header2, nameof(header2)).NotNull();
+            Guard.Argument(key, nameof(key)).NotNull();
             Header1 = header1;
             Header2 = header2;
             Key = key;
