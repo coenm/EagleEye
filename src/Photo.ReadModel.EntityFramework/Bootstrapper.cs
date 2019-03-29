@@ -21,7 +21,7 @@
         public static void BootstrapEntityFrameworkReadModel([NotNull] Container container, [NotNull] string connectionString)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
 
             var thisAssembly = typeof(Bootstrapper).Assembly;
 

@@ -10,13 +10,13 @@
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
+    using Dawn;
     using EagleEye.Core.DefaultImplementations;
     using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using NLog;
     using SimpleInjector;
@@ -59,7 +59,7 @@
             [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins)
         {
-            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
             Dawn.Guard.Argument(plugins, nameof(plugins)).NotNull();
 
             var bootstrapper = new Bootstrapper();
@@ -93,8 +93,6 @@
 
         public void RegisterSearchEngineReadModel([CanBeNull] string indexBaseDirectory)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(indexBaseDirectory, nameof(indexBaseDirectory));
-
             if (readModelSearchEngineEnabled)
                 return;
 
@@ -108,8 +106,8 @@
 
         public void RegisterSimilarityReadModel([NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
+            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
 
             if (readModelSimilarityEnabled)
                 return;
@@ -119,9 +117,9 @@
             readModelSimilarityEnabled = true;
         }
 
-        public void RegisterPhotoDatabaseReadModel([CanBeNull] string connectionString)
+        public void RegisterPhotoDatabaseReadModel([NotNull] string connectionString)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
 
             if (readModelDatabaseEnabled)
                 return;
@@ -140,7 +138,7 @@
 
         private void RegisterCore([NotNull] string baseDirectory)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance);
@@ -154,7 +152,7 @@
 
         private void RegisterCqrsLite([NotNull] string baseDirectory)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Dawn.Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             container.Register<Router>(Lifestyle.Singleton);
             container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);

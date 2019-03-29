@@ -24,7 +24,7 @@
         public FileBasedEventStore([NotNull] IEventPublisher publisher, [NotNull] string basePath)
         {
             Dawn.Guard.Argument(publisher, nameof(publisher)).NotNull();
-            Dawn.Guard.Argument(basePath, nameof(basePath)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(basePath, nameof(basePath)).NotNull().NotWhiteSpace();
             this.publisher = publisher;
             this.basePath = basePath;
             settings = new JsonSerializerSettings

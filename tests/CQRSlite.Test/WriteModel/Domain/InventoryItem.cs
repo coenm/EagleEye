@@ -23,7 +23,7 @@
 
         public void ChangeName([NotNull] string newName)
         {
-            Dawn.Guard.Argument(newName, nameof(newName)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(newName, nameof(newName)).NotNull().NotWhiteSpace();
             ApplyChange(new InventoryItemRenamed(Id, newName));
         }
 

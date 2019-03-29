@@ -25,7 +25,7 @@
 
         public ImageData Get(string identifier)
         {
-            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
             return data.FirstOrDefault(i => i.Identifier.Equals(identifier, StringComparison.InvariantCulture));
         }
 

@@ -31,8 +31,8 @@
         : this()
         {
             Dawn.Guard.Argument(id, nameof(id)).NotEqual(Guid.Empty);
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
-            Dawn.Guard.Argument(mimeType, nameof(mimeType)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+            Dawn.Guard.Argument(mimeType, nameof(mimeType)).NotNull().NotWhiteSpace();
             Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull().Count(Sha256ByteSize);
 
             Id = id;
@@ -147,7 +147,7 @@
 
         public void UpdatePhotoHash([NotNull] string hashIdentifier, ulong fileHash)
         {
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             if (!photoHashes.ContainsKey(hashIdentifier))
                 ApplyChange(new PhotoHashAdded(Id, hashIdentifier, fileHash));
@@ -157,7 +157,7 @@
 
         public void ClearPhotoHash([NotNull] string hashIdentifier)
         {
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             if (photoHashes.ContainsKey(hashIdentifier))
                 ApplyChange(new PhotoHashCleared(Id, hashIdentifier));

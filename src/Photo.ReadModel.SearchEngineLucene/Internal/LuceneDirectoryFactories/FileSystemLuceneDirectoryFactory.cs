@@ -11,7 +11,7 @@
 
         public FileSystemLuceneDirectoryFactory([NotNull] string directory)
         {
-            Dawn.Guard.Argument(directory, nameof(directory)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(directory, nameof(directory)).NotNull().NotWhiteSpace();
 
             path = directory;
         }

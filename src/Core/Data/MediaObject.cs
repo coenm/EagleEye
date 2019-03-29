@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using Helpers.Guards; using Dawn;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class MediaObject
@@ -12,7 +12,7 @@
 
         public MediaObject(string filename)
         {
-            Dawn.Guard.Argument(persons, nameof(persons)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
 
             FileInformation = new FileInformation(filename);
             Location = new Location();

@@ -11,6 +11,7 @@
     using CQRSlite.Domain;
     using CQRSlite.Events;
     using CQRSlite.Routing;
+    using Dawn;
     using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.FileImporter.Indexing;
@@ -20,7 +21,6 @@
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.ReadModel.SearchEngineLucene;
-    using Helpers.Guards; using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -38,8 +38,8 @@
             [NotNull] string connectionStringHangFire)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Dawn.Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotEmpty();
-            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
+            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
 
             string userDir = GetUserDirectory();
 
@@ -90,13 +90,13 @@
 
         public static string CreateFullFilename([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
             return Path.Combine(GetUserDirectory(), filename);
         }
 
         public static string CreateSqlLiteFileConnectionString([NotNull] string fullFilename)
         {
-            Dawn.Guard.Argument(fullFilename, nameof(fullFilename)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(fullFilename, nameof(fullFilename)).NotNull().NotWhiteSpace();
             return $"Filename={fullFilename};";
         }
 
@@ -140,8 +140,8 @@
         private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, [NotNull] string connectionStringHangFire)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionStringHangFire, nameof(connectionStringHangFire));
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
+            Dawn.Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
 
             global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
         }
@@ -156,7 +156,7 @@
         private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
         {
             Dawn.Guard.Argument(container, nameof(container)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
 
             global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
                                                            container,

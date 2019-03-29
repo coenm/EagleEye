@@ -40,7 +40,7 @@
         [NotNull]
         private string GetNameFromConnectionString([NotNull] string connectionString)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Dawn.Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
             Helpers.Guards.Guard.MustBeGreaterThanOrEqualTo(connectionString.Length, Key.Length, $"{nameof(connectionString)}.{nameof(connectionString.Length)}");
 
             // todo spaces, semicolons etc. etc?

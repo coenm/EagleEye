@@ -16,8 +16,8 @@
             [CanBeNull] string[] tags,
             [CanBeNull] string[] persons)
         {
-            Dawn.Guard.Argument(fileName, nameof(fileName)).NotNull().NotEmpty();
-            Dawn.Guard.Argument(photoMimeType, nameof(photoMimeType)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(fileName, nameof(fileName)).NotNull().NotWhiteSpace();
+            Dawn.Guard.Argument(photoMimeType, nameof(photoMimeType)).NotNull().NotWhiteSpace();
             Dawn.Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
 
             Id = Guid.NewGuid();

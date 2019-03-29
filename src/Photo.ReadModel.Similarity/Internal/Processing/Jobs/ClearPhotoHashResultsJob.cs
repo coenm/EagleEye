@@ -25,7 +25,7 @@
 
         public void Execute(Guid id, int version, string hashIdentifierString)
         {
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(hashIdentifierString, nameof(hashIdentifierString));
+            Dawn.Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
 
             using (var db = contextFactory.CreateDbContext())
             {

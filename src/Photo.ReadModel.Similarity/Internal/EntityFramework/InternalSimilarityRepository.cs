@@ -19,7 +19,7 @@
         public HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
         {
             Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             return db.HashIdentifiers.SingleOrDefault(item => item.HashIdentifier == identifier);
         }
@@ -29,7 +29,7 @@
         public HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
         {
             Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             var dbItem = GetHashIdentifier(db, identifier);
 
@@ -53,7 +53,7 @@
             CancellationToken ct = default(CancellationToken))
         {
             Dawn.Guard.Argument(db, nameof(db)).NotNull();
-            Helpers.Guards.Guard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Dawn.Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             ct.ThrowIfCancellationRequested();
 

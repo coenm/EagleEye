@@ -104,7 +104,7 @@
 
         private static (string key, string value) GetKeyValueFromIni(string line)
         {
-            Dawn.Guard.Argument(line, nameof(line)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(line, nameof(line)).NotNull().NotWhiteSpace();
 
             line = line.Trim();
 

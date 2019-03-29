@@ -12,7 +12,7 @@
         public ClearPhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier)
             : base(id, expectedVersion)
         {
-            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             HashIdentifier = hashIdentifier;
         }

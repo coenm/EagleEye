@@ -364,7 +364,7 @@
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
         {
-            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
+            Dawn.Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
             DeleteByTerm(new Term(KeyFilename, filename));
         }
 
