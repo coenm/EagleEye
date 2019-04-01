@@ -48,6 +48,14 @@
     <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.Similarity\Photo.ReadModel.Similarity.csproj" />
+  </ItemGroup> 
+  
+  <ItemGroup>
+    <PackageReference Update="Costura.Fody" Version="3.3.3" />
+    <PackageReference Update="Fody" Version="4.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
