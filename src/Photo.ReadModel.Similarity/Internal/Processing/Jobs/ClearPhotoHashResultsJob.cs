@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
 
-    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using Dawn;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using JetBrains.Annotations;
 
     [UsedImplicitly]

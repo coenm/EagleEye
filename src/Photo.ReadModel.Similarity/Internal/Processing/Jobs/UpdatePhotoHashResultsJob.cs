@@ -3,9 +3,9 @@
     using System;
     using System.Linq;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]

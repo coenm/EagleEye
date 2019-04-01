@@ -5,12 +5,12 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
+    using Dawn;
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using Hangfire;
-    using Dawn;
     using JetBrains.Annotations;
 
     [UsedImplicitly]

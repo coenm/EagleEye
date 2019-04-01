@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
-    using Dawn;
     using JetBrains.Annotations;
 
     internal class LucenePhotoReadModel : IReadModel

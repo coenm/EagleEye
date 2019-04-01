@@ -2,10 +2,8 @@
 {
     using System;
 
-    using EagleEye.Core.Interfaces;
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
-    using EagleEye.Photo.ReadModel.Similarity.Interface;
-    using EagleEye.Photo.ReadModel.Similarity.Internal;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
@@ -14,7 +12,6 @@
     using Hangfire;
     using Hangfire.MemoryStorage;
     using Hangfire.SQLite;
-    using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using SimpleInjector;

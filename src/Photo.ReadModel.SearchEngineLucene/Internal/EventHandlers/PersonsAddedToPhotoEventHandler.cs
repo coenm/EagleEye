@@ -6,10 +6,10 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
+    using Dawn;
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
-    using Dawn;
     using JetBrains.Annotations;
     using NLog;
 

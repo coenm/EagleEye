@@ -1,9 +1,9 @@
 ﻿namespace EagleEye.ImageHash
 {
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ImageHash.PhotoProvider;
-    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 

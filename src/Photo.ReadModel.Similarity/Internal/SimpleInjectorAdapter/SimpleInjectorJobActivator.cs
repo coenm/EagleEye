@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Hangfire;
     using Dawn;
+    using Hangfire;
     using JetBrains.Annotations;
     using SimpleInjector;
 

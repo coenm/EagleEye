@@ -5,8 +5,8 @@
     using System.IO;
 
     using CoenM.ImageHash.HashAlgorithms;
-    using EagleEye.Core.Data;
     using Dawn;
+    using EagleEye.Core.Data;
     using JetBrains.Annotations;
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.PixelFormats;

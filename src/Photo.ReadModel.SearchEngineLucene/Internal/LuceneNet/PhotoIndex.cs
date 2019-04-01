@@ -6,9 +6,9 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
-    using Dawn;
     using JetBrains.Annotations;
     using Lucene.Net.Analysis;
     using Lucene.Net.Analysis.Standard;
@@ -19,7 +19,6 @@
     using Lucene.Net.Spatial;
     using Lucene.Net.Spatial.Prefix;
     using Lucene.Net.Spatial.Prefix.Tree;
-
     using Spatial4n.Core.Context;
 
     using Directory = Lucene.Net.Store.Directory;
