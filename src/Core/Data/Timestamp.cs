@@ -113,7 +113,7 @@
 
         public bool Equals([CanBeNull] Timestamp other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
@@ -122,7 +122,7 @@
 
         public override bool Equals([CanBeNull] object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
