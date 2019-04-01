@@ -30,7 +30,7 @@
             this.photoIndex = photoIndex;
         }
 
-        public Task Handle([NotNull] PhotoCreated message, CancellationToken token = default(CancellationToken))
+        public Task Handle([NotNull] PhotoCreated message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 
@@ -46,35 +46,35 @@
             return photoIndex.ReIndexMediaFileAsync(photo);
         }
 
-        public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
-        public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
-        public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
-        public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 
             await Task.Delay(0, token).ConfigureAwait(false);
         }
 
-        public async Task Handle(LocationSetToPhoto message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(LocationSetToPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
             Guard.Argument(message.Location, $"{nameof(message)}.{nameof(message.Location)}").NotNull();

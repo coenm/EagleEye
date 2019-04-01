@@ -62,7 +62,7 @@
             events.Should().ContainSingle();
             events.Single().Id.Should().Be(guid);
             events.Single().Name.Should().Be(name);
-            events.Single().TimeStamp.Should().NotBe(default(DateTimeOffset));
+            events.Single().TimeStamp.Should().NotBe(default);
         }
     }
 }

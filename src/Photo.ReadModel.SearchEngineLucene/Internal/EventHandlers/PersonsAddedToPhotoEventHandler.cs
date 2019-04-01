@@ -25,7 +25,7 @@
             this.photoIndex = photoIndex;
         }
 
-        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default(CancellationToken))
+        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
             Guard.Argument(message.Persons, nameof(message.Persons)).NotNull();

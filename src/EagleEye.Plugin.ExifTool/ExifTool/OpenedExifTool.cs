@@ -84,7 +84,7 @@
             }
         }
 
-        public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken))
+        public async Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default)
         {
             if (!initialized)
                 throw new Exception("Not initialized");
@@ -101,7 +101,7 @@
             }
         }
 
-        public async Task DisposeAsync(CancellationToken ct = default(CancellationToken))
+        public async Task DisposeAsync(CancellationToken ct = default)
         {
             if (!initialized)
                 return;

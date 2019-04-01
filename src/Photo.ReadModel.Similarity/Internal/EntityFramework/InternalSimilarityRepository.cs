@@ -50,7 +50,7 @@
         public async Task<HashIdentifiers> GetAddHashIdentifierAsync(
             [NotNull] ISimilarityDbContext db,
             [NotNull] string identifier,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
             Guard.Argument(db, nameof(db)).NotNull();
             Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
@@ -93,7 +93,7 @@
             [NotNull] ISimilarityDbContext db,
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
             Guard.Argument(db, nameof(db)).NotNull();
             Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
@@ -144,7 +144,7 @@
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
             int messageVersion,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
             Guard.Argument(db, nameof(db)).NotNull();
             Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();

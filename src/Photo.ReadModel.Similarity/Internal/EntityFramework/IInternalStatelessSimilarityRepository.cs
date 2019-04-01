@@ -14,9 +14,9 @@
 
         [Pure] [CanBeNull] HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
 
-        Task<HashIdentifiers> GetAddHashIdentifierAsync([NotNull] ISimilarityDbContext db, [NotNull] string messageHashIdentifier, CancellationToken ct = default(CancellationToken));
+        Task<HashIdentifiers> GetAddHashIdentifierAsync([NotNull] ISimilarityDbContext db, [NotNull] string messageHashIdentifier, CancellationToken ct = default);
 
-        Task<List<PhotoHash>> GetPhotoHashesUntilVersionAsync([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier, int messageVersion, CancellationToken ct = default(CancellationToken));
+        Task<List<PhotoHash>> GetPhotoHashesUntilVersionAsync([NotNull] ISimilarityDbContext db, Guid messageId, [NotNull] HashIdentifiers hashIdentifier, int messageVersion, CancellationToken ct = default);
 
         [Pure] [CanBeNull] PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoHashId, [NotNull] HashIdentifiers hashIdentifier);
 
