@@ -2,13 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Common;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using Dawn;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +49,7 @@
         public async Task<HashIdentifiers> GetAddHashIdentifierAsync(
             [NotNull] ISimilarityDbContext db,
             [NotNull] string identifier,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
             Guard.Argument(db, nameof(db)).NotNull();
             Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
@@ -93,7 +92,7 @@
             [NotNull] ISimilarityDbContext db,
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
             Guard.Argument(db, nameof(db)).NotNull();
             Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
@@ -144,7 +143,7 @@
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
             int messageVersion,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
             Guard.Argument(db, nameof(db)).NotNull();
             Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();

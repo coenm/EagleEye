@@ -19,7 +19,7 @@
             this.decoratee = decoratee;
         }
 
-        public Task Handle(T message, CancellationToken token = default(CancellationToken))
+        public Task Handle(T message, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return decoratee.Handle(message, token);

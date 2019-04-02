@@ -1,7 +1,7 @@
 ﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories
 {
-    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using Dawn;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using JetBrains.Annotations;
     using Lucene.Net.Store;
 

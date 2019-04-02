@@ -26,8 +26,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
-    <PackageReference Include="NLog" Version="4.5.11" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+    <PackageReference Include="NLog" Version="4.6.1" />
     <PackageReference Include="SimpleInjector" Version="4.4.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
       <PrivateAssets>all</PrivateAssets>
@@ -48,6 +48,14 @@
     <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.SearchEngineLucene\Photo.ReadModel.SearchEngineLucene.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.Similarity\Photo.ReadModel.Similarity.csproj" />
+  </ItemGroup> 
+  
+  <ItemGroup>
+    <PackageReference Update="Costura.Fody" Version="3.3.3" />
+    <PackageReference Update="Fody" Version="4.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

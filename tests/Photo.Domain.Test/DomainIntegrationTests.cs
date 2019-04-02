@@ -44,16 +44,16 @@
             var hash = new byte[32];
             var command = new CreatePhotoCommand("aap", hash, "image/jpeg", new[] { "zoo", "holiday" }, null);
             var guid = command.Id;
-            await handler2.Handle(command, default(CancellationToken)).ConfigureAwait(false);
+            await handler2.Handle(command, default).ConfigureAwait(false);
 
             var addTagsCommand = new AddTagsToPhotoCommand(guid, 1, "summer", "holiday");
-            await handler.Handle(addTagsCommand, default(CancellationToken)).ConfigureAwait(false);
+            await handler.Handle(addTagsCommand, default).ConfigureAwait(false);
 
             addTagsCommand = new AddTagsToPhotoCommand(guid, 2, "summer", "soccer");
-            await handler.Handle(addTagsCommand, default(CancellationToken)).ConfigureAwait(false);
+            await handler.Handle(addTagsCommand, default).ConfigureAwait(false);
 
             var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, 3, "summer");
-            await handler.Handle(removeTagsCommand, default(CancellationToken)).ConfigureAwait(false);
+            await handler.Handle(removeTagsCommand, default).ConfigureAwait(false);
 
             // assert
             events.Should().HaveCount(3);

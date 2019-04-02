@@ -2,12 +2,12 @@
 {
     using System;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
-    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 

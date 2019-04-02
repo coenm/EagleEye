@@ -18,7 +18,7 @@
             this.publisher = publisher;
         }
 
-        public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
         {
             foreach (var @event in events)
             {
@@ -34,7 +34,7 @@
             }
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
         {
             inMemoryDb.TryGetValue(aggregateId, out var events);
             return Task.FromResult(events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>());
