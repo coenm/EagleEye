@@ -34,7 +34,7 @@ do
 	if [ "$LAST_EXIT_CODE" -ne "0" ]; then
 		echo "At least one test failed. Setting exitcode to make sure this script will fail."
 		EXIT_CODE=$LAST_EXIT_CODE
-  	fi
+	fi
 done
 
 if [ "$EXIT_CODE" -ne "0" ]; then
@@ -52,6 +52,11 @@ COVERAGE_RESULT_STRING=$( printf "%s" "${COVERAGE_RESULTS[@]}" )
 COVERAGE_RESULT_STRING=${COVERAGE_RESULT_STRING::-1}
 echo COVERAGE_RESULT_STRING : "${COVERAGE_RESULT_STRING}"
 
-# Upload to Coveralls
-echo Upload coverage results to coverall
-csmacnz.Coveralls --multiple --input $COVERAGE_RESULT_STRING --useRelativePaths --basePath $ROOT_PATH
+# Upload to Coveralls 
+# (only when the coveralls token is available. i.e. when it is not a pull request from 'someone else'.)
+if [[ -z "${COVERALLS_REPO_TOKEN}" ]]; then
+	echo No 'COVERALLS_REPO_TOKEN' environment variable available, so it is impossible to upload coverage results to coverall.
+else
+	echo Upload coverage results to coverall.
+	csmacnz.Coveralls --multiple --input $COVERAGE_RESULT_STRING --useRelativePaths --basePath $ROOT_PATH
+fi

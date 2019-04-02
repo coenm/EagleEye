@@ -8,8 +8,8 @@
     {
         void Init();
 
-        Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default(CancellationToken));
+        Task<string> ExecuteAsync(IEnumerable<string> args, CancellationToken ct = default);
 
-        Task DisposeAsync(CancellationToken ct = default(CancellationToken));
+        Task DisposeAsync(CancellationToken ct = default);
     }
 }

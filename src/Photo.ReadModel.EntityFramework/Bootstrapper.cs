@@ -1,13 +1,15 @@
 ﻿namespace EagleEye.Photo.ReadModel.EntityFramework
 {
     using System;
+    using System.Reflection;
 
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.ContextOptions;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using SimpleInjector;
@@ -20,13 +22,13 @@
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapEntityFrameworkReadModel([NotNull] Container container, [NotNull] string connectionString)
         {
-            Guard.NotNull(container, nameof(container));
-            Guard.NotNullOrWhiteSpace(connectionString, nameof(connectionString));
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
 
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
-            container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
+            RegisterDbContextOptions(container, thisAssembly);
 
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
             container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
@@ -44,6 +46,19 @@
             {
                 typeof(MediaItemConsistency),
             };
+        }
+
+        private static void RegisterDbContextOptions(Container container, Assembly thisAssembly)
+        {
+            // original:
+            // container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
+            // workaround https://stackoverflow.com/questions/52777116/simple-injector-how-to-register-resolve-collection-of-singletons-against-same-i
+            container.Collection.Register<IDbContextOptionsStrategy>(
+                                                                     new[]
+                                                                     {
+                                                                         Lifestyle.Singleton.CreateRegistration<IDbContextOptionsStrategy>(container.GetInstance<SqlLiteDatabaseOptionsBuilder>, container),
+                                                                         Lifestyle.Singleton.CreateRegistration<IDbContextOptionsStrategy>(container.GetInstance<InMemoryDatabaseOptionsBuilder>, container),
+                                                                     });
         }
     }
 }

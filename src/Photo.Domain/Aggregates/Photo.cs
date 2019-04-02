@@ -5,8 +5,8 @@
     using System.Linq;
 
     using CQRSlite.Domain;
+    using Dawn;
     using EagleEye.Photo.Domain.Events;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     internal class Photo : AggregateRoot
@@ -30,11 +30,10 @@
             [NotNull] byte[] fileSha256)
         : this()
         {
-            Guard.NotEmpty(id, nameof(id));
-            Guard.NotNullOrWhiteSpace(filename, nameof(filename));
-            Guard.NotNullOrWhiteSpace(mimeType, nameof(mimeType));
-            Guard.NotNull(fileSha256, nameof(fileSha256));
-            Guard.MustBeEqualTo(fileSha256.Length, Sha256ByteSize, $"{nameof(fileSha256)}.{nameof(fileSha256.Length)}");
+            Guard.Argument(id, nameof(id)).NotEqual(Guid.Empty);
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+            Guard.Argument(mimeType, nameof(mimeType)).NotNull().NotWhiteSpace();
+            Guard.Argument(fileSha256, nameof(fileSha256)).NotNull().Count(Sha256ByteSize);
 
             Id = id;
             ApplyChange(new PhotoCreated(id, filename, mimeType, fileSha256));
@@ -140,7 +139,7 @@
 
         public void UpdateFileHash([NotNull] byte[] fileHash)
         {
-            Guard.NotNullOrEmpty(fileHash, nameof(fileHash));
+            Guard.Argument(fileHash, nameof(fileHash)).NotNull().NotEmpty();
 
             if (!this.fileHash.SequenceEqual(fileHash))
                 ApplyChange(new FileHashUpdated(Id, fileHash));
@@ -148,7 +147,7 @@
 
         public void UpdatePhotoHash([NotNull] string hashIdentifier, ulong fileHash)
         {
-            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             if (!photoHashes.ContainsKey(hashIdentifier))
                 ApplyChange(new PhotoHashAdded(Id, hashIdentifier, fileHash));
@@ -158,7 +157,7 @@
 
         public void ClearPhotoHash([NotNull] string hashIdentifier)
         {
-            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             if (photoHashes.ContainsKey(hashIdentifier))
                 ApplyChange(new PhotoHashCleared(Id, hashIdentifier));
@@ -167,7 +166,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] FileHashUpdated e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             fileHash = e.Hash.ToArray();
         }
@@ -175,7 +174,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoHashAdded e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             photoHashes.Add(e.HashIdentifier, e.Hash);
         }
@@ -183,7 +182,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoHashUpdated e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             photoHashes[e.HashIdentifier] = e.Hash;
         }
@@ -191,7 +190,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoHashCleared e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             photoHashes.Remove(e.HashIdentifier);
         }
@@ -199,7 +198,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] LocationClearedFromPhoto e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             location = null;
         }
@@ -207,7 +206,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] LocationSetToPhoto e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             location = e.Location;
         }
@@ -215,7 +214,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PhotoCreated e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             created = true;
             Id = e.Id;
@@ -226,7 +225,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PersonsAddedToPhoto e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             persons.AddRange(e.Persons);
         }
@@ -234,7 +233,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] PersonsRemovedFromPhoto e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             foreach (var t in e.Persons)
                 persons.Remove(t);
@@ -243,7 +242,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] TagsAddedToPhoto e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             tags.AddRange(e.Tags ?? new string[0]);
         }
@@ -251,7 +250,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] TagsRemovedFromPhoto e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             foreach (var t in e.Tags)
                 tags.Remove(t);
@@ -260,7 +259,7 @@
         [UsedImplicitly]
         private void Apply([NotNull] DateTimeTakenChanged e)
         {
-            DebugGuard.NotNull(e, nameof(e));
+            Guard.Argument(e, nameof(e)).NotNull();
 
             dateTimeTaken = e.DateTimeTaken;
             dateTimeTakenPrecision = e.Precision;

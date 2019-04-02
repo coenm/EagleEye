@@ -1,4 +1,9 @@
-# EagleEye
+<h1 align="center">EagleEye</h1>
+<div align="center">
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ner6290e44akpvuw/branch/develop?svg=true)](https://ci.appveyor.com/project/coenm/eagleeye/branch/develop) [![Coverage](https://codecov.io/gh/coenm/eagleeye/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/eagleeye/branch/develop) [![Coverage](https://coveralls.io/repos/github/coenm/EagleEye/badge.svg?branch=develop)](https://coveralls.io/github/coenm/EagleEye?branch=develop) 
+
+</div>
 quick .net core app to remove already processed images.
 
 # The original Problem
@@ -31,12 +36,7 @@ Originally, this project is a quick (commandline) tool to build an index with fi
 - [x] Entity framework;
 - [x] Fody;
 - [ ] Misc: NLog, Humanizer, Lucene.NET, NetMq (ZeroMq).
-
-# The badges
-| Branch | AppVeyor | Windows coverage | Ubuntu coverage |
-| :--- | :--- | :--- | :--- |
-| Develop | [![Build status](https://ci.appveyor.com/api/projects/status/ner6290e44akpvuw/branch/develop?svg=true)](https://ci.appveyor.com/project/coenm/eagleeye/branch/develop) | [![Coverage](https://codecov.io/gh/coenm/eagleeye/branch/develop/graph/badge.svg)](https://codecov.io/gh/coenm/eagleeye/branch/develop) | [![Coverage Status](https://coveralls.io/repos/github/coenm/EagleEye/badge.svg?branch=develop)](https://coveralls.io/github/coenm/EagleEye?branch=develop) |
-
+- [ ] Azure DevOps;
 
 # Checkout and build
 ```

@@ -8,7 +8,8 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
+    <PackageReference Include="Dawn.Guard" Version="1.8.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

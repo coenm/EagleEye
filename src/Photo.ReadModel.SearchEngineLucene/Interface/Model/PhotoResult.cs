@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class PhotoResult : PhotoIdResult
@@ -19,9 +19,9 @@
             float score)
             : base(id, score)
         {
-            DebugGuard.NotNull(filename, nameof(filename));
-            DebugGuard.NotNull(tags, nameof(tags));
-            DebugGuard.NotNull(persons, nameof(persons));
+            Guard.Argument(filename, nameof(filename)).NotNull();
+            Guard.Argument(tags, nameof(tags)).NotNull();
+            Guard.Argument(persons, nameof(persons)).NotNull();
 
             Filename = filename;
             MimeType = mimeType;

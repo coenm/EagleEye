@@ -5,11 +5,11 @@
 
     using CQRSlite.Commands;
     using CQRSlite.Domain;
+    using Dawn;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.CommandHandlers.Exceptions;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.Domain.Services;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     internal class CreatePhotoCommandHandler : ICancellableCommandHandler<CreatePhotoCommand>
@@ -21,8 +21,8 @@
             [NotNull] ISession session,
             [NotNull] IUniqueFilenameService uniqueFilenameService)
         {
-            Guard.NotNull(session, nameof(session));
-            Guard.NotNull(uniqueFilenameService, nameof(uniqueFilenameService));
+            Guard.Argument(session, nameof(session)).NotNull();
+            Guard.Argument(uniqueFilenameService, nameof(uniqueFilenameService)).NotNull();
             this.session = session;
             this.uniqueFilenameService = uniqueFilenameService;
         }

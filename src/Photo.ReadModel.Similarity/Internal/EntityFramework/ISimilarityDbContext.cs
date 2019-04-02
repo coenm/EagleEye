@@ -15,7 +15,7 @@
 
         DbSet<Scores> Scores { get; }
 
-        Task SaveChangesAsync(CancellationToken ct = default(CancellationToken));
+        Task SaveChangesAsync(CancellationToken ct = default);
 
         void SaveChanges();
     }

@@ -2,8 +2,8 @@
 {
     using System;
 
+    using Dawn;
     using EagleEye.Photo.Domain.Commands.Base;
-    using Helpers.Guards;
     using JetBrains.Annotations;
 
     [PublicAPI]
@@ -12,7 +12,7 @@
         public ClearPhotoHashCommand(Guid id, int expectedVersion, [NotNull] string hashIdentifier)
             : base(id, expectedVersion)
         {
-            Guard.NotNullOrWhiteSpace(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull().NotWhiteSpace();
 
             HashIdentifier = hashIdentifier;
         }

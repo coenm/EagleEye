@@ -1,7 +1,7 @@
 ﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories
 {
+    using Dawn;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using Lucene.Net.Store;
 
@@ -11,7 +11,7 @@
 
         public FileSystemLuceneDirectoryFactory([NotNull] string directory)
         {
-            Guard.NotNullOrWhiteSpace(directory, nameof(directory));
+            Guard.Argument(directory, nameof(directory)).NotNull().NotWhiteSpace();
 
             path = directory;
         }

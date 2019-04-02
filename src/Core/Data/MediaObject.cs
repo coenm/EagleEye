@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class MediaObject
@@ -12,7 +12,7 @@
 
         public MediaObject(string filename)
         {
-            Guard.NotNullOrWhiteSpace(filename, nameof(filename));
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
 
             FileInformation = new FileInformation(filename);
             Location = new Location();
@@ -43,7 +43,7 @@
 
         public void AddPersons([NotNull] IEnumerable<string> persons)
         {
-            Guard.NotNull(persons, nameof(persons));
+            Guard.Argument(persons, nameof(persons)).NotNull();
 
             foreach (var person in persons)
                 AddPerson(person);
@@ -64,7 +64,7 @@
 
         public void AddTags([NotNull] IEnumerable<string> tags)
         {
-            Guard.NotNull(tags, nameof(tags));
+            Guard.Argument(tags, nameof(tags)).NotNull();
 
             foreach (var tag in tags)
                 AddTag(tag);

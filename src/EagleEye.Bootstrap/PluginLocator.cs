@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using NLog;
 
@@ -16,7 +16,7 @@
         [NotNull]
         public static IEnumerable<Assembly> FindPluginAssemblies([NotNull] string baseDirectory)
         {
-            Guard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             Logger.Debug(() => $"Plugin base directory {baseDirectory}");
 
@@ -43,7 +43,7 @@
         [NotNull]
         private static IEnumerable<Assembly> GetPluginAssembliesInDirectory([NotNull] string baseDirectory)
         {
-            DebugGuard.NotNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             return new DirectoryInfo(baseDirectory)
                 .GetFiles()

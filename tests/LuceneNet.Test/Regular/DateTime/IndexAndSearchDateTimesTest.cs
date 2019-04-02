@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Helpers.Guards;
+    using Dawn;
     using Lucene.Net.Analysis;
     using Lucene.Net.Analysis.Standard;
     using Lucene.Net.Documents;
@@ -124,7 +124,7 @@
 
         private IEnumerable<SearchResults<PersonDto>> Search(Query query, Filter filter)
         {
-            Guard.NotNull(query, nameof(query));
+            Guard.Argument(query, nameof(query)).NotNull();
 
             var results = new List<SearchResults<PersonDto>>();
 

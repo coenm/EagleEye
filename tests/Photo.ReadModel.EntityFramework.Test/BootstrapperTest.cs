@@ -4,9 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Module;
-
     using FluentAssertions;
     using JetBrains.Annotations;
     using SimpleInjector;

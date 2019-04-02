@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
 
     using CQRSlite.Events;
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
 
     public class InMemoryEventStore : IEventStore
@@ -17,11 +17,11 @@
 
         public InMemoryEventStore([NotNull] IEventPublisher publisher)
         {
-            Guard.NotNull(publisher, nameof(publisher));
+            Guard.Argument(publisher, nameof(publisher)).NotNull();
             this.publisher = publisher;
         }
 
-        public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
         {
             foreach (var @event in events)
             {
@@ -37,7 +37,7 @@
             }
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
         {
             inMemoryDb.TryGetValue(aggregateId, out var events);
 

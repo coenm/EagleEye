@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.FileImporter.Indexing
 {
-    using Helpers.Guards;
+    using Dawn;
 
     public class PersistentFileIndexService
     {
@@ -8,7 +8,7 @@
 
         public PersistentFileIndexService(IImageDataRepository repository)
         {
-            Guard.NotNull(repository, nameof(repository));
+            Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;
         }
 

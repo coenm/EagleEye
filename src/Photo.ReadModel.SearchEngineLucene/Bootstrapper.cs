@@ -2,12 +2,12 @@
 {
     using System;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneDirectoryFactories;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -23,9 +23,9 @@
             bool useInMemoryIndex = true,
             [CanBeNull] string baseDirectory = null)
         {
-            Guard.NotNull(container, nameof(container));
+            Guard.Argument(container, nameof(container)).NotNull();
             if (useInMemoryIndex == false)
-                Guard.NotNull(baseDirectory, nameof(baseDirectory));
+                Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull();
 
             container.RegisterSingleton<IPhotoIndex, PhotoIndex>();
 

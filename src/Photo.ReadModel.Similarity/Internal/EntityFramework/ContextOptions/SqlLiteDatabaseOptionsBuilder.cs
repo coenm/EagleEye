@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,7 @@
         public DbContextOptionsBuilder<SimilarityDbContext> Create([CanBeNull] string connectionString)
         {
             // By contract, the param can be null, however, by design, this strategy only works when it is not null (see CanHandle)
-            Guard.NotNull(connectionString, nameof(connectionString));
+            Guard.Argument(connectionString, nameof(connectionString)).NotNull();
 
             return new DbContextOptionsBuilder<SimilarityDbContext>()
                 .UseSqlite(connectionString);

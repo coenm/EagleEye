@@ -1,9 +1,9 @@
 ﻿namespace EagleEye.DirectoryStructure
 {
+    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.DirectoryStructure.PhotoProvider;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -14,7 +14,7 @@
 
         public void EnablePlugin([NotNull] Container container)
         {
-            Guard.NotNull(container, nameof(container));
+            Guard.Argument(container, nameof(container)).NotNull();
 
             container.Collection.Append(typeof(IPhotoDateTimeTakenProvider), typeof(DirectoryStructureDateTimeProvider));
         }

@@ -2,9 +2,9 @@
 {
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
@@ -14,7 +14,7 @@
 
         public ExifToolLocationProvider([NotNull] IExifTool exiftool)
         {
-            Guard.NotNull(exiftool, nameof(exiftool));
+            Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
         }
 

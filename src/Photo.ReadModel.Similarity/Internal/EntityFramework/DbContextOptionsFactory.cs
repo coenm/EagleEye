@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Helpers.Guards;
+    using Dawn;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
     using NLog;
@@ -11,12 +11,12 @@
     internal class DbContextOptionsFactory
     {
         [NotNull] private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        [NotNull] private readonly IList<IDbContextOptionsStrategy> strategies;
+        [NotNull] private readonly IEnumerable<IDbContextOptionsStrategy> strategies;
 
         public DbContextOptionsFactory([NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
         {
-            Guard.NotNull(strategies, nameof(strategies));
-            this.strategies = strategies.ToList();
+            Guard.Argument(strategies, nameof(strategies)).NotNull();
+            this.strategies = strategies;
         }
 
         [CanBeNull]

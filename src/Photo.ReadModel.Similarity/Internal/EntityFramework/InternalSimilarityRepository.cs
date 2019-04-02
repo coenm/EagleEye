@@ -2,13 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Common;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.Models;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +17,8 @@
         [Pure]
         public HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             return db.HashIdentifiers.SingleOrDefault(item => item.HashIdentifier == identifier);
         }
@@ -28,8 +27,8 @@
         [Pure]
         public HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             var dbItem = GetHashIdentifier(db, identifier);
 
@@ -50,10 +49,10 @@
         public async Task<HashIdentifiers> GetAddHashIdentifierAsync(
             [NotNull] ISimilarityDbContext db,
             [NotNull] string identifier,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNullOrWhiteSpace(identifier, nameof(identifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(identifier, nameof(identifier)).NotNull().NotWhiteSpace();
 
             ct.ThrowIfCancellationRequested();
 
@@ -77,8 +76,8 @@
         [Pure]
         public PhotoHash GetPhotoHashByIdAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoHashId, [NotNull] HashIdentifiers hashIdentifier)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             return db.PhotoHashes.SingleOrDefault(
                 photoHash =>
@@ -93,10 +92,10 @@
             [NotNull] ISimilarityDbContext db,
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             ct.ThrowIfCancellationRequested();
 
@@ -113,7 +112,7 @@
         [NotNull]
         public List<Scores> GetHashScoresByIdAndBeforeVersion([NotNull] ISimilarityDbContext db, int hashIdentifierId, Guid id, int version)
         {
-            DebugGuard.NotNull(db, nameof(db));
+            Guard.Argument(db, nameof(db)).NotNull();
 
             return db.Scores
                 .Where(score =>
@@ -129,8 +128,8 @@
         [NotNull]
         public List<PhotoHash> GetPhotoHashesByHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] HashIdentifiers hashIdentifier)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             return db.PhotoHashes
                 .Where(photoHash => photoHash.HashIdentifier == hashIdentifier)
@@ -144,10 +143,10 @@
             Guid messageId,
             [NotNull] HashIdentifiers hashIdentifier,
             int messageVersion,
-            CancellationToken ct = default(CancellationToken))
+            CancellationToken ct = default)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             ct.ThrowIfCancellationRequested();
 
@@ -165,8 +164,8 @@
         [Pure]
         public List<Scores> GetOutdatedScores([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier, int version)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNull(hashIdentifier, nameof(hashIdentifier));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
 
             return db.Scores
                 .Where(score =>
@@ -180,8 +179,8 @@
 
         public void DeleteScores([NotNull] ISimilarityDbContext db, [NotNull] IEnumerable<Scores> scores)
         {
-            DebugGuard.NotNull(db, nameof(db));
-            DebugGuard.NotNull(scores, nameof(scores));
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(scores, nameof(scores)).NotNull();
 
             if (scores.Any())
                 db.Scores.RemoveRange(scores);

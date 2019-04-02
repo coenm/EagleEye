@@ -5,8 +5,8 @@
     using System.IO;
 
     using CoenM.ImageHash.HashAlgorithms;
+    using Dawn;
     using EagleEye.Core.Data;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.PixelFormats;
@@ -33,7 +33,7 @@
         /// <exception cref="InvalidDataException">Thrown when <paramref name="input"/> is not a valid image stream.</exception>
         [NotNull] public static List<PhotoHash> Calculate([NotNull] Stream input)
         {
-            Guard.NotNull(input, nameof(input));
+            Guard.Argument(input, nameof(input)).NotNull();
 
             var result = new List<PhotoHash>(3);
 

@@ -6,9 +6,9 @@
 
     using CQRSlite.Commands;
     using CQRSlite.Domain;
+    using Dawn;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.Commands;
-    using Helpers.Guards;
     using JetBrains.Annotations;
     using NLog;
 
@@ -29,7 +29,7 @@
 
         public MediaItemCommandHandlers([NotNull] ISession session)
         {
-            Guard.NotNull(session, nameof(session));
+            Guard.Argument(session, nameof(session)).NotNull();
             this.session = session;
         }
 
