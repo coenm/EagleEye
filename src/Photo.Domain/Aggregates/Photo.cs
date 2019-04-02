@@ -17,7 +17,6 @@
         [NotNull] private readonly List<string> persons;
         private DateTime? dateTimeTaken;
 
-        private bool created;
         [CanBeNull] private Location location;
         private string filename;
         private byte[] fileHash;
@@ -216,7 +215,6 @@
         {
             Guard.Argument(e, nameof(e)).NotNull();
 
-            created = true;
             Id = e.Id;
             filename = e.FileName;
             fileHash = e.FileHash;

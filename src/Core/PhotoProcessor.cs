@@ -5,37 +5,36 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-
-    using Helpers.Guards;
 
     using JetBrains.Annotations;
 
     public class PhotoProcessor
     {
-        [NotNull] private readonly IPhotoDateTimeTakenProvider[] dateTimeProviders;
-        [NotNull] private readonly IPhotoTagProvider[] tagsProviders;
-        [NotNull] private readonly IPhotoMimeTypeProvider[] mimeTypeProviders;
+        [NotNull] private readonly IEnumerable<IPhotoDateTimeTakenProvider> dateTimeProviders;
+        [NotNull] private readonly IEnumerable<IPhotoTagProvider> tagsProviders;
+        [NotNull] private readonly IEnumerable<IPhotoMimeTypeProvider> mimeTypeProviders;
 
         public PhotoProcessor(
             [NotNull] IEnumerable<IPhotoDateTimeTakenProvider> dateTimeProviders,
             [NotNull] IEnumerable<IPhotoTagProvider> tagsProviders,
             [NotNull] IEnumerable<IPhotoMimeTypeProvider> mimeTypeProviders)
         {
-            Guard.NotNull(dateTimeProviders, nameof(dateTimeProviders));
-            Guard.NotNull(tagsProviders, nameof(tagsProviders));
-            Guard.NotNull(mimeTypeProviders, nameof(mimeTypeProviders));
+            Guard.Argument(dateTimeProviders, nameof(dateTimeProviders)).NotNull();
+            Guard.Argument(tagsProviders, nameof(tagsProviders)).NotNull();
+            Guard.Argument(mimeTypeProviders, nameof(mimeTypeProviders)).NotNull();
 
-            this.dateTimeProviders = dateTimeProviders.ToArray();
-            this.tagsProviders = tagsProviders.ToArray();
-            this.mimeTypeProviders = mimeTypeProviders.ToArray();
+            this.dateTimeProviders = dateTimeProviders;
+            this.tagsProviders = tagsProviders;
+            this.mimeTypeProviders = mimeTypeProviders;
         }
 
         [Pure]
-        public async Task<Timestamp> GetTimestampAsync([NotNull] string filename, CancellationToken ct = default(CancellationToken))
+        public async Task<Timestamp> GetTimestampAsync([NotNull] string filename, CancellationToken ct = default)
         {
-            Guard.NotNull(filename, nameof(filename));
+            Guard.Argument(filename, nameof(filename)).NotNull();
             ct.ThrowIfCancellationRequested();
 
             Timestamp result = null;
@@ -54,9 +53,9 @@
         }
 
         [Pure]
-        public async Task<List<string>> GetTagsAsync([NotNull] string filename, CancellationToken ct = default(CancellationToken))
+        public async Task<List<string>> GetTagsAsync([NotNull] string filename, CancellationToken ct = default)
         {
-            Guard.NotNull(filename, nameof(filename));
+            Guard.Argument(filename, nameof(filename)).NotNull();
             ct.ThrowIfCancellationRequested();
 
             var result = new List<string>();
@@ -75,9 +74,9 @@
         }
 
         [Pure]
-        public async Task<string> GetMimeTypeAsync([NotNull] string filename, CancellationToken ct = default(CancellationToken))
+        public async Task<string> GetMimeTypeAsync([NotNull] string filename, CancellationToken ct = default)
         {
-            Guard.NotNull(filename, nameof(filename));
+            Guard.Argument(filename, nameof(filename)).NotNull();
             ct.ThrowIfCancellationRequested();
 
             var result = default(string);
