@@ -5,11 +5,11 @@
 
     using CQRSlite.Commands;
     using CQRSlite.Domain;
+    using Dawn;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.CommandHandlers.Exceptions;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.Domain.Services;
-    using Dawn;
     using JetBrains.Annotations;
 
     internal class CreatePhotoCommandHandler : ICancellableCommandHandler<CreatePhotoCommand>

@@ -5,10 +5,10 @@
     using CQRSlite.Commands;
     using CQRSlite.Messages;
     using CQRSlite.Queries;
+    using Dawn;
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Decorators;
     using EagleEye.Photo.Domain.Services;
-    using Dawn;
     using JetBrains.Annotations;
     using SimpleInjector;
 

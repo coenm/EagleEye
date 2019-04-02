@@ -5,8 +5,8 @@
     using System.Linq;
 
     using CQRSlite.Domain;
-    using EagleEye.Photo.Domain.Events;
     using Dawn;
+    using EagleEye.Photo.Domain.Events;
     using JetBrains.Annotations;
 
     internal class Photo : AggregateRoot

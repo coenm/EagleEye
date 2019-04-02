@@ -2,8 +2,8 @@
 {
     using System;
 
-    using EagleEye.Photo.Domain.Commands.Base;
     using Dawn;
+    using EagleEye.Photo.Domain.Commands.Base;
     using JetBrains.Annotations;
 
     [PublicAPI]
