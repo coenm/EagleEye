@@ -38,7 +38,7 @@
     <PackageReference Include="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
     <PackageReference Include="NLog" Version="4.6.1" />
-    <PackageReference Include="SimpleInjector" Version="4.4.3" />
+    <PackageReference Include="SimpleInjector" Version="4.5.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

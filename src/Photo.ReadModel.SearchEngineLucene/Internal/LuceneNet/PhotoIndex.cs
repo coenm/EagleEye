@@ -369,7 +369,6 @@
 
         private void RemoveFromIndexByGuid(Guid guid)
         {
-//            Guard.Argument(guid, nameof(guid)).NotEqual(Guid.Empty);
             if (guid == Guid.Empty)
                 return;
 

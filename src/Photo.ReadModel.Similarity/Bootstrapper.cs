@@ -1,10 +1,12 @@
 ﻿namespace EagleEye.Photo.ReadModel.Similarity
 {
     using System;
+    using System.Reflection;
 
     using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
+    using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.ContextOptions;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing;
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
@@ -34,7 +36,7 @@
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
             container.Register<IInternalStatelessSimilarityRepository, InternalSimilarityRepository>(Lifestyle.Singleton);
-            container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
+            RegisterDbContextOptions(container, thisAssembly);
 
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
             container.Register<DbContextOptions<SimilarityDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
@@ -63,6 +65,19 @@
             {
                 typeof(SimilarityEventHandlers),
             };
+        }
+
+        private static void RegisterDbContextOptions(Container container, Assembly thisAssembly)
+        {
+            // original:
+            // container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
+            // workaround https://stackoverflow.com/questions/52777116/simple-injector-how-to-register-resolve-collection-of-singletons-against-same-i
+            container.Collection.Register<IDbContextOptionsStrategy>(
+                                                                     new[]
+                                                                     {
+                                                                         Lifestyle.Singleton.CreateRegistration<IDbContextOptionsStrategy>(container.GetInstance<SqlLiteDatabaseOptionsBuilder>, container),
+                                                                         Lifestyle.Singleton.CreateRegistration<IDbContextOptionsStrategy>(container.GetInstance<InMemoryDatabaseOptionsBuilder>, container),
+                                                                     });
         }
 
         private static void SetHangFireConfiguration(Container container, string connectionString)
