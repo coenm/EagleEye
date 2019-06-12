@@ -39,7 +39,7 @@
     <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
     <PackageReference Include="NLog" Version="4.6.4" />
     <PackageReference Include="SimpleInjector" Version="4.5.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

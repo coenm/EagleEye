@@ -30,7 +30,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="NLog" Version="4.6.4" />
     <PackageReference Include="SimpleInjector" Version="4.5.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
