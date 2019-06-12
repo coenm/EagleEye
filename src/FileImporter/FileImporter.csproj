@@ -27,7 +27,7 @@
   <ItemGroup>
     <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.0" />
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0002" />
-    <PackageReference Include="CommandLineParser" Version="2.4.3" />
+    <PackageReference Include="CommandLineParser" Version="2.5.0" />
     <PackageReference Include="CqrsLite" Version="0.28.0" />
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
