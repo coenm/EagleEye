@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.3" />
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0002" />
-    <PackageReference Include="CqrsLite" Version="0.27.0" />
+    <PackageReference Include="CqrsLite" Version="0.28.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="NLog" Version="4.6.4" />
     <PackageReference Include="SimpleInjector" Version="4.6.0" />

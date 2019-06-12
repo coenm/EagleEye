@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CqrsLite" Version="0.27.0" />
+    <PackageReference Include="CqrsLite" Version="0.28.0" />
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
