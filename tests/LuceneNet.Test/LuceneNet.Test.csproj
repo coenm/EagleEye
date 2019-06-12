@@ -19,14 +19,14 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.6.0">
+    <PackageReference Include="coverlet.msbuild" Version="2.6.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="FakeItEasy" Version="5.1.0" />
-    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="5.1.0" />
-    <PackageReference Include="FluentAssertions" Version="5.6.0" />
+    <PackageReference Include="FakeItEasy" Version="5.1.1" />
+    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="5.1.1" />
+    <PackageReference Include="FluentAssertions" Version="5.7.0" />
     <PackageReference Include="FluentAssertions.Analyzers" Version="0.11.4" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
@@ -39,9 +39,9 @@
     <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
-    <PackageReference Include="NLog" Version="4.6.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
+    <PackageReference Include="NLog" Version="4.6.4" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
