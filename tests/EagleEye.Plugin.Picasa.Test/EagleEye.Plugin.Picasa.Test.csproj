@@ -25,8 +25,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="FakeItEasy" Version="5.1.0" />
-    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="5.1.0" />
+    <PackageReference Include="FakeItEasy" Version="5.1.1" />
+    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="5.1.1" />
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="FluentAssertions.Analyzers" Version="0.11.4" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
