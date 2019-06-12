@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+
 [assembly: InternalsVisibleTo("Photo.ReadModel.EntityFramework.Test")]
 
 // required for FakeItEasy
