@@ -12,11 +12,11 @@
     using CQRSlite.Routing;
     using Dawn;
     using EagleEye.Core.DefaultImplementations;
-    using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
+    using EagleEye.EventStore.NEventStoreAdapter;
     using JetBrains.Annotations;
     using NLog;
     using SimpleInjector;
@@ -145,26 +145,19 @@
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
 
-            RegisterCqrsLite(baseDirectory);
+            RegisterCqrsLite();
+            RegisterEventStore(baseDirectory);
 
             RegisterPhotoDomain();
         }
 
-        private void RegisterCqrsLite([NotNull] string baseDirectory)
+        private void RegisterCqrsLite()
         {
-            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
-
             container.Register<Router>(Lifestyle.Singleton);
             container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
-            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
-            container.RegisterSingleton<IEventStore>(() =>
-            {
-                var basePath = Path.Combine(baseDirectory, "Events");
-                return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
-            });
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!
@@ -173,6 +166,35 @@
             container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton);
             container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
             container.Register<ISession, Session>(Lifestyle.Singleton);
+        }
+
+        private void RegisterEventStore(string baseDirectory)
+        {
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
+
+/*
+            // InMemory
+            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+*/
+
+/*
+            // File Based
+            container.RegisterSingleton<IEventStore>(() =>
+                                                     {
+                                                         var basePath = Path.Combine(baseDirectory, "Events");
+                                                         return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
+                                                     });
+*/
+
+            // Use NEventStore
+            container.Register<IEventStore>(
+                                            () =>
+                                            {
+                                                // ReSharper disable once ConvertToLambdaExpression
+                                                return container.GetInstance<NEventStoreAdapterFactory>()
+                                                                .Create(container.GetInstance<IEventPublisher>());
+                                            },
+                                            Lifestyle.Singleton);
         }
 
         private void RegisterPhotoDomain()

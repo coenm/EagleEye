@@ -14,6 +14,7 @@
     using Dawn;
     using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.Interfaces.Module;
+    using EagleEye.EventStore.NEventStoreAdapter;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
@@ -56,12 +57,7 @@
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
-            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
-            container.RegisterSingleton<IEventStore>(() =>
-            {
-                string basePath = Path.Combine(userDir, "Events");
-                return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
-            });
+            RegisterEventStore(container, userDir);
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!
@@ -87,6 +83,36 @@
             registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
             registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
+
+        private static void RegisterEventStore(Container container, string baseDirectory)
+        {
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
+
+            /*
+                        // InMemory
+                        // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+            */
+
+            /*
+                        // File Based
+                        container.RegisterSingleton<IEventStore>(() =>
+                                                                 {
+                                                                     var basePath = Path.Combine(baseDirectory, "Events");
+                                                                     return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
+                                                                 });
+            */
+
+            // Use NEventStore
+            container.Register<IEventStore>(
+                () =>
+                {
+                    // ReSharper disable once ConvertToLambdaExpression
+                    return container.GetInstance<NEventStoreAdapterFactory>()
+                        .Create(container.GetInstance<IEventPublisher>());
+                },
+                Lifestyle.Singleton);
+        }
+
 
         public static string CreateFullFilename([NotNull] string filename)
         {
