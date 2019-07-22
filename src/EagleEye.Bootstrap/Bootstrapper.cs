@@ -172,21 +172,22 @@
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
-/*
-            // InMemory
-            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
-*/
+            /*
+                        // InMemory
+                        // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+            */
 
-/*
-            // File Based
-            container.RegisterSingleton<IEventStore>(() =>
-                                                     {
-                                                         var basePath = Path.Combine(baseDirectory, "Events");
-                                                         return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
-                                                     });
-*/
+            /*
+                        // File Based
+                        container.RegisterSingleton<IEventStore>(() =>
+                                                                 {
+                                                                     var basePath = Path.Combine(baseDirectory, "Events");
+                                                                     return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
+                                                                 });
+            */
 
             // Use NEventStore
+            container.Register<NEventStoreAdapterFactory>(() => new NEventStoreAdapterFactory(""), Lifestyle.Singleton);
             container.Register<IEventStore>(
                                             () =>
                                             {

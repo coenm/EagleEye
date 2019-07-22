@@ -51,7 +51,7 @@
             {
                 return Task.FromResult((IEnumerable<IEvent>)stream.CommittedEvents
                                                                   .Select(x => x.Body as IEvent)
-                                                                  .Where(y => y != null && y.Version >= fromVersion)
+                                                                  .Where(y => y != null && y.Version > fromVersion)
                                                                   .OrderBy(y => y.Version)
                                                                   .ToArray());
             }

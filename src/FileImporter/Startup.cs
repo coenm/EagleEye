@@ -12,7 +12,6 @@
     using CQRSlite.Events;
     using CQRSlite.Routing;
     using Dawn;
-    using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.EventStore.NEventStoreAdapter;
     using EagleEye.FileImporter.Indexing;
@@ -33,10 +32,12 @@
         /// <param name="container">Dependency container</param>
         /// <param name="indexFilename">(obsolete)</param>
         /// <param name="connectionStringHangFire">ConnectionString for HangFire Similarity Database.</param>
+        /// <param name="filenameEventStore">Filename sqlite eventstore.</param>
         public static void ConfigureContainer(
             [NotNull] Container container,
             [NotNull] string indexFilename,
-            [NotNull] string connectionStringHangFire)
+            [NotNull] string connectionStringHangFire,
+            [CanBeNull] string filenameEventStore)
         {
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
@@ -57,7 +58,7 @@
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
-            RegisterEventStore(container, userDir);
+            RegisterEventStore(container, userDir, filenameEventStore);
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!
@@ -84,8 +85,9 @@
             registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
 
-        private static void RegisterEventStore(Container container, string baseDirectory)
+        private static void RegisterEventStore(Container container, string baseDirectory, [CanBeNull] string connectionString)
         {
+            Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             /*
@@ -103,6 +105,7 @@
             */
 
             // Use NEventStore
+            container.Register(() => new NEventStoreAdapterFactory(connectionString), Lifestyle.Singleton);
             container.Register<IEventStore>(
                 () =>
                 {
