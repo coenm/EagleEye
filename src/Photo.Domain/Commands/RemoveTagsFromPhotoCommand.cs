@@ -8,7 +8,7 @@
     [PublicAPI]
     public class RemoveTagsFromPhotoCommand : TagsCommandBase
     {
-        public RemoveTagsFromPhotoCommand(Guid id, int expectedVersion, params string[] tags)
+        public RemoveTagsFromPhotoCommand(Guid id, int? expectedVersion, params string[] tags)
             : base(id, expectedVersion, tags)
         {
         }

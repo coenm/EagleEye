@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -14,18 +13,18 @@
     using NLog;
 
     [UsedImplicitly]
-    internal class PersonsAddedToPhotoEventHandler : ICancellableEventHandler<PersonsAddedToPhoto>
+    internal class PersonsRemovedFromPhotoEventHandler : ICancellableEventHandler<PersonsRemovedFromPhoto>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
-        public PersonsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
+        public PersonsRemovedFromPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
         {
             Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
-        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default)
+        public async Task Handle(PersonsRemovedFromPhoto message, CancellationToken token = new CancellationToken())
         {
             Guard.Argument(message, nameof(message)).NotNull();
             Guard.Argument(message.Persons, nameof(message.Persons)).NotNull();
@@ -35,16 +34,12 @@
 
             storedItem.Version = message.Version;
             if (storedItem.Persons == null)
-                storedItem.Persons = new List<string>();
-
-            var newEntries = message.Persons.Distinct()
-                .Where(item => !storedItem.Persons.Contains(item))
-                .ToArray();
-
-            if (!newEntries.Any())
                 return;
 
-            storedItem.Persons.AddRange(newEntries);
+            if (!storedItem.Persons.Any(t => message.Persons.Contains(t)))
+                return;
+
+            storedItem.Persons.RemoveAll(t => message.Persons.Contains(t));
             await photoIndex.ReIndexMediaFileAsync(storedItem).ConfigureAwait(false);
         }
     }

@@ -33,6 +33,12 @@
 
             container.Register<PhotoCreatedEventHandler>();
             container.Register<PersonsAddedToPhotoEventHandler>();
+            container.Register<PersonsRemovedFromPhotoEventHandler>();
+            container.Register<TagsAddedToPhotoEventHandler>();
+            container.Register<TagsRemovedFromPhotoEventHandler>();
+            container.Register<LocationSetToPhotoEventHandler>();
+            container.Register<LocationClearedFromPhotoEventHandler>();
+            container.Register<DateTimeTakenChangedEventHandler>();
 
             if (useInMemoryIndex)
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();
@@ -46,6 +52,12 @@
             {
                 typeof(PhotoCreatedEventHandler),
                 typeof(PersonsAddedToPhotoEventHandler),
+                typeof(PersonsRemovedFromPhotoEventHandler),
+                typeof(TagsAddedToPhotoEventHandler),
+                typeof(TagsRemovedFromPhotoEventHandler),
+                typeof(LocationSetToPhotoEventHandler),
+                typeof(LocationClearedFromPhotoEventHandler),
+                typeof(DateTimeTakenChangedEventHandler),
             };
         }
     }

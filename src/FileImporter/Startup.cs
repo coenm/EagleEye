@@ -12,8 +12,8 @@
     using CQRSlite.Events;
     using CQRSlite.Routing;
     using Dawn;
-    using EagleEye.Core.DefaultImplementations.EventStore;
     using EagleEye.Core.Interfaces.Module;
+    using EagleEye.EventStore.NEventStoreAdapter;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
@@ -32,10 +32,12 @@
         /// <param name="container">Dependency container</param>
         /// <param name="indexFilename">(obsolete)</param>
         /// <param name="connectionStringHangFire">ConnectionString for HangFire Similarity Database.</param>
+        /// <param name="filenameEventStore">Filename sqlite eventstore.</param>
         public static void ConfigureContainer(
             [NotNull] Container container,
             [NotNull] string indexFilename,
-            [NotNull] string connectionStringHangFire)
+            [NotNull] string connectionStringHangFire,
+            [CanBeNull] string filenameEventStore)
         {
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
@@ -56,12 +58,7 @@
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
 
-            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
-            container.RegisterSingleton<IEventStore>(() =>
-            {
-                string basePath = Path.Combine(userDir, "Events");
-                return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
-            });
+            RegisterEventStore(container, userDir, filenameEventStore);
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!
@@ -87,6 +84,43 @@
             registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
             registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
+
+        private static void RegisterEventStore([NotNull] Container container, string baseDirectory, [CanBeNull] string connectionString)
+        {
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
+
+            /*
+            // InMemory
+            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+            */
+
+            /*
+            // File Based
+            container.RegisterSingleton<IEventStore>(
+                () =>
+                {
+                    var basePath = Path.Combine(baseDirectory, "Events");
+                    return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
+                });
+            */
+
+            // Use NEventStore
+            if (string.IsNullOrWhiteSpace(connectionString))
+                container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
+            else
+                container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
+
+            container.Register<IEventStore>(
+                () =>
+                {
+                    // ReSharper disable once ConvertToLambdaExpression
+                    return container.GetInstance<INEventStoreAdapterFactory>()
+                        .Create(container.GetInstance<IEventPublisher>());
+                },
+                Lifestyle.Singleton);
+        }
+
 
         public static string CreateFullFilename([NotNull] string filename)
         {

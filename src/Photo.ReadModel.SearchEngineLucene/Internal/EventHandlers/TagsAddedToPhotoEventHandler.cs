@@ -14,37 +14,37 @@
     using NLog;
 
     [UsedImplicitly]
-    internal class PersonsAddedToPhotoEventHandler : ICancellableEventHandler<PersonsAddedToPhoto>
+    internal class TagsAddedToPhotoEventHandler : ICancellableEventHandler<TagsAddedToPhoto>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
-        public PersonsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
+        public TagsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
         {
             Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
-        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default)
+        public async Task Handle(TagsAddedToPhoto message, CancellationToken token = default)
         {
             Guard.Argument(message, nameof(message)).NotNull();
-            Guard.Argument(message.Persons, nameof(message.Persons)).NotNull();
+            Guard.Argument(message.Tags, nameof(message.Tags)).NotNull();
 
             if (!(photoIndex.Search(message.Id) is Photo storedItem))
                 return;
 
             storedItem.Version = message.Version;
-            if (storedItem.Persons == null)
-                storedItem.Persons = new List<string>();
+            if (storedItem.Tags == null)
+                storedItem.Tags = new List<string>();
 
-            var newEntries = message.Persons.Distinct()
-                .Where(item => !storedItem.Persons.Contains(item))
+            var newEntries = message.Tags.Distinct()
+                .Where(item => !storedItem.Tags.Contains(item))
                 .ToArray();
 
             if (!newEntries.Any())
                 return;
 
-            storedItem.Persons.AddRange(newEntries);
+            storedItem.Tags.AddRange(newEntries);
             await photoIndex.ReIndexMediaFileAsync(storedItem).ConfigureAwait(false);
         }
     }
