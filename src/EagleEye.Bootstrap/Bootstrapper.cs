@@ -187,12 +187,12 @@
             */
 
             // Use NEventStore
-            container.Register<NEventStoreAdapterFactory>(() => new NEventStoreAdapterFactory(""), Lifestyle.Singleton);
+            container.Register<NEventStoreAdapterSqliteFactory>(() => new NEventStoreAdapterSqliteFactory(""), Lifestyle.Singleton);
             container.Register<IEventStore>(
                                             () =>
                                             {
                                                 // ReSharper disable once ConvertToLambdaExpression
-                                                return container.GetInstance<NEventStoreAdapterFactory>()
+                                                return container.GetInstance<NEventStoreAdapterSqliteFactory>()
                                                                 .Create(container.GetInstance<IEventPublisher>());
                                             },
                                             Lifestyle.Singleton);

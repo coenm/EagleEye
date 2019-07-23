@@ -11,7 +11,7 @@
     using JetBrains.Annotations;
     using NEventStore;
 
-    public class NEventStoreAdapter : IEventStore
+    internal class NEventStoreAdapter : IEventStore
     {
         private readonly IEventPublisher publisher;
         private readonly IStoreEvents store;

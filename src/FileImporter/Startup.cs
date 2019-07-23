@@ -91,26 +91,28 @@
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             /*
-                        // InMemory
-                        // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
+            // InMemory
+            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
             */
 
             /*
-                        // File Based
-                        container.RegisterSingleton<IEventStore>(() =>
-                                                                 {
-                                                                     var basePath = Path.Combine(baseDirectory, "Events");
-                                                                     return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
-                                                                 });
+            // File Based
+            container.RegisterSingleton<IEventStore>(
+                () =>
+                {
+                    var basePath = Path.Combine(baseDirectory, "Events");
+                    return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
+                });
             */
 
             // Use NEventStore
-            container.Register(() => new NEventStoreAdapterFactory(connectionString), Lifestyle.Singleton);
+            // container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
+            container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
             container.Register<IEventStore>(
                 () =>
                 {
                     // ReSharper disable once ConvertToLambdaExpression
-                    return container.GetInstance<NEventStoreAdapterFactory>()
+                    return container.GetInstance<INEventStoreAdapterFactory>()
                         .Create(container.GetInstance<IEventPublisher>());
                 },
                 Lifestyle.Singleton);
