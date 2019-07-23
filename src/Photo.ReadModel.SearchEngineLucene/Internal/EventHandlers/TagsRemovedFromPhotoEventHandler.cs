@@ -24,7 +24,6 @@
             this.photoIndex = photoIndex;
         }
 
-
         public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = new CancellationToken())
         {
             Guard.Argument(message, nameof(message)).NotNull();

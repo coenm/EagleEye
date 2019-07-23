@@ -38,6 +38,7 @@
             container.Register<TagsRemovedFromPhotoEventHandler>();
             container.Register<LocationSetToPhotoEventHandler>();
             container.Register<LocationClearedFromPhotoEventHandler>();
+            container.Register<DateTimeTakenChangedEventHandler>();
 
             if (useInMemoryIndex)
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();
@@ -56,6 +57,7 @@
                 typeof(TagsRemovedFromPhotoEventHandler),
                 typeof(LocationSetToPhotoEventHandler),
                 typeof(LocationClearedFromPhotoEventHandler),
+                typeof(DateTimeTakenChangedEventHandler),
             };
         }
     }
