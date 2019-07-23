@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.Photo.Domain.Test
 {
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using CQRSlite.Domain;

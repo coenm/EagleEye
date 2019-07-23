@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -14,37 +13,34 @@
     using NLog;
 
     [UsedImplicitly]
-    internal class PersonsAddedToPhotoEventHandler : ICancellableEventHandler<PersonsAddedToPhoto>
+    internal class TagsRemovedFromPhotoEventHandler : ICancellableEventHandler<TagsRemovedFromPhoto>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
-        public PersonsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
+        public TagsRemovedFromPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
         {
             Guard.Argument(photoIndex, nameof(photoIndex)).NotNull();
             this.photoIndex = photoIndex;
         }
 
-        public async Task Handle(PersonsAddedToPhoto message, CancellationToken token = default)
+
+        public async Task Handle(TagsRemovedFromPhoto message, CancellationToken token = new CancellationToken())
         {
             Guard.Argument(message, nameof(message)).NotNull();
-            Guard.Argument(message.Persons, nameof(message.Persons)).NotNull();
+            Guard.Argument(message.Tags, nameof(message.Tags)).NotNull();
 
             if (!(photoIndex.Search(message.Id) is Photo storedItem))
                 return;
 
             storedItem.Version = message.Version;
-            if (storedItem.Persons == null)
-                storedItem.Persons = new List<string>();
-
-            var newEntries = message.Persons.Distinct()
-                .Where(item => !storedItem.Persons.Contains(item))
-                .ToArray();
-
-            if (!newEntries.Any())
+            if (storedItem.Tags == null)
                 return;
 
-            storedItem.Persons.AddRange(newEntries);
+            if (!storedItem.Tags.Any(t => message.Tags.Contains(t)))
+                return;
+
+            storedItem.Tags.RemoveAll(t => message.Tags.Contains(t));
             await photoIndex.ReIndexMediaFileAsync(storedItem).ConfigureAwait(false);
         }
     }

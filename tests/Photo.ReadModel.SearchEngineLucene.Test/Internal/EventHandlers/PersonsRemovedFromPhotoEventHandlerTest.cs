@@ -12,15 +12,15 @@
     using FluentAssertions;
     using Xunit;
 
-    public class PersonsAddedToPhotoEventHandlerTest
+    public class PersonsRemovedFromPhotoEventHandlerTest
     {
-        private readonly PersonsAddedToPhotoEventHandler sut;
+        private readonly PersonsRemovedFromPhotoEventHandler sut;
         private readonly IPhotoIndex photoIndex;
 
-        public PersonsAddedToPhotoEventHandlerTest()
+        public PersonsRemovedFromPhotoEventHandlerTest()
         {
             photoIndex = A.Fake<IPhotoIndex>();
-            sut = new PersonsAddedToPhotoEventHandler(photoIndex);
+            sut = new PersonsRemovedFromPhotoEventHandler(photoIndex);
         }
 
         [Fact]
@@ -30,7 +30,7 @@
             var guid = Guid.NewGuid();
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid));
+            await sut.Handle(new PersonsRemovedFromPhoto(guid));
 
             // assert
             A.CallTo(() => photoIndex.Search(guid)).MustHaveHappenedOnceExactly();
@@ -44,7 +44,7 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(null);
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Zoo"));
+            await sut.Handle(new PersonsRemovedFromPhoto(guid, "Bob"));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustNotHaveHappened();
@@ -60,7 +60,8 @@
             {
                 Persons = new List<string>
                 {
-                    "Holiday",
+                    "Adam",
+                    "Bob",
                 },
             };
 
@@ -69,16 +70,16 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(photoSearchResult);
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Zoo"));
+            await sut.Handle(new PersonsRemovedFromPhoto(guid, "Adam"));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
             newPhoto.Should().NotBeNull();
-            newPhoto.Persons.Should().BeEquivalentTo("Holiday", "Zoo");
+            newPhoto.Persons.Should().BeEquivalentTo("Bob");
         }
 
         [Fact]
-        public async Task Handle_ShouldNotReIndexPhoto_WhenPhotoAlreadyContainedUpdatedPersons()
+        public async Task Handle_ShouldNotReIndexPhoto__WhenPhotoAlreadyDoesNotContainPerson()
         {
             // arrange
             var guid = Guid.NewGuid();
@@ -86,15 +87,15 @@
             {
                 Persons = new List<string>
                 {
-                    "Holiday",
-                    "Zoo",
+                    "Adam",
+                    "Bob",
                 },
             };
 
             A.CallTo(() => photoIndex.Search(guid)).Returns(photoSearchResult);
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Zoo"));
+            await sut.Handle(new PersonsRemovedFromPhoto(guid, "Carol"));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustNotHaveHappened();

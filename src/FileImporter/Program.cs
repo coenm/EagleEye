@@ -169,26 +169,40 @@
                 // - person
                 // - tag
                 // - gps
-                var searchResults = search.FullSearch("tag:zoo");
-                Console.WriteLine(searchResults.Count);
 
-                var JsonSerializerSettings = new JsonSerializerSettings();
-                JsonSerializerSettings.Converters.Add(new StringEnumConverter());
-                JsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
-                Console.WriteLine(searchResults.Count);
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
+                var jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.Converters.Add(new StringEnumConverter());
+                jsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
+
+                var searchQuery = "tag:zoo";
+                var searchResults = search.FullSearch(searchQuery);
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
                 Console.WriteLine();
-                searchResults = search.FullSearch("tag:zo~"); // should also match zoo ;-)
-                Console.WriteLine(searchResults.Count);
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
 
-                searchResults = search.FullSearch("tag:zo"); // should match nothing.
-                Console.WriteLine(searchResults.Count);
+                searchQuery = "tag:zo~"; // should also match zoo ;-)
+                searchResults = search.FullSearch(searchQuery); 
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
+                Console.WriteLine();
 
+                searchQuery = "tag:zo*"; // should also match zoo and zooo ;-)
+                searchResults = search.FullSearch(searchQuery); 
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
+                Console.WriteLine();
+
+                searchQuery = "tag:zo"; // should match nothing.
+                searchResults = search.FullSearch(searchQuery); 
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
+                Console.WriteLine();
+
+                Console.WriteLine();
+                Console.WriteLine();
                 Thread.Sleep(1000*5);
                 Console.WriteLine("Press enter");
                 Console.ReadKey();
-
             }
             finally
             {

@@ -33,6 +33,7 @@
 
             container.Register<PhotoCreatedEventHandler>();
             container.Register<PersonsAddedToPhotoEventHandler>();
+            container.Register<TagsAddedToPhotoEventHandler>();
 
             if (useInMemoryIndex)
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();
@@ -46,6 +47,7 @@
             {
                 typeof(PhotoCreatedEventHandler),
                 typeof(PersonsAddedToPhotoEventHandler),
+                typeof(TagsAddedToPhotoEventHandler),
             };
         }
     }
