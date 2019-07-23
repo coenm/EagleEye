@@ -10,7 +10,7 @@
     [PublicAPI]
     public class SetDateTimeTakenCommand : CommandBase
     {
-        public SetDateTimeTakenCommand(Guid id, int expectedVersion, Timestamp dateTimeTaken)
+        public SetDateTimeTakenCommand(Guid id, int? expectedVersion, Timestamp dateTimeTaken)
             : base(id, expectedVersion)
         {
             DateTimeTaken = dateTimeTaken;

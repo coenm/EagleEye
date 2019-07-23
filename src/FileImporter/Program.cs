@@ -94,20 +94,26 @@
                 var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-                var commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
+                var commandDateTime = new SetDateTimeTakenCommand(command.Id, null, new Timestamp(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
-                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", 324);
+                ICommand tagCommand = new RemoveTagsFromPhotoCommand(command.Id, null, "zoo");
+                dispatcher.Send(tagCommand).GetAwaiter().GetResult();
+
+                tagCommand = new AddTagsToPhotoCommand(command.Id, null, "zooo");
+                dispatcher.Send(tagCommand).GetAwaiter().GetResult();
+
+                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 324);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
 
 
                 command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-                commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
+                commandDateTime = new SetDateTimeTakenCommand(command.Id, null, new Timestamp(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
-                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", 2343434);
+                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 2343434);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
 
                 Thread.Sleep(1000);

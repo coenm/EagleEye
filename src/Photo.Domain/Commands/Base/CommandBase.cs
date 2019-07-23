@@ -6,7 +6,7 @@
 
     public abstract class CommandBase : ICommand
     {
-        public CommandBase(Guid id, int expectedVersion)
+        public CommandBase(Guid id, int? expectedVersion)
         {
             Id = id;
             ExpectedVersion = expectedVersion;
@@ -14,6 +14,6 @@
 
         public Guid Id { get; set;  }
 
-        public int ExpectedVersion { get; set; }
+        public int? ExpectedVersion { get; set; }
     }
 }
