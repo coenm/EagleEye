@@ -188,7 +188,6 @@
             */
 
             // Use NEventStore
-
             if (string.IsNullOrWhiteSpace(connectionString))
                 container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
             else

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers;

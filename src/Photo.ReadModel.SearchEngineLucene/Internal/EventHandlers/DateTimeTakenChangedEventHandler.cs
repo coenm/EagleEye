@@ -57,6 +57,5 @@
                 throw new ArgumentOutOfRangeException(nameof(input), input, null);
             }
         }
-
     }
 }

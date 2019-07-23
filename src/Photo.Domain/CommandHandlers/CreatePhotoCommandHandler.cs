@@ -45,7 +45,7 @@
                 item.AddTags(message.Tags);
 
             if (message.Persons != null)
-                item.AddPersons(message.Persons ?? new string[0]{});
+                item.AddPersons(message.Persons ?? new string[0]);
 
             using (filenameClaim)
             {
