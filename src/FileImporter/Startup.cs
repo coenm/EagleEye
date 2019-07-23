@@ -85,7 +85,7 @@
             registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
         }
 
-        private static void RegisterEventStore(Container container, string baseDirectory, [CanBeNull] string connectionString)
+        private static void RegisterEventStore([NotNull] Container container, string baseDirectory, [CanBeNull] string connectionString)
         {
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
@@ -106,8 +106,11 @@
             */
 
             // Use NEventStore
-            // container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
-            container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
+            if (string.IsNullOrWhiteSpace(connectionString))
+                container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
+            else
+                container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
+
             container.Register<IEventStore>(
                 () =>
                 {

@@ -57,14 +57,15 @@
 
         public static Bootstrapper Initialize(
             [NotNull] string baseDirectory,
-            [NotNull] IEnumerable<IEagleEyePlugin> plugins)
+            [NotNull] IEnumerable<IEagleEyePlugin> plugins,
+            [CanBeNull] string connectionStringEventStore = null)
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
             Guard.Argument(plugins, nameof(plugins)).NotNull();
 
             var bootstrapper = new Bootstrapper();
 
-            bootstrapper.RegisterCore(baseDirectory);
+            bootstrapper.RegisterCore(baseDirectory, connectionStringEventStore);
 
             bootstrapper.RegisterPlugins(plugins);
 
@@ -136,7 +137,7 @@
             action?.Invoke(container);
         }
 
-        private void RegisterCore([NotNull] string baseDirectory)
+        private void RegisterCore([NotNull] string baseDirectory, [CanBeNull] string connectionStringEventStore)
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
@@ -146,7 +147,7 @@
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
 
             RegisterCqrsLite();
-            RegisterEventStore(baseDirectory);
+            RegisterEventStore(baseDirectory, connectionStringEventStore);
 
             RegisterPhotoDomain();
         }
@@ -168,7 +169,7 @@
             container.Register<ISession, Session>(Lifestyle.Singleton);
         }
 
-        private void RegisterEventStore(string baseDirectory)
+        private void RegisterEventStore(string baseDirectory, [CanBeNull] string connectionString)
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
@@ -187,12 +188,17 @@
             */
 
             // Use NEventStore
-            container.Register<NEventStoreAdapterSqliteFactory>(() => new NEventStoreAdapterSqliteFactory(""), Lifestyle.Singleton);
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+                container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
+            else
+                container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
+
             container.Register<IEventStore>(
                                             () =>
                                             {
                                                 // ReSharper disable once ConvertToLambdaExpression
-                                                return container.GetInstance<NEventStoreAdapterSqliteFactory>()
+                                                return container.GetInstance<INEventStoreAdapterFactory>()
                                                                 .Create(container.GetInstance<IEventPublisher>());
                                             },
                                             Lifestyle.Singleton);
