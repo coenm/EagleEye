@@ -14,8 +14,6 @@
 
     internal class PhotoCreatedEventHandler :
             ICancellableEventHandler<PhotoCreated>,
-            ICancellableEventHandler<LocationClearedFromPhoto>,
-            ICancellableEventHandler<LocationSetToPhoto>,
             ICancellableEventHandler<DateTimeTakenChanged>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -41,21 +39,6 @@
             };
 
             return photoIndex.ReIndexMediaFileAsync(photo);
-        }
-
-        public async Task Handle(LocationClearedFromPhoto message, CancellationToken token = default)
-        {
-            Guard.Argument(message, nameof(message)).NotNull();
-
-            await Task.Delay(0, token).ConfigureAwait(false);
-        }
-
-        public async Task Handle(LocationSetToPhoto message, CancellationToken token = default)
-        {
-            Guard.Argument(message, nameof(message)).NotNull();
-            Guard.Argument(message.Location, $"{nameof(message)}.{nameof(message.Location)}").NotNull();
-
-            await Task.Delay(0, token).ConfigureAwait(false);
         }
 
         public Task Handle(DateTimeTakenChanged message, CancellationToken token = new CancellationToken())
