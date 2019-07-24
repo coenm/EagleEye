@@ -13,8 +13,8 @@
 
     internal class NEventStoreAdapter : IEventStore
     {
-        private readonly IEventPublisher publisher;
-        private readonly IStoreEvents store;
+        [NotNull] private readonly IEventPublisher publisher;
+        [NotNull] private readonly IStoreEvents store;
 
         public NEventStoreAdapter([NotNull] IEventPublisher publisher, NEventStore.IStoreEvents store)
         {
@@ -47,24 +47,14 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var stream = store.OpenStream(aggregateId, 0))
-            {
-                return Task.FromResult((IEnumerable<IEvent>)stream.CommittedEvents
-                                                                  .Select(x => x.Body as IEvent)
-                                                                  .Where(y => y != null && y.Version > fromVersion)
-                                                                  .OrderBy(y => y.Version)
-                                                                  .ToArray());
-            }
-
-/*
             using (var stream = store.OpenStream(aggregateId, fromVersion))
             {
                 return Task.FromResult((IEnumerable<IEvent>)stream.CommittedEvents
                                                                   .Select(x => x.Body as IEvent)
-                                                                  .Where(y => y != null)
+                                                                  .Where(x => x != null && x.Version > fromVersion)
+                                                                  .OrderBy(x => x.Version)
                                                                   .ToArray());
             }
-*/
         }
     }
 }
