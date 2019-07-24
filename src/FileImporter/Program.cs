@@ -70,6 +70,7 @@
                     Console.WriteLine("Could not parse the arguments.");
                 });
 
+
             Console.WriteLine("Done.");
             // Console.WriteLine("Done. Press enter to exit.");
             // Console.ReadLine();
@@ -77,7 +78,11 @@
 
         private static void ListAllReadModel(ListReadModelOptions opts)
         {
-            Startup.ConfigureContainer(container, opts.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                opts.IndexFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
             Startup.InitializeAllServices(container).GetAwaiter().GetResult(); // todo
             Startup.StartServices(container);
             try
@@ -89,22 +94,29 @@
                 var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-                var commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
+                var commandDateTime = new SetDateTimeTakenCommand(command.Id, null, new Timestamp(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
-                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", 324);
+                ICommand tagCommand = new RemoveTagsFromPhotoCommand(command.Id, null, "zoo");
+                dispatcher.Send(tagCommand).GetAwaiter().GetResult();
+
+                tagCommand = new AddTagsToPhotoCommand(command.Id, null, "zooo");
+                dispatcher.Send(tagCommand).GetAwaiter().GetResult();
+
+                var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 324);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
 
 
                 command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-                commandDateTime = new SetDateTimeTakenCommand(command.Id, 1, new Timestamp(2010, 04));
+                commandDateTime = new SetDateTimeTakenCommand(command.Id, null, new Timestamp(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
-                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, 2, "DingDong", 2343434);
+                commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 2343434);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
 
+                Thread.Sleep(1000);
 
                 var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
 
@@ -157,26 +169,40 @@
                 // - person
                 // - tag
                 // - gps
-                var searchResults = search.FullSearch("tag:zoo");
-                Console.WriteLine(searchResults.Count);
 
-                var JsonSerializerSettings = new JsonSerializerSettings();
-                JsonSerializerSettings.Converters.Add(new StringEnumConverter());
-                JsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
-                Console.WriteLine(searchResults.Count);
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
+                var jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.Converters.Add(new StringEnumConverter());
+                jsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
+
+                var searchQuery = "tag:zoo";
+                var searchResults = search.FullSearch(searchQuery);
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
                 Console.WriteLine();
-                searchResults = search.FullSearch("tag:zo~"); // should also match zoo ;-)
-                Console.WriteLine(searchResults.Count);
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, JsonSerializerSettings));
 
-                searchResults = search.FullSearch("tag:zo"); // should match nothing.
-                Console.WriteLine(searchResults.Count);
+                searchQuery = "tag:zo~"; // should also match zoo ;-)
+                searchResults = search.FullSearch(searchQuery); 
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
+                Console.WriteLine();
 
+                searchQuery = "tag:zo*"; // should also match zoo and zooo ;-)
+                searchResults = search.FullSearch(searchQuery); 
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
+                Console.WriteLine();
+
+                searchQuery = "tag:zo"; // should match nothing.
+                searchResults = search.FullSearch(searchQuery); 
+                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
+                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
+                Console.WriteLine();
+
+                Console.WriteLine();
+                Console.WriteLine();
                 Thread.Sleep(1000*5);
                 Console.WriteLine("Press enter");
                 Console.ReadKey();
-
             }
             finally
             {
@@ -197,7 +223,11 @@
                 return;
             }
 
-            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                options.IndexFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
@@ -300,7 +330,11 @@
             //                    };
                               //            }
 
-            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                options.IndexFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
@@ -357,7 +391,11 @@
 
         private static void AutoDeleteSameFile(AutoDeleteSameFile options)
         {
-            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                options.IndexFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
 
             var searchService = container.GetInstance<SearchService>();
             var contentResolver = container.GetInstance<IContentResolver>();
@@ -489,7 +527,11 @@
 
         private static void Search(SearchOptions options)
         {
-            Startup.ConfigureContainer(container, options.IndexFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                options.IndexFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
 
             var searchService = container.GetInstance<SearchService>();
             var everything = new Everything();
@@ -578,7 +620,11 @@
 //            var diRoot = new DirectoryInfo(RootPath).FullName;
 //            var rp = RootPath;
 
-            Startup.ConfigureContainer(container, options.OutputFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                options.OutputFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
 
             var searchService = container.GetInstance<SearchService>();
             var persistentService = container.GetInstance<PersistentFileIndexService>();
@@ -618,7 +664,11 @@
 //                rp = RootPath;
 //            }
 
-            Startup.ConfigureContainer(container, options.OutputFile, Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")));
+            Startup.ConfigureContainer(
+                container,
+                options.OutputFile,
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)

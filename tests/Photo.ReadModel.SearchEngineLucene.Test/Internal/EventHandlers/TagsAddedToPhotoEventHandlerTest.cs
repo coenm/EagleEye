@@ -12,15 +12,15 @@
     using FluentAssertions;
     using Xunit;
 
-    public class PersonsAddedToPhotoEventHandlerTest
+    public class TagsAddedToPhotoEventHandlerTest
     {
-        private readonly PersonsAddedToPhotoEventHandler sut;
+        private readonly TagsAddedToPhotoEventHandler sut;
         private readonly IPhotoIndex photoIndex;
 
-        public PersonsAddedToPhotoEventHandlerTest()
+        public TagsAddedToPhotoEventHandlerTest()
         {
             photoIndex = A.Fake<IPhotoIndex>();
-            sut = new PersonsAddedToPhotoEventHandler(photoIndex);
+            sut = new TagsAddedToPhotoEventHandler(photoIndex);
         }
 
         [Fact]
@@ -30,7 +30,7 @@
             var guid = Guid.NewGuid();
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid));
+            await sut.Handle(new TagsAddedToPhoto(guid));
 
             // assert
             A.CallTo(() => photoIndex.Search(guid)).MustHaveHappenedOnceExactly();
@@ -44,21 +44,21 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(null);
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Zoo"));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo"));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustNotHaveHappened();
         }
 
         [Fact]
-        public async Task Handle_ShouldReIndexPhotoWithUpdatedPersons_WhenPhotoExists()
+        public async Task Handle_ShouldReIndexPhotoWithUpdatedTags_WhenPhotoExists()
         {
             // arrange
             var guid = Guid.NewGuid();
             Photo newPhoto = null;
             var photoSearchResult = new PhotoSearchResult(1)
             {
-                Persons = new List<string>
+                Tags = new List<string>
                 {
                     "Holiday",
                 },
@@ -69,22 +69,22 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(photoSearchResult);
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Zoo"));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo"));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
             newPhoto.Should().NotBeNull();
-            newPhoto.Persons.Should().BeEquivalentTo("Holiday", "Zoo");
+            newPhoto.Tags.Should().BeEquivalentTo("Holiday", "Zoo");
         }
 
         [Fact]
-        public async Task Handle_ShouldNotReIndexPhoto_WhenPhotoAlreadyContainedUpdatedPersons()
+        public async Task Handle_ShouldNotReIndexPhoto_WhenPhotoAlreadyContainedUpdatedTags()
         {
             // arrange
             var guid = Guid.NewGuid();
             var photoSearchResult = new PhotoSearchResult(1)
             {
-                Persons = new List<string>
+                Tags = new List<string>
                 {
                     "Holiday",
                     "Zoo",
@@ -94,7 +94,7 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(photoSearchResult);
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Zoo"));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo"));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustNotHaveHappened();

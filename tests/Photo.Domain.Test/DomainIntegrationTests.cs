@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.Photo.Domain.Test
 {
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using CQRSlite.Domain;
@@ -22,6 +21,7 @@
         public async Task Handle_CreateMediaItemCommand_ShouldPublishEventTest()
         {
             // arrange
+            var version = 0;
             var publisher = new Router();
             var repository = new Repository(new InMemoryEventStore(publisher));
             var session = new Session(repository);
@@ -31,11 +31,13 @@
             var events = new List<IEvent>();
             publisher.RegisterHandler<PhotoCreated>((evt, ct) =>
                                                         {
+                                                            version = evt.Version;
                                                             events.Add(evt);
                                                             return Task.CompletedTask;
                                                         });
             publisher.RegisterHandler<TagsAddedToPhoto>((evt, ct) =>
                                                         {
+                                                            version = evt.Version;
                                                             events.Add(evt);
                                                             return Task.CompletedTask;
                                                         });
@@ -46,17 +48,17 @@
             var guid = command.Id;
             await handler2.Handle(command, default).ConfigureAwait(false);
 
-            var addTagsCommand = new AddTagsToPhotoCommand(guid, 1, "summer", "holiday");
+            var addTagsCommand = new AddTagsToPhotoCommand(guid, version, "summer", "holiday");
             await handler.Handle(addTagsCommand, default).ConfigureAwait(false);
 
-            addTagsCommand = new AddTagsToPhotoCommand(guid, 2, "summer", "soccer");
+            addTagsCommand = new AddTagsToPhotoCommand(guid, version, "summer", "soccer");
             await handler.Handle(addTagsCommand, default).ConfigureAwait(false);
 
-            var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, 3, "summer");
+            var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, version, "summer");
             await handler.Handle(removeTagsCommand, default).ConfigureAwait(false);
 
             // assert
-            events.Should().HaveCount(3);
+            events.Should().HaveCount(4);
         }
     }
 }
