@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\EagleEye.Bootstrap\EagleEye.Bootstrap.csproj" />
     <ProjectReference Include="..\EagleEye.EventStore.NEventStoreAdapter\EagleEye.EventStore.NEventStoreAdapter.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
     <ProjectReference Include="..\Photo.ReadModel.EntityFramework\Photo.ReadModel.EntityFramework.csproj" />

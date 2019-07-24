@@ -2,9 +2,7 @@
 {
     using System;
 
-    using EagleEye.Core.Interfaces;
     using EagleEye.Core.Interfaces.Module;
-
     using Hangfire;
     using JetBrains.Annotations;
 

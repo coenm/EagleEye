@@ -45,6 +45,13 @@
 
             string userDir = GetUserDirectory();
 
+            var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
+            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, filenameEventStore);
+            bootstrapper.RegisterPhotoDatabaseReadModel("InMemory a");
+            bootstrapper.RegisterSearchEngineReadModel("InMemory a");
+            bootstrapper.RegisterSimilarityReadModel("InMemory a", "InMemory a");
+            var result = bootstrapper.Finalize();
+
             var similarityFilename = indexFilename + ".similarity.json";
             // todo check arguments.
             // container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));

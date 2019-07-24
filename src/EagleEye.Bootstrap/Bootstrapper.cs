@@ -67,7 +67,7 @@
 
             bootstrapper.RegisterCore(baseDirectory, connectionStringEventStore);
 
-            bootstrapper.RegisterPlugins(plugins);
+            bootstrapper.RegisterPlugins(plugins.ToArray());
 
             return bootstrapper;
         }
@@ -210,7 +210,7 @@
             Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
-        private void RegisterPlugins([NotNull] IEnumerable<IEagleEyePlugin> plugins)
+        private void RegisterPlugins([NotNull] IEagleEyePlugin[] plugins)
         {
             Guard.Argument(plugins, nameof(plugins)).NotNull();
 
