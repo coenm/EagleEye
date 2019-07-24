@@ -3,6 +3,7 @@
     using System;
 
     using EagleEye.Photo.Domain.Aggregates;
+    using EagleEye.Photo.Domain.Events;
     using FluentAssertions;
     using Xunit;
 
@@ -314,13 +315,13 @@
         }
 
         [Fact]
-        public void RemoveTags_ShouldDoNothing_WhenNoTagIsGiven()
+        public void RemoveTags_ShouldDoNothing_WhenTagsArrayIsNull()
         {
             // arrange
             var sut = new Photo(guid, filename, mimeType, fileSha);
 
             // act
-            sut.RemoveTags();
+            sut.RemoveTags(null);
 
             // assert
             sut.Tags.Should().BeEmpty();
@@ -338,6 +339,47 @@
 
             // assert
             sut.Tags.Should().BeEquivalentTo("Beach");
+        }
+
+        [Fact]
+        public void Location_ShouldBeEmpty_WhenConstructingPhoto()
+        {
+            // act
+            var sut = new Photo(guid, filename, mimeType, fileSha);
+
+            // assert
+            sut.Location.Should().BeNull();
+        }
+
+        [Fact]
+        public void ClearLocationData_ShouldDoNothing_WhenNoLocationWasSet()
+        {
+            // arrange
+            var sut = new Photo(guid, filename, mimeType, fileSha);
+            _ = sut.FlushUncommittedChanges();
+
+            // act
+            sut.ClearLocationData();
+
+            // assert
+            sut.Location.Should().BeNull();
+            sut.GetUncommittedChanges().Should().BeEmpty($"No events should have been fired.");
+        }
+
+        [Fact]
+        public void ClearLocationData_ShouldClearLocation_WhenLocationWasSet()
+        {
+            // arrange
+            var sut = new Photo(guid, filename, mimeType, fileSha);
+            sut.SetLocation("a", "b", "c", "d", "e", 1, 2);
+            _ = sut.FlushUncommittedChanges();
+
+            // act
+            sut.ClearLocationData();
+
+            // assert
+            sut.Location.Should().BeNull();
+            sut.GetUncommittedChanges().Should().BeEquivalentTo(new LocationClearedFromPhoto(guid));
         }
     }
 }

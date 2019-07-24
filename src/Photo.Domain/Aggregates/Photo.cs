@@ -50,6 +50,9 @@
 
         public IReadOnlyList<string> Tags => tags.AsReadOnly();
 
+        [CanBeNull]
+        public Location Location => location;
+
         public void AddTags(params string[] tags)
         {
             if (tags == null)
@@ -127,7 +130,7 @@
             if (location == null)
                 return;
 
-            ApplyChange(new LocationClearedFromPhoto(Id/*, _location*/));
+            ApplyChange(new LocationClearedFromPhoto(Id));
         }
 
         public void SetDateTimeTaken(DateTime dateTime, TimestampPrecision precision)

@@ -19,6 +19,18 @@
             sut = new DirectoryStructureDateTimeProvider();
         }
 
+        [Fact]
+        public void Name()
+        {
+            sut.Name.Should().Be("DirectoryStructureDateTimeProvider");
+        }
+
+        [Fact]
+        public void Priority()
+        {
+            sut.Priority.Should().Be(10);
+        }
+
         [Theory]
         [ClassData(typeof(CorrectFilenameTimestampExpectation))]
         public void CanProvideInformation_ShouldReturnTrue(string filename, Timestamp expectedTimestamp)

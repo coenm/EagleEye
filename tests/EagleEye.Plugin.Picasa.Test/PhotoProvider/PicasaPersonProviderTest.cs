@@ -21,6 +21,18 @@
             sut = new PicasaPersonProvider(picasaService);
         }
 
+        [Fact]
+        public void Name()
+        {
+            sut.Name.Should().Be("PicasaPersonProvider");
+        }
+
+        [Fact]
+        public void Priority()
+        {
+            sut.Priority.Should().Be(10);
+        }
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
