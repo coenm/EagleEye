@@ -30,7 +30,9 @@
             store = Wireup.Init()
                           .UseOptimisticPipelineHook()
                           .UsingSqlPersistence(
-                                               new NetStandardConnectionFactory(SqliteFactory.Instance, csb.ToString()))
+                              new NetStandardConnectionFactory(
+                                  SqliteFactory.Instance,
+                                  csb.ToString()))
                           .WithDialect(new SqliteDialect())
                           .InitializeStorageEngine()
                           .UsingJsonSerialization()
