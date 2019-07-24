@@ -111,6 +111,7 @@
                 ApplyChange(new PersonsRemovedFromPhoto(Id, removed));
         }
 
+        /// <exception cref="ArgumentException">Thrown when <paramref name="longitude"/> or <paramref name="latitude"/> is <c>null</c>.</exception>
         public void SetLocation(
             string countryCode,
             string countryName,

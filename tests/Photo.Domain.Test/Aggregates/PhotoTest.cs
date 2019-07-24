@@ -188,13 +188,13 @@
         }
 
         [Fact]
-        public void RemovePersons_ShouldDoNothing_WhenNoPersonIsGiven()
+        public void RemovePersons_ShouldDoNothing_WhenPersonsArrayIsNull()
         {
             // arrange
             var sut = new Photo(guid, filename, mimeType, fileSha);
 
             // act
-            sut.RemovePersons();
+            sut.RemovePersons(null);
 
             // assert
             sut.Persons.Should().BeEmpty();
@@ -349,6 +349,56 @@
 
             // assert
             sut.Location.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("NL", "Netherlands", "Utrecht", "utrecht", "Central", 12, 31)]
+        [InlineData("NL", "Netherlands", "Utrecht", "utrecht", "Central", null, null)]
+        public void SetLocation_ShouldUpdateLocation_WhenNoLocationWasPresent(
+            string countryCode,
+            string countryName,
+            string state,
+            string city,
+            string subLocation,
+            float? longitude,
+            float? latitude)
+        {
+            // arrange
+            var sut = new Photo(guid, filename, mimeType, fileSha);
+            _ = sut.FlushUncommittedChanges();
+
+            // act
+            sut.SetLocation(countryCode, countryName, state, city, subLocation, longitude, latitude);
+
+            // assert
+            var expectedLocation = new Location(countryCode, countryName, state, city, subLocation, longitude, latitude);
+            sut.Location.Should().BeEquivalentTo(expectedLocation);
+            sut.GetUncommittedChanges().Should().BeEquivalentTo(new LocationSetToPhoto(guid, expectedLocation));
+        }
+
+        [Theory]
+        [InlineData("NL", "Netherlands", "Utrecht", "utrecht", "Central", null, 1)]
+        [InlineData("NL", "Netherlands", "Utrecht", "utrecht", "Central", 1, null)]
+        public void SetLocation_ShouldThrow_WhenLongitudeLatitudeWasInvalid(
+            string countryCode,
+            string countryName,
+            string state,
+            string city,
+            string subLocation,
+            float? longitude,
+            float? latitude)
+        {
+            // arrange
+            var sut = new Photo(guid, filename, mimeType, fileSha);
+            _ = sut.FlushUncommittedChanges();
+
+            // act
+            Action act = () => sut.SetLocation(countryCode, countryName, state, city, subLocation, longitude, latitude);
+
+            // assert
+            act.Should().Throw<ArgumentException>();
+            sut.Location.Should().BeNull();
+            sut.GetUncommittedChanges().Should().BeEmpty();
         }
 
         [Fact]
