@@ -9,7 +9,7 @@
 
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Advanced;
-    using SixLabors.ImageSharp.PixelFormats;
+    using SixLabors.ImageSharp.PixelFormats;    
 
     public static class ImageHashing
     {

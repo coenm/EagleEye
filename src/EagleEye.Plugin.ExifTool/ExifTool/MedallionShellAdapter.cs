@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using Dawn;
     using JetBrains.Annotations;
     using Medallion.Shell;
 
@@ -14,16 +15,25 @@
         private readonly Command cmd;
 
         public MedallionShellAdapter(
-            string exifToolPath,
+            string executable,
             IEnumerable<string> defaultArgs,
-            Stream outputStream,
-            Stream errorStream = null)
+            [NotNull] Stream outputStream,
+            [CanBeNull] Stream errorStream = null)
         {
-            cmd = Command.Run(exifToolPath, defaultArgs)
-                          .RedirectTo(outputStream);
+            Guard.Argument(executable, nameof(executable)).NotNull().NotEmpty();
+            Guard.Argument(outputStream, nameof(outputStream)).NotNull();
 
-            if (errorStream != null)
-                cmd = cmd.RedirectStandardErrorTo(errorStream);
+            if (errorStream == null)
+            {
+                cmd = Command.Run(executable, defaultArgs)
+                             .RedirectTo(outputStream);
+            }
+            else
+            {
+                cmd = Command.Run(executable, defaultArgs)
+                             .RedirectTo(outputStream)
+                             .RedirectStandardErrorTo(errorStream);
+            }
 
             Task = System.Threading.Tasks.Task.Run(async () =>
             {
@@ -51,8 +61,11 @@
             cmd.Kill();
         }
 
-        public Task WriteLineAsync(string text)
+        public Task WriteLineAsync([NotNull] string text)
         {
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
+
             return cmd.StandardInput.WriteLineAsync(text);
         }
     }

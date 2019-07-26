@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -35,7 +36,6 @@
                                     };
 
             stream = new ExifToolStayOpenStream(Encoding.UTF8);
-
             sut = new MedallionShellAdapter(ExifToolSystemConfiguration.ExifToolExecutable, defaultArgs, stream);
             sut.ProcessExited += SutOnProcessExited;
         }
@@ -44,6 +44,34 @@
         {
             sut.ProcessExited -= SutOnProcessExited;
             stream.Dispose();
+        }
+
+        [ExifTool]
+        [Fact]
+        public void Ctor_WithErrorStream()
+        {
+            // arrange
+            var defaultArgs = new List<string>
+                              {
+                                  ExifToolArguments.StayOpen,
+                                  ExifToolArguments.BoolTrue,
+                                  "-@",
+                                  "-",
+                              };
+            var outputStream = new MemoryStream();
+            var errorStream = new MemoryStream();
+
+            // act
+            Action act = () => _ = new MedallionShellAdapter(
+                                                             ExifToolSystemConfiguration.ExifToolExecutable,
+                                                             defaultArgs,
+                                                             outputStream,
+                                                             errorStream);
+
+            // assert
+            act.Should().NotThrow();
+
+            sut.Kill();
         }
 
         [ExifTool]

@@ -19,7 +19,7 @@
         public ExifToolStayOpenStreamTest()
         {
             capturedEvents = new List<DataCapturedArgs>();
-            sut = new ExifToolStayOpenStream(Encoding.UTF8);
+            sut = new ExifToolStayOpenStream(Encoding.UTF8, 200);
             sut.Update += SutOnUpdate;
         }
 
@@ -114,6 +114,32 @@
             act.Should().Throw<NotSupportedException>();
         }
 
+        [Theory]
+        [ClassData(typeof(InvalidWriteInputWithoutException))]
+        public void Write_ShouldDoNothing_WhenInputIsNotValid(byte[] buffer, int offset, int count)
+        {
+            // arrange
+
+            // act
+            sut.Write(buffer, offset, count);
+
+            // assert
+            sut.Length.Should().Be(0);
+        }
+
+        [Theory]
+        [ClassData(typeof(InvalidWriteInputWithException))]
+        public void Write_ShouldThrow_WhenInputIsNotValid(byte[] buffer, int offset, int count)
+        {
+            // arrange
+
+            // act
+            Action act = () => sut.Write(buffer, offset, count);
+
+            // assert
+            act.Should().Throw<ArgumentException>();
+        }
+
         [Fact]
         public void SingleWriteShouldNotFireEvent()
         {
@@ -193,6 +219,34 @@
         private void SutOnUpdate(object sender, DataCapturedArgs dataCapturedArgs)
         {
             capturedEvents.Add(dataCapturedArgs);
+        }
+
+        private class InvalidWriteInputWithoutException : TheoryData<byte[], int, int>
+        {
+            public InvalidWriteInputWithoutException()
+            {
+                Add(ValidBuffer, 0, 0); // count is zero
+                Add(ValidBuffer, ValidBuffer.Length - 2, 0); // count is zero
+            }
+
+            private static byte[] ValidBuffer => Encoding.UTF8.GetBytes($"This is a message".ConvertToOsString());
+        }
+
+        private class InvalidWriteInputWithException : TheoryData<byte[], int, int>
+        {
+            public InvalidWriteInputWithException()
+            {
+                Add(null, 1, 1); // buffer is null
+                Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative
+                Add(ValidBuffer, 0, -1); // count is negative
+                Add(ValidBuffer, ValidBuffer.Length - 1, 2); // offset + count is behind length of buffer
+                Add(ValidBuffer, ValidBuffer.Length + 1, 1); // offset is behind length of buffer
+                Add(ValidBuffer201, 0, ValidBuffer201.Length); // offset is behind length of buffer
+            }
+
+            private static byte[] ValidBuffer => Encoding.UTF8.GetBytes($"This is a message".ConvertToOsString());
+
+            private static byte[] ValidBuffer201 => Encoding.UTF8.GetBytes(new string('a', 201).ConvertToOsString());
         }
     }
 }
