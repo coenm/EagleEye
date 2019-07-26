@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,16 +13,13 @@
     using JetBrains.Annotations;
 
     [UsedImplicitly]
-    internal class SimilarityEventHandlers :
-        ICancellableEventHandler<PhotoHashCleared>,
-        ICancellableEventHandler<PhotoHashUpdated>,
-        ICancellableEventHandler<PhotoHashAdded>
+    internal class PhotoHashAddedSimilarityEventHandler : ICancellableEventHandler<PhotoHashAdded>
     {
         [NotNull] private readonly IInternalStatelessSimilarityRepository repository;
         [NotNull] private readonly ISimilarityDbContextFactory contextFactory;
         [NotNull] private readonly IBackgroundJobClient hangFireClient;
 
-        public SimilarityEventHandlers(
+        public PhotoHashAddedSimilarityEventHandler(
             [NotNull] IInternalStatelessSimilarityRepository repository,
             [NotNull] ISimilarityDbContextFactory contextFactory,
             [NotNull] IBackgroundJobClient hangFireClient)
@@ -36,38 +32,29 @@
             this.hangFireClient = hangFireClient;
         }
 
-        public async Task Handle(PhotoHashCleared message, CancellationToken ct)
+        public Task Handle(PhotoHashAdded message, CancellationToken token = new CancellationToken())
         {
-            Guard.Argument(message, nameof(message)).NotNull();
-
-            using (var db = contextFactory.CreateDbContext())
-            {
-                var hashIdentifier = await repository.GetAddHashIdentifierAsync(db, message.HashIdentifier, ct)
-                    .ConfigureAwait(false);
-
-                var itemToRemove = await repository.GetPhotoHashesUntilVersionAsync(db, message.Id, hashIdentifier, message.Version, ct)
-                    .ConfigureAwait(false);
-
-                if (itemToRemove.Any())
-                    db.PhotoHashes.RemoveRange(itemToRemove);
-
-                await db.SaveChangesAsync(ct).ConfigureAwait(false);
-            }
-
-            hangFireClient.Enqueue<ClearPhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
+            // no this is not okay.. todo coenm
+            return Handle(
+                new PhotoHashUpdated(message.Id, message.HashIdentifier, message.Hash)
+                {
+                    Version = message.Version,
+                    TimeStamp = message.TimeStamp,
+                },
+                token);
         }
 
-        public async Task Handle(PhotoHashUpdated message, CancellationToken ct)
+        private async Task Handle(PhotoHashUpdated message, CancellationToken ct)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 
             using (var db = contextFactory.CreateDbContext())
             {
                 var hashIdentifier = await repository.GetAddHashIdentifierAsync(db, message.HashIdentifier, ct)
-                    .ConfigureAwait(false);
+                                                     .ConfigureAwait(false);
 
                 var existingItem = await repository.TryGetPhotoHashByIdAndHashIdentifierAsync(db, message.Id, hashIdentifier, ct)
-                    .ConfigureAwait(false);
+                                                   .ConfigureAwait(false);
 
                 if (existingItem != null)
                 {
@@ -91,26 +78,14 @@
                                       Hash = message.Hash,
                                   };
                     await db.PhotoHashes.AddAsync(newItem, ct)
-                        .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                 }
 
                 await db.SaveChangesAsync(ct)
-                    .ConfigureAwait(false);
+                        .ConfigureAwait(false);
             }
 
             hangFireClient.Enqueue<UpdatePhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));
-        }
-
-        public Task Handle(PhotoHashAdded message, CancellationToken token = new CancellationToken())
-        {
-            // no this is not okay.. todo coenm
-            return Handle(
-                new PhotoHashUpdated(message.Id, message.HashIdentifier, message.Hash)
-                {
-                    Version = message.Version,
-                    TimeStamp = message.TimeStamp,
-                },
-                token);
         }
     }
 }

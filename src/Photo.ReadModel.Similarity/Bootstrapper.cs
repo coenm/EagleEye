@@ -42,7 +42,7 @@
             container.Register<DbContextOptions<SimilarityDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
             container.Register<ISimilarityDbContextFactory, SimilarityDbContextFactory>(Lifestyle.Singleton);
 
-            container.Register<SimilarityEventHandlers>();
+            container.Register<PhotoHashClearedSimilarityEventHandler>();
 
             container.Collection.Register<IEagleEyeInitialize>(typeof(DatabaseInitializer));
 
@@ -63,7 +63,7 @@
         {
             return new Type[]
             {
-                typeof(SimilarityEventHandlers),
+                typeof(PhotoHashClearedSimilarityEventHandler),
             };
         }
 
