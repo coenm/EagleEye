@@ -10,6 +10,10 @@
 
     internal interface IInternalStatelessSimilarityRepository
     {
+        [Pure]
+        [NotNull]
+        Task<HashIdentifiers[]> GetAllHashIdentifiersAsync([NotNull] ISimilarityDbContext db);
+
         [Pure] [NotNull] HashIdentifiers GetOrAddHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);
 
         [Pure] [CanBeNull] HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier);

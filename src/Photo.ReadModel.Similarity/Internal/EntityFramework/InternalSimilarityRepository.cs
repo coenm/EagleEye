@@ -13,6 +13,12 @@
 
     internal class InternalSimilarityRepository : IInternalStatelessSimilarityRepository
     {
+        public Task<HashIdentifiers[]> GetAllHashIdentifiersAsync(ISimilarityDbContext db)
+        {
+            Guard.Argument(db, nameof(db)).NotNull();
+            return db.HashIdentifiers.ToArrayAsync();
+        }
+
         [CanBeNull]
         [Pure]
         public HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)

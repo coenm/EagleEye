@@ -32,19 +32,7 @@
             this.hangFireClient = hangFireClient;
         }
 
-        public Task Handle(PhotoHashAdded message, CancellationToken token = new CancellationToken())
-        {
-            // no this is not okay.. todo coenm
-            return Handle(
-                new PhotoHashUpdated(message.Id, message.HashIdentifier, message.Hash)
-                {
-                    Version = message.Version,
-                    TimeStamp = message.TimeStamp,
-                },
-                token);
-        }
-
-        private async Task Handle(PhotoHashUpdated message, CancellationToken ct)
+        public async Task Handle(PhotoHashAdded message, CancellationToken ct)
         {
             Guard.Argument(message, nameof(message)).NotNull();
 

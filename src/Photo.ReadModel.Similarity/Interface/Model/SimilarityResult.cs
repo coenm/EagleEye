@@ -2,16 +2,26 @@
 {
     using System;
 
+    using Dawn;
+    using JetBrains.Annotations;
+
+    [PublicAPI]
     public class SimilarityResult
     {
-        internal SimilarityResult(Guid id, float score, DateTimeOffset recordDate)
+        internal SimilarityResult(Guid photoGuid, [NotNull] string hashAlgorithm, float score, DateTimeOffset recordDate)
         {
-            Id = id;
+            Guard.Argument(hashAlgorithm, nameof(hashAlgorithm)).NotNull().NotEmpty();
+            Guard.Argument(score, nameof(score)).InRange(0, 100);
+
+            PhotoGuid = photoGuid;
+            HashAlgorithm = hashAlgorithm;
             Score = score;
             RecordDate = recordDate;
         }
 
-        public Guid Id { get; }
+        public Guid PhotoGuid { get; }
+
+        public string HashAlgorithm { get; }
 
         public float Score { get; }
 

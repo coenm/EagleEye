@@ -1,10 +1,15 @@
 ﻿namespace EagleEye.Photo.ReadModel.Similarity
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
 
     using Dawn;
+
+    using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
+    using EagleEye.Photo.ReadModel.Similarity.Interface;
+    using EagleEye.Photo.ReadModel.Similarity.Internal;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework.ContextOptions;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EventHandlers;
@@ -35,6 +40,8 @@
             Guard.Argument(hangFireConnectionString, nameof(hangFireConnectionString)).NotNull().NotWhiteSpace();
             var thisAssembly = typeof(Bootstrapper).Assembly;
 
+            container.Register<ISimilarityReadModel, SimilarityReadModel>();
+
             container.Register<IInternalStatelessSimilarityRepository, InternalSimilarityRepository>(Lifestyle.Singleton);
             RegisterDbContextOptions(container, thisAssembly);
 
@@ -42,9 +49,9 @@
             container.Register<DbContextOptions<SimilarityDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
             container.Register<ISimilarityDbContextFactory, SimilarityDbContextFactory>(Lifestyle.Singleton);
 
+            container.Register<PhotoHashAddedSimilarityEventHandler>();
             container.Register<PhotoHashClearedSimilarityEventHandler>();
-
-            container.Collection.Register<IEagleEyeInitialize>(typeof(DatabaseInitializer));
+            container.Register<PhotoHashUpdatedSimilarityEventHandler>();
 
             // BackgroundJobClient contains multiple public constructors.
             container.Register<IBackgroundJobClient>(() => new BackgroundJobClient(), Lifestyle.Singleton);
@@ -63,8 +70,15 @@
         {
             return new Type[]
             {
+                typeof(PhotoHashAddedSimilarityEventHandler),
                 typeof(PhotoHashClearedSimilarityEventHandler),
+                typeof(PhotoHashUpdatedSimilarityEventHandler),
             };
+        }
+
+        public static IEnumerable<Type> ExternalRequiredInterfaces()
+        {
+            yield return typeof(IDateTimeService);
         }
 
         private static void RegisterDbContextOptions(Container container, Assembly thisAssembly)
