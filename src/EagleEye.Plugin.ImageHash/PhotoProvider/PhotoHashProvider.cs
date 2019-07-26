@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.ImageHash.PhotoProvider
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -33,9 +34,16 @@
 
         public Task<List<PhotoHash>> ProvideAsync(string filename, List<PhotoHash> previousResult)
         {
-            using (var stream = fileService.OpenRead(filename))
+            try
             {
-                return Task.FromResult(ImageHashing.Calculate(stream));
+                using (var stream = fileService.OpenRead(filename))
+                {
+                    return Task.FromResult(ImageHashing.Calculate(stream));
+                }
+            }
+            catch (Exception)
+            {
+                return Task.FromResult(previousResult);
             }
         }
     }
