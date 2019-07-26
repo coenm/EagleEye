@@ -103,24 +103,5 @@
 
             A.CallTo(() => publisher.Publish(eventsToStore[0], ct)).MustHaveHappenedOnceExactly();
         }
-
-        private class DummyEvent : IEvent
-        {
-            public Guid Id { get; set; }
-
-            public int Version { get; set; }
-
-            public DateTimeOffset TimeStamp { get; set; }
-
-            public static DummyEvent Create(Guid guid, int version, DateTimeOffset timestamp)
-            {
-                return new DummyEvent
-                {
-                    Version = version,
-                    Id = guid,
-                    TimeStamp = timestamp,
-                };
-            }
-        }
     }
 }
