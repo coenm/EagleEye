@@ -9,7 +9,7 @@
     [PublicAPI]
     public class SimilarityResultSet
     {
-        public SimilarityResultSet(Guid photoGuid, DateTimeOffset queryTimestamp, SimilarityResult[] results)
+        internal SimilarityResultSet(Guid photoGuid, DateTimeOffset queryTimestamp, params SimilarityResult[] results)
         {
             PhotoGuid = photoGuid;
             QueryTimestamp = queryTimestamp;

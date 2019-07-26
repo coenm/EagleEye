@@ -168,6 +168,22 @@
 
         [NotNull]
         [Pure]
+        public IQueryable<Scores> GetScoresForPhotoAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier)
+        {
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+
+            IQueryable<Scores> result = db.Scores
+                     .Where(score => score.HashIdentifier == hashIdentifier)
+                     .Where(score => (
+                                       (score.PhotoA == photoId)
+                                       ||
+                                       (score.PhotoB == photoId)));
+            return result;
+        }
+
+        [NotNull]
+        [Pure]
         public List<Scores> GetOutdatedScores([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier, int version)
         {
             Guard.Argument(db, nameof(db)).NotNull();

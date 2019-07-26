@@ -11,6 +11,7 @@
     using EagleEye.Photo.ReadModel.Similarity.Interface.Model;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using JetBrains.Annotations;
+    using Microsoft.EntityFrameworkCore;
 
     internal class SimilarityReadModel : ISimilarityReadModel
     {
@@ -40,19 +41,67 @@
             }
         }
 
-        public Task<int> CountSimilaritiesAsync(Guid photoGuid, string hashAlgorithm, double scoreThreshold)
+        public async Task<int> CountSimilaritiesAsync(Guid photoGuid, string hashAlgorithm, double scoreThreshold)
         {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once HeuristicUnreachableCode
+            if (hashAlgorithm == null)
+                return 0;
+
             using (var db = contextFactory.CreateDbContext())
             {
-                // todo
-                return Task.FromResult(42);
+                var hashAlgorithms = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
+
+                var singleHashAlgorithm = hashAlgorithms.SingleOrDefault(x => x.HashIdentifier == hashAlgorithm);
+                if (singleHashAlgorithm == null)
+                    return 0;
+
+                return await repository
+                             .GetScoresForPhotoAndHashIdentifier(db, photoGuid, singleHashAlgorithm)
+                             .CountAsync(s => s.Score >= scoreThreshold)
+                             .ConfigureAwait(false);
             }
         }
 
-        public Task<SimilarityResultSet> GetSimilaritiesAsync(Guid photoGuid, string hashAlgorithm, float scoreThreshold)
+        public async Task<SimilarityResultSet> GetSimilaritiesAsync(Guid photoGuid, string hashAlgorithm, float scoreThreshold)
         {
-            return Task.FromResult(
-               new SimilarityResultSet(photoGuid, dateTimeService.Now, new SimilarityResult[0]));
+            SimilarityResultSet CreateResult(params SimilarityResult[] resultSet)
+            {
+                return new SimilarityResultSet(
+                                               photoGuid,
+                                               dateTimeService.Now,
+                                               resultSet);
+            }
+
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once HeuristicUnreachableCode
+            if (hashAlgorithm == null)
+                return CreateResult();
+
+            using (var db = contextFactory.CreateDbContext())
+            {
+                var hashAlgorithms = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
+
+                var singleHashAlgorithm = hashAlgorithms.SingleOrDefault(x => x.HashIdentifier == hashAlgorithm);
+                if (singleHashAlgorithm == null)
+                    return CreateResult();
+
+                var matches = await repository
+                                    .GetScoresForPhotoAndHashIdentifier(db, photoGuid, singleHashAlgorithm)
+                                    .Where(s => s.Score >= scoreThreshold)
+                                    .Select(s => CreateSimilarityResult(photoGuid, s.PhotoA, s.PhotoB, s.Score))
+                                    .ToArrayAsync()
+                                    .ConfigureAwait(false);
+
+                return CreateResult(matches);
+            }
+        }
+
+        private static SimilarityResult CreateSimilarityResult(Guid queried, Guid photoA, Guid photoB, double score)
+        {
+            if (queried != photoA)
+                return new SimilarityResult(photoA, score);
+            return new SimilarityResult(photoB, score);
         }
     }
 }

@@ -32,6 +32,8 @@
         {
             Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
 
+            System.Threading.Thread.Sleep(5000);
+
             using (var db = contextFactory.CreateDbContext())
             {
                 var hashIdentifier = repository.GetHashIdentifier(db, hashIdentifierString);

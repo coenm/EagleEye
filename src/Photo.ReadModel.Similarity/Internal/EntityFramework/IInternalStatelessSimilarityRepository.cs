@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -33,5 +34,7 @@
         [NotNull] List<Scores> GetOutdatedScores(ISimilarityDbContext db, Guid photoId, HashIdentifiers hashIdentifier, int version);
 
         void DeleteScores([NotNull] ISimilarityDbContext db, [NotNull] IEnumerable<Scores> scores);
+
+        IQueryable<Scores> GetScoresForPhotoAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier);
     }
 }
