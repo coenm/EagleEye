@@ -17,6 +17,7 @@
             Guard.Argument(container, nameof(container)).NotNull();
 
             container.Collection.Append(typeof(IPhotoDateTimeTakenProvider), typeof(DirectoryStructureDateTimeProvider));
+            container.Collection.Append(typeof(IPhotoDateTimeTakenProvider), typeof(MobileFilenameDateTimeProvider));
         }
     }
 }

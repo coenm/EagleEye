@@ -10,6 +10,9 @@
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
 
+    /// <summary>
+    /// filenames starting with YYYY, YYYY-mm, YYYY-mm-DD.
+    /// </summary>
     [UsedImplicitly]
     internal class DirectoryStructureDateTimeProvider : IPhotoDateTimeTakenProvider
     {
