@@ -229,7 +229,7 @@
                 Add(ValidBuffer, 0, 0); // count is zero
                 Add(ValidBuffer, ValidBuffer.Length - 2, 0); // count is zero
                 Add(ValidBuffer, ValidBuffer.Length + 1, 1); // offset is behind length of buffer
-                Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative
+                // Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative
             }
 
             private static byte[] ValidBuffer => Encoding.UTF8.GetBytes($"This is a message".ConvertToOsString());
@@ -240,8 +240,9 @@
             public InvalidWriteInputWithException()
             {
                 Add(ValidBuffer, 0, -1); // count is negative
-                Add(ValidBuffer, ValidBuffer.Length - 1, 2); // offset + count is behind length of buffer
+                // Add(ValidBuffer, ValidBuffer.Length - 1, 2); // offset + count is behind length of buffer
                 Add(ValidBuffer201, 0, ValidBuffer201.Length); // offset is behind length of buffer
+                Add(ValidBuffer, -1, ValidBuffer.Length); // offset is negative
             }
 
             private static byte[] ValidBuffer => Encoding.UTF8.GetBytes($"This is a message".ConvertToOsString());
