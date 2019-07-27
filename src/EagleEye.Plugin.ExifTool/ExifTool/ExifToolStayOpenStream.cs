@@ -57,18 +57,13 @@
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             // ReSharper disable once HeuristicUnreachableCode
             if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer));
-            if (offset < 0)
-                throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
+                return;
             if (count == 0)
                 return;
             if (offset + count > buffer.Length)
-                throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
-
+                return;
             if (count > bufferSize - index)
-                throw new ArgumentException($"Internal buffer doesn't have the free size to write {count} bytes.");
+                throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
 
             Array.Copy(buffer, 0, cache, index, count);
             index += count;

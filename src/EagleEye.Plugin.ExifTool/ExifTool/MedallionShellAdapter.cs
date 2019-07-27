@@ -23,17 +23,11 @@
             Guard.Argument(executable, nameof(executable)).NotNull().NotEmpty();
             Guard.Argument(outputStream, nameof(outputStream)).NotNull();
 
-            if (errorStream == null)
-            {
-                cmd = Command.Run(executable, defaultArgs)
-                             .RedirectTo(outputStream);
-            }
-            else
-            {
-                cmd = Command.Run(executable, defaultArgs)
-                             .RedirectTo(outputStream)
-                             .RedirectStandardErrorTo(errorStream);
-            }
+            cmd = Command.Run(executable, defaultArgs)
+                         .RedirectTo(outputStream);
+
+            if (errorStream != null)
+                cmd = cmd.RedirectStandardErrorTo(errorStream);
 
             Task = System.Threading.Tasks.Task.Run(async () =>
             {
@@ -61,12 +55,12 @@
             cmd.Kill();
         }
 
-        public Task WriteLineAsync([NotNull] string text)
+        public async Task WriteLineAsync([NotNull] string text)
         {
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
-
-            return cmd.StandardInput.WriteLineAsync(text);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once HeuristicUnreachableCode
+            if (text != null)
+                await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
         }
     }
 }
