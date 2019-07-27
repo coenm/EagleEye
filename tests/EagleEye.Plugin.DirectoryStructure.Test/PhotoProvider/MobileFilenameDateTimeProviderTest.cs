@@ -89,7 +89,7 @@
             {
                 Add("a/bb/dd/IMG-20170325-WA0014.jpg", new Timestamp(2017, 3, 25));
                 Add("a/bb/dd/VID-20161220-WA0001.mp4", new Timestamp(2016, 12, 20));
-                Add("a/bb/dd/20150905_183425.jpg", new Timestamp(2015, 09, 05));// should have time (todo)
+                Add("a/bb/dd/20150905_183425.jpg", new Timestamp(2015, 09, 05)); // should have time (todo)
             }
         }
 

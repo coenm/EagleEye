@@ -23,8 +23,8 @@
 
     public class IntegrationTest
     {
-        private readonly ITestOutputHelper writer;
         private const string ExistingImageFilename = "1.jpg";
+        private readonly ITestOutputHelper writer;
         private readonly IDateTimeService dateTimeService;
         private readonly Container container;
         private readonly IFileService fileService;

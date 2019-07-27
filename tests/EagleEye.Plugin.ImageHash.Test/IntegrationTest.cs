@@ -39,7 +39,7 @@
         {
             package.RegisterServices(packageContainer);
             var plugins = packageContainer.GetAllInstances<IEagleEyePlugin>().ToArray();
-            plugins.Should().HaveCount(1);
+            plugins.Should().ContainSingle();
             var singlePlugin = plugins.Single();
 
             RegisterPluginExternalDependencies(container);
@@ -47,7 +47,7 @@
             container.Verify();
 
             var photoHashProviders = container.GetAllInstances<IPhotoHashProvider>().ToArray();
-            photoHashProviders.Should().HaveCount(1);
+            photoHashProviders.Should().ContainSingle();
             var photoHashProvider = photoHashProviders.Single();
 
             const string filename = "dummy_not_existing_image.jpg";

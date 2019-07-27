@@ -39,16 +39,16 @@
                 this.eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
             }
 
-            public void Dispose()
-            {
-                decoratee.Dispose();
-            }
-
             public DbSet<HashIdentifiers> HashIdentifiers => decoratee.HashIdentifiers;
 
             public DbSet<PhotoHash> PhotoHashes => decoratee.PhotoHashes;
 
             public DbSet<Scores> Scores => decoratee.Scores;
+
+            public void Dispose()
+            {
+                decoratee.Dispose();
+            }
 
             public async Task SaveChangesAsync(CancellationToken ct = default)
             {
