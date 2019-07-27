@@ -47,7 +47,6 @@
         }
 
         [ExifTool]
-        [Fact]
         [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyorWindows, reason: "Sometimes this tests hangs on AppVeyor (windows).")]
         public void Ctor_WithErrorStream()
         {
