@@ -34,7 +34,6 @@
             Guard.Argument(mimeType, nameof(mimeType)).NotNull().NotWhiteSpace();
             Guard.Argument(fileSha256, nameof(fileSha256)).NotNull().Count(Sha256ByteSize);
 
-            Id = id;
             ApplyChange(new PhotoCreated(id, filename, mimeType, fileSha256));
         }
 
