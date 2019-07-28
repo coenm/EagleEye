@@ -100,7 +100,7 @@
                 if (similarPhotos == 0)
                 {
                     writer.WriteLine("count was 0 (2)");
-                    dbSavedHappened.WaitOne(TimeSpan.FromSeconds(10));
+                    dbSavedHappened.WaitOne(TimeSpan.FromMinutes(1));
                     similarPhotos = await similarityReadModel.CountSimilaritiesAsync(photoGuid1, "AverageHash", 50);
                 }
             }
