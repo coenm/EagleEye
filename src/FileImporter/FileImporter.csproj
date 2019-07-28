@@ -28,7 +28,7 @@
     <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.1" />
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
     <PackageReference Include="CommandLineParser" Version="2.5.0" />
-    <PackageReference Include="CqrsLite" Version="0.28.0" />
+    <PackageReference Include="CqrsLite" Version="0.29.0" />
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
@@ -36,7 +36,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="NLog" Version="4.6.6" />
     <PackageReference Include="ShellProgressBar" Version="4.2.0" />
-    <PackageReference Include="SimpleInjector" Version="4.6.0" />
+    <PackageReference Include="SimpleInjector" Version="4.6.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
