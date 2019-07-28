@@ -54,9 +54,10 @@
             // act
             var cmd = Command.Run(ExifToolSystemConfiguration.ExifToolExecutable, args);
             ProtectAgainstHangingTask(cmd);
-            await cmd.Task.ConfigureAwait(false);
+            var result = await cmd.Task.ConfigureAwait(false);
 
             // assert
+            WriteResultToOutput(result);
             output.WriteLine($"Received exiftool version: {cmd.Result.StandardOutput}");
             cmd.Result.StandardOutput.Should().Be($"{currentExifToolVersion}\r\n".ConvertToOsString());
         }
@@ -107,7 +108,7 @@
                 await cmd.StandardInput.WriteLineAsync("False").ConfigureAwait(false);
 
                 ProtectAgainstHangingTask(cmd);
-                await cmd.Task.ConfigureAwait(false);
+                var result = await cmd.Task.ConfigureAwait(false);
 
                 stream.Update -= StreamOnUpdate;
 
@@ -125,6 +126,20 @@
 
             cmd.Kill();
             throw new Exception("Could not close Exiftool without killing it.");
+        }
+
+        private void WriteResultToOutput(CommandResult result)
+        {
+            if (result == null)
+            {
+                output.WriteLine("result is null");
+                return;
+            }
+
+            output.WriteLine($"ExitCode: {result.ExitCode}");
+            output.WriteLine($"Success: {result.Success}");
+            output.WriteLine($"StandardOutput: {result.StandardOutput}");
+            output.WriteLine($"StandardError: {result.StandardError}");
         }
     }
 }

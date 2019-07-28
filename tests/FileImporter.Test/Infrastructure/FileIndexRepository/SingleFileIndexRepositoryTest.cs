@@ -1,14 +1,11 @@
 ﻿namespace EagleEye.FileImporter.Test.Infrastructure.FileIndexRepository
 {
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-
     using FakeItEasy;
-
     using Xunit;
 
     public class SingleFileIndexRepositoryTest

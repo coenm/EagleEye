@@ -12,6 +12,8 @@
     using CQRSlite.Events;
     using CQRSlite.Routing;
     using Dawn;
+    using EagleEye.Core.DefaultImplementations;
+    using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.EventStore.NEventStoreAdapter;
     using EagleEye.FileImporter.Indexing;
@@ -55,6 +57,9 @@
             var similarityFilename = indexFilename + ".similarity.json";
             // todo check arguments.
             // container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
+            container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
+            container.RegisterInstance<IFileService>(SystemFileService.Instance);
+
             container.RegisterInstance<IContentResolver>(FilesystemContentResolver.Instance);
             container.RegisterSingleton<IImageDataRepository>(() => new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
             container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));

@@ -10,6 +10,9 @@
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
 
+    /// <summary>
+    /// filenames starting with YYYY, YYYY-mm, YYYY-mm-DD.
+    /// </summary>
     [UsedImplicitly]
     internal class DirectoryStructureDateTimeProvider : IPhotoDateTimeTakenProvider
     {
@@ -31,29 +34,39 @@
 
         public bool CanProvideInformation(string filename)
         {
-            return true;
+            return !string.IsNullOrWhiteSpace(filename);
         }
 
         public Task<Timestamp> ProvideAsync(string filename, Timestamp previousResult)
         {
+            if (string.IsNullOrWhiteSpace(filename))
+                return Task.FromResult(previousResult);
+
             filename = filename.Trim();
 
             try
             {
+                // according to the description of GetFileName it can throw an Exception when invalid chars are used.
+                // it looks like the 'promised' exception isn't thrown but the result is an empty string.
+                // therefore, we check again for an empty string.
                 filename = Path.GetFileName(filename);
+
+                if (string.IsNullOrWhiteSpace(filename))
+                    return Task.FromResult(previousResult);
             }
             catch (Exception)
             {
-                return Task.FromResult<Timestamp>(null);
+                // don't know how to cover this line ;-)
+                return Task.FromResult(previousResult);
             }
 
             var result = findDateRegex.Match(filename);
             if (!result.Success)
-                return Task.FromResult<Timestamp>(null);
+                return Task.FromResult(previousResult);
 
             var year = result.Groups["year"];
             if (!year.Success || !TryParseInt(year.Value, out var yearValue))
-                return Task.FromResult<Timestamp>(null);
+                return Task.FromResult(previousResult);
 
             var month = result.Groups["month"];
             if (!month.Success || !TryParseInt(month.Value, out var monthValue))

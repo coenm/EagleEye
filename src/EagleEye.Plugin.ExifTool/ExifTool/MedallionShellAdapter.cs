@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using Dawn;
     using JetBrains.Annotations;
     using Medallion.Shell;
 
@@ -14,13 +15,16 @@
         private readonly Command cmd;
 
         public MedallionShellAdapter(
-            string exifToolPath,
+            string executable,
             IEnumerable<string> defaultArgs,
-            Stream outputStream,
-            Stream errorStream = null)
+            [NotNull] Stream outputStream,
+            [CanBeNull] Stream errorStream = null)
         {
-            cmd = Command.Run(exifToolPath, defaultArgs)
-                          .RedirectTo(outputStream);
+            Guard.Argument(executable, nameof(executable)).NotNull().NotEmpty();
+            Guard.Argument(outputStream, nameof(outputStream)).NotNull();
+
+            cmd = Command.Run(executable, defaultArgs)
+                         .RedirectTo(outputStream);
 
             if (errorStream != null)
                 cmd = cmd.RedirectStandardErrorTo(errorStream);
@@ -51,9 +55,12 @@
             cmd.Kill();
         }
 
-        public Task WriteLineAsync(string text)
+        public async Task WriteLineAsync([NotNull] string text)
         {
-            return cmd.StandardInput.WriteLineAsync(text);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once HeuristicUnreachableCode
+            if (text != null)
+                await cmd.StandardInput.WriteLineAsync(text).ConfigureAwait(false);
         }
     }
 }

@@ -2,19 +2,22 @@
 {
     using System;
 
+    using Dawn;
+    using JetBrains.Annotations;
+
+    [PublicAPI]
     public class SimilarityResult
     {
-        internal SimilarityResult(Guid id, float score, DateTimeOffset recordDate)
+        internal SimilarityResult(Guid photoGuid, [NotNull] double score)
         {
-            Id = id;
+            Guard.Argument(score, nameof(score)).InRange(0, 100);
+
+            PhotoGuid = photoGuid;
             Score = score;
-            RecordDate = recordDate;
         }
 
-        public Guid Id { get; }
+        public Guid PhotoGuid { get; }
 
-        public float Score { get; }
-
-        public DateTimeOffset RecordDate { get; }
+        public double Score { get; }
     }
 }

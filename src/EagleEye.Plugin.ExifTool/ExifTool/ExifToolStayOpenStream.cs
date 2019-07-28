@@ -7,6 +7,8 @@
 
     using Dawn;
 
+    using JetBrains.Annotations;
+
     public class ExifToolStayOpenStream : Stream
     {
         private const int OneMb = 1024 * 1024;
@@ -19,7 +21,7 @@
         private readonly int bufferSize;
         private int index;
 
-        public ExifToolStayOpenStream(Encoding encoding, int bufferSize = OneMb)
+        public ExifToolStayOpenStream([CanBeNull] Encoding encoding, int bufferSize = OneMb)
         {
             Guard.Argument(bufferSize, nameof(bufferSize)).Min(1);
 
@@ -52,15 +54,16 @@
 
         public override void Write(byte[] buffer, int offset, int count)
         {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once HeuristicUnreachableCode
             if (buffer == null)
                 return;
             if (count == 0)
                 return;
             if (offset + count > buffer.Length)
                 return;
-
             if (count > bufferSize - index)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentException("The sum of offset and count is greater than the buffer length.");
 
             Array.Copy(buffer, 0, cache, index, count);
             index += count;

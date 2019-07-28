@@ -22,6 +22,7 @@
                                  "dummy",
                                  "InMemory hangfire",
                                  null);
+
                              Startup.VerifyContainer(container);
                          };
 

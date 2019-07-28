@@ -8,9 +8,7 @@
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Json;
     using EagleEye.TestHelper;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class CalculateIndexServiceTest

@@ -7,13 +7,13 @@
     using FluentAssertions;
     using Xunit;
 
-    public class NEventStoreAdapterSqliteFactoryTest
+    public class NEventStoreAdapterInMemoryFactoryTest
     {
-        private readonly NEventStoreAdapterSqliteFactory sut;
+        private readonly NEventStoreAdapterInMemoryFactory sut;
 
-        public NEventStoreAdapterSqliteFactoryTest()
+        public NEventStoreAdapterInMemoryFactoryTest()
         {
-            sut = new NEventStoreAdapterSqliteFactory("InMemory");
+            sut = new NEventStoreAdapterInMemoryFactory();
         }
 
         [Fact]

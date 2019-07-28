@@ -13,6 +13,12 @@
 
     internal class InternalSimilarityRepository : IInternalStatelessSimilarityRepository
     {
+        public Task<HashIdentifiers[]> GetAllHashIdentifiersAsync(ISimilarityDbContext db)
+        {
+            Guard.Argument(db, nameof(db)).NotNull();
+            return db.HashIdentifiers.ToArrayAsync();
+        }
+
         [CanBeNull]
         [Pure]
         public HashIdentifiers GetHashIdentifier([NotNull] ISimilarityDbContext db, [NotNull] string identifier)
@@ -158,6 +164,22 @@
                     &&
                     photoHash.Version <= messageVersion)
                 .ToListAsync(ct);
+        }
+
+        [NotNull]
+        [Pure]
+        public IQueryable<Scores> GetScoresForPhotoAndHashIdentifier([NotNull] ISimilarityDbContext db, Guid photoId, [NotNull] HashIdentifiers hashIdentifier)
+        {
+            Guard.Argument(db, nameof(db)).NotNull();
+            Guard.Argument(hashIdentifier, nameof(hashIdentifier)).NotNull();
+
+            IQueryable<Scores> result = db.Scores
+                     .Where(score => score.HashIdentifier == hashIdentifier)
+                     .Where(score => (
+                                       (score.PhotoA == photoId)
+                                       ||
+                                       (score.PhotoB == photoId)));
+            return result;
         }
 
         [NotNull]

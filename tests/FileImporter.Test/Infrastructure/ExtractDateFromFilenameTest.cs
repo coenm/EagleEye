@@ -3,7 +3,6 @@
     using System;
 
     using EagleEye.FileImporter.Infrastructure;
-
     using Xunit;
 
     public class ExtractDateFromFilenameTest
