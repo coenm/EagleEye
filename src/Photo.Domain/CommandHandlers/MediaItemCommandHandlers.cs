@@ -14,7 +14,6 @@
 
     internal class MediaItemCommandHandlers :
         ICancellableCommandHandler<AddTagsToPhotoCommand>,
-        ICancellableCommandHandler<AddPersonsToPhotoCommand>,
         ICancellableCommandHandler<RemoveTagsFromPhotoCommand>,
         ICancellableCommandHandler<RemovePersonsFromPhotoCommand>,
         ICancellableCommandHandler<SetLocationToPhotoCommand>,
@@ -49,12 +48,6 @@
             await session.Commit(token).ConfigureAwait(false);
         }
 
-        public async Task Handle(AddPersonsToPhotoCommand message, CancellationToken token)
-        {
-            var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
-            item.AddPersons(message.Persons);
-            await session.Commit(token).ConfigureAwait(false);
-        }
 
         public async Task Handle(RemovePersonsFromPhotoCommand message, CancellationToken token)
         {

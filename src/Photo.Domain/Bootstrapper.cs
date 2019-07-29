@@ -36,6 +36,7 @@
 
             container.Register<MediaItemCommandHandlers>();
             container.Register<CreatePhotoCommandHandler>();
+            container.Register<AddPersonsToPhotoCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()
@@ -44,6 +45,7 @@
             {
                 typeof(CreatePhotoCommandHandler),
                 typeof(MediaItemCommandHandlers),
+                typeof(AddPersonsToPhotoCommandHandler),
             };
         }
     }
