@@ -37,6 +37,7 @@
             container.Register<MediaItemCommandHandlers>();
             container.Register<CreatePhotoCommandHandler>();
             container.Register<AddPersonsToPhotoCommandHandler>();
+            container.Register<RemovePersonsFromPhotoCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()
@@ -46,6 +47,7 @@
                 typeof(CreatePhotoCommandHandler),
                 typeof(MediaItemCommandHandlers),
                 typeof(AddPersonsToPhotoCommandHandler),
+                typeof(RemovePersonsFromPhotoCommandHandler),
             };
         }
     }

@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using CQRSlite.Domain;
+    using CQRSlite.Events;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Commands;
@@ -13,17 +14,17 @@
     using JetBrains.Annotations;
     using Xunit;
 
-    public class AddPersonsToPhotoCommandHandlerTest
+    public class RemovePersonsFromPhotoCommandHandlerTest
     {
-        [NotNull] private AddPersonsToPhotoCommandHandler sut;
-        [NotNull] private ISession session;
-        private Guid photoGuid;
-        private CancellationToken ct;
+        [NotNull] private readonly RemovePersonsFromPhotoCommandHandler sut;
+        [NotNull] private readonly ISession session;
+        private readonly Guid photoGuid;
+        private readonly CancellationToken ct;
 
-        public AddPersonsToPhotoCommandHandlerTest()
+        public RemovePersonsFromPhotoCommandHandlerTest()
         {
             session = A.Fake<ISession>();
-            sut = new AddPersonsToPhotoCommandHandler(session);
+            sut = new RemovePersonsFromPhotoCommandHandler(session);
             photoGuid = Guid.NewGuid();
             ct = default;
         }
@@ -33,10 +34,10 @@
         {
             // arrange
             A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
-                .Returns(new Photo(photoGuid, "d", "x", new byte[32]));
+                .Returns(new Photo(photoGuid, "dummy", "dummy2", new byte[32]));
 
             // act
-            await sut.Handle(new AddPersonsToPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
+            await sut.Handle(new RemovePersonsFromPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
 
             // assert
             A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct)).MustHaveHappenedOnceExactly();
@@ -46,23 +47,24 @@
         public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenUpdatingPeopleSucceeds()
         {
             // arrange
-            var photo = new Photo(photoGuid, "d", "x", new byte[32]);
+            var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);
+            photo.AddPersons("Jake", "Bob", "Ben");
             photo.FlushUncommittedChanges();
 
             A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
                 .Returns(photo);
 
             // act
-            await sut.Handle(new AddPersonsToPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
+            await sut.Handle(new RemovePersonsFromPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
 
             // assert
-            photo.Persons.Should().BeEquivalentTo("Jake", "Ben");
+            photo.Persons.Should().BeEquivalentTo("Bob");
             photo.GetUncommittedChanges().Should()
                 .NotBeNull()
                 .And.NotBeEmpty()
                 .And.HaveCount(1)
-                .And.AllBeOfType<PersonsAddedToPhoto>()
-                .And.BeEquivalentTo(new PersonsAddedToPhoto(photoGuid, "Jake", "Ben"));
+                .And.AllBeOfType<PersonsRemovedFromPhoto>()
+                .And.BeEquivalentTo(new PersonsRemovedFromPhoto(photoGuid, "Jake", "Ben"));
             A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
             A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
         }

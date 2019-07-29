@@ -15,7 +15,6 @@
     internal class MediaItemCommandHandlers :
         ICancellableCommandHandler<AddTagsToPhotoCommand>,
         ICancellableCommandHandler<RemoveTagsFromPhotoCommand>,
-        ICancellableCommandHandler<RemovePersonsFromPhotoCommand>,
         ICancellableCommandHandler<SetLocationToPhotoCommand>,
         ICancellableCommandHandler<ClearLocationFromPhotoCommand>,
         ICancellableCommandHandler<SetDateTimeTakenCommand>,
@@ -45,14 +44,6 @@
         {
             var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
             item.RemoveTags(message.Tags);
-            await session.Commit(token).ConfigureAwait(false);
-        }
-
-
-        public async Task Handle(RemovePersonsFromPhotoCommand message, CancellationToken token)
-        {
-            var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
-            item.RemovePersons(message.Persons);
             await session.Commit(token).ConfigureAwait(false);
         }
 
