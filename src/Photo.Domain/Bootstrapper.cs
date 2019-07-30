@@ -40,6 +40,8 @@
             container.Register<RemovePersonsFromPhotoCommandHandler>();
             container.Register<AddTagsToPhotoCommandHandler>();
             container.Register<RemoveTagsFromPhotoCommandHandler>();
+            container.Register<ClearPhotoHashCommandHandler>();
+            container.Register<UpdatePhotoHashCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()
@@ -52,6 +54,8 @@
                 typeof(RemovePersonsFromPhotoCommandHandler),
                 typeof(AddTagsToPhotoCommandHandler),
                 typeof(RemoveTagsFromPhotoCommandHandler),
+                typeof(ClearPhotoHashCommandHandler),
+                typeof(UpdatePhotoHashCommandHandler),
             };
         }
     }

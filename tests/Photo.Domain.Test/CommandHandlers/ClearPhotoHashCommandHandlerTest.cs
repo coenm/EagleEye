@@ -3,8 +3,8 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+
     using CQRSlite.Domain;
-    using CQRSlite.Events;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Commands;
@@ -14,17 +14,17 @@
     using JetBrains.Annotations;
     using Xunit;
 
-    public class RemovePersonsFromPhotoCommandHandlerTest
+    public class ClearPhotoHashCommandHandlerTest
     {
-        [NotNull] private readonly RemovePersonsFromPhotoCommandHandler sut;
+        [NotNull] private readonly ClearPhotoHashCommandHandler sut;
         [NotNull] private readonly ISession session;
         private readonly Guid photoGuid;
         private readonly CancellationToken ct;
 
-        public RemovePersonsFromPhotoCommandHandlerTest()
+        public ClearPhotoHashCommandHandlerTest()
         {
             session = A.Fake<ISession>();
-            sut = new RemovePersonsFromPhotoCommandHandler(session);
+            sut = new ClearPhotoHashCommandHandler(session);
             photoGuid = Guid.NewGuid();
             ct = default;
         }
@@ -37,7 +37,7 @@
                 .Returns(new Photo(photoGuid, "dummy", "dummy2", new byte[32]));
 
             // act
-            await sut.Handle(new RemovePersonsFromPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
+            await sut.Handle(new ClearPhotoHashCommand(photoGuid, 42, "hashIdentifier1"), ct);
 
             // assert
             A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct)).MustHaveHappenedOnceExactly();
@@ -48,23 +48,23 @@
         {
             // arrange
             var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);
-            photo.AddPersons("Jake", "Bob", "Ben");
+            photo.UpdatePhotoHash("hashIdentifier1", 1231);
+            photo.UpdatePhotoHash("hashIdentifier2", 1232);
             photo.FlushUncommittedChanges();
 
             A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
                 .Returns(photo);
 
             // act
-            await sut.Handle(new RemovePersonsFromPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
+            await sut.Handle(new ClearPhotoHashCommand(photoGuid, 42, "hashIdentifier1"), ct);
 
             // assert
-            photo.Persons.Should().BeEquivalentTo("Bob");
             photo.GetUncommittedChanges().Should()
                 .NotBeNull()
                 .And.NotBeEmpty()
                 .And.HaveCount(1)
-                .And.AllBeOfType<PersonsRemovedFromPhoto>()
-                .And.BeEquivalentTo(new PersonsRemovedFromPhoto(photoGuid, "Jake", "Ben"));
+                .And.AllBeOfType<PhotoHashCleared>()
+                .And.BeEquivalentTo(new PhotoHashCleared(photoGuid, "hashIdentifier1"));
             A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
             A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
         }
