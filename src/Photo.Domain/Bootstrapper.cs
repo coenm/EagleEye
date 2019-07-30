@@ -38,6 +38,8 @@
             container.Register<CreatePhotoCommandHandler>();
             container.Register<AddPersonsToPhotoCommandHandler>();
             container.Register<RemovePersonsFromPhotoCommandHandler>();
+            container.Register<AddTagsToPhotoCommandHandler>();
+            container.Register<RemoveTagsFromPhotoCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()
@@ -48,6 +50,8 @@
                 typeof(MediaItemCommandHandlers),
                 typeof(AddPersonsToPhotoCommandHandler),
                 typeof(RemovePersonsFromPhotoCommandHandler),
+                typeof(AddTagsToPhotoCommandHandler),
+                typeof(RemoveTagsFromPhotoCommandHandler),
             };
         }
     }
