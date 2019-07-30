@@ -44,7 +44,7 @@
         }
 
         [Fact]
-        public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenUpdatingPeopleSucceeds()
+        public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenRemovingTagsSucceeds()
         {
             // arrange
             var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);

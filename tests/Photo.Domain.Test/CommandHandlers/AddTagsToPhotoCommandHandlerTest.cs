@@ -44,7 +44,7 @@
         }
 
         [Fact]
-        public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenUpdatingPeopleSucceeds()
+        public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenUpdatingTagsSucceeds()
         {
             // arrange
             var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);
@@ -57,7 +57,7 @@
             await sut.Handle(new AddTagsToPhotoCommand(photoGuid, 42, "Jake", "Ben"), ct);
 
             // assert
-            photo.Persons.Should().BeEquivalentTo("Jake", "Ben");
+            photo.Tags.Should().BeEquivalentTo("Jake", "Ben");
             photo.GetUncommittedChanges().Should()
                 .NotBeNull()
                 .And.NotBeEmpty()
