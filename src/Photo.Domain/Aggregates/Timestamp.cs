@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Timestamp
+    public class Timestamp : IEquatable<Timestamp>
     {
         public Timestamp(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
         {
@@ -11,6 +11,9 @@
 
             if (month == null)
             {
+                if (year == 0)
+                    throw new ArgumentOutOfRangeException(nameof(year), "Can only be 0 when month is given.");
+
                 Value = new DateTime(year, 1, 1);
                 Precision = TimestampPrecision.Year;
                 return;
@@ -70,6 +73,16 @@
 
         public TimestampPrecision Precision { get; }
 
+        public static bool operator ==(Timestamp x, Timestamp y)
+        {
+            return x?.Equals(y) ?? ReferenceEquals(null, y);
+        }
+
+        public static bool operator !=(Timestamp x, Timestamp y)
+        {
+            return !(x == y);
+        }
+
         public static Timestamp FromDateTime(DateTime value)
         {
             if (value == null)
@@ -96,6 +109,37 @@
                     return Value.ToString("yyyyMMddHHmmss");
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public bool Equals(Timestamp other)
+        {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return Value.Equals(other.Value)
+                   &&
+                   Precision == other.Precision;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != GetType())
+                return false;
+
+            return Equals((Timestamp) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Value.GetHashCode() * 397) ^ (int) Precision;
             }
         }
     }
