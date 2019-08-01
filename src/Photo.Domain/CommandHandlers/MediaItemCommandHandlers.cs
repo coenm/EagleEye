@@ -13,7 +13,6 @@
     using NLog;
 
     internal class MediaItemCommandHandlers :
-        ICancellableCommandHandler<SetLocationToPhotoCommand>,
         ICancellableCommandHandler<ClearLocationFromPhotoCommand>,
         ICancellableCommandHandler<SetDateTimeTakenCommand>,
         ICancellableCommandHandler<UpdateFileHashCommand>
@@ -31,21 +30,6 @@
         {
             var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
             item.RemoveTags(message.Tags);
-            await session.Commit(token).ConfigureAwait(false);
-        }
-
-        public async Task Handle(SetLocationToPhotoCommand message, CancellationToken token)
-        {
-            var item = await Get<Photo>(message.Id, message.ExpectedVersion).ConfigureAwait(false);
-            item.SetLocation(
-                             message.CountryCode,
-                             message.CountryName,
-                             message.State,
-                             message.City,
-                             message.SubLocation,
-                             message.Longitude,
-                             message.Latitude);
-
             await session.Commit(token).ConfigureAwait(false);
         }
 

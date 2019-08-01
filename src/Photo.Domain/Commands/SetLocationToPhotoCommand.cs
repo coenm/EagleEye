@@ -23,8 +23,8 @@
 
         public string SubLocation { get; set; }
 
-        public float? Latitude { get; }
+        public float? Latitude { get; set; }
 
-        public float? Longitude { get; }
+        public float? Longitude { get; set; }
     }
 }
