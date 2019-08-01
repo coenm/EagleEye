@@ -26,10 +26,11 @@
             var repository = new Repository(new InMemoryEventStore(publisher));
             var session = new Session(repository);
             var uniqueFilenameService = A.Fake<IUniqueFilenameService>();
-            var handler = new MediaItemCommandHandlers(session);
+            var handler0 = new UpdateFileHashCommandHandler(session);
             var handler1 = new AddTagsToPhotoCommandHandler(session);
             var handler2 = new CreatePhotoCommandHandler(session, uniqueFilenameService);
             var handler3 = new AddTagsToPhotoCommandHandler(session);
+            var handler4 = new RemoveTagsFromPhotoCommandHandler(session);
             var events = new List<IEvent>();
             publisher.RegisterHandler<PhotoCreated>((evt, ct) =>
                                                         {
@@ -57,7 +58,7 @@
             await handler3.Handle(addTagsCommand, default).ConfigureAwait(false);
 
             var removeTagsCommand = new RemoveTagsFromPhotoCommand(guid, version, "summer");
-            await handler.Handle(removeTagsCommand, default).ConfigureAwait(false);
+            await handler4.Handle(removeTagsCommand, default).ConfigureAwait(false);
 
             // assert
             events.Should().HaveCount(4);

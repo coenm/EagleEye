@@ -34,7 +34,7 @@
             container.Register<IUniqueFilenameService, UniqueFilenameService>(Lifestyle.Singleton);
             container.Register<IFilenameRepository, InMemoryFilenameRepository>(Lifestyle.Singleton);
 
-            container.Register<MediaItemCommandHandlers>();
+            container.Register<UpdateFileHashCommandHandler>();
             container.Register<CreatePhotoCommandHandler>();
             container.Register<AddPersonsToPhotoCommandHandler>();
             container.Register<RemovePersonsFromPhotoCommandHandler>();
@@ -43,6 +43,8 @@
             container.Register<ClearPhotoHashCommandHandler>();
             container.Register<UpdatePhotoHashCommandHandler>();
             container.Register<SetLocationToPhotoCommandHandler>();
+            container.Register<ClearLocationFromPhotoCommandHandler>();
+            container.Register<SetDateTimeTakenCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()
@@ -50,7 +52,7 @@
             return new Type[]
             {
                 typeof(CreatePhotoCommandHandler),
-                typeof(MediaItemCommandHandlers),
+                typeof(UpdateFileHashCommandHandler),
                 typeof(AddPersonsToPhotoCommandHandler),
                 typeof(RemovePersonsFromPhotoCommandHandler),
                 typeof(AddTagsToPhotoCommandHandler),
@@ -58,6 +60,8 @@
                 typeof(ClearPhotoHashCommandHandler),
                 typeof(UpdatePhotoHashCommandHandler),
                 typeof(SetLocationToPhotoCommandHandler),
+                typeof(ClearLocationFromPhotoCommandHandler),
+                typeof(SetDateTimeTakenCommandHandler),
             };
         }
     }
