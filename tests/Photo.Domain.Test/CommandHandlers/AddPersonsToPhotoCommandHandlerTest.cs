@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+
     using CQRSlite.Domain;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.CommandHandlers;
@@ -15,10 +16,10 @@
 
     public class AddPersonsToPhotoCommandHandlerTest
     {
-        [NotNull] private AddPersonsToPhotoCommandHandler sut;
-        [NotNull] private ISession session;
-        private Guid photoGuid;
-        private CancellationToken ct;
+        [NotNull] private readonly AddPersonsToPhotoCommandHandler sut;
+        [NotNull] private readonly ISession session;
+        private readonly Guid photoGuid;
+        private readonly CancellationToken ct;
 
         public AddPersonsToPhotoCommandHandlerTest()
         {

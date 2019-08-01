@@ -110,6 +110,14 @@
                 ApplyChange(new PersonsRemovedFromPhoto(Id, removed));
         }
 
+        /// <summary>Set location of photo object.</summary>
+        /// <param name="countryCode">CountryCode; see <see href="https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes"/>.</param>
+        /// <param name="countryName">Country name.</param>
+        /// <param name="state">State.</param>
+        /// <param name="city">City.</param>
+        /// <param name="subLocation">Sub location.</param>
+        /// <param name="longitude">GPS longitude.</param>
+        /// <param name="latitude">GPS latitude.</param>
         /// <exception cref="ArgumentException">Thrown when <paramref name="longitude"/> or <paramref name="latitude"/> is <c>null</c>.</exception>
         public void SetLocation(
             string countryCode,
