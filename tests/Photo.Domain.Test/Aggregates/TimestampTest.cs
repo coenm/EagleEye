@@ -146,6 +146,7 @@
             // assert
             result.Should().BeTrue("sut is a value object");
         }
+
         [Fact]
         public void Equals_ShouldBeFalse_WhenEqualsNull()
         {
@@ -200,5 +201,49 @@
             // assert
             result.Should().BeFalse("sut is a value object");
         }
+
+        [Fact]
+        public void OperatorEquals_ShouldBeTrue_WhenSameValuesAreUsed()
+        {
+            // arrange
+            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t2 = new Timestamp(2010, 11, 09, 23);
+
+            // act
+            var result = t1 == t2;
+
+            // assert
+            result.Should().BeTrue("sut is a value object");
+        }
+
+        [Fact]
+        public void OperatorEquals_ShouldBeTrue_WhenSameObjectIsUsed()
+        {
+            // arrange
+            var t1 = new Timestamp(2010, 11, 09, 23);
+
+            // act
+            #pragma warning disable 252,253
+            var result = t1 == ((object)t1);
+            #pragma warning restore 252,253
+
+            // assert
+            result.Should().BeTrue("sut is a value object");
+        }
+
+        [Fact]
+        public void OperatorEquals_ShouldBeFalse_WhenEqualsNull()
+        {
+            // arrange
+            var t1 = new Timestamp(2010, 11, 09, 23);
+
+            // act
+            var result = t1 == (Timestamp)null;
+
+            // assert
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            result.Should().BeFalse("sut is a value object");
+        }
+
     }
 }
