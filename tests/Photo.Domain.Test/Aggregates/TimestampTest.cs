@@ -244,6 +244,5 @@
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             result.Should().BeFalse("sut is a value object");
         }
-
     }
 }

@@ -70,43 +70,5 @@
             A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
             A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
         }
-
-        [Theory]
-        [MemberData(nameof(AllTimestampPrecision))]
-        public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenUpdatingPhotoHashSucceedsq(TimestampPrecision precision)
-        {
-            // arrange
-            var dateTimeTaken = new Commands.Inner.Timestamp(2012, 11, 24);
-            var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);
-            photo.FlushUncommittedChanges();
-
-            A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
-                .Returns(photo);
-
-            // act
-            await sut.Handle(new SetDateTimeTakenCommand(photoGuid, 42, dateTimeTaken), ct);
-
-            // assert
-            photo.GetUncommittedChanges().Should()
-                .NotBeNull()
-                .And.NotBeEmpty()
-                .And.HaveCount(1)
-                .And.AllBeOfType<DateTimeTakenChanged>()
-                .And.BeEquivalentTo(new DateTimeTakenChanged(photoGuid, new DateTime(2012, 11, 24), TimestampPrecision.Day));
-            A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
-            A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
-        }
-
-        public static IEnumerable<object[]> AllTimestampPrecision
-        {
-            get
-            {
-                return Enum
-                    .GetValues(typeof(TimestampPrecision))
-                    .Cast<TimestampPrecision>()
-                    .Select(item => new object[] { item })
-                    .AsEnumerable();
-            }
-        }
     }
 }

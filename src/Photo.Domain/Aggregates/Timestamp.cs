@@ -132,7 +132,7 @@
             if (obj.GetType() != GetType())
                 return false;
 
-            return Equals((Timestamp) obj);
+            return Equals((Timestamp)obj);
         }
 
         public override int GetHashCode()

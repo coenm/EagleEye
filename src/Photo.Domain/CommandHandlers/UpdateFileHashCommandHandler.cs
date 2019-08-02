@@ -9,11 +9,9 @@
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.Commands;
     using JetBrains.Annotations;
-    using NLog;
 
     internal class UpdateFileHashCommandHandler : ICancellableCommandHandler<UpdateFileHashCommand>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
 
         public UpdateFileHashCommandHandler([NotNull] ISession session)

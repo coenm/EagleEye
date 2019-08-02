@@ -1,5 +1,9 @@
 ﻿namespace EagleEye.Photo.Domain.Test.CommandHandlers.Mapper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     using EagleEye.Photo.Domain.Commands.Inner;
     using FluentAssertions;
     using Xunit;
@@ -24,6 +28,28 @@
 
             // assert
             result.Should().Be(expectedOutput);
+        }
+
+        [Theory]
+        [MemberData(nameof(AllTimestampPrecision))]
+        public void Convert_ShouldNeverThrow(TimestampPrecision input)
+        {
+            // arrange
+
+            // act
+            Action act = () => _ = Sut.Convert(input);
+
+            // assert
+            act.Should().NotThrow();
+        }
+
+        public static IEnumerable<object[]> AllTimestampPrecision()
+        {
+            return Enum
+                .GetValues(typeof(TimestampPrecision))
+                .Cast<TimestampPrecision>()
+                .Select(item => new object[] { item })
+                .AsEnumerable();
         }
     }
 }
