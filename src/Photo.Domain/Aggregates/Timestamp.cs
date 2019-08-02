@@ -139,7 +139,7 @@
         {
             unchecked
             {
-                return (Value.GetHashCode() * 397) ^ (int) Precision;
+                return (Value.GetHashCode() * 397) ^ (int)Precision;
             }
         }
     }

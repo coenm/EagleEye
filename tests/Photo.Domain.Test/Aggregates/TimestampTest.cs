@@ -54,6 +54,73 @@
         }
 
         [Fact]
+        public void CtorYearMonthDayHour()
+        {
+            // arrange
+
+            // act
+            var sut = new Timestamp(2, 9, 16, 21);
+
+            // assert
+            sut.Precision.Should().Be(TimestampPrecision.Hour);
+            sut.Value.Should().Be(new DateTime(2, 9, 16, 21, 0, 0));
+            sut.ToString().Should().Be("00020916210000");
+        }
+
+        [Fact]
+        public void CtorYearMonthDayHourMin()
+        {
+            // arrange
+
+            // act
+            var sut = new Timestamp(2, 9, 16, 21, 54);
+
+            // assert
+            sut.Precision.Should().Be(TimestampPrecision.Minute);
+            sut.Value.Should().Be(new DateTime(2, 9, 16, 21, 54, 0));
+            sut.ToString().Should().Be("00020916215400");
+        }
+
+        [Fact]
+        public void CtorYearMonthDayHourMinSec()
+        {
+            // arrange
+
+            // act
+            var sut = new Timestamp(2, 9, 16, 21, 54, 28);
+
+            // assert
+            sut.Precision.Should().Be(TimestampPrecision.Second);
+            sut.Value.Should().Be(new DateTime(2, 9, 16, 21, 54, 28));
+            sut.ToString().Should().Be("00020916215428");
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        [InlineData(0, 0)]
+        [InlineData(0, 13)]
+        [InlineData(0, 1, 0)]
+        [InlineData(0, 1, 32)]
+        [InlineData(0, 2, 29)]
+        [InlineData(0, 6, 6, -1)]
+        [InlineData(0, 6, 6, 24)]
+        [InlineData(0, 6, 6, 12, -1)]
+        [InlineData(0, 6, 6, 12, 60)]
+        [InlineData(0, 6, 6, 12, 30, -1)]
+        [InlineData(0, 6, 6, 12, 30, 60)]
+        public void Ctor_ShouldThrowOutOfRangeException_WhenInputIsNotValid(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
+        {
+            // arrange
+
+            // act
+            Action act = () => _ = new Timestamp(year, month, day, hour, minutes, seconds);
+
+            // assert
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Fact]
         public void Equals_ShouldBeTrue_WhenSameValuesAreUsed()
         {
             // arrange
