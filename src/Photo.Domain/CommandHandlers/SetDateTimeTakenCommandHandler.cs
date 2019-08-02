@@ -8,6 +8,7 @@
     using CQRSlite.Domain;
     using Dawn;
     using EagleEye.Photo.Domain.Aggregates;
+    using EagleEye.Photo.Domain.CommandHandlers.Mapper;
     using EagleEye.Photo.Domain.Commands;
     using JetBrains.Annotations;
 
@@ -24,29 +25,8 @@
         public async Task Handle(SetDateTimeTakenCommand message, CancellationToken token)
         {
             var item = await session.Get<Photo>(message.Id, message.ExpectedVersion, token).ConfigureAwait(false);
-            item.SetDateTimeTaken(message.DateTimeTaken.Value, ConvertTimeStampPrecision(message.DateTimeTaken.Precision));
+            item.SetDateTimeTaken(message.DateTimeTaken.Value, TimestampPrecisionMapper.Convert(message.DateTimeTaken.Precision));
             await session.Commit(token).ConfigureAwait(false);
-        }
-
-        private TimestampPrecision ConvertTimeStampPrecision(Commands.Inner.TimestampPrecision precision)
-        {
-            switch (precision)
-            {
-            case Commands.Inner.TimestampPrecision.Year:
-                return TimestampPrecision.Year;
-            case Commands.Inner.TimestampPrecision.Month:
-                return TimestampPrecision.Month;
-            case Commands.Inner.TimestampPrecision.Day:
-                return TimestampPrecision.Day;
-            case Commands.Inner.TimestampPrecision.Hour:
-                return TimestampPrecision.Hour;
-            case Commands.Inner.TimestampPrecision.Minute:
-                return TimestampPrecision.Minute;
-            case Commands.Inner.TimestampPrecision.Second:
-                return TimestampPrecision.Second;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(precision), precision, null);
-            }
         }
     }
 }

@@ -22,9 +22,9 @@
                     return;
 
                 var backgroundJobServerOptions = new BackgroundJobServerOptions
-                {
-                    WorkerCount = 1,
-                };
+                    {
+                        WorkerCount = 1,
+                    };
                 backgroundJobServer = new BackgroundJobServer(backgroundJobServerOptions);
             }
         }

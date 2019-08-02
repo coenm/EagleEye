@@ -25,6 +25,7 @@
         private const int Version = 0;
         private const string HashAlgorithm1 = "hashAlgo1";
         private const string HashAlgorithm2 = "hashAlgo2";
+        private readonly Guid guid = Guid.NewGuid();
 
         private readonly InMemorySimilarityDbContextFactory contextFactory;
         private readonly IInternalStatelessSimilarityRepository repository;
