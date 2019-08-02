@@ -7,6 +7,7 @@
     using CQRSlite.Domain;
     using EagleEye.Photo.Domain.Aggregates;
     using EagleEye.Photo.Domain.CommandHandlers;
+    using EagleEye.Photo.Domain.CommandHandlers.Exceptions;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.Domain.Services;
@@ -35,8 +36,6 @@
         [Fact] public async Task Handle_ShouldClaimFilename()
         {
             // arrange
-            A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
-                .Returns(new Photo(photoGuid, "dummy", "dummy2", new byte[32]));
 
             // act
             await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime", null, null), ct);
@@ -46,29 +45,32 @@
         }
 
         [Fact]
+        public void Handle_ShouldThrow_WhenFilenameAlreadyExists()
+        {
+            // arrange
+            A.CallTo(() => uniqueFilenameService.Claim("a.jpg")).Returns(null);
+
+            // act
+            Func<Task> act = async () => await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime", null, null), ct);
+
+            // assert
+            act.Should().Throw<PhotoAlreadyExistsException>();
+        }
+
+        [Fact]
         public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenClearingPhotoHashSucceeds()
         {
             // arrange
-            var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);
-            photo.UpdatePhotoHash("hashIdentifier1", 1231);
-            photo.UpdatePhotoHash("hashIdentifier2", 1232);
-            photo.FlushUncommittedChanges();
-
-            A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
-                .Returns(photo);
+            var token = A.Fake<IClaimFilenameToken>();
+            A.CallTo(() => uniqueFilenameService.Claim("a.jpg")).Returns(token);
 
             // act
             await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime", null, null), ct);
 
             // assert
-//            photo.GetUncommittedChanges().Should()
-//                .NotBeNull()
-//                .And.NotBeEmpty()
-//                .And.HaveCount(1)
-//                .And.AllBeOfType<PhotoHashCleared>()
-//                .And.BeEquivalentTo(new PhotoHashCleared(photoGuid, "hashIdentifier1"));
-//            A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
-//            A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => token.Commit()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => token.Dispose()).MustHaveHappenedOnceExactly();
         }
     }
 }

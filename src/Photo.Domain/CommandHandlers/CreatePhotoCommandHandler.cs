@@ -41,14 +41,14 @@
             if (filenameClaim == null)
                 throw new PhotoAlreadyExistsException(message.FileName);
 
-            if (message.Tags != null)
-                item.AddTags(message.Tags);
-
-            if (message.Persons != null)
-                item.AddPersons(message.Persons ?? new string[0]);
-
             using (filenameClaim)
             {
+                if (message.Tags != null)
+                    item.AddTags(message.Tags);
+
+                if (message.Persons != null)
+                    item.AddPersons(message.Persons);
+
                 await session.Add(item, token).ConfigureAwait(false);
                 await session.Commit(token).ConfigureAwait(false);
 
