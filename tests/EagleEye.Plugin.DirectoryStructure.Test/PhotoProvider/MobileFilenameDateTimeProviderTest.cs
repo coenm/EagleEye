@@ -99,7 +99,7 @@
             {
                 Add(string.Empty);
                 Add("&#$KFpjdfsldf");
-                // Add("a/bb/dd/IMG-201703251-WA0014.jpg"); // one digit to many (todo to fix)
+                Add("a/bb/dd/IMG-201703251-WA0014.jpg"); // one digit to many (todo to fix)
                 Add("a/bb/dd/IMG-2017032-WA0015.jpg"); // one digit to less
             }
         }

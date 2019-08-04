@@ -11,7 +11,7 @@
     using JetBrains.Annotations;
 
     /// <summary>
-    /// filenames starting with YYYY, YYYY-mm, YYYY-mm-DD.
+    /// File names starting with YYYY, YYYY-mm, YYYY-mm-DD.
     /// </summary>
     [UsedImplicitly]
     internal class DirectoryStructureDateTimeProvider : IPhotoDateTimeTakenProvider
