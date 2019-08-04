@@ -37,17 +37,14 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task<Timestamp> ProvideAsync(string filename, [CanBeNull] Timestamp previousResult)
+        public async Task<Timestamp> ProvideAsync(string filename)
         {
             var data = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (data == null)
-                return previousResult;
+                return null;
 
             var dateTimeTaken = GetDateTimeFromFullJsonObject(data);
-
-            if (dateTimeTaken == null)
-                return previousResult;
 
             return dateTimeTaken;
         }

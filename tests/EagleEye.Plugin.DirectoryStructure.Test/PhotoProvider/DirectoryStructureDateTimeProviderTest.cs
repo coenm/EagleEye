@@ -54,7 +54,7 @@
             const string filename = "a/bb/dd/2000-" + invalidFilenameChars + "file.jpg";
 
             // act
-            var result = await sut.ProvideAsync(filename, null);
+            var result = await sut.ProvideAsync(filename);
 
             // assert
             result.Should().BeNull("filename contained invalid characters");
@@ -67,7 +67,7 @@
             // arrange
 
             // act
-            var result = await sut.ProvideAsync(filename, null);
+            var result = await sut.ProvideAsync(filename);
 
             // assert
             result.Should().Be(expectedTimestamp);
@@ -80,7 +80,7 @@
             // arrange
 
             // act
-            var result = await sut.ProvideAsync(filename, null);
+            var result = await sut.ProvideAsync(filename);
 
             // assert
             result.Should().BeNull();

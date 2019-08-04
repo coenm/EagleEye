@@ -37,10 +37,10 @@
             return !string.IsNullOrWhiteSpace(filename);
         }
 
-        public Task<Timestamp> ProvideAsync(string filename, Timestamp previousResult)
+        public Task<Timestamp> ProvideAsync(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
-                return Task.FromResult(previousResult);
+                return Task.FromResult(null as Timestamp);
 
             filename = filename.Trim();
 
@@ -52,21 +52,21 @@
                 filename = Path.GetFileName(filename);
 
                 if (string.IsNullOrWhiteSpace(filename))
-                    return Task.FromResult(previousResult);
+                    return Task.FromResult(null as Timestamp);
             }
             catch (Exception)
             {
                 // don't know how to cover this line ;-)
-                return Task.FromResult(previousResult);
+                return Task.FromResult(null as Timestamp);
             }
 
             var result = findDateRegex.Match(filename);
             if (!result.Success)
-                return Task.FromResult(previousResult);
+                return Task.FromResult(null as Timestamp);
 
             var year = result.Groups["year"];
             if (!year.Success || !TryParseInt(year.Value, out var yearValue))
-                return Task.FromResult(previousResult);
+                return Task.FromResult(null as Timestamp);
 
             var month = result.Groups["month"];
             if (!month.Success || !TryParseInt(month.Value, out var monthValue))

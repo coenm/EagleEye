@@ -9,7 +9,7 @@
         public static DateTime? TryGetFromFilename(string filename)
         {
             var result = new MobileFilenameDateTimeProvider()
-                         .ProvideAsync(filename, null)
+                         .ProvideAsync(filename)
                          .GetAwaiter()
                          .GetResult();
             if (result == null)
