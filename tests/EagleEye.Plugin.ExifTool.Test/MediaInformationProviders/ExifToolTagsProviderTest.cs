@@ -45,13 +45,11 @@
 
         private readonly ExifToolTagsProvider sut;
         private readonly IExifTool exiftool;
-        private readonly List<string> tags;
 
         public ExifToolTagsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolTagsProvider(exiftool);
-            tags = new List<string>();
         }
 
         [Fact]
@@ -74,10 +72,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await sut.ProvideAsync(Filename, tags).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            tags.Should().BeEmpty();
+            result.Should().BeNull();
         }
 
         [Theory]
@@ -89,10 +87,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, tags).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            tags.Should().BeEmpty();
+            result.Should().BeEmpty();
         }
 
         [Theory]
@@ -113,7 +111,7 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, tags).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             result.Should().BeEquivalentTo(expectedTags);

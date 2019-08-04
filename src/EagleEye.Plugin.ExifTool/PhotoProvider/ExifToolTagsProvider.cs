@@ -32,18 +32,16 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
+        public async Task<List<string>> ProvideAsync(string filename)
         {
             var resultExiftool = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (resultExiftool == null)
-                return previousResult;
+                return null;
 
             var tags = GetTagsFromFullJsonObject(resultExiftool);
 
-            var newResult = previousResult?.ToList() ?? new List<string>();
-            newResult.AddRange(tags);
-            return newResult.Distinct().ToList();
+            return tags?.Distinct().ToList();
         }
 
         private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
