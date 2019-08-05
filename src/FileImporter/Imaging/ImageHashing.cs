@@ -6,10 +6,12 @@
 
     using CoenM.ImageHash;
     using CoenM.ImageHash.HashAlgorithms;
-
+    using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
+    using EagleEye.Core.Interfaces.PhotoInformationProviders;
+    using JetBrains.Annotations;
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Advanced;
-    using SixLabors.ImageSharp.PixelFormats;    
+    using SixLabors.ImageSharp.PixelFormats;
 
     public static class ImageHashing
     {
@@ -28,7 +30,7 @@
         {
             var result = new ImageHashValues
             {
-                FileHash = CalculateStreamHash(input),
+                FileHash = FileSha256HashProvider.CalculateStreamHash(input),
             };
 
             input.Position = 0;
@@ -50,12 +52,6 @@
             input.Position = 0;
 
             return result;
-        }
-
-        private static byte[] CalculateStreamHash(Stream input)
-        {
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(input);
         }
 
         private static byte[] CalculateImageHash(Image<Rgba32> img)
