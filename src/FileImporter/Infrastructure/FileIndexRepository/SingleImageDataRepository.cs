@@ -100,36 +100,6 @@
             return result;
         }
 
-        public IEnumerable<ImageData> FindByContentHash(byte[] imageHash)
-        {
-            Guard.Argument(imageHash, nameof(imageHash)).NotNull();
-            return Find(index => index.Hashes.ImageHash.SequenceEqual(imageHash));
-        }
-
-        public IEnumerable<ImageData> FindImageHashesNotInList(IEnumerable<byte[]> imageHashes)
-        {
-            Guard.Argument(imageHashes, nameof(imageHashes)).NotNull();
-
-            var hashes = imageHashes.ToArray();
-
-            if (!hashes.Any())
-                return Enumerable.Empty<ImageData>();
-
-            return Find(index => !hashes.Contains(index.Hashes.ImageHash));
-        }
-
-        public int Count(Predicate<ImageData> predicate)
-        {
-            Guard.Argument(predicate, nameof(predicate)).NotNull();
-
-            return data.Count(index => predicate(index));
-        }
-
-        public int CountSimilar(ImageData src, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95)
-        {
-            return FindSimilar(src, minAvgHash, minDiffHash, minPerHash).Count();
-        }
-
         public void Delete(ImageData item)
         {
             Guard.Argument(item, nameof(item)).NotNull();
