@@ -77,7 +77,7 @@
             // arrange
 
             // act
-            var result = await sut.ProvideAsync(filename, null).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(filename).ConfigureAwait(false);
 
             // assert
             result.Should().Be(expectedMimeType);

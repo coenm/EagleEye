@@ -13,7 +13,7 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public Task<string> ProvideAsync(string filename, [CanBeNull] string previousResult)
+        public Task<string> ProvideAsync(string filename)
         {
             return Task.FromResult(MimeTypes.GetMimeType(filename));
         }
