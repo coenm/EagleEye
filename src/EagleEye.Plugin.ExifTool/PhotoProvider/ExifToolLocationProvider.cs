@@ -24,38 +24,38 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task<Location> ProvideAsync(string filename, [CanBeNull] Location previousResult)
+        public async Task<Location> ProvideAsync(string filename)
         {
             var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
-                return previousResult;
+                return null;
 
             string s;
 
-            var newResult = previousResult ?? new Location();
+            var location = new Location();
 
             if (result["XMP"] is JObject data)
             {
                 s = TryGetString(data, "CountryCode");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.CountryCode = s;
+                    location.CountryCode = s;
 
                 s = TryGetString(data, "Location");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.SubLocation = s;
+                    location.SubLocation = s;
 
                 s = TryGetString(data, "Country");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.CountryName = s;
+                    location.CountryName = s;
 
                 s = TryGetString(data, "State");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.State = s;
+                    location.State = s;
 
                 s = TryGetString(data, "City");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.City = s;
+                    location.City = s;
             }
 
             data = result["XMP-iptcCore"] as JObject;
@@ -63,11 +63,11 @@
             {
                 s = TryGetString(data, "CountryCode");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.CountryCode = s;
+                    location.CountryCode = s;
 
                 s = TryGetString(data, "Location");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.SubLocation = s;
+                    location.SubLocation = s;
             }
 
             data = result["XMP-photoshop"] as JObject;
@@ -75,18 +75,18 @@
             {
                 s = TryGetString(data, "Country");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.CountryName = s;
+                    location.CountryName = s;
 
                 s = TryGetString(data, "State");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.State = s;
+                    location.State = s;
 
                 s = TryGetString(data, "City");
                 if (!string.IsNullOrWhiteSpace(s))
-                    newResult.City = s;
+                    location.City = s;
             }
 
-            return previousResult;
+            return location;
         }
 
         private string TryGetString([NotNull] JObject data, [NotNull] string key)

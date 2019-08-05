@@ -40,13 +40,11 @@
 
         private readonly ExifToolGpsProvider sut;
         private readonly IExifTool exiftool;
-        private readonly Location location;
 
         public ExifToolGpsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolGpsProvider(exiftool);
-            location = new Location();
         }
 
         [Fact]
@@ -69,10 +67,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            result.Coordinate.Should().BeNull();
+            result.Should().BeNull();
         }
 
         [Theory]
@@ -84,10 +82,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            result.Coordinate.Should().BeNull();
+            result.Should().BeNull();
         }
 
         [Theory]
@@ -102,7 +100,7 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             result.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);

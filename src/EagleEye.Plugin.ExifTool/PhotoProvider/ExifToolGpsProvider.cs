@@ -28,18 +28,18 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task<Location> ProvideAsync(string filename, [CanBeNull] Location previousResult)
+        public async Task<Location> ProvideAsync(string filename)
         {
             var result = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (result == null)
-                return previousResult;
+                return null;
 
             var coordinate = GetGpsCoordinatesFromFullJsonObject(result);
             if (coordinate == null)
-                return previousResult;
+                return null;
 
-            var newResult = previousResult ?? new Location();
+            var newResult = new Location();
             newResult.SetCoordinate(coordinate);
             return newResult;
         }

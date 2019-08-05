@@ -40,13 +40,11 @@
 
         private readonly ExifToolLocationProvider sut;
         private readonly IExifTool exiftool;
-        private readonly Location location;
 
         public ExifToolLocationProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolLocationProvider(exiftool);
-            location = new Location();
         }
 
         [Fact]
@@ -69,10 +67,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            result.Should().BeEquivalentTo(new Location());
+            result.Should().BeNull();
         }
 
         [Theory]
@@ -84,7 +82,7 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             result.Should().BeEquivalentTo(new Location());
@@ -105,7 +103,7 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             result.Should().BeEquivalentTo(expectedLocation);
@@ -125,7 +123,7 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             result.Should().BeEquivalentTo(expectedLocation);
@@ -149,7 +147,7 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename, location).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             result.Should().BeEquivalentTo(expectedLocation);

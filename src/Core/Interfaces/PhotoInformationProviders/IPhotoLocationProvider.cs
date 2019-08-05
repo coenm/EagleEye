@@ -13,6 +13,6 @@
 
         bool CanProvideInformation([NotNull] string filename);
 
-        Task<Location> ProvideAsync([NotNull] string filename, [CanBeNull] Location previousResult);
+        Task<Location> ProvideAsync([NotNull] string filename);
     }
 }
