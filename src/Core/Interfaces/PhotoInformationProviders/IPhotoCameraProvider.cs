@@ -13,6 +13,6 @@
 
         bool CanProvideInformation([NotNull] string filename);
 
-        Task<CameraInformation> ProvideAsync([NotNull] string filename, [CanBeNull] CameraInformation previousResult);
+        Task<CameraInformation> ProvideAsync([NotNull] string filename);
     }
 }
