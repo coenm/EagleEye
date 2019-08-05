@@ -31,19 +31,15 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task<List<string>> ProvideAsync([NotNull] string filename, [CanBeNull] List<string> previousResult)
+        public async Task<List<string>> ProvideAsync([NotNull] string filename)
         {
             var exiftoolResult = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
 
             if (exiftoolResult == null)
-                return previousResult;
+                return null;
 
             var persons = GetTagsFromFullJsonObject(exiftoolResult);
-            if (previousResult == null)
-                return persons.ToList();
-
-            previousResult.AddRange(persons);
-            return previousResult;
+            return persons.Distinct().ToList();
         }
 
         private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)

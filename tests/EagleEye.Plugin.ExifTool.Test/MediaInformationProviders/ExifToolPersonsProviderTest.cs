@@ -38,13 +38,11 @@
 
         private readonly ExifToolPersonsProvider sut;
         private readonly IExifTool exiftool;
-        private readonly List<string> persons;
 
         public ExifToolPersonsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
             sut = new ExifToolPersonsProvider(exiftool);
-            persons = new List<string>();
         }
 
         [Fact]
@@ -67,10 +65,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            await sut.ProvideAsync(Filename, persons).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            persons.Should().BeEmpty();
+            result.Should().BeNull();
         }
 
         [Theory]
@@ -82,10 +80,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, persons).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            persons.Should().BeEmpty();
+            result.Should().BeEmpty();
         }
 
         [Theory]
@@ -105,10 +103,10 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, persons).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            persons.Should().BeEquivalentTo(expectedPersons);
+            result.Should().BeEquivalentTo(expectedPersons);
         }
 
         private static string ConvertToJsonArray(string data)

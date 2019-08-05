@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Picasa.PhotoProvider
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Dawn;
@@ -26,18 +27,11 @@
             return picasaService.CanProvideData(filename);
         }
 
-        public async Task<List<string>> ProvideAsync(string filename, [CanBeNull] List<string> previousResult)
+        public async Task<List<string>> ProvideAsync(string filename)
         {
-            var persons = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
+            var result = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
 
-            if (persons == null)
-                return previousResult;
-
-            if (previousResult == null)
-                return null;
-
-            previousResult.AddRange(persons.Persons);
-            return previousResult;
+            return result?.Persons.Distinct().ToList();
         }
     }
 }
