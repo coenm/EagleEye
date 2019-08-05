@@ -32,7 +32,7 @@
             return true;
         }
 
-        public Task<List<PhotoHash>> ProvideAsync(string filename, List<PhotoHash> previousResult)
+        public Task<List<PhotoHash>> ProvideAsync(string filename)
         {
             try
             {
@@ -43,7 +43,7 @@
             }
             catch (Exception)
             {
-                return Task.FromResult(previousResult);
+                return Task.FromResult(null as List<PhotoHash>);
             }
         }
     }

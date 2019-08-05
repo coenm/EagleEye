@@ -52,12 +52,12 @@
 
             const string filename = "dummy_not_existing_image.jpg";
             photoHashProvider.CanProvideInformation(filename).Should().BeTrue();
-            var photoHashes = await photoHashProvider.ProvideAsync(filename, null);
+            var photoHashes = await photoHashProvider.ProvideAsync(filename);
             photoHashes.Should().BeNullOrEmpty();
 
             // existing file with image stream
             photoHashProvider.CanProvideInformation(ExistingImageFilename).Should().BeTrue();
-            photoHashes = await photoHashProvider.ProvideAsync(ExistingImageFilename, null);
+            photoHashes = await photoHashProvider.ProvideAsync(ExistingImageFilename);
             photoHashes.Should().BeEquivalentTo(
                 new object[]
                 {

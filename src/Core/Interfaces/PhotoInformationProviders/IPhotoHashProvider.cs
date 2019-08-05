@@ -14,6 +14,6 @@
 
         bool CanProvideInformation([NotNull] string filename);
 
-        Task<List<PhotoHash>> ProvideAsync([NotNull] string filename, [CanBeNull] List<PhotoHash> previousResult);
+        Task<List<PhotoHash>> ProvideAsync([NotNull] string filename);
     }
 }

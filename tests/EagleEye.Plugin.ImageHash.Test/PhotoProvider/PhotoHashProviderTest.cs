@@ -68,7 +68,7 @@
             // arrange
 
             // act
-            var result = await sut.ProvideAsync(ExistingImageFilename, null);
+            var result = await sut.ProvideAsync(ExistingImageFilename);
 
             // assert
             result.Should().BeEquivalentTo(
