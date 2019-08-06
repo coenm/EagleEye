@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
@@ -29,7 +30,7 @@
         {
             // arrange
             var expectedResult = JsonEncoding.Deserialize<List<ImageData>>(TestImagesIndex.IndexJson).Select(MapThis);
-            var fileService = new RelativeFilesystemContentResolver(TestImages.InputImagesDirectoryFullPath);
+            var fileService = new RelativeSystemFileService(TestImages.InputImagesDirectoryFullPath);
             var sut = new CalculateIndexService(
                 new FileSha256HashProvider(fileService),
                 new ImageSharpPhotoHashProvider(fileService),

@@ -60,7 +60,6 @@
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance);
 
-            container.RegisterInstance<IContentResolver>(FilesystemContentResolver.Instance);
             container.RegisterSingleton<IImageDataRepository>(() => new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
             container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
 

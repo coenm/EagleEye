@@ -395,7 +395,7 @@
                 Startup.CreateFullFilename("EventStore.db"));
 
             var searchService = container.GetInstance<SearchService>();
-            var contentResolver = container.GetInstance<IContentResolver>();
+            var contentResolver = container.GetInstance<EagleEye.Core.Interfaces.Core.IFileService>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -406,7 +406,7 @@
                     progressBar.Tick(index.Identifier);
 
                     // check if file exists.
-                    if (!contentResolver.Exist(index.Identifier))
+                    if (!contentResolver.FileExists(index.Identifier))
                     {
                         continue;
                     }
@@ -625,7 +625,7 @@
 
             var searchService = container.GetInstance<SearchService>();
             var persistentService = container.GetInstance<PersistentFileIndexService>();
-            var contentResolver = container.GetInstance<IContentResolver>();
+            var contentResolver = container.GetInstance<EagleEye.Core.Interfaces.Core.IFileService>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
@@ -636,7 +636,7 @@
                     progressBar.Tick(index.Identifier);
 
                     // check if file exists.
-                    if (!contentResolver.Exist(index.Identifier))
+                    if (!contentResolver.FileExists(index.Identifier))
                     {
                         persistentService.Delete(index.Identifier);
                     }
