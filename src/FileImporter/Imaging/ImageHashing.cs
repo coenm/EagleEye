@@ -1,17 +1,12 @@
 ﻿namespace EagleEye.FileImporter.Imaging
 {
     using System.IO;
-    using System.Runtime.InteropServices;
-    using System.Security.Cryptography;
 
     using CoenM.ImageHash;
     using CoenM.ImageHash.HashAlgorithms;
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
-    using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using JetBrains.Annotations;
+    using EagleEye.ImageHash.PhotoProvider;
     using SixLabors.ImageSharp;
-    using SixLabors.ImageSharp.Advanced;
-    using SixLabors.ImageSharp.PixelFormats;
 
     public static class ImageHashing
     {
@@ -37,7 +32,8 @@
 
             using (var image = Image.Load(input))
             {
-                result.ImageHash = CalculateImageHash(image);
+                using (var clone = image.Clone())
+                    result.ImageHash = ImageSharpPhotoSha256HashProvider.CalculateImageHash(clone);
 
                 using (var clone = image.Clone())
                     result.AverageHash = AHash.Hash(clone);
@@ -52,14 +48,6 @@
             input.Position = 0;
 
             return result;
-        }
-
-        private static byte[] CalculateImageHash(Image<Rgba32> img)
-        {
-            var data = MemoryMarshal.AsBytes(img.GetPixelSpan()).ToArray();
-
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(data);
         }
     }
 }
