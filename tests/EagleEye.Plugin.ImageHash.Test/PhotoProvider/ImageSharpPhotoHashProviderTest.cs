@@ -4,24 +4,23 @@
 
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.Core;
-    using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ImageHash.PhotoProvider;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
 
-    public class PhotoHashProviderTest
+    public class ImageSharpPhotoHashProviderTest
     {
         private const string ExistingImageFilename = "1.jpg";
-        private readonly IPhotoHashProvider sut;
+        private readonly ImageSharpPhotoHashProvider sut;
 
-        public PhotoHashProviderTest()
+        public ImageSharpPhotoHashProviderTest()
         {
             var fileService = A.Fake<IFileService>();
             A.CallTo(() => fileService.OpenRead(ExistingImageFilename))
                 .ReturnsLazily(call => TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename));
 
-            sut = new PhotoHashProvider(fileService);
+            sut = new ImageSharpPhotoHashProvider(fileService);
 
             TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename).Should().NotBeNull();
         }

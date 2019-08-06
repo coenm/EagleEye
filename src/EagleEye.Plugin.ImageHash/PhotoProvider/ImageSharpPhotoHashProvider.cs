@@ -12,18 +12,18 @@
     using JetBrains.Annotations;
 
     [UsedImplicitly]
-    internal class PhotoHashProvider : IPhotoHashProvider
+    public class ImageSharpPhotoHashProvider : IPhotoHashProvider
     {
         [NotNull]
         private readonly IFileService fileService;
 
-        public PhotoHashProvider([NotNull] IFileService fileService)
+        public ImageSharpPhotoHashProvider([NotNull] IFileService fileService)
         {
             Guard.Argument(fileService, nameof(fileService)).NotNull();
             this.fileService = fileService;
         }
 
-        public string Name => nameof(PhotoHashProvider);
+        public string Name => nameof(ImageSharpPhotoHashProvider);
 
         public uint Priority { get; } = 10;
 
