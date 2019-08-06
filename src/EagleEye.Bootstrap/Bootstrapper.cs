@@ -145,6 +145,7 @@
             container.RegisterInstance<IFileService>(SystemFileService.Instance);
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
+            container.RegisterSingleton<IFileSha256HashProvider, FileSha256HashProvider>();
 
             RegisterCqrsLite();
             RegisterEventStore(baseDirectory, connectionStringEventStore);

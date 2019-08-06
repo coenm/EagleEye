@@ -11,7 +11,7 @@
     using JetBrains.Annotations;
 
     [UsedImplicitly]
-    internal class FileSha256HashProvider : IFileSha256HashProvider
+    public class FileSha256HashProvider : IFileSha256HashProvider
     {
         [NotNull]
         private readonly IFileService fileService;

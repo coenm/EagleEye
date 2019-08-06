@@ -3,9 +3,10 @@
     using System.IO;
 
     using Dawn;
+    using EagleEye.Core.Interfaces.Core;
     using EagleEye.FileImporter.Indexing;
 
-    public class RelativeFilesystemContentResolver : IContentResolver
+    public class RelativeFilesystemContentResolver : IContentResolver, IFileService
     {
         private readonly string baseDirectory;
 
@@ -20,14 +21,19 @@
             return FilesystemContentResolver.Instance.Exist(FullPath(identifier));
         }
 
-        public Stream Read(string identifier)
-        {
-            return FilesystemContentResolver.Instance.Read(FullPath(identifier));
-        }
-
         private string FullPath(string identifier)
         {
             return Path.Combine(baseDirectory, identifier);
+        }
+
+        public bool FileExists(string filename)
+        {
+            return Exist(filename);
+        }
+
+        public Stream OpenRead(string filename)
+        {
+            return File.OpenRead(FullPath(filename));
         }
     }
 }

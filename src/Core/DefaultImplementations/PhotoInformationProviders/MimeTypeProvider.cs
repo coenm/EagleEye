@@ -3,7 +3,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using JetBrains.Annotations;
 
     public class MimeTypeProvider : IPhotoMimeTypeProvider
     {

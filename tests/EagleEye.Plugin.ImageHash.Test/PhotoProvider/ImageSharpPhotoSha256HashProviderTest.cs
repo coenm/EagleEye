@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.ImageHash.PhotoProvider;
     using FakeItEasy;

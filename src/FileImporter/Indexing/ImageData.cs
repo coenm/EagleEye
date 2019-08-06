@@ -1,7 +1,5 @@
 ﻿namespace EagleEye.FileImporter.Indexing
 {
-    using EagleEye.FileImporter.Imaging;
-
     public class ImageData
     {
         public ImageData(string identifier)
