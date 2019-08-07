@@ -2,26 +2,24 @@
 {
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.Core;
-    using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.ImageHash.PhotoProvider;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
 
-    public class PhotoHashProviderTest
+    public class ImageSharpPhotoSha256HashProviderTest
     {
         private const string ExistingImageFilename = "1.jpg";
-        private readonly IPhotoHashProvider sut;
+        private readonly ImageSharpPhotoSha256HashProvider sut;
 
-        public PhotoHashProviderTest()
+        public ImageSharpPhotoSha256HashProviderTest()
         {
             var fileService = A.Fake<IFileService>();
             A.CallTo(() => fileService.OpenRead(ExistingImageFilename))
                 .ReturnsLazily(call => TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename));
 
-            sut = new PhotoHashProvider(fileService);
+            sut = new ImageSharpPhotoSha256HashProvider(fileService);
 
             TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename).Should().NotBeNull();
         }
@@ -63,7 +61,7 @@
         }
 
         [Fact]
-        public async Task ProvideAsync_ShouldReturnThreeHashes_WhenFilenameIsValidImage()
+        public async Task ProvideAsync_ShouldReturnImageHash_WhenImageExists()
         {
             // arrange
 
@@ -71,22 +69,8 @@
             var result = await sut.ProvideAsync(ExistingImageFilename);
 
             // assert
-            result.Should().BeEquivalentTo(
-                new PhotoHash
-                {
-                    Hash = 18442214084176449028,
-                    HashName = "AverageHash",
-                },
-                new PhotoHash
-                {
-                    Hash = 3573764330010097788,
-                    HashName = "DifferenceHash",
-                },
-                new PhotoHash
-                {
-                    Hash = 15585629762494286247,
-                    HashName = "PerceptualHash",
-                });
+            result.Should().NotBeNull();
+            CoenM.Encoding.Z85.Encode(result.ToArray()).Should().Be("+]JP}/TH1-hP/ax&a)iqy%H<Ze>cpbBhph)ggipp");
         }
     }
 }

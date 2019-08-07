@@ -16,7 +16,8 @@
         {
             Guard.Argument(container, nameof(container)).NotNull();
 
-            container.Collection.Append(typeof(IPhotoHashProvider), typeof(PhotoHashProvider));
+            container.Collection.Append(typeof(IPhotoHashProvider), typeof(ImageSharpPhotoHashProvider));
+            container.Collection.Append(typeof(IPhotoSha256HashProvider), typeof(ImageSharpPhotoSha256HashProvider));
         }
     }
 }

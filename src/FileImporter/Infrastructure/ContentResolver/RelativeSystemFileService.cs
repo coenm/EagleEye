@@ -3,26 +3,27 @@
     using System.IO;
 
     using Dawn;
-    using EagleEye.FileImporter.Indexing;
+    using EagleEye.Core.DefaultImplementations;
+    using EagleEye.Core.Interfaces.Core;
 
-    public class RelativeFilesystemContentResolver : IContentResolver
+    public class RelativeSystemFileService : IFileService
     {
         private readonly string baseDirectory;
 
-        public RelativeFilesystemContentResolver(string baseDirectory)
+        public RelativeSystemFileService(string baseDirectory)
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull();
             this.baseDirectory = baseDirectory;
         }
 
-        public bool Exist(string identifier)
+        public bool FileExists(string filename)
         {
-            return FilesystemContentResolver.Instance.Exist(FullPath(identifier));
+            return SystemFileService.Instance.FileExists(FullPath(filename));
         }
 
-        public Stream Read(string identifier)
+        public Stream OpenRead(string filename)
         {
-            return FilesystemContentResolver.Instance.Read(FullPath(identifier));
+            return SystemFileService.Instance.OpenRead(FullPath(filename));
         }
 
         private string FullPath(string identifier)

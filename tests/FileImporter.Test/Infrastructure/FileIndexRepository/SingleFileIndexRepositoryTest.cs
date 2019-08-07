@@ -47,27 +47,5 @@
             else
                 Assert.Single(result, TestImagesIndex.Index.Single(index => index.Identifier == expectedMatch));
         }
-
-        [Theory]
-        [InlineData("1.jpg", 1)]
-        [InlineData("2.jpg", 1)]
-        [InlineData("3.jpg", 1)]
-        [InlineData("4.jpg", 1)]
-        [InlineData("6.jpg", 1)]
-        [InlineData("7.jpg", 1)]
-        [InlineData("8.jpg", 0)]
-        public void CountSimilarTest(string identifier, int expectedCount)
-        {
-            // arrange
-            var src = fileIndex.Single(index => index.Identifier == identifier);
-
-            // act
-            var result = sut.CountSimilar(src);
-
-            // assert
-            A.CallTo(() => storage.Load()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => storage.Save(A<List<ImageData>>._)).MustNotHaveHappened();
-            Assert.Equal(expectedCount, result);
-        }
     }
 }
