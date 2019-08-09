@@ -61,29 +61,6 @@
             });
         }
 
-        public int CountSimilar(byte[] contentHash, double minAvgHash = 95, double minDiffHash = 95, double minPerHash = 95)
-        {
-            return FindSimilar(contentHash, minAvgHash, minDiffHash, minPerHash).Count();
-        }
-
-        public void Delete(byte[] contentHash)
-        {
-            Guard.Argument(contentHash, nameof(contentHash)).NotNull();
-
-            lock (syncLock)
-            {
-                var existingItems = data.Where(index => index.ImageHash.Contains(contentHash)).ToArray();
-
-                if (existingItems.Any())
-                    return;
-
-                foreach (var item in existingItems)
-                    data.Remove(item);
-
-                storage.Save(data);
-            }
-        }
-
         public void AddOrUpdate(byte[] contentHash, SimilarityResult similarity)
         {
             Guard.Argument(contentHash, nameof(contentHash)).NotNull();
