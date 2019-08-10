@@ -12,7 +12,7 @@
     using JetBrains.Annotations;
 
     internal class ReadModelEntityFramework : IReadModelEntityFramework
-        {
+    {
         [NotNull] private readonly IEagleEyeRepository repository;
 
         public ReadModelEntityFramework([NotNull] IEagleEyeRepository repository)
