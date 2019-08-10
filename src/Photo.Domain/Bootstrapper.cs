@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.Photo.Domain
 {
     using System;
+    using System.Reflection;
 
     using CQRSlite.Commands;
     using CQRSlite.Messages;
@@ -14,37 +15,26 @@
 
     public static class Bootstrapper
     {
+        private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
+
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapPhotoDomain([NotNull] Container container)
         {
             Guard.Argument(container, nameof(container)).NotNull();
-            var thisAssembly = typeof(Bootstrapper).Assembly;
 
-            container.Register(typeof(IHandler<>), thisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableHandler<>), thisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICommandHandler<>), thisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableCommandHandler<>), thisAssembly, Lifestyle.Transient);
-            container.Register(typeof(IQueryHandler<,>), thisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableQueryHandler<,>), thisAssembly, Lifestyle.Transient);
+            container.Register(typeof(IHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICommandHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableCommandHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(IQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
 
             container.RegisterDecorator(typeof(ICancellableCommandHandler<>), typeof(VerifyTokenCommandHandlerDecorator<>), Lifestyle.Transient);
 
             container.Register<IUniqueFilenameService, UniqueFilenameService>(Lifestyle.Singleton);
             container.Register<IFilenameRepository, InMemoryFilenameRepository>(Lifestyle.Singleton);
-
-            container.Register<UpdateFileHashCommandHandler>();
-            container.Register<CreatePhotoCommandHandler>();
-            container.Register<AddPersonsToPhotoCommandHandler>();
-            container.Register<RemovePersonsFromPhotoCommandHandler>();
-            container.Register<AddTagsToPhotoCommandHandler>();
-            container.Register<RemoveTagsFromPhotoCommandHandler>();
-            container.Register<ClearPhotoHashCommandHandler>();
-            container.Register<UpdatePhotoHashCommandHandler>();
-            container.Register<SetLocationToPhotoCommandHandler>();
-            container.Register<ClearLocationFromPhotoCommandHandler>();
-            container.Register<SetDateTimeTakenCommandHandler>();
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()
