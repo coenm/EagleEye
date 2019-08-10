@@ -35,16 +35,34 @@
             container.Register<IEagleEyeDbContextFactory, EagleEyeDbContextFactory>(Lifestyle.Singleton);
 
             container.Register<IReadModelEntityFramework, ReadModelEntityFramework>();
-            container.Register<MediaItemConsistency>();
+
+            RegisterEventHandler(container);
 
             container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
+        }
+
+        private static void RegisterEventHandler(Container container)
+        {
+            container.Register<DateTimeTakenChangedEventHandler>();
+            container.Register<LocationClearedFromPhotoEventHandler>();
+            container.Register<LocationSetToPhotoEventHandler>();
+            container.Register<PersonsAddedToPhotoEventHandler>();
+            container.Register<PhotoCreatedEventHandler>();
+            container.Register<TagsAddedToPhotoEventHandler>();
+            container.Register<TagsRemovedFromPhotoEventHandler>();
         }
 
         public static Type[] GetEventHandlerTypes()
         {
             return new Type[]
             {
-                typeof(MediaItemConsistency),
+                typeof(DateTimeTakenChangedEventHandler),
+                typeof(LocationClearedFromPhotoEventHandler),
+                typeof(LocationSetToPhotoEventHandler),
+                typeof(PersonsAddedToPhotoEventHandler),
+                typeof(PhotoCreatedEventHandler),
+                typeof(TagsAddedToPhotoEventHandler),
+                typeof(TagsRemovedFromPhotoEventHandler),
             };
         }
 
