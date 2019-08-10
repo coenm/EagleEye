@@ -72,19 +72,19 @@
             process.Start();
 
             var similarityReadModel = container.GetInstance<ISimilarityReadModel>();
-            var hashAlgorihms = await similarityReadModel.GetHashAlgorithmsAsync();
-            hashAlgorihms.Should().BeEmpty();
+            var hashAlgorithms = await similarityReadModel.GetHashAlgorithmsAsync();
+            hashAlgorithms.Should().BeEmpty();
 
-            hashAlgorihms = await similarityReadModel.GetHashAlgorithmsAsync();
-            hashAlgorihms.Should().BeEmpty();
+            hashAlgorithms = await similarityReadModel.GetHashAlgorithmsAsync();
+            hashAlgorithms.Should().BeEmpty();
 
             var publisher = container.GetInstance<IEventPublisher>();
             var photoGuid1 = Guid.NewGuid();
             var evt = new PhotoHashAdded(photoGuid1, "AverageHash", 13213);
             await publisher.Publish(evt, CancellationToken.None);
 
-            hashAlgorihms = await similarityReadModel.GetHashAlgorithmsAsync();
-            hashAlgorihms.Should().BeEquivalentTo("AverageHash");
+            hashAlgorithms = await similarityReadModel.GetHashAlgorithmsAsync();
+            hashAlgorithms.Should().BeEquivalentTo("AverageHash");
 
             var photoGuid2 = Guid.NewGuid();
             evt = new PhotoHashAdded(photoGuid2, "AverageHash", 13212);
@@ -97,7 +97,10 @@
                 var dbSavedHappened = new AutoResetEvent(false);
                 dbSaveHappenedService.DbSaveHappened += (_, __) => dbSavedHappened.Set();
                 similarPhotos = await similarityReadModel.CountSimilaritiesAsync(photoGuid1, "AverageHash", 50);
-                if (similarPhotos == 0)
+
+                // wait max 5 minutes
+                var untilDateTime = DateTime.Now.AddMinutes(5);
+                while (similarPhotos == 0 && untilDateTime > DateTime.Now)
                 {
                     writer.WriteLine("count was 0 (2)");
                     var dbSaveHappened = dbSavedHappened.WaitOne(TimeSpan.FromMinutes(1));
@@ -108,8 +111,8 @@
 
             similarPhotos.Should().Be(1);
 
-            hashAlgorihms = await similarityReadModel.GetHashAlgorithmsAsync();
-            hashAlgorihms.Should().BeEquivalentTo("AverageHash");
+            hashAlgorithms = await similarityReadModel.GetHashAlgorithmsAsync();
+            hashAlgorithms.Should().BeEquivalentTo("AverageHash");
 
             similarPhotos = await similarityReadModel.CountSimilaritiesAsync(photoGuid1, "AverageHash", 100);
             similarPhotos.Should().Be(0);
