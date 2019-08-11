@@ -1,4 +1,4 @@
-﻿namespace EagleEye.Photo.ReadModel.EntityFramework
+namespace EagleEye.Photo.ReadModel.EntityFramework
 {
     using System;
     using System.Reflection;
@@ -16,6 +16,8 @@
 
     public static class Bootstrapper
     {
+private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
+
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
         /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty.</param>
@@ -43,13 +45,13 @@
 
         private static void RegisterEventHandler(Container container)
         {
-            container.Register<DateTimeTakenChangedEventHandler>();
-            container.Register<LocationClearedFromPhotoEventHandler>();
-            container.Register<LocationSetToPhotoEventHandler>();
-            container.Register<PersonsAddedToPhotoEventHandler>();
-            container.Register<PhotoCreatedEventHandler>();
-            container.Register<TagsAddedToPhotoEventHandler>();
-            container.Register<TagsRemovedFromPhotoEventHandler>();
+           
+container.Register(typeof(IHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICommandHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableCommandHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(IQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(ICancellableQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
         }
 
         public static Type[] GetEventHandlerTypes()
@@ -60,6 +62,7 @@
                 typeof(LocationClearedFromPhotoEventHandler),
                 typeof(LocationSetToPhotoEventHandler),
                 typeof(PersonsAddedToPhotoEventHandler),
+typeof(PersonsRemovedFromPhotoEventHandler),
                 typeof(PhotoCreatedEventHandler),
                 typeof(TagsAddedToPhotoEventHandler),
                 typeof(TagsRemovedFromPhotoEventHandler),
