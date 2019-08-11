@@ -8,8 +8,9 @@
     using CQRSlite.Test.WriteModel.Commands;
     using CQRSlite.Test.WriteModel.Domain;
 
-    public class InventoryCommandHandlers : ICancellableCommandHandler<CreateInventoryItem>,
-                                            ICancellableCommandHandler<RemoveItemsFromInventory>
+    public class InventoryCommandHandlers :
+        ICancellableCommandHandler<CreateInventoryItem>,
+        ICancellableCommandHandler<RemoveItemsFromInventory>
     {
         private readonly ISession session;
 
