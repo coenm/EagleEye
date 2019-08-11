@@ -1,8 +1,11 @@
-namespace EagleEye.Photo.ReadModel.EntityFramework
+﻿namespace EagleEye.Photo.ReadModel.EntityFramework
 {
     using System;
     using System.Reflection;
 
+    using CQRSlite.Commands;
+    using CQRSlite.Messages;
+    using CQRSlite.Queries;
     using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
@@ -16,7 +19,7 @@ namespace EagleEye.Photo.ReadModel.EntityFramework
 
     public static class Bootstrapper
     {
-private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
+        private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
 
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
@@ -27,10 +30,8 @@ private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
 
-            var thisAssembly = typeof(Bootstrapper).Assembly;
-
             container.Register<IEagleEyeRepository, EntityFrameworkEagleEyeRepository>();
-            RegisterDbContextOptions(container, thisAssembly);
+            RegisterDbContextOptions(container);
 
             container.Register<DbContextOptionsFactory>(Lifestyle.Singleton);
             container.Register<DbContextOptions<EagleEyeDbContext>>(() => container.GetInstance<DbContextOptionsFactory>().Create(connectionString), Lifestyle.Singleton);
@@ -45,8 +46,7 @@ private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
 
         private static void RegisterEventHandler(Container container)
         {
-           
-container.Register(typeof(IHandler<>), ThisAssembly, Lifestyle.Transient);
+            container.Register(typeof(IHandler<>), ThisAssembly, Lifestyle.Transient);
             container.Register(typeof(ICancellableHandler<>), ThisAssembly, Lifestyle.Transient);
             container.Register(typeof(ICommandHandler<>), ThisAssembly, Lifestyle.Transient);
             container.Register(typeof(ICancellableCommandHandler<>), ThisAssembly, Lifestyle.Transient);
@@ -62,14 +62,14 @@ container.Register(typeof(IHandler<>), ThisAssembly, Lifestyle.Transient);
                 typeof(LocationClearedFromPhotoEventHandler),
                 typeof(LocationSetToPhotoEventHandler),
                 typeof(PersonsAddedToPhotoEventHandler),
-typeof(PersonsRemovedFromPhotoEventHandler),
+                typeof(PersonsRemovedFromPhotoEventHandler),
                 typeof(PhotoCreatedEventHandler),
                 typeof(TagsAddedToPhotoEventHandler),
                 typeof(TagsRemovedFromPhotoEventHandler),
             };
         }
 
-        private static void RegisterDbContextOptions(Container container, Assembly thisAssembly)
+        private static void RegisterDbContextOptions(Container container)
         {
             // original:
             // container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
