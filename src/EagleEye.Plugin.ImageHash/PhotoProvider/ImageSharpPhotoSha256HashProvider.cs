@@ -49,6 +49,16 @@
             }
         }
 
+        private static byte[] CalculateImageHash([NotNull] Image<Rgba32> img)
+        {
+            Guard.Argument(img, nameof(img)).NotNull();
+
+            var data = MemoryMarshal.AsBytes(img.GetPixelSpan()).ToArray();
+
+            using (var sha256 = SHA256.Create())
+                return sha256.ComputeHash(data);
+        }
+
         private ReadOnlyMemory<byte> Provide(string filename)
         {
             Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
@@ -59,16 +69,6 @@
                 var result = CalculateImageHash(image);
                 return new ReadOnlyMemory<byte>(result);
             }
-        }
-
-        public static byte[] CalculateImageHash([NotNull] Image<Rgba32> img)
-        {
-            Guard.Argument(img, nameof(img)).NotNull();
-
-            var data = MemoryMarshal.AsBytes(img.GetPixelSpan()).ToArray();
-
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(data);
         }
     }
 }

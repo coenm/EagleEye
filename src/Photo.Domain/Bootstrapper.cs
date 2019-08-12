@@ -24,12 +24,8 @@
         {
             Guard.Argument(container, nameof(container)).NotNull();
 
-            container.Register(typeof(IHandler<>), ThisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableHandler<>), ThisAssembly, Lifestyle.Transient);
             container.Register(typeof(ICommandHandler<>), ThisAssembly, Lifestyle.Transient);
             container.Register(typeof(ICancellableCommandHandler<>), ThisAssembly, Lifestyle.Transient);
-            container.Register(typeof(IQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
 
             container.RegisterDecorator(typeof(ICancellableCommandHandler<>), typeof(VerifyTokenCommandHandlerDecorator<>), Lifestyle.Transient);
 
