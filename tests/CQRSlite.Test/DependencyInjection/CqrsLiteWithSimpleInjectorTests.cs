@@ -1,36 +1,36 @@
 ﻿namespace CQRSlite.Test.DependencyInjection
 {
     using System;
-    using System.Linq;
     using System.Reflection;
+
     using CQRSlite.Caching;
     using CQRSlite.Commands;
     using CQRSlite.Domain;
     using CQRSlite.Events;
-    using CQRSlite.Messages;
-    using CQRSlite.Queries;
-    using CQRSlite.Test.EventHandlers;
     using CQRSlite.Test.Events;
     using CQRSlite.Test.WriteModel;
     using SimpleInjector;
     using Xunit;
 
-    public class Class1
+    public class CqrsLiteWithSimpleInjectorTests
     {
-        private static readonly Assembly ThisAssembly = typeof(Class1).Assembly;
+        private static readonly Assembly ThisAssembly = typeof(CqrsLiteWithSimpleInjectorTests).Assembly;
 
         [Fact]
-        public void Abc()
+        public void RegisterCqrsLiteStuff_ShouldBeCorrect()
         {
+            // arrange
             var container = new Container();
 
+            // act
             RegisterCqrsLite(container);
 
+            // assert
             container.Verify();
         }
 
         [Fact]
-        public void Abcd()
+        public void RegisteredEventHandler_ShouldBeUsed_WhenEventIsPublished()
         {
             var container = new Container();
 
@@ -60,16 +60,7 @@
 
         private static void RegisterEventHandler(Container container)
         {
-//            container.Collection.Register(typeof(IHandler<>), ThisAssembly);
-//            container.Collection.Register(typeof(ICancellableHandler<>), ThisAssembly);
-
-//            container.Register(typeof(ICommandHandler<>), ThisAssembly, Lifestyle.Transient);
-//            container.Register(typeof(ICancellableCommandHandler<>), ThisAssembly, Lifestyle.Transient);
-
             container.Collection.Register(typeof(IEventHandler<>), ThisAssembly);
-
-            //            container.Register(typeof(IQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
-            //            container.Register(typeof(ICancellableQueryHandler<,>), ThisAssembly, Lifestyle.Transient);
         }
     }
 }
