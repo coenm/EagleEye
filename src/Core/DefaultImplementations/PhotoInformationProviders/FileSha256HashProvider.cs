@@ -46,6 +46,13 @@
             }
         }
 
+        private static byte[] CalculateStreamHash([NotNull] Stream input)
+        {
+            Guard.Argument(input, nameof(input)).NotNull();
+            using (var sha256 = SHA256.Create())
+                return sha256.ComputeHash(input);
+        }
+
         private ReadOnlyMemory<byte> Provide(string filename)
         {
             Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
@@ -55,13 +62,6 @@
                 var result = CalculateStreamHash(stream);
                 return new ReadOnlyMemory<byte>(result);
             }
-        }
-
-        public static byte[] CalculateStreamHash([NotNull] Stream input)
-        {
-            Guard.Argument(input, nameof(input)).NotNull();
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(input);
         }
     }
 }

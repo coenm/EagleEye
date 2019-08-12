@@ -1,6 +1,7 @@
 ﻿namespace CQRSlite.Test.EventHandlers
 {
     using System.Threading.Tasks;
+
     using CQRSlite.Events;
     using CQRSlite.Test.Events;
 

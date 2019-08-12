@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -77,12 +76,7 @@
 
         public Task<TResponse> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
         {
-            var type = query.GetType();
-//            if (!_routes.TryGetValue(type, out var handlers))
-                throw new InvalidOperationException($"No handler registered for {type.FullName}");
-//            if (handlers.Count != 1)
-//                throw new InvalidOperationException($"Cannot query more than one handler of {type.FullName}");
-//            return (Task<TResponse>)handlers[0](query, cancellationToken);
+            throw new NotImplementedException();
         }
     }
 }
