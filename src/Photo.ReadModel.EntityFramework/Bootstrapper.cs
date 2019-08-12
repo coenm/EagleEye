@@ -3,9 +3,6 @@
     using System;
     using System.Reflection;
 
-    using CQRSlite.Commands;
-    using CQRSlite.Messages;
-    using CQRSlite.Queries;
     using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
@@ -39,15 +36,12 @@
 
             container.Register<IReadModelEntityFramework, ReadModelEntityFramework>();
 
-            RegisterEventHandler(container);
+            /*
+             todo change registration of event handlers.
+            container.Register(typeof(ICancellableEventHandler<>), GetEventHandlerTypes(), Lifestyle.Transient);
+            */
 
             container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
-        }
-
-        private static void RegisterEventHandler(Container container)
-        {
-            container.Register(typeof(ICommandHandler<>), ThisAssembly, Lifestyle.Transient);
-            container.Register(typeof(ICancellableCommandHandler<>), ThisAssembly, Lifestyle.Transient);
         }
 
         public static Type[] GetEventHandlerTypes()
