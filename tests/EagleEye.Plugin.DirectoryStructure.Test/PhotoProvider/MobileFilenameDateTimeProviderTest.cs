@@ -90,6 +90,7 @@
                 Add("a/bb/dd/IMG-20170325-WA0014.jpg", new Timestamp(2017, 3, 25));
                 Add("a/bb/dd/VID-20161220-WA0001.mp4", new Timestamp(2016, 12, 20));
                 Add("a/bb/dd/20150905_183425.jpg", new Timestamp(2015, 09, 05)); // should have time (todo)
+                Add("a/bb/dd/VID-20161131-WA0002.mp4", new Timestamp(2016, 11)); // november doesn't have 31 days.
             }
         }
 
@@ -99,8 +100,10 @@
             {
                 Add(string.Empty);
                 Add("&#$KFpjdfsldf");
-                Add("a/bb/dd/IMG-201703251-WA0014.jpg"); // one digit to many (todo to fix)
+                Add("a/bb/dd/IMG-201703251-WA0014.jpg"); // one digit to many (todo to fix) 
                 Add("a/bb/dd/IMG-2017032-WA0015.jpg"); // one digit to less
+                Add("a/bb/dd/VID-20160632-WA00050.mp4"); // 32 days is not possible.
+                Add("a/bb/dd/VID-20161303-WA0003.mp4"); // there are no 13 months.
             }
         }
     }

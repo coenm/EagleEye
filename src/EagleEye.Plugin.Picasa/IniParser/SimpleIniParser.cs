@@ -83,12 +83,11 @@
             return false;
         }
 
-        private static bool TryGetIniSection(string line, out string iniSection)
+        private static bool TryGetIniSection([NotNull] string line, out string iniSection)
         {
-            iniSection = string.Empty;
+            Guard.Argument(line, nameof(line)).NotNull();
 
-            if (string.IsNullOrWhiteSpace(line))
-                return false;
+            iniSection = string.Empty;
 
             line = line.Trim();
 

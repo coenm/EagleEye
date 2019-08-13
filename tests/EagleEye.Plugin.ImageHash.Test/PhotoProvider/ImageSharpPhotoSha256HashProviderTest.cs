@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.ImageHash.Test.PhotoProvider
 {
+    using System;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.Core;
@@ -12,10 +13,11 @@
     {
         private const string ExistingImageFilename = "1.jpg";
         private readonly ImageSharpPhotoSha256HashProvider sut;
+        private readonly IFileService fileService;
 
         public ImageSharpPhotoSha256HashProviderTest()
         {
-            var fileService = A.Fake<IFileService>();
+            fileService = A.Fake<IFileService>();
             A.CallTo(() => fileService.OpenRead(ExistingImageFilename))
                 .ReturnsLazily(call => TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename));
 
@@ -71,6 +73,20 @@
             // assert
             result.Should().NotBeNull();
             CoenM.Encoding.Z85.Encode(result.ToArray()).Should().Be("+]JP}/TH1-hP/ax&a)iqy%H<Ze>cpbBhph)ggipp");
+        }
+
+        [Fact]
+        public async Task ProvideAsync_ShouldReturnNull_WhenReadingImageThrows()
+        {
+            // arrange
+            A.CallTo(() => fileService.OpenRead(ExistingImageFilename))
+                .Throws(new ApplicationException("Thrown by test mock"));
+
+            // act
+            var result = await sut.ProvideAsync(ExistingImageFilename);
+
+            // assert
+            result.Should().BeEquivalentTo(new ReadOnlyMemory<byte>(null));
         }
     }
 }
