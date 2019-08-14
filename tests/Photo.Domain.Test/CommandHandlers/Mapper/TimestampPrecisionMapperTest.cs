@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using EagleEye.Photo.Domain.Commands.Inner;
@@ -43,6 +44,7 @@
             act.Should().NotThrow();
         }
 
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Required for xUnits MemberData attribute.")]
         public static IEnumerable<object[]> AllTimestampPrecision()
         {
             return Enum
