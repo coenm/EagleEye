@@ -15,12 +15,11 @@
         [NotNull] private readonly Dictionary<string, ulong> photoHashes;
         [NotNull] private readonly List<string> tags;
         [NotNull] private readonly List<string> persons;
-        private DateTime? dateTimeTaken;
+        [CanBeNull] private Timestamp dateTimeTaken;
 
         [CanBeNull] private Location location;
         private string filename;
         private byte[] fileHash;
-        private TimestampPrecision dateTimeTakenPrecision;
 
         internal Photo(
             Guid id,
@@ -141,10 +140,14 @@
             ApplyChange(new LocationClearedFromPhoto(Id));
         }
 
-        public void SetDateTimeTaken(DateTime dateTime, TimestampPrecision precision)
+        public void SetDateTimeTaken(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
         {
-            // todo check
-            ApplyChange(new DateTimeTakenChanged(Id, dateTime, precision));
+            var ts = new Timestamp(year, month, day, hour, minutes, seconds);
+
+            if (ts.Equals(dateTimeTaken))
+                return;
+
+            ApplyChange(new DateTimeTakenChanged(Id, ts));
         }
 
         public void UpdateFileHash([NotNull] byte[] fileHash)
@@ -271,7 +274,6 @@
             Guard.Argument(e, nameof(e)).NotNull();
 
             dateTimeTaken = e.DateTimeTaken;
-            dateTimeTakenPrecision = e.Precision;
         }
     }
 }

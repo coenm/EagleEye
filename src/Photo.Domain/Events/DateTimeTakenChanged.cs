@@ -7,15 +7,12 @@
 
     public class DateTimeTakenChanged : EventBase
     {
-        public DateTimeTakenChanged(Guid id, DateTime dateTime, TimestampPrecision precision)
+        public DateTimeTakenChanged(Guid id, Timestamp timestamp)
         {
             Id = id;
-            DateTimeTaken = dateTime;
-            Precision = precision;
+            DateTimeTaken = timestamp;
         }
 
-        public DateTime DateTimeTaken { get; }
-
-        public TimestampPrecision Precision { get; }
+        public Timestamp DateTimeTaken { get; }
     }
 }

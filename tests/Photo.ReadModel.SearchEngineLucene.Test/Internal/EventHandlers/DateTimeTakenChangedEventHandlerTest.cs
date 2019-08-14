@@ -17,13 +17,13 @@
     {
         private readonly DateTimeTakenChangedEventHandler sut;
         private readonly IPhotoIndex photoIndex;
-        private readonly DateTime eventDateTime;
+        private readonly EagleEye.Photo.Domain.Aggregates.Timestamp eventDateTime;
 
         public DateTimeTakenChangedEventHandlerTest()
         {
             photoIndex = A.Fake<IPhotoIndex>();
             sut = new DateTimeTakenChangedEventHandler(photoIndex);
-            eventDateTime = new DateTime(2021, 7, 25, 23, 55, 32);
+            eventDateTime = new EagleEye.Photo.Domain.Aggregates.Timestamp(2021, 7, 25, 23, 55, 32);
         }
 
         [Fact]
@@ -33,7 +33,7 @@
             var guid = Guid.NewGuid();
 
             // act
-            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime, TimestampPrecision.Day));
+            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
             A.CallTo(() => photoIndex.Search(guid)).MustHaveHappenedOnceExactly();
@@ -47,7 +47,7 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(null);
 
             // act
-            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime, TimestampPrecision.Day));
+            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustNotHaveHappened();
@@ -69,12 +69,12 @@
             A.CallTo(() => photoIndex.Search(guid)).Returns(photoSearchResult);
 
             // act
-            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime, TimestampPrecision.Day));
+            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
             A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
             newPhoto.Should().NotBeNull();
-            var expectedTimestamp = new Timestamp(eventDateTime, EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model.TimestampPrecision.Day);
+            var expectedTimestamp = new Timestamp(eventDateTime.Value, EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model.TimestampPrecision.Second);
             newPhoto.DateTimeTaken.Should().BeEquivalentTo(expectedTimestamp);
         }
     }

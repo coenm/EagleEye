@@ -32,7 +32,7 @@
                 return;
 
             storedItem.Version = message.Version;
-            storedItem.DateTimeTaken = new Timestamp(message.DateTimeTaken, Convert(message.Precision));
+            storedItem.DateTimeTaken = new Timestamp(message.DateTimeTaken.Value, Convert(message.DateTimeTaken.Precision));
 
             await photoIndex.ReIndexMediaFileAsync(storedItem).ConfigureAwait(false);
         }

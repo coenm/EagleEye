@@ -94,7 +94,7 @@
                 var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-                var commandDateTime = new SetDateTimeTakenCommand(command.Id, null, new Timestamp(2010, 04));
+                var commandDateTime = new SetDateTimeTakenCommand(command.Id, null, Timestamp.Create(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
                 ICommand tagCommand = new RemoveTagsFromPhotoCommand(command.Id, null, "zoo");
@@ -110,7 +110,7 @@
                 command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
 
-                commandDateTime = new SetDateTimeTakenCommand(command.Id, null, new Timestamp(2010, 04));
+                commandDateTime = new SetDateTimeTakenCommand(command.Id, null, Timestamp.Create(2010, 04));
                 dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
 
                 commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 2343434);

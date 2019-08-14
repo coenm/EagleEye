@@ -39,7 +39,7 @@
                 return;
 
             // todo, something with precision?
-            photo.DateTimeTaken = message.DateTimeTaken;
+            photo.DateTimeTaken = message.DateTimeTaken.Value;
 
             photo.EventTimestamp = message.TimeStamp;
             photo.Version = message.Version;

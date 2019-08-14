@@ -37,7 +37,7 @@
             // arrange
             A.CallTo(() => session.Get<Photo>(photoGuid, 42, ct))
                 .Returns(new Photo(photoGuid, "dummy", "dummy2", new byte[32]));
-            var dateTimeTaken = new Commands.Inner.Timestamp(2012, 11, 24);
+            var dateTimeTaken = Commands.Inner.Timestamp.Create(2012, 11, 24);
 
             // act
             await sut.Handle(new SetDateTimeTakenCommand(photoGuid, 42, dateTimeTaken), ct);
@@ -50,7 +50,7 @@
         public async Task Handle_ShouldUpdatePhotoAggregateAndCommitPhotoToSession_WhenUpdatingPhotoHashSucceeds()
         {
             // arrange
-            var dateTimeTaken = new Commands.Inner.Timestamp(2012, 11, 24);
+            var dateTimeTaken = Commands.Inner.Timestamp.Create(2012, 11, 24);
             var photo = new Photo(photoGuid, "dummy", "dummy2", new byte[32]);
             photo.FlushUncommittedChanges();
 
@@ -66,7 +66,7 @@
                 .And.NotBeEmpty()
                 .And.HaveCount(1)
                 .And.AllBeOfType<DateTimeTakenChanged>()
-                .And.BeEquivalentTo(new DateTimeTakenChanged(photoGuid, new DateTime(2012, 11, 24), TimestampPrecision.Day));
+                .And.BeEquivalentTo(new DateTimeTakenChanged(photoGuid, new Timestamp(2012, 11, 24)));
             A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
             A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
         }
