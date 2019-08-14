@@ -52,7 +52,7 @@
         }
 
         [UsedImplicitly]
-        private class DummyCommand : ICommand
+        public class DummyCommand : ICommand
         {
         }
     }
