@@ -38,7 +38,7 @@
             return MapPhoto(result);
         }
 
-        private Interface.Model.Photo MapPhoto([NotNull] Photo photo)
+        internal static Interface.Model.Photo MapPhoto([NotNull] Photo photo)
         {
             Guard.Argument(photo, nameof(photo)).NotNull();
 
@@ -55,7 +55,7 @@
         }
 
         [CanBeNull]
-        private Interface.Model.Location MapLocation([CanBeNull] Location location)
+        internal static Interface.Model.Location MapLocation([CanBeNull] Location location)
         {
             if (location == null)
                 return null;
