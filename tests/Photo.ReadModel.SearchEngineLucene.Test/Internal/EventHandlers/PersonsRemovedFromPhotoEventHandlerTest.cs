@@ -79,7 +79,7 @@
         }
 
         [Fact]
-        public async Task Handle_ShouldNotReIndexPhoto__WhenPhotoAlreadyDoesNotContainPerson()
+        public async Task Handle_ShouldNotReIndexPhoto_WhenPhotoAlreadyDoesNotContainPerson()
         {
             // arrange
             var guid = Guid.NewGuid();

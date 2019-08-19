@@ -11,20 +11,20 @@
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers;
     using FakeItEasy;
     using FluentAssertions;
-    using Photo.ReadModel.EntityFramework.Test.Internal.EventHandlers.Helpers;
     using Xunit;
 
-    public class PersonsAddedToPhotoEventHandlerTest
+    public class DateTimeTakenChangedEventHandlerTest
     {
-        private readonly PersonsAddedToPhotoEventHandler sut;
+        private readonly DateTimeTakenChangedEventHandler sut;
         private readonly IEagleEyeRepository eagleEyeRepository;
+        private readonly EagleEye.Photo.Domain.Aggregates.Timestamp eventDateTime;
         private readonly List<Photo> savedPhotos;
         private readonly List<Photo> updatedPhotos;
 
-        public PersonsAddedToPhotoEventHandlerTest()
+        public DateTimeTakenChangedEventHandlerTest()
         {
             eagleEyeRepository = A.Fake<IEagleEyeRepository>();
-            sut = new PersonsAddedToPhotoEventHandler(eagleEyeRepository);
+            sut = new DateTimeTakenChangedEventHandler(eagleEyeRepository);
 
             savedPhotos = new List<Photo>();
             updatedPhotos = new List<Photo>();
@@ -34,6 +34,8 @@
             A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._))
                 .Invokes(call => updatedPhotos.Add((Photo)call.Arguments[0]))
                 .Returns(Task.FromResult(0));
+
+            eventDateTime = new EagleEye.Photo.Domain.Aggregates.Timestamp(2021, 7, 25, 23, 55, 32);
         }
 
         [Fact]
@@ -43,7 +45,7 @@
             var guid = Guid.NewGuid();
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Calvin", "Darion", "Eve"));
+            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
             A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).MustHaveHappenedOnceExactly();
@@ -57,7 +59,7 @@
             A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(null as Photo));
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Calvin", "Darion", "Eve"));
+            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
             A.CallTo(() => eagleEyeRepository.SaveAsync(A<Photo>._)).MustNotHaveHappened();
@@ -65,37 +67,27 @@
         }
 
         [Fact]
-        public async Task HandleEvents_ShouldSaveDataToRepositoryTest()
+        public async Task Handle_ShouldReIndexPhotoWithUpdatedDateTime_WhenPhotoExists()
         {
             // arrange
             var guid = Guid.NewGuid();
-            var initialTags = new[] { "soccer", "sports" };
-            var initialPersons = new[] { "alice", "bob" };
-            var initTimestamp = DateTimeOffset.UtcNow;
+            Photo newPhoto = null;
+            var photoSearchResult = new Photo
+                {
+                    DateTimeTaken = null,
+                };
 
-            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid))
-                .Returns(Task.FromResult(TestHelpers.CreatePhoto(guid, 1, string.Empty, new byte[0], initTimestamp, initialTags, initialPersons)));
+            A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._))
+                .Invokes(call => { newPhoto = call.Arguments[0] as Photo; });
+            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(photoSearchResult));
 
             // act
-            await sut.Handle(new PersonsAddedToPhoto(guid, "Calvin", "Darion", "Eve")
-                {
-                    Version = 2,
-                    TimeStamp = initTimestamp.AddHours(2),
-                });
+            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
-            var expectedPhoto = TestHelpers.CreatePhoto(
-                guid,
-                2,
-                string.Empty,
-                new byte[0],
-                initTimestamp.AddHours(2),
-                initialTags,
-                new[] { "alice", "bob", "Calvin", "Darion", "Eve" });
-
-            A.CallTo(eagleEyeRepository).MustHaveHappenedTwiceExactly();
-            updatedPhotos.Should().HaveCount(1);
-            updatedPhotos.Single().Should().BeEquivalentTo(expectedPhoto);
+            A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
+            newPhoto.Should().NotBeNull();
+            newPhoto.DateTimeTaken.Should().Be(eventDateTime.Value);
         }
     }
 }

@@ -39,7 +39,7 @@
             if (!VersionsMatch(message.Version, photo.Version))
                 return;
 
-            photo.Location = new EntityFramework.Models.Location()
+            photo.Location = new EntityFramework.Models.Location
             {
                 CountryName = message.Location.CountryName,
                 CountryCode = message.Location.CountryCode,

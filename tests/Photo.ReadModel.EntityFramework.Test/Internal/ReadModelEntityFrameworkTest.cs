@@ -20,7 +20,7 @@
 
         public ReadModelEntityFrameworkTest()
         {
-            dt = new DateTime(1993, 3, 5, 23,52, 11);
+            dt = new DateTime(1993, 3, 5, 23, 52, 11);
 
             repository = A.Fake<IEagleEyeRepository>();
             sut = new ReadModelEntityFramework(repository);
@@ -98,7 +98,7 @@
                 "dummy.jpg",
                 "image/jpeg",
                 new byte[] { 0x01 },
-                new[] { "zoo", "holiday"},
+                new[] { "zoo", "holiday" },
                 new string[0],
                 null,
                 dt.AddDays(2),
