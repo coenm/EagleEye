@@ -13,17 +13,17 @@
     using Photo.ReadModel.EntityFramework.Test.Internal.EventHandlers.Helpers;
     using Xunit;
 
-    public class PersonsRemovedFromPhotoEventHandlerTest
+    public class TagsAddedToPhotoEventHandlerTest
     {
-        private readonly PersonsRemovedFromPhotoEventHandler sut;
+        private readonly TagsAddedToPhotoEventHandler sut;
         private readonly IEagleEyeRepository eagleEyeRepository;
         private readonly List<Photo> savedPhotos;
         private readonly List<Photo> updatedPhotos;
 
-        public PersonsRemovedFromPhotoEventHandlerTest()
+        public TagsAddedToPhotoEventHandlerTest()
         {
             eagleEyeRepository = A.Fake<IEagleEyeRepository>();
-            sut = new PersonsRemovedFromPhotoEventHandler(eagleEyeRepository);
+            sut = new TagsAddedToPhotoEventHandler(eagleEyeRepository);
 
             savedPhotos = new List<Photo>();
             updatedPhotos = new List<Photo>();
@@ -42,7 +42,7 @@
             var guid = Guid.NewGuid();
 
             // act
-            await sut.Handle(new PersonsRemovedFromPhoto(guid));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo", "Vacation", "Holiday"));
 
             // assert
             A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).MustHaveHappenedOnceExactly();
@@ -56,7 +56,7 @@
             A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(null as Photo));
 
             // act
-            await sut.Handle(new PersonsRemovedFromPhoto(guid));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo", "Vacation", "Holiday"));
 
             // assert
             A.CallTo(() => eagleEyeRepository.SaveAsync(A<Photo>._)).MustNotHaveHappened();
@@ -64,43 +64,44 @@
         }
 
         [Fact]
-        public async Task Handle_ShouldReIndexPhotoWithUpdatedPersons_WhenPhotoExists()
+        public async Task Handle_ShouldReIndexPhotoWithUpdatedTags_WhenPhotoExists()
         {
             // arrange
             var guid = Guid.NewGuid();
             Photo newPhoto = null;
-            var photoSearchResult = new Photo
+            var photo = new Photo
             {
-                People = TestHelpers.CreatePeoples("Adam", "Bob"),
+                Tags = TestHelpers.CreateTags("Vacation"),
             };
 
             A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._))
                 .Invokes(call => { newPhoto = call.Arguments[0] as Photo; });
-            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(photoSearchResult));
+            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(photo));
 
             // act
-            await sut.Handle(new PersonsRemovedFromPhoto(guid, "Adam"));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo", "Vacation", "Holiday"));
 
             // assert
+            var expectedTags = TestHelpers.CreateTags("Holiday", "Zoo", "Vacation");
             A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
             newPhoto.Should().NotBeNull();
-            newPhoto.People.Should().BeEquivalentTo(TestHelpers.CreatePeoples("Bob"));
+            newPhoto.Tags.Should().BeEquivalentTo(expectedTags);
         }
 
         [Fact]
-        public async Task Handle_ShouldUpdatePhoto_WhenPhotoAlreadyDoesNotContainPerson()
+        public async Task Handle_ShouldUpdatePhoto_WhenPhotoAlreadyContainedUpdatedTags()
         {
             // arrange
             var guid = Guid.NewGuid();
-            var photoSearchResult = new Photo
+            var photo = new Photo
             {
-                People = TestHelpers.CreatePeoples("Adam", "Bob"),
+                Tags = TestHelpers.CreateTags("Holiday", "Zoo"),
             };
 
-            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(photoSearchResult));
+            A.CallTo(() => eagleEyeRepository.GetByIdAsync(guid)).Returns(Task.FromResult(photo));
 
             // act
-            await sut.Handle(new PersonsRemovedFromPhoto(guid, "Carol"));
+            await sut.Handle(new TagsAddedToPhoto(guid, "Zoo"));
 
             // assert
             A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._)).MustHaveHappened();
