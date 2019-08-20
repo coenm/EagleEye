@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
+
     using EagleEye.Photo.ReadModel.EntityFramework.Internal;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
@@ -69,6 +71,98 @@
 
             // assert
             act.Should().Throw<Exception>().WithMessage("This is a test exception");
+        }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException", Justification = "Sut method can return null")]
+        public async Task GetPhotoByGuidAsync_ShouldCallRepository()
+        {
+            // arrange
+            var guid = Guid.NewGuid();
+
+            // act
+            _ = await sut.GetPhotoByGuidAsync(guid);
+
+            // assert
+            A.CallTo(() => repository.GetByIdAsync(guid)).MustHaveHappenedOnceExactly();
+        }
+
+        [Fact]
+        public async Task GetPhotoByGuidAsync_ShouldReturnNull_WhenRepositoryReturnsNull()
+        {
+            // arrange
+            var guid = Guid.NewGuid();
+            A.CallTo(() => repository.GetByIdAsync(guid)).Returns(Task.FromResult(null as Photo));
+
+            // act
+            var result = await sut.GetAllPhotosAsync();
+
+            // assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException", Justification = "Sut method can return null")]
+        public void GetPhotoByGuidAsync_ShouldRethrow_WhenRepositoryThrowsAsync()
+        {
+            // arrange
+            var guid = Guid.NewGuid();
+            A.CallTo(() => repository.GetByIdAsync(guid))
+                .ReturnsLazily(
+                    async call =>
+                    {
+                        await Task.Yield();
+                        throw new Exception("This is a test exception");
+                    });
+
+            // act
+            Func<Task> act = async () => _ = await sut.GetPhotoByGuidAsync(guid);
+
+            // assert
+            act.Should().Throw<Exception>().WithMessage("This is a test exception");
+        }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException", Justification = "Sut method can return null")]
+        public async Task GetPhotoByGuidAsync_ShouldReturnMappedResult_WhenRepositoryReturnsPhoto()
+        {
+            // arrange
+            var guid = Guid.NewGuid();
+            var photo = new Photo
+            {
+                Id = guid,
+                FileMimeType = "image/jpeg",
+                Filename = "dummy.jpg",
+                Version = 1234,
+                FileSha256 = new byte[] { 0x01 },
+                EventTimestamp = dt,
+                Location = null,
+                Tags = TestHelpers.CreateTags("zoo", "holiday"),
+                DateTimeTaken = dt.AddDays(2),
+            };
+            A.CallTo(() => repository.GetByIdAsync(guid))
+                .ReturnsLazily(
+                    async call =>
+                    {
+                        await Task.Yield();
+                        return photo;
+                    });
+
+            // act
+            var result = await sut.GetPhotoByGuidAsync(guid);
+
+            // assert
+            var expectedResult = new EagleEye.Photo.ReadModel.EntityFramework.Interface.Model.Photo(
+                guid,
+                "dummy.jpg",
+                "image/jpeg",
+                new byte[] { 0x01 },
+                new[] { "zoo", "holiday" },
+                new string[0],
+                null,
+                dt.AddDays(2),
+                1234);
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]

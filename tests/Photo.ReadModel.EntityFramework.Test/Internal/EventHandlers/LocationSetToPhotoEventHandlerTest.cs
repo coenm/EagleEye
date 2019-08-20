@@ -41,7 +41,7 @@
                 "Netherlands",
                 "Utrecht",
                 "Utrecht",
-                "Centrum",
+                "Centre",
                 12,
                 34);
         }
@@ -105,8 +105,7 @@
             A.CallTo(() => eagleEyeRepository.UpdateAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
             newPhoto.Should().NotBeNull();
             var location = newPhoto.Location;
-            location.Should().NotBeNull();
-            // ReSharper disable once PossibleNullReferenceException
+            Assert.NotNull(location);
             location.CountryCode.Should().Be(eventLocation.CountryCode);
             location.CountryName.Should().Be(eventLocation.CountryName);
             location.City.Should().Be(eventLocation.City);
