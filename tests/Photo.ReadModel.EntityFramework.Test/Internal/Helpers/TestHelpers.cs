@@ -1,4 +1,4 @@
-﻿namespace Photo.ReadModel.EntityFramework.Test.Internal.EventHandlers.Helpers
+﻿namespace Photo.ReadModel.EntityFramework.Test.Internal.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
 
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
 
-    internal class TestHelpers
+    internal static class TestHelpers
     {
         public static Photo CreatePhoto(
             Guid id,

@@ -11,7 +11,7 @@
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EventHandlers;
     using FakeItEasy;
     using FluentAssertions;
-    using Photo.ReadModel.EntityFramework.Test.Internal.EventHandlers.Helpers;
+    using Photo.ReadModel.EntityFramework.Test.Internal.Helpers;
     using Xunit;
 
     public class PersonsAddedToPhotoEventHandlerTest

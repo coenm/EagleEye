@@ -2,19 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
-    using Castle.Components.DictionaryAdapter;
+    using System.Threading.Tasks;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework;
     using EagleEye.Photo.ReadModel.EntityFramework.Internal.EntityFramework.Models;
     using FakeItEasy;
     using FluentAssertions;
+    using Photo.ReadModel.EntityFramework.Test.Internal.Helpers;
     using Xunit;
-    using Xunit.Sdk;
+
     using Sut = EagleEye.Photo.ReadModel.EntityFramework.Internal.ReadModelEntityFramework;
 
     public class ReadModelEntityFrameworkTest
     {
-        private ReadModelEntityFramework sut;
+        private readonly ReadModelEntityFramework sut;
         private readonly IEagleEyeRepository repository;
         private readonly DateTime dt;
 
@@ -24,6 +25,50 @@
 
             repository = A.Fake<IEagleEyeRepository>();
             sut = new ReadModelEntityFramework(repository);
+        }
+
+        [Fact]
+        public async Task GetAllPhotosAsync_ShouldCallRepository()
+        {
+            // arrange
+
+            // act
+            _ = await sut.GetAllPhotosAsync();
+
+            // assert
+            A.CallTo(() => repository.GetAllAsync()).MustHaveHappenedOnceExactly();
+        }
+
+        [Fact]
+        public async Task GetAllPhotosAsync_ShouldReturnNull_WhenRepositoryReturnsNull()
+        {
+            // arrange
+            A.CallTo(() => repository.GetAllAsync()).Returns(Task.FromResult(null as List<Photo>));
+
+            // act
+            var result = await sut.GetAllPhotosAsync();
+
+            // assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public void GetAllPhotosAsync_ShouldRethrow_WhenRepositoryThrowsAsync()
+        {
+            // arrange
+            A.CallTo(() => repository.GetAllAsync())
+                .ReturnsLazily(
+                    async call =>
+                    {
+                        await Task.Yield();
+                        throw new Exception("This is a test exception");
+                    });
+
+            // act
+            Func<Task> act = async () => _ = await sut.GetAllPhotosAsync();
+
+            // assert
+            act.Should().Throw<Exception>().WithMessage("This is a test exception");
         }
 
         [Fact]
@@ -42,7 +87,7 @@
         public void MapLocation_ShouldMap_WhenInputIsNotNull()
         {
             // arrange
-            var location = new Location()
+            var location = new Location
             {
                 Id = Guid.NewGuid(),
                 CountryName = "USA",
@@ -81,11 +126,7 @@
                 FileSha256 = new byte[] { 0x01 },
                 EventTimestamp = dt,
                 Location = null,
-                Tags = new List<Tag>
-                {
-                    new Tag { Value = "zoo" },
-                    new Tag { Value = "holiday" },
-                },
+                Tags = TestHelpers.CreateTags("zoo", "holiday"),
                 DateTimeTaken = dt.AddDays(2),
             };
 
