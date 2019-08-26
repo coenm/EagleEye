@@ -4,12 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using CQRSlite.Domain;
     using Dawn;
     using EagleEye.Photo.Domain.Events;
     using JetBrains.Annotations;
 
-    internal class Photo : AggregateRoot
+    internal partial class Photo
     {
         private const int Sha256ByteSize = 256 / 8;
         [NotNull] private readonly Dictionary<string, ulong> photoHashes;
