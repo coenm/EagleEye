@@ -79,6 +79,20 @@
         {
             // arrange
             var guid = Guid.NewGuid();
+            var photo = new Photo
+            {
+                Id = guid,
+                FileMimeType = "image/jpeg",
+                Filename = "dummy.jpg",
+                Version = 1234,
+                FileSha256 = new byte[] { 0x01 },
+                EventTimestamp = dt,
+                Location = null,
+                Tags = TestHelpers.CreateTags("zoo", "holiday"),
+                DateTimeTaken = dt.AddDays(2),
+            };
+            A.CallTo(() => repository.GetByIdAsync(guid))
+                .Returns(Task.FromResult(photo));
 
             // act
             _ = await sut.GetPhotoByGuidAsync(guid);
@@ -88,6 +102,7 @@
         }
 
         [Fact]
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException", Justification = "Sut method can return null")]
         public async Task GetPhotoByGuidAsync_ShouldReturnNull_WhenRepositoryReturnsNull()
         {
             // arrange
@@ -95,7 +110,7 @@
             A.CallTo(() => repository.GetByIdAsync(guid)).Returns(Task.FromResult(null as Photo));
 
             // act
-            var result = await sut.GetAllPhotosAsync();
+            var result = await sut.GetPhotoByGuidAsync(guid);
 
             // assert
             result.Should().BeNull();
