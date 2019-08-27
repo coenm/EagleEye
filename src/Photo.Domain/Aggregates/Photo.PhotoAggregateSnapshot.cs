@@ -4,7 +4,6 @@
     using System.Collections.Generic;
 
     using CQRSlite.Snapshotting;
-
     using EagleEye.Photo.Domain.Aggregates.SnapshotDtos;
 
     internal partial class Photo : SnapshotAggregateRoot<PhotoAggregateSnapshot>
