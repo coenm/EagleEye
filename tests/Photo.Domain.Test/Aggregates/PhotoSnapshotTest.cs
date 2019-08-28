@@ -41,14 +41,7 @@
         public async Task PhotoSnapshotCreationTest()
         {
             // arrange
-            var snapshotStore = A.Fake<ISnapshotStore>();
-            var savedSnapshots = new List<Snapshot>();
-
-            A.CallTo(() => snapshotStore.Save(A<Snapshot>._, token))
-                .Invokes(call =>
-                {
-                    savedSnapshots.Add(call.Arguments[0] as Snapshot);
-                });
+            var snapshotStore = new InMemorySnapshotStore();
             var snapshotStrategy = new ConfigurableSnapshotStrategy(1);
             var snapshotRepository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
             var session = new Session(snapshotRepository);
@@ -59,9 +52,7 @@
             await session.Commit(token);
 
             // assert
-            A.CallTo(() => snapshotStore.Save(A<Snapshot>._, token)).MustHaveHappenedOnceExactly();
-            A.CallTo(snapshotStore).MustHaveHappenedOnceExactly();
-            savedSnapshots.Should().HaveCount(1).And.AllBeOfType<PhotoAggregateSnapshot>();
+            snapshotStore.SavedSnapshots.Should().HaveCount(1).And.AllBeOfType<PhotoAggregateSnapshot>();
             var expectedSnapshot = new PhotoAggregateSnapshot
             {
                 Id = guid,
@@ -74,7 +65,28 @@
                 Tags = new List<string>(0),
                 DateTimeTaken = null,
             };
-            savedSnapshots.Single().Should().BeEquivalentTo(expectedSnapshot);
+            snapshotStore.SavedSnapshots.Single().Should().BeEquivalentTo(expectedSnapshot);
+            snapshotStore.RequestedSnapshots.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task PhotoSnapshotRestoresPhotoTest()
+        {
+            // arrange
+            var snapshotStore = new InMemorySnapshotStore();
+            var snapshotStrategy = new ConfigurableSnapshotStrategy(1);
+            var snapshotRepository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
+            var session = new Session(snapshotRepository);
+            var photo = new Photo(guid, filename, mimeType, fileSha);
+            await session.Add(photo, token);
+            await session.Commit(token);
+
+            // act
+            var photo2 = await session.Get<Photo>(guid, cancellationToken: token);
+
+            // assert
+            photo.Should().BeEquivalentTo(photo2);
+            snapshotStore.RequestedSnapshots.Should().BeEquivalentTo(new Guid[] { guid });
         }
     }
 }
