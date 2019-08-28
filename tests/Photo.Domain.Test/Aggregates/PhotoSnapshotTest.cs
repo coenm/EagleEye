@@ -88,5 +88,41 @@
             photo.Should().BeEquivalentTo(photo2);
             snapshotStore.RequestedSnapshots.Should().BeEquivalentTo(new Guid[] { guid });
         }
+
+        [Fact]
+        public async Task PhotoSnapshotSaveAndRestoresPhotoTest()
+        {
+            // arrange
+            var snapshotStore = new InMemorySnapshotStore();
+            var snapshotStrategy = new ConfigurableSnapshotStrategy(1);
+            var snapshotRepository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
+            var session = new Session(snapshotRepository);
+
+            // act
+            var photo = new Photo(guid, filename, mimeType, fileSha);
+            await session.Add(photo, token);
+            await session.Commit(token);
+
+            photo = await session.Get<Photo>(guid, cancellationToken: token);
+            photo.SetLocation("NL", "Netherlands", "X", "Y", "Z", null, null);
+            await session.Commit(token);
+
+            photo = await session.Get<Photo>(guid, cancellationToken: token);
+            photo.SetLocation("NL", "Netherlands", "X1", "Y1", "Z1", 162.99F, 88.4F);
+            await session.Commit(token);
+
+            photo = await session.Get<Photo>(guid, cancellationToken: token);
+            photo.UpdatePhotoHash("AverageHash", 83492346394UL);
+            await session.Commit(token);
+
+            photo = await session.Get<Photo>(guid, cancellationToken: token);
+            photo.UpdatePhotoHash("DummyHash", 123UL);
+            await session.Commit(token);
+
+            // assert
+            var photo2 = await session.Get<Photo>(guid, cancellationToken: token);
+            photo.Should().BeEquivalentTo(photo2);
+            snapshotStore.RequestedSnapshots.Should().BeEquivalentTo(new Guid[] { guid, guid, guid, guid, guid });
+        }
     }
 }
