@@ -26,25 +26,35 @@
         {
             Guard.Argument(aggregateType, nameof(aggregateType)).NotNull();
 
-            if (aggregateType.GetTypeInfo().BaseType == null)
+            var baseType = aggregateType.GetTypeInfo().BaseType;
+
+            if (baseType == null)
                 return false;
-            if (aggregateType.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType &&
-                aggregateType.GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
+            if (baseType.GetTypeInfo().IsGenericType &&
+                baseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
                 return true;
-            return IsSnapshotable(aggregateType.GetTypeInfo().BaseType);
+            return IsSnapshotable(baseType);
         }
 
         public bool ShouldMakeSnapShot(AggregateRoot aggregate)
         {
+            if (aggregate == null)
+                return false;
+
             if (!IsSnapshotable(aggregate.GetType()))
                 return false;
 
-            var i = aggregate.Version;
-            for (var j = 0; j < aggregate.GetUncommittedChanges().Length; j++)
-            {
-                if (++i % snapshotInterval == 0 && i != 0)
-                    return true;
-            }
+            int uncommittedChangesCount = aggregate.GetUncommittedChanges().Length;
+
+            if (uncommittedChangesCount == 0)
+                return false;
+
+            if (uncommittedChangesCount >= snapshotInterval)
+                return true;
+
+            var aggregateVersion = aggregate.Version;
+            if ((aggregateVersion % snapshotInterval) + uncommittedChangesCount >= snapshotInterval)
+                return true;
 
             return false;
         }
