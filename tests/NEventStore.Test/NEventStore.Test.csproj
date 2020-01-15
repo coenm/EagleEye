@@ -5,9 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="NEventStore" Version="7.0.0" />
-    <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
+    <PackageReference Include="NEventStore" />
+    <PackageReference Include="NEventStore.Serialization.Json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Helpers\Helpers.csproj" />

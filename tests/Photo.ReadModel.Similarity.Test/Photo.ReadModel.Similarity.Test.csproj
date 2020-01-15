@@ -4,16 +4,11 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>Photo.ReadModel.Similarity.Test</RootNamespace>
-
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.5" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="Hangfire.Core" />
   </ItemGroup>
 
   <ItemGroup>

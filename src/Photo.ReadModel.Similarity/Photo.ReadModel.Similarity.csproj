@@ -4,21 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.Photo.ReadModel.Similarity</RootNamespace>
-
-    <!-- do not update version, this will be done using appvayor -->
-    <Version>1.1.1</Version>
-
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
     <AssemblyName>Photo.ReadModel.Similarity</AssemblyName>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.5" />
-    <PackageReference Include="Hangfire.MemoryStorage" Version="1.6.1" />
-    <PackageReference Include="Hangfire.SQLite" Version="1.4.2" />
+    <PackageReference Include="Hangfire.Core" />
+    <PackageReference Include="Hangfire.MemoryStorage" />
+    <PackageReference Include="Hangfire.SQLite" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="CoenM.ImageSharp.ImageHash" />
@@ -26,25 +19,11 @@
     <PackageReference Include="SimpleInjector" />
   </ItemGroup>
 
-  <Import Project="..\..\Fody.props" />
-
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\2.1.4\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Costura.Fody" Version="3.3.3" />
-    <PackageReference Update="Fody" Version="4.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+  <Import Project="..\..\Fody.props" />
 
 </Project>

@@ -1,12 +1,17 @@
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
 
-  <!-- 2019-02-27: Appveyor/ubuntu doesn't seem to get Fody working at this point.. -->
-  <ItemGroup Condition="'$(OS)'!='Unix'">
-    <PackageReference Include="Costura.Fody" Version="3.3.2" />
-    <PackageReference Include="Fody" Version="4.0.2">
+  <ItemGroup>
+    <PackageReference Include="Costura.Fody" />
+    <PackageReference Include="Fody">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <!-- 2019-02-27: Appveyor/ubuntu doesn't seem to get Fody working at this point.. -->
+  <ItemGroup Condition="'$(OS)'!='Unix'">
+    <PackageReference Update="Costura.Fody" Version="3.3.2" />
+    <PackageReference Update="Fody" Version="4.0.2" />
   </ItemGroup>
 
 </Project>

@@ -4,39 +4,22 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.ExifTool</RootNamespace>
-
-    <!-- do not update version, this will be done using appvayor -->
-    <Version>1.1.1</Version>
-
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyName>EagleEye.Plugin.ExifTool</AssemblyName>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="MedallionShell" Version="1.6.0" />
+    <PackageReference Include="MedallionShell" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+    <PackageReference Include="Nito.AsyncEx" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
-
-  <Import Project="..\..\Fody.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Costura.Fody" Version="3.3.3" />
-    <PackageReference Update="Fody" Version="4.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+  <Import Project="..\..\Fody.props" />
 
 </Project>

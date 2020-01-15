@@ -4,27 +4,20 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.Bootstrap</RootNamespace>
-
-    <!-- do not update version, this will be done using appvayor -->
-    <Version>1.1.1</Version>
-
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CqrsLite" />
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="MimeTypes" Version="1.1.0">
+    <PackageReference Include="MimeTypes">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="NLog" Version="4.6.6" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\EagleEye.EventStore.NEventStoreAdapter\EagleEye.EventStore.NEventStoreAdapter.csproj" />
