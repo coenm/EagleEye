@@ -7,7 +7,6 @@
     using JetBrains.Annotations;
 
     // todo should be removed.
-
     public class CalculateIndexService
     {
         private readonly IPhotoHashProvider photoHashProvider;
@@ -58,7 +57,7 @@
 
                 result[index] = new ImageData(fileIdentifiers[index])
                 {
-                    Hashes =  hashes
+                    Hashes = hashes,
                 };
             }
 

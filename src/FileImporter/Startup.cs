@@ -31,8 +31,8 @@
         /// <summary>
         /// Bootstrap the application by setting up the Dependency Container.
         /// </summary>
-        /// <param name="container">Dependency container</param>
-        /// <param name="indexFilename">(obsolete)</param>
+        /// <param name="container">Dependency container.</param>
+        /// <param name="indexFilename">(obsolete).</param>
         /// <param name="connectionStringHangFire">ConnectionString for HangFire Similarity Database.</param>
         /// <param name="filenameEventStore">Filename sqlite eventstore.</param>
         public static void ConfigureContainer(
@@ -131,7 +131,6 @@
                 },
                 Lifestyle.Singleton);
         }
-
 
         public static string CreateFullFilename([NotNull] string filename)
         {

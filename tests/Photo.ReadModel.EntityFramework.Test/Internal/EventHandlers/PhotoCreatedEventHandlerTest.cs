@@ -55,7 +55,7 @@
 
             // assert
             A.CallTo(eagleEyeRepository).MustHaveHappenedOnceExactly();
-            savedPhotos.Should().HaveCount(1);
+            savedPhotos.Should().ContainSingle();
             savedPhotos.Single().Should().BeEquivalentTo(expectedPhoto);
         }
 

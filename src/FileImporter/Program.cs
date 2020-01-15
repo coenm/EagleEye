@@ -70,7 +70,6 @@
                     Console.WriteLine("Could not parse the arguments.");
                 });
 
-
             Console.WriteLine("Done.");
             // Console.WriteLine("Done. Press enter to exit.");
             // Console.ReadLine();
@@ -105,7 +104,6 @@
 
                 var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 324);
                 dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
-
 
                 command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
                 dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
@@ -200,7 +198,7 @@
 
                 Console.WriteLine();
                 Console.WriteLine();
-                Thread.Sleep(1000*5);
+                Thread.Sleep(1000 * 5);
                 Console.WriteLine("Press enter");
                 Console.ReadKey();
             }
