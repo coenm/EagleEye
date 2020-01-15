@@ -10,8 +10,8 @@
   <!--Need to be opted in -->
   <ItemGroup>
   
-	<PackageReference Update="SimpleInjector" Version="4.6.2" />
-	<PackageReference Update="Dawn.Guard" Version="1.10.0" />
+    <PackageReference Update="SimpleInjector" Version="4.6.2" />
+    <PackageReference Update="Dawn.Guard" Version="1.10.0" />
   
     <!-- xunit -->
     <PackageReference Update="xunit" Version="2.4.1" />
@@ -20,12 +20,17 @@
     <PackageReference Update="xunit.runner.console" Version="2.4.1" />
     <PackageReference Update="xunit.runner.reporters" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
-  
+
     <!--Unittesting-->
     <PackageReference Update="FakeItEasy" Version="5.5.0" />
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="5.3.0" />
     <PackageReference Update="FluentAssertions" Version="5.10.0" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
+
+    <!--Test coverage -->
+    <PackageReference Update="coverlet.msbuild" Version="2.8.0" />
+    <PackageReference Update="coverlet.collector" Version="1.2.0" />
+
   </ItemGroup>
 
 </Project>
