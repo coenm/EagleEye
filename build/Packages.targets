@@ -4,6 +4,7 @@
   <!--Include in every project -->
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="all" />
+    <PackageReference Include="NLog" Version="4.6.8" />
   </ItemGroup>
 
   <!--Need to be opted in -->

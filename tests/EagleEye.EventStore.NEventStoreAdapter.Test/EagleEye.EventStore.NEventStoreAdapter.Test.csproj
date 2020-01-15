@@ -27,7 +27,6 @@
     <PackageReference Include="NEventStore" Version="7.0.0" />
     <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
     <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
-    <PackageReference Include="NLog" Version="4.6.6" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
