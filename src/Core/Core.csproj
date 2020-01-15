@@ -14,13 +14,13 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CqrsLite" Version="0.29.0" />
+    <PackageReference Include="CqrsLite" />
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="MimeTypes" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="SimpleInjector" />
   </ItemGroup>
   <ItemGroup>

@@ -13,21 +13,19 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.1" />
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
-    <PackageReference Include="CommandLineParser" Version="2.5.0" />
-    <PackageReference Include="CqrsLite" Version="0.29.0" />
+    <PackageReference Include="CoenM.Encoding.Z85e" />
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" />
+    <PackageReference Include="CommandLineParser" />
+    <PackageReference Include="CqrsLite" />
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
-    <PackageReference Include="NetMQ" Version="4.0.0.207" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="ShellProgressBar" Version="4.2.0" />
+    <PackageReference Include="Lucene.Net" />
+    <PackageReference Include="MetadataExtractor" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="ShellProgressBar" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="System.Memory" Version="4.5.3" />
+    <PackageReference Include="System.Memory" />
   </ItemGroup>
 
   <ItemGroup>

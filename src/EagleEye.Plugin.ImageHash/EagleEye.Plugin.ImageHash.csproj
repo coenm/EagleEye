@@ -15,10 +15,10 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" />
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
+    <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />

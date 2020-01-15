@@ -14,10 +14,10 @@
     <AssemblyName>EagleEye.Plugin.ImageHash.Test</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.1" />
+    <PackageReference Include="CoenM.Encoding.Z85e" />
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
+    <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
 
   <ItemGroup>

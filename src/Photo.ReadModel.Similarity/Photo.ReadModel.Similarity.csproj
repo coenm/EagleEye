@@ -19,10 +19,10 @@
     <PackageReference Include="Hangfire.Core" Version="1.7.5" />
     <PackageReference Include="Hangfire.MemoryStorage" Version="1.6.1" />
     <PackageReference Include="Hangfire.SQLite" Version="1.4.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
-    <PackageReference Include="CqrsLite" Version="0.29.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" />
+    <PackageReference Include="CqrsLite" />
     <PackageReference Include="SimpleInjector" />
   </ItemGroup>
 

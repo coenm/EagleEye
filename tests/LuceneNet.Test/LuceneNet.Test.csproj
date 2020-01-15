@@ -12,16 +12,16 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Expressions" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Facet" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Join" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Memory" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Misc" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
-    <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" />
+    <PackageReference Include="Lucene.Net.Expressions" />
+    <PackageReference Include="Lucene.Net.Facet" />
+    <PackageReference Include="Lucene.Net.Join" />
+    <PackageReference Include="Lucene.Net.Memory" />
+    <PackageReference Include="Lucene.Net.Misc" />
+    <PackageReference Include="Lucene.Net.Queries" />
+    <PackageReference Include="Lucene.Net.QueryParser" />
+    <PackageReference Include="Lucene.Net.Suggest" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>
   <ItemGroup>

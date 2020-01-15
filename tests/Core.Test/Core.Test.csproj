@@ -12,7 +12,7 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.1" />
+    <PackageReference Include="CoenM.Encoding.Z85e" />
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>

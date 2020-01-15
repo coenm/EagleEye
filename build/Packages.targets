@@ -13,9 +13,34 @@
 
   <!--Need to be opted in -->
   <ItemGroup>
-  
+
+    <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
+    <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
     <PackageReference Update="SimpleInjector" Version="4.6.2" />
+    <PackageReference Update="SimpleInjector.Packaging" Version="4.6.2" />
     <PackageReference Update="Dawn.Guard" Version="1.10.0" />
+    <PackageReference Update="CqrsLite" Version="0.29.0" />
+    <PackageReference Update="MetadataExtractor" Version="2.1.0" />
+    <PackageReference Update="NetMQ" Version="4.0.0.207" />
+    <PackageReference Update="CommandLineParser" Version="2.5.0" />
+    <PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Update="Lucene.Net" Version="4.8.0-beta00005" />
+    <PackageReference Update="ShellProgressBar" Version="4.2.0" />
+    <PackageReference Update="System.Memory" Version="4.5.3" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
+
+    <!-- lucene -->
+    <PackageReference Update="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Expressions" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Facet" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Join" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Memory" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Misc" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Queries" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
 
     <!-- xunit -->
     <PackageReference Update="xunit" Version="2.4.1" />

@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
+    <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
 
   <ItemGroup>

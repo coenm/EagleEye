@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="System.Memory" Version="4.5.3" />
+    <PackageReference Include="System.Memory" />
   </ItemGroup>
 
   <Import Project="..\..\Fody.props" />

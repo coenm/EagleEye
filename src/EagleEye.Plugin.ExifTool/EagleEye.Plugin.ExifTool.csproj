@@ -19,10 +19,10 @@
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="MedallionShell" Version="1.6.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
+    <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
 
   <Import Project="..\..\Fody.props" />

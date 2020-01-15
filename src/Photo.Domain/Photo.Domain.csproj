@@ -17,7 +17,7 @@
     <AssemblyName>EagleEye.Photo.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CqrsLite" Version="0.29.0" />
+    <PackageReference Include="CqrsLite" />
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="SimpleInjector" />
   </ItemGroup>

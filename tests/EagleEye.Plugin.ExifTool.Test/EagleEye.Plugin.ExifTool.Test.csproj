@@ -25,7 +25,7 @@
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="MedallionShell" Version="1.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>
