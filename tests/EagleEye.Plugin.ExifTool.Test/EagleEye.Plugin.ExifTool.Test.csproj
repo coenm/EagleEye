@@ -11,7 +11,7 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <!-- https://stackoverflow.com/questions/45469143/net-core-msb3277-found-conflicts-between-different-versions -->
     <!-- Found conflicts between different versions of "System.Numerics.Vectors" that could not be resolved. -->
@@ -21,7 +21,6 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
     <AssemblyName>EagleEye.Plugin.ExifTool.Test</AssemblyName>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />

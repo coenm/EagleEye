@@ -7,16 +7,15 @@
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
-    
+
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
-    <AssemblyName>Photo.ReadModel.SearchEngineLucene</AssemblyName>    
+    <AssemblyName>Photo.ReadModel.SearchEngineLucene</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />

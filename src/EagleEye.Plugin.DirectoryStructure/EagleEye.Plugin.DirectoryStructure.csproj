@@ -7,16 +7,15 @@
 
     <!-- do not update version, this will be done using appvayor -->
     <Version>1.1.1</Version>
-    
+
     <!-- required for coverage-->
     <!-- see https://github.com/OpenCover/opencover/issues/636 -->
     <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>      
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
     <AssemblyName>EagleEye.Plugin.DirectoryStructure</AssemblyName>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
@@ -34,11 +33,11 @@
   </ItemGroup>
 
   <Import Project="..\..\Fody.props" />
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Update="Costura.Fody" Version="3.3.3" />
     <PackageReference Update="Fody" Version="4.2.1">

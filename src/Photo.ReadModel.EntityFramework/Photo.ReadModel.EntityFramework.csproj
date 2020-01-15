@@ -16,7 +16,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
@@ -35,14 +34,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  
-  <Import Project="..\..\Fody.props" /> 
-  
+
+  <Import Project="..\..\Fody.props" />
+
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
-  </ItemGroup> 
-  
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Update="Costura.Fody" Version="3.3.3" />
     <PackageReference Update="Fody" Version="4.2.1">
