@@ -23,10 +23,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="FakeItEasy" Version="5.1.1" />
-    <PackageReference Include="FakeItEasy.Analyzer.CSharp" Version="5.1.1" />
-    <PackageReference Include="FluentAssertions" Version="5.7.0" />
-    <PackageReference Include="FluentAssertions.Analyzers" Version="0.11.4" />
     <PackageReference Include="JetBrains.DotMemoryUnit" Version="3.0.20171219.105559" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="NLog" Version="4.6.6" />
