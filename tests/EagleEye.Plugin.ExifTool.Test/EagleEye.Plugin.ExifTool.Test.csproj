@@ -15,8 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExifTool\**" />
+    <EmbeddedResource Remove="ExifTool\**" />
+    <None Remove="ExifTool\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="MedallionShell" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 

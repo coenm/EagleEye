@@ -1,11 +1,13 @@
 ﻿namespace EagleEye.ExifTool.Test
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
     using EagleEye.ExifTool;
+    using EagleEye.ExifTool.ExifTool;
     using EagleEye.TestHelper;
     using FluentAssertions;
     using Newtonsoft.Json.Linq;
@@ -25,7 +27,19 @@
             imageFilename.Should().NotBeNullOrEmpty();
 
             var config = new StaticExiftoolConfig(ExifToolSystemConfiguration.ExifToolExecutable);
-            sut = new ExifToolAdapter(config);
+            var defaultArgs = new List<string>
+            {
+                ExifToolArguments.CommonArgs,
+                ExifToolArguments.JsonOutput,
+
+                // format coordinates as signed decimals.
+                "-c",
+                "%+.6f",
+
+                "-struct",
+                "-g", // group
+            };
+            sut = new ExifToolAdapter(config, defaultArgs);
         }
 
         [Fact]
