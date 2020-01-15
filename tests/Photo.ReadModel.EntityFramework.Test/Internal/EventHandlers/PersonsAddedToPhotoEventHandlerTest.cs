@@ -94,7 +94,7 @@
                 new[] { "alice", "bob", "Calvin", "Darion", "Eve" });
 
             A.CallTo(eagleEyeRepository).MustHaveHappenedTwiceExactly();
-            updatedPhotos.Should().HaveCount(1);
+            updatedPhotos.Should().ContainSingle();
             updatedPhotos.Single().Should().BeEquivalentTo(expectedPhoto);
         }
     }

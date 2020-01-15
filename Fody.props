@@ -1,17 +1,17 @@
 <Project>
 
-  <ItemGroup>
-    <PackageReference Include="Costura.Fody" />
-    <PackageReference Include="Fody">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <!-- 2019-02-27: Appveyor/ubuntu doesn't seem to get Fody working at this point.. -->
-  <ItemGroup Condition="'$(OS)'!='Unix'">
-    <PackageReference Update="Costura.Fody" Version="3.3.2" />
-    <PackageReference Update="Fody" Version="4.0.2" />
-  </ItemGroup>
+  <!-- <ItemGroup> -->
+  <!--   <PackageReference Include="Costura.Fody" /> -->
+  <!--   <PackageReference Include="Fody"> -->
+  <!--     <PrivateAssets>all</PrivateAssets> -->
+  <!--     <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets> -->
+  <!--   </PackageReference> -->
+  <!-- </ItemGroup> -->
+  <!-- -->
+  <!-- ~1~ 2019-02-27: Appveyor/ubuntu doesn't seem to get Fody working at this point.. @1@ -->
+  <!-- <ItemGroup Condition="'$(OS)'!='Unix'"> -->
+  <!--   <PackageReference Update="Costura.Fody" Version="4.1.0" /> -->
+  <!--   <PackageReference Update="Fody" Version="6.0.6" /> -->
+  <!-- </ItemGroup> -->
 
 </Project>

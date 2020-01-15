@@ -15,16 +15,16 @@
     {
         [Fact]
         [Xunit.Categories.Exploratory]
-        public async Task SelectUsingPredicateFromEmptyDatabaseShouldReturnNothingTest()
+        public void SelectUsingPredicateFromEmptyDatabaseShouldReturnNothingTest()
         {
             // arrange
             using (var ctx = CreateMediaItemDbContext())
             {
                 // act
-                var result = await ctx.Photos
+                var result = ctx.Photos
+                    .AsEnumerable()
                     .Where(item => item.EventTimestamp <= DateTimeOffset.UtcNow)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                    .ToList();
 
                 // assert
                 result.Should().BeEmpty();
@@ -46,10 +46,10 @@
                 await ctx.SaveChangesAsync().ConfigureAwait(false);
 
                 // act
-                var result = await ctx.Photos
+                var result = ctx.Photos
+                    .AsEnumerable()
                     .Where(item => item.EventTimestamp <= DateTimeOffset.UtcNow)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                    .ToList();
 
                 // assert
                 result.Should().BeEquivalentTo(new[] { item1, item2 }.AsEnumerable());

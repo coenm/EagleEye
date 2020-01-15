@@ -217,7 +217,6 @@
             finally
             {
                 searcherManager.Release(searcher);
-                searcher = null; // Don't use searcher after this point!
             }
 
             throw new Exception("No items found.");
@@ -297,7 +296,6 @@
             finally
             {
                 searcherManager.Release(searcher);
-                searcher = null; // Don't use searcher after this point!
             }
 
             return results;
@@ -317,7 +315,7 @@
             if (string.IsNullOrWhiteSpace(dateString))
                 return null;
 
-            var precision = default(Model.TimestampPrecision);
+            Model.TimestampPrecision precision;
 
             switch (dateString.Length)
             {

@@ -62,12 +62,12 @@
             var dbSaveHappenedService = container.GetInstance<ISimilarityDbContextSavedEventPublisher>();
 
             var initializers = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
-            initializers.Should().HaveCount(1);
+            initializers.Should().ContainSingle();
             var initializer = initializers.Single();
             await initializer.InitializeAsync();
 
             var processes = container.GetAllInstances<IEagleEyeProcess>().ToArray();
-            processes.Should().HaveCount(1);
+            processes.Should().ContainSingle();
             var process = processes.Single();
             process.Start();
 
