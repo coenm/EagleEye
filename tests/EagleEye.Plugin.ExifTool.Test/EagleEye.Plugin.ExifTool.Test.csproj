@@ -29,4 +29,8 @@
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExifTool\" />
+  </ItemGroup>
+
 </Project>

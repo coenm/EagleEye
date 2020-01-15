@@ -1,25 +1,27 @@
 ﻿namespace EagleEye.ExifTool
 {
     using System;
-    using System.Threading;
+    using System.Collections.Generic;
+    using System.Text;
     using System.Threading.Tasks;
 
+    using CoenM.ExifToolLib;
     using Dawn;
-    using EagleEye.ExifTool.ExifTool;
     using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     internal class ExifToolAdapter : IExifTool
     {
-        private readonly OpenedExifTool exiftoolImpl;
+        private readonly AsyncExifTool exiftoolImpl;
 
         public ExifToolAdapter([NotNull] IExifToolConfig config)
         {
             Guard.Argument(config, nameof(config)).NotNull();
 
-            exiftoolImpl = new OpenedExifTool(config.ExifToolExe);
-            exiftoolImpl.Init();
+            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, Environment.NewLine, new List<string>());
+            exiftoolImpl = new AsyncExifTool(exiftoolConfig);
+            exiftoolImpl.Initialize();
         }
 
         public async Task<JObject> GetMetadataAsync(string filename)
@@ -46,10 +48,7 @@
 
         public void Dispose()
         {
-            exiftoolImpl
-                .DisposeAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token)
-                .GetAwaiter()
-                .GetResult();
+            exiftoolImpl.Dispose();
         }
     }
 }

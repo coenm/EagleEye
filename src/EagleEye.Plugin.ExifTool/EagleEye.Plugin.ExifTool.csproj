@@ -8,10 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoenM.AsyncExifTool" />
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="MedallionShell" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Nito.AsyncEx" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
