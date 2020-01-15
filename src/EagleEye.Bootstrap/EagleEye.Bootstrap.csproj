@@ -1,42 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.Bootstrap</RootNamespace>
+  </PropertyGroup>
 
-    <!-- do not update version, this will be done using appvayor -->
-    <Version>1.1.1</Version>
-    
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>    
-  </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
   <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CqrsLite" Version="0.29.0" />
-    <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
-    <PackageReference Include="MimeTypes" Version="1.1.0">
+    <PackageReference Include="CqrsLite" />
+    <PackageReference Include="Dawn.Guard" />
+    <PackageReference Include="MimeTypes">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NLog" Version="4.6.6" />
-    <PackageReference Include="SimpleInjector" Version="4.6.2" />
-    <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="SimpleInjector" />
+    <PackageReference Include="SimpleInjector.Packaging" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\EagleEye.EventStore.NEventStoreAdapter\EagleEye.EventStore.NEventStoreAdapter.csproj" />

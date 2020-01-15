@@ -4,51 +4,22 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.Photo.ReadModel.EntityFramework</RootNamespace>
-
-    <!-- do not update version, this will be done using appvayor -->
-    <Version>1.1.1</Version>
-
-    <!-- required for coverage-->
-    <!-- see https://github.com/OpenCover/opencover/issues/636 -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
     <AssemblyName>Photo.ReadModel.EntityFramework</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
-    <PackageReference Include="CqrsLite" Version="0.29.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
-    <PackageReference Include="NLog" Version="4.6.6" />
-    <PackageReference Include="SimpleInjector" Version="4.6.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Dawn.Guard" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="CqrsLite" />
+    <PackageReference Include="SimpleInjector" />
   </ItemGroup>
-  
-  <Import Project="..\..\Fody.props" /> 
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Photo.Domain\Photo.Domain.csproj" />
-  </ItemGroup> 
-  
-  <ItemGroup>
-    <PackageReference Update="Costura.Fody" Version="3.3.3" />
-    <PackageReference Update="Fody" Version="4.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
+
+  <Import Project="..\..\Fody.props" />
 
 </Project>
