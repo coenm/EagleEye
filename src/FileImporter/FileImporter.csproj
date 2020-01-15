@@ -27,12 +27,12 @@
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
     <PackageReference Include="CommandLineParser" Version="2.5.0" />
     <PackageReference Include="CqrsLite" Version="0.29.0" />
-    <PackageReference Include="Dawn.Guard" Version="1.8.0" />
+    <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
     <PackageReference Include="NetMQ" Version="4.0.0.207" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="ShellProgressBar" Version="4.2.0" />
-    <PackageReference Include="SimpleInjector" Version="4.6.2" />
+    <PackageReference Include="SimpleInjector" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

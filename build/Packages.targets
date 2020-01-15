@@ -10,6 +10,9 @@
   <!--Need to be opted in -->
   <ItemGroup>
   
+	<PackageReference Update="SimpleInjector" Version="4.6.2" />
+	<PackageReference Update="Dawn.Guard" Version="1.10.0" />
+  
     <!-- xunit -->
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />

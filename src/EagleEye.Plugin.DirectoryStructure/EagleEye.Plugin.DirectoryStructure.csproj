@@ -21,8 +21,8 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dawn.Guard" Version="1.8.0" />
-    <PackageReference Include="SimpleInjector" Version="4.6.2" />
+    <PackageReference Include="Dawn.Guard" />
+    <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
