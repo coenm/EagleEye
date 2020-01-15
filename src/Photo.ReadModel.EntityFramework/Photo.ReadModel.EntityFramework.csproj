@@ -14,12 +14,6 @@
     <DebugSymbols>True</DebugSymbols>
     <AssemblyName>Photo.ReadModel.EntityFramework</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
@@ -27,10 +21,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
     <PackageReference Include="CqrsLite" Version="0.29.0" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <Import Project="..\..\Fody.props" />

@@ -13,15 +13,9 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CoenM.Encoding.Z85e" Version="1.2.1" />
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
@@ -33,10 +27,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="ShellProgressBar" Version="4.2.0" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="System.Memory" Version="4.5.3" />
   </ItemGroup>
 

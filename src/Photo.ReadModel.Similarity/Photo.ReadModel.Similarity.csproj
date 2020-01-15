@@ -14,13 +14,6 @@
     <DebugSymbols>True</DebugSymbols>
     <AssemblyName>Photo.ReadModel.Similarity</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Hangfire.Core" Version="1.7.5" />
@@ -31,10 +24,6 @@
     <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
     <PackageReference Include="CqrsLite" Version="0.29.0" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <Import Project="..\..\Fody.props" />

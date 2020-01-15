@@ -14,13 +14,6 @@
     <DebugSymbols>True</DebugSymbols>
     <AssemblyName>Photo.ReadModel.SearchEngineLucene</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="CqrsLite" Version="0.29.0" />
     <PackageReference Include="Dawn.Guard" />
@@ -36,10 +29,6 @@
     <PackageReference Include="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
     <PackageReference Include="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
     <PackageReference Include="SimpleInjector" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

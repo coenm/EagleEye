@@ -13,12 +13,6 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CqrsLite" Version="0.29.0" />
     <PackageReference Include="Dawn.Guard" />
@@ -30,10 +24,6 @@
     <PackageReference Include="NLog" Version="4.6.6" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />

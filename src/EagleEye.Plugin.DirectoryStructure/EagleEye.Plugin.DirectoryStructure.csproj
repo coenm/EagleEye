@@ -14,20 +14,12 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\EagleEye.ruleset</CodeAnalysisRuleSet>
     <AssemblyName>EagleEye.Plugin.DirectoryStructure</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" Version="4.6.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <Import Project="..\..\Fody.props" />
