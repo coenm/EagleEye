@@ -15,8 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExifTool\**" />
+    <EmbeddedResource Remove="ExifTool\**" />
+    <None Remove="ExifTool\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="MedallionShell" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
@@ -27,10 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\EagleEye.Plugin.ExifTool\EagleEye.Plugin.ExifTool.csproj" />
     <ProjectReference Include="..\TestHelper\TestHelper.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ExifTool\" />
   </ItemGroup>
 
 </Project>

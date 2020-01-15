@@ -15,11 +15,11 @@
     {
         private readonly AsyncExifTool exiftoolImpl;
 
-        public ExifToolAdapter([NotNull] IExifToolConfig config)
+        public ExifToolAdapter([NotNull] IExifToolConfig config, [CanBeNull] IReadOnlyCollection<string> defaultArgs)
         {
             Guard.Argument(config, nameof(config)).NotNull();
 
-            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, Environment.NewLine, new List<string>());
+            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, Environment.NewLine, defaultArgs);
             exiftoolImpl = new AsyncExifTool(exiftoolConfig);
             exiftoolImpl.Initialize();
         }
