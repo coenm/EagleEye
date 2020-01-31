@@ -21,7 +21,7 @@
     <PackageReference Update="SimpleInjector.Packaging" Version="4.9.0" />
     <PackageReference Update="Dawn.Guard" Version="1.10.0" />
     <PackageReference Update="CqrsLite" Version="0.29.0" />
-    <PackageReference Update="MetadataExtractor" Version="2.2.0" />
+    <PackageReference Update="MetadataExtractor" Version="2.3.0" />
     <PackageReference Update="NetMQ" Version="4.0.0.207" />
     <PackageReference Update="CommandLineParser" Version="2.7.82" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
@@ -46,7 +46,7 @@
     <PackageReference Update="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
 
     <!-- hangfire -->
-    <PackageReference Update="Hangfire.Core" Version="1.7.8" />
+    <PackageReference Update="Hangfire.Core" Version="1.7.9" />
     <PackageReference Update="Hangfire.MemoryStorage" Version="1.6.3" />
     <PackageReference Update="Hangfire.SQLite" Version="1.4.2" />
 
@@ -65,8 +65,8 @@
 
     <!--Unittesting-->
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Update="FakeItEasy" Version="5.5.0" />
-    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="5.3.0" />
+    <PackageReference Update="FakeItEasy" Version="6.0.0" />
+    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
     <PackageReference Update="FluentAssertions" Version="5.10.0" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
 
