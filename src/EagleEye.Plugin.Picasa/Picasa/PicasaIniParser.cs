@@ -44,9 +44,10 @@
                         if (singleCoordinateAndKey.Length != 2)
                             continue;
 
+                        var coordinate = GetRelativeCoordinates(singleCoordinateAndKey[0]);
                         var personName = GetName(singleCoordinateAndKey[1], contacts);
                         if (!string.IsNullOrWhiteSpace(personName))
-                            fileWithPersons.AddPerson(new PicasaPerson(personName));
+                            fileWithPersons.AddPerson(new PicasaPerson(personName, coordinate));
                     }
                 }
 
@@ -54,6 +55,49 @@
             }
 
             return result;
+        }
+
+        private static RelativeRegion GetRelativeCoordinates(string rect64)
+        {
+            const int expectedLength = 7 + 16 + 1;
+            if (rect64 == null)
+                return null;
+            if (rect64.Length != expectedLength)
+                return null;
+            if (!rect64.StartsWith("rect64("))
+                return null;
+            if (!rect64.EndsWith(")"))
+                return null;
+
+            var left = FromString(rect64, 0 + 7);
+            var top = FromString(rect64, 4 + 7);
+            var right = FromString(rect64, 8 + 7);
+            var bottom = FromString(rect64, 12 + 7);
+
+            var relativeLeft = (float)left / (float)ushort.MaxValue;
+            var relativeTop = (float)top / (float)ushort.MaxValue;
+            var relativeRight = (float)right / (float)ushort.MaxValue;
+            var relativeBottom = (float)bottom / (float)ushort.MaxValue;
+
+            return new RelativeRegion(relativeLeft, relativeTop, relativeRight, relativeBottom);
+        }
+
+        private static ushort FromString(string input, int startIndex)
+        {
+            var bytes = StringToByteArray(input.Substring(startIndex, 4));
+
+            if (BitConverter.IsLittleEndian)
+                bytes = bytes.Reverse().ToArray();
+
+            return BitConverter.ToUInt16(bytes, 0);
+        }
+
+        private static byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                .Where(x => x % 2 == 0)
+                .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                .ToArray();
         }
 
         private static string GetName(string key, IniData contacts)
