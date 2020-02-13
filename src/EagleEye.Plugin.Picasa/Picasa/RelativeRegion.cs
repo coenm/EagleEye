@@ -1,6 +1,9 @@
 ﻿namespace EagleEye.Picasa.Picasa
 {
-    public class RelativeRegion
+    /// <summary>
+    /// From Relative to absolute region, multiply the left and right with the width of the picture, and the top and bottom with the height.
+    /// </summary>
+    public struct RelativeRegion
     {
         public RelativeRegion(float left, float top, float right, float bottom)
         {
