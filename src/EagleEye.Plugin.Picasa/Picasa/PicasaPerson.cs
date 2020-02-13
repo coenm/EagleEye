@@ -7,7 +7,7 @@
 
     public class PicasaPerson : IEquatable<PicasaPerson>
     {
-        public PicasaPerson([NotNull] string name, [CanBeNull] RelativeRegion region = null)
+        public PicasaPerson([NotNull] string name, [CanBeNull] RelativeRegion? region = null)
         {
             Guard.Argument(name, nameof(name)).NotNull().NotWhiteSpace();
             Name = name;
@@ -16,7 +16,7 @@
 
         public string Name { get; }
 
-        [CanBeNull] public RelativeRegion Region { get; private set; }
+        [CanBeNull] public RelativeRegion? Region { get; private set; }
 
         public bool Equals(PicasaPerson other)
         {

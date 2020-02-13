@@ -57,7 +57,7 @@
             return result;
         }
 
-        private static RelativeRegion DecodeRect64ToRelativeCoordinates(string rect64)
+        private static RelativeRegion? DecodeRect64ToRelativeCoordinates(string rect64)
         {
             const int expectedLength = 7 + 16 + 1;
             if (rect64 == null)
