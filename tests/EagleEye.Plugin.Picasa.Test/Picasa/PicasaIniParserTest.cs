@@ -45,9 +45,9 @@ backuphash=11571";
                 // assert
                 var expectedResult = new List<FileWithPersons>
                                          {
-                                             new FileWithPersons("pica 1.jpg", "Calvin", "David", "Alice"),
-                                             new FileWithPersons("photo 2.jpg", "Alice", "Bob"),
-                                             new FileWithPersons("nice photo.jpg", "Alice", "Eve Jackson"),
+                                             new FileWithPersons("pica 1.jpg", new PicasaPerson("Calvin"), new PicasaPerson("David"), new PicasaPerson("Alice")),
+                                             new FileWithPersons("photo 2.jpg", new PicasaPerson("Alice"), new PicasaPerson("Bob")),
+                                             new FileWithPersons("nice photo.jpg", new PicasaPerson("Alice"), new PicasaPerson("Eve Jackson")),
                                          };
 
                 result.Should().BeEquivalentTo(expectedResult);

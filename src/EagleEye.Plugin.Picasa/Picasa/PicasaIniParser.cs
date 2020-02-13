@@ -46,7 +46,7 @@
 
                         var personName = GetName(singleCoordinateAndKey[1], contacts);
                         if (!string.IsNullOrWhiteSpace(personName))
-                            fileWithPersons.AddPerson(personName);
+                            fileWithPersons.AddPerson(new PicasaPerson(personName));
                     }
                 }
 

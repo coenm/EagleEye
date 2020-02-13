@@ -5,9 +5,9 @@
 
     public class FileWithPersons
     {
-        private readonly List<string> persons;
+        private readonly List<PicasaPerson> persons;
 
-        public FileWithPersons(string filename, params string[] persons)
+        public FileWithPersons(string filename, params PicasaPerson[] persons)
         {
             Filename = filename;
             this.persons = persons.ToList();
@@ -15,9 +15,9 @@
 
         public string Filename { get; }
 
-        public IEnumerable<string> Persons => persons.AsReadOnly();
+        public IEnumerable<PicasaPerson> Persons => persons.AsReadOnly();
 
-        public void AddPerson(string person)
+        public void AddPerson(PicasaPerson person)
         {
             if (persons.Contains(person))
                 return;
@@ -32,7 +32,7 @@
                 return result + "no persons.";
 
             result += "persons:";
-            result = Persons.Aggregate(result, (current, person) => current + " " + person + ",");
+            result = Persons.Aggregate(result, (current, person) => current + " " + person.Name + ",");
             return result.Substring(0, result.Length - 1);
         }
     }

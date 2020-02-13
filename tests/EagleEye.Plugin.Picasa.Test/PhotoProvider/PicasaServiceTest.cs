@@ -65,11 +65,11 @@
         public async Task GetDataShouldUsePicasaIniFileToGetPersonDataTest()
         {
             // arrange
-            var expectedResult = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
+            var expectedResult = new FileWithPersons("image.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Nelson Mandela"));
             var fileWithPersonsList = new[]
                                           {
-                                              new FileWithPersons("imageA.jpg", "Alice", "Bob"),
-                                              new FileWithPersons("imageC.jpg", "Stephen Hawking", "Alice", "Bob"),
+                                              new FileWithPersons("imageA.jpg", new PicasaPerson("Alice"), new PicasaPerson("Bob")),
+                                              new FileWithPersons("imageC.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Alice"), new PicasaPerson("Bob")),
                                               expectedResult,
                                           };
             sut.SetGetFileAndPersonDataImplementation(stream =>
@@ -93,9 +93,9 @@
             var mreSimulateTaskDuration = new ManualResetEventSlim(false);
             var methodInvokedCounter = 0;
 
-            var dataImageA = new FileWithPersons("imageA.jpg", "Alice", "Bob");
-            var dataImageB = new FileWithPersons("image.jpg", "Stephen Hawking", "Nelson Mandela");
-            var dataImageC = new FileWithPersons("imageC.jpg", "Stephen Hawking", "Alice", "Bob");
+            var dataImageA = new FileWithPersons("imageA.jpg", new PicasaPerson("Alice"), new PicasaPerson("Bob"));
+            var dataImageB = new FileWithPersons("image.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Nelson Mandela"));
+            var dataImageC = new FileWithPersons("imageC.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Alice"), new PicasaPerson("Bob"));
             sut.SetGetFileAndPersonDataImplementation(_ =>
                                                        {
                                                            methodInvokedCounter++;
