@@ -44,7 +44,7 @@
                         if (singleCoordinateAndKey.Length != 2)
                             continue;
 
-                        var coordinate = GetRelativeCoordinates(singleCoordinateAndKey[0]);
+                        var coordinate = DecodeRect64ToRelativeCoordinates(singleCoordinateAndKey[0]);
                         var personName = GetName(singleCoordinateAndKey[1], contacts);
                         if (!string.IsNullOrWhiteSpace(personName))
                             fileWithPersons.AddPerson(new PicasaPerson(personName, coordinate));
@@ -57,7 +57,7 @@
             return result;
         }
 
-        private static RelativeRegion GetRelativeCoordinates(string rect64)
+        private static RelativeRegion DecodeRect64ToRelativeCoordinates(string rect64)
         {
             const int expectedLength = 7 + 16 + 1;
             if (rect64 == null)
