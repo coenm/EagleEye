@@ -19,7 +19,7 @@
         {
             Guard.Argument(config, nameof(config)).NotNull();
 
-            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, Environment.NewLine, defaultArgs);
+            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, defaultArgs);
             exiftoolImpl = new AsyncExifTool(exiftoolConfig);
             exiftoolImpl.Initialize();
         }
