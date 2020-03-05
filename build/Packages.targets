@@ -12,14 +12,18 @@
   </ItemGroup>
 
   <!--Need to be opted in -->
-  <ItemGroup>
 
+  <PropertyGroup>
+    <LuceneNetVersion>4.8.0-beta00007</LuceneNetVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
     <PackageReference Update="CoenM.AsyncExifTool" Version="1.0.1-beta0002" />
     <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
     <PackageReference Update="SimpleInjector" Version="4.9.0" />
     <PackageReference Update="SimpleInjector.Packaging" Version="4.9.0" />
-    <PackageReference Update="Dawn.Guard" Version="1.10.0" />
+    <PackageReference Update="Dawn.Guard" Version="1.11.0" />
     <PackageReference Update="CqrsLite" Version="0.29.0" />
     <PackageReference Update="MetadataExtractor" Version="2.3.0" />
     <PackageReference Update="NetMQ" Version="4.0.0.207" />
@@ -33,17 +37,17 @@
     <PackageReference Update="Microsoft.Data.Sqlite" Version="3.1.1" />
 
     <!-- lucene -->
-    <PackageReference Update="Lucene.Net" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Expressions" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Facet" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Join" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Memory" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Misc" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Queries" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.QueryParser" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Spatial" Version="4.8.0-beta00005" />
-    <PackageReference Update="Lucene.Net.Suggest" Version="4.8.0-beta00005" />
+    <PackageReference Update="Lucene.Net" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Analysis.Common" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Expressions" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Facet" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Join" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Memory" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Misc" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Queries" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.QueryParser" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Spatial" Version="$(LuceneNetVersion)" />
+    <PackageReference Update="Lucene.Net.Suggest" Version="$(LuceneNetVersion)" />
 
     <!-- hangfire -->
     <PackageReference Update="Hangfire.Core" Version="1.7.9" />
