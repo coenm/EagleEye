@@ -21,7 +21,7 @@ $destination = (join-path $CurrentDir $exiftoolZipFilename)
 
 if ( !(Test-Path $destination) )
 {
-	$source = "http://www.sno.phy.queensu.ca/~phil/exiftool/" + $exiftoolZipFilename
+	$source = "https://exiftool.org/" + $exiftoolZipFilename
 	Write-Host "Downloading exiftool to " + $destination
 	Write-Host " - Exiftool location: " $source
 	
