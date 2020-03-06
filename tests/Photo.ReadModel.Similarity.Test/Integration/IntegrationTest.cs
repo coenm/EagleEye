@@ -13,21 +13,18 @@
     using EagleEye.Photo.ReadModel.Similarity.Interface;
     using EagleEye.Photo.ReadModel.Similarity.Interface.Model;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
-    using EagleEye.TestHelper;
+    using EagleEye.TestHelper.XUnit.Facts;
     using FakeItEasy;
     using FakeItEasy.Sdk;
     using FluentAssertions;
     using SimpleInjector;
-    using Xunit;
     using Xunit.Abstractions;
 
     public class IntegrationTest
     {
-        private const string ExistingImageFilename = "1.jpg";
         private readonly ITestOutputHelper writer;
         private readonly IDateTimeService dateTimeService;
         private readonly Container container;
-        private readonly IFileService fileService;
         private readonly DateTime dtNow;
 
         public IntegrationTest(Xunit.Abstractions.ITestOutputHelper writer)
@@ -38,7 +35,6 @@
             dtNow = new DateTime(2000, 1, 2, 3, 4, 5);
             A.CallTo(() => dateTimeService.Now).Returns(dtNow);
             RegisterExternalDependencies(container);
-            fileService = A.Fake<IFileService>();
 
             EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(
                container,
@@ -49,11 +45,6 @@
             RegisterCqrsLiteStuff(container);
 
             container.Verify();
-
-            A.CallTo(() => fileService.OpenRead(ExistingImageFilename))
-             .ReturnsLazily(call => EagleEye.TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename));
-
-            TestImages.ReadRelativeImageFile(ExistingImageFilename).Should().NotBeNull("This testsuite relies on this.");
         }
 
         [ConditionalHostFact(TestHost.Local, "Fragile on AppVeyor")]
