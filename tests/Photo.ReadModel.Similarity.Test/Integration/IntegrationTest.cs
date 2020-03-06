@@ -56,7 +56,7 @@
             TestImages.ReadRelativeImageFile(ExistingImageFilename).Should().NotBeNull("This testsuite relies on this.");
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHost.Local, "Fragile on AppVeyor")]
         public async Task EnablePlugin_And_ProvideHashesForImage()
         {
             var dbSaveHappenedService = container.GetInstance<ISimilarityDbContextSavedEventPublisher>();
