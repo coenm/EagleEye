@@ -21,20 +21,20 @@
     <PackageReference Update="CoenM.AsyncExifTool" Version="1.0.1-beta0002" />
     <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0003" />
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
-    <PackageReference Update="SimpleInjector" Version="4.9.0" />
-    <PackageReference Update="SimpleInjector.Packaging" Version="4.9.0" />
+    <PackageReference Update="SimpleInjector" Version="4.9.1" />
+    <PackageReference Update="SimpleInjector.Packaging" Version="4.9.1" />
     <PackageReference Update="Dawn.Guard" Version="1.11.0" />
     <PackageReference Update="CqrsLite" Version="0.29.0" />
     <PackageReference Update="MetadataExtractor" Version="2.3.0" />
     <PackageReference Update="NetMQ" Version="4.0.0.207" />
     <PackageReference Update="CommandLineParser" Version="2.7.82" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Update="ShellProgressBar" Version="4.3.0" />
+    <PackageReference Update="ShellProgressBar" Version="5.0.0" />
     <PackageReference Update="System.Memory" Version="4.5.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.2" />
+    <PackageReference Update="Microsoft.Data.Sqlite" Version="3.1.2" />
     <PackageReference Update="MimeTypes" Version="1.1.0" />
-    <PackageReference Update="Microsoft.Data.Sqlite" Version="3.1.1" />
 
     <!-- lucene -->
     <PackageReference Update="Lucene.Net" Version="$(LuceneNetVersion)" />
@@ -51,7 +51,7 @@
 
     <!-- hangfire -->
     <PackageReference Update="Hangfire.Core" Version="1.7.9" />
-    <PackageReference Update="Hangfire.MemoryStorage" Version="1.6.3" />
+    <PackageReference Update="Hangfire.MemoryStorage" Version="1.7.0" />
     <PackageReference Update="Hangfire.SQLite" Version="1.4.2" />
 
     <!-- NEventStore -->
@@ -71,7 +71,7 @@
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Update="FakeItEasy" Version="6.0.0" />
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
-    <PackageReference Update="FluentAssertions" Version="5.10.0" />
+    <PackageReference Update="FluentAssertions" Version="5.10.2" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
 
     <!--Test coverage -->
