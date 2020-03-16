@@ -64,7 +64,7 @@
             Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
 
             using (var stream = fileService.OpenRead(filename))
-            using (var image = Image.Load(stream))
+            using (var image = Image.Load<Rgba32>(stream))
             {
                 var result = CalculateImageHash(image);
                 return new ReadOnlyMemory<byte>(result);

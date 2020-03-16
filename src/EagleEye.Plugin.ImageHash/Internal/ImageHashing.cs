@@ -77,7 +77,7 @@
         {
             try
             {
-                return Image.Load(input);
+                return Image.Load<Rgba32>(input);
             }
             catch (Exception e)
             {
