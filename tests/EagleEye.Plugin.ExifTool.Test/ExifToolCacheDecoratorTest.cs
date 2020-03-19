@@ -10,7 +10,7 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    public class ExifToolCacheDecoratorTest : IDisposable
+    public class ExifToolCacheDecoratorTest : IAsyncLifetime /*IAsyncDisposable*/
     {
         private const string Filename1 = "FILENAME1.jpg";
         private const string Filename2 = "FILENAME2.jpg";
@@ -42,21 +42,26 @@
             sut = new ExifToolCacheDecorator(decoratee, dateTimeService);
         }
 
-        public void Dispose()
+        public Task InitializeAsync()
         {
-            sut?.Dispose();
+            return Task.CompletedTask;
+        }
+
+        public Task DisposeAsync()
+        {
+            return sut?.DisposeAsync().AsTask();
         }
 
         [Fact]
-        public void Dispose_ShouldCallDecorateeDisposeTest()
+        public async Task DisposeAsync_ShouldCallDecorateeDisposeTest()
         {
             // arrange
 
             // act
-            sut.Dispose();
+            await sut.DisposeAsync();
 
             // assert
-            A.CallTo(() => decoratee.Dispose()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => decoratee.DisposeAsync()).MustHaveHappenedOnceExactly();
         }
 
         [Fact]

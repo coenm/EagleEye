@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>EagleEye.ExifTool</RootNamespace>
     <AssemblyName>EagleEye.Plugin.ExifTool</AssemblyName>
   </PropertyGroup>
