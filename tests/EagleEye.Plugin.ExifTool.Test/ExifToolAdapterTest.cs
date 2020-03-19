@@ -13,7 +13,7 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    public class ExifToolAdapterTest : IDisposable
+    public class ExifToolAdapterTest : IAsyncLifetime /*IAsyncDisposable*/
     {
         private readonly string imageFilename;
         private readonly ExifToolAdapter sut;
@@ -43,11 +43,11 @@
         }
 
         [Fact]
-        public void SutCanBeDisposedMultipleTimesTest()
+        public async Task SutCanBeDisposedMultipleTimesTest()
         {
             // should not throw.
-            sut.Dispose();
-            sut.Dispose();
+            await sut.DisposeAsync();
+            await sut.DisposeAsync();
         }
 
         [Fact]
@@ -66,9 +66,17 @@
             exif.ToString().Should().Be(expectedExif.ConvertToOsString());
         }
 
-        public void Dispose()
+        public Task InitializeAsync()
         {
-            sut?.Dispose();
+            return Task.CompletedTask;
+        }
+
+        public Task DisposeAsync()
+        {
+            if (sut == null)
+                return Task.CompletedTask;
+
+            return sut.DisposeAsync().AsTask();
         }
     }
 }

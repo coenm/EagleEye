@@ -53,9 +53,9 @@
             return await currentTask.ConfigureAwait(false);
         }
 
-        public void Dispose()
+        public ValueTask DisposeAsync()
         {
-            exiftool.Dispose();
+            return exiftool.DisposeAsync();
         }
     }
 }

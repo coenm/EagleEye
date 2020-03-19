@@ -46,9 +46,9 @@
             }
         }
 
-        public void Dispose()
+        public ValueTask DisposeAsync()
         {
-            exiftoolImpl.Dispose();
+           return exiftoolImpl.DisposeAsync();
         }
     }
 }
