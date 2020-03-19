@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <RootNamespace>EagleEye.Photo.ReadModel.SearchEngineLucene</RootNamespace>
     <AssemblyName>Photo.ReadModel.SearchEngineLucene</AssemblyName>
   </PropertyGroup>
