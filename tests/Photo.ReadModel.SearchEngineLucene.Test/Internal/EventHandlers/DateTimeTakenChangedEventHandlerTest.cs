@@ -23,7 +23,7 @@
         {
             photoIndex = A.Fake<IPhotoIndex>();
             sut = new DateTimeTakenChangedEventHandler(photoIndex);
-            eventDateTime = new EagleEye.Photo.Domain.Aggregates.Timestamp(2021, 7, 25, 23, 55, 32);
+            eventDateTime = EagleEye.Photo.Domain.Aggregates.Timestamp.Create(2021, 7, 25, 23, 55, 32);
         }
 
         [Fact]

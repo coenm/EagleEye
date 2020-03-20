@@ -74,6 +74,7 @@
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
     <PackageReference Update="FluentAssertions" Version="5.10.2" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
+    <PackageReference Update="Verify.Xunit" Version="1.24.1" />
 
     <!--Test coverage -->
     <PackageReference Update="coverlet.msbuild" Version="2.8.0" />

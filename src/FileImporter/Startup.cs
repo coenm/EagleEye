@@ -17,7 +17,6 @@
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.EventStore.NEventStoreAdapter;
     using EagleEye.FileImporter.Indexing;
-    using EagleEye.FileImporter.Infrastructure.ContentResolver;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
     using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
