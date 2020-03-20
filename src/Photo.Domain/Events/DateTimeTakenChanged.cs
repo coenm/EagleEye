@@ -7,12 +7,16 @@
 
     public class DateTimeTakenChanged : EventBase
     {
+        public DateTimeTakenChanged()
+        {
+        }
+
         public DateTimeTakenChanged(Guid id, Timestamp timestamp)
         {
             Id = id;
             DateTimeTaken = timestamp;
         }
 
-        public Timestamp DateTimeTaken { get; }
+        public Timestamp DateTimeTaken { get; set; }
     }
 }

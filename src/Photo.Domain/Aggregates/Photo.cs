@@ -141,7 +141,7 @@
 
         public void SetDateTimeTaken(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
         {
-            var ts = new Timestamp(year, month, day, hour, minutes, seconds);
+            var ts = Timestamp.Create(year, month, day, hour, minutes, seconds);
 
             if (ts.Equals(dateTimeTaken))
                 return;

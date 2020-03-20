@@ -4,19 +4,29 @@
 
     public class Timestamp : IEquatable<Timestamp>
     {
-        public Timestamp(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
+        public DateTime Value { get; set; }
+
+        public TimestampPrecision Precision { get; set; }
+
+        public static bool operator ==(Timestamp x, Timestamp y) => x?.Equals(y) ?? y is null;
+
+        public static bool operator !=(Timestamp x, Timestamp y) => !(x == y);
+
+        public static Timestamp Create(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
         {
             if (year < 0)
                 throw new ArgumentOutOfRangeException(nameof(year), "Only after year 0.");
+
+            var result = new Timestamp();
 
             if (month == null)
             {
                 if (year == 0)
                     throw new ArgumentOutOfRangeException(nameof(year), "Can only be 0 when month is given.");
 
-                Value = new DateTime(year, 1, 1);
-                Precision = TimestampPrecision.Year;
-                return;
+                result.Value = new DateTime(year, 1, 1);
+                result.Precision = TimestampPrecision.Year;
+                return result;
             }
 
             if (month < 1 || month > 12)
@@ -24,9 +34,9 @@
 
             if (day == null)
             {
-                Value = new DateTime(year, month.Value, 1);
-                Precision = TimestampPrecision.Month;
-                return;
+                result.Value = new DateTime(year, month.Value, 1);
+                result.Precision = TimestampPrecision.Month;
+                return result;
             }
 
             if (day < 1)
@@ -37,9 +47,9 @@
 
             if (hour == null)
             {
-                Value = new DateTime(year, month.Value, day.Value);
-                Precision = TimestampPrecision.Day;
-                return;
+                result.Value = new DateTime(year, month.Value, day.Value);
+                result.Precision = TimestampPrecision.Day;
+                return result;
             }
 
             if (hour < 0 || hour > 23)
@@ -47,9 +57,9 @@
 
             if (minutes == null)
             {
-                Value = new DateTime(year, month.Value, day.Value, hour.Value, 0, 0);
-                Precision = TimestampPrecision.Hour;
-                return;
+                result.Value = new DateTime(year, month.Value, day.Value, hour.Value, 0, 0);
+                result.Precision = TimestampPrecision.Hour;
+                return result;
             }
 
             if (minutes < 0 || minutes > 59)
@@ -57,30 +67,17 @@
 
             if (seconds == null)
             {
-                Value = new DateTime(year, month.Value, day.Value, hour.Value, minutes.Value, 0);
-                Precision = TimestampPrecision.Minute;
-                return;
+                result.Value = new DateTime(year, month.Value, day.Value, hour.Value, minutes.Value, 0);
+                result.Precision = TimestampPrecision.Minute;
+                return result;
             }
 
             if (seconds < 0 || seconds > 59)
                 throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            Value = new DateTime(year, month.Value, day.Value, hour.Value, minutes.Value, seconds.Value);
-            Precision = TimestampPrecision.Second;
-        }
-
-        public DateTime Value { get; }
-
-        public TimestampPrecision Precision { get; }
-
-        public static bool operator ==(Timestamp x, Timestamp y)
-        {
-            return x?.Equals(y) ?? y is null;
-        }
-
-        public static bool operator !=(Timestamp x, Timestamp y)
-        {
-            return !(x == y);
+            result.Value = new DateTime(year, month.Value, day.Value, hour.Value, minutes.Value, seconds.Value);
+            result.Precision = TimestampPrecision.Second;
+            return result;
         }
 
         public static Timestamp FromDateTime(DateTime value)
@@ -88,7 +85,7 @@
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            return new Timestamp(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+            return Create(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
         }
 
         public override string ToString()

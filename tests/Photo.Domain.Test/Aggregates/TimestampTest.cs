@@ -17,7 +17,7 @@
             // arrange
 
             // act
-            var sut = new Timestamp(1);
+            var sut = Timestamp.Create(1);
 
             // assert
             sut.Precision.Should().Be(TimestampPrecision.Year);
@@ -31,7 +31,7 @@
             // arrange
 
             // act
-            var sut = new Timestamp(2, 9);
+            var sut = Timestamp.Create(2, 9);
 
             // assert
             sut.Precision.Should().Be(TimestampPrecision.Month);
@@ -45,7 +45,7 @@
             // arrange
 
             // act
-            var sut = new Timestamp(2, 9, 16);
+            var sut = Timestamp.Create(2, 9, 16);
 
             // assert
             sut.Precision.Should().Be(TimestampPrecision.Day);
@@ -59,7 +59,7 @@
             // arrange
 
             // act
-            var sut = new Timestamp(2, 9, 16, 21);
+            var sut = Timestamp.Create(2, 9, 16, 21);
 
             // assert
             sut.Precision.Should().Be(TimestampPrecision.Hour);
@@ -73,7 +73,7 @@
             // arrange
 
             // act
-            var sut = new Timestamp(2, 9, 16, 21, 54);
+            var sut = Timestamp.Create(2, 9, 16, 21, 54);
 
             // assert
             sut.Precision.Should().Be(TimestampPrecision.Minute);
@@ -87,7 +87,7 @@
             // arrange
 
             // act
-            var sut = new Timestamp(2, 9, 16, 21, 54, 28);
+            var sut = Timestamp.Create(2, 9, 16, 21, 54, 28);
 
             // assert
             sut.Precision.Should().Be(TimestampPrecision.Second);
@@ -115,7 +115,7 @@
             // arrange
 
             // act
-            Action act = () => _ = new Timestamp(year, month, day, hour, minutes, seconds);
+            Action act = () => _ = Timestamp.Create(year, month, day, hour, minutes, seconds);
 
             // assert
             act.Should().Throw<ArgumentOutOfRangeException>();
@@ -125,8 +125,8 @@
         public void Equals_ShouldBeTrue_WhenSameValuesAreUsed()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
-            var t2 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
+            var t2 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1.Equals(t2);
@@ -139,7 +139,7 @@
         public void Equals_ShouldBeTrue_WhenSameObjectIsUsed()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1.Equals(t1);
@@ -152,7 +152,7 @@
         public void Equals_ShouldBeFalse_WhenEqualsNull()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
             Timestamp t2 = null;
 
             // act
@@ -167,8 +167,8 @@
         public void EqualsObject_ShouldBeTrue_WhenSameValuesAreUsed()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
-            object t2 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
+            object t2 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1.Equals(t2);
@@ -181,7 +181,7 @@
         public void EqualsObject_ShouldBeTrue_WhenSameObjectIsUsed()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1.Equals((object)t1);
@@ -194,7 +194,7 @@
         public void EqualsObject_ShouldBeFalse_WhenEqualsNull()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1.Equals((object)null);
@@ -207,8 +207,8 @@
         public void OperatorEquals_ShouldBeTrue_WhenSameValuesAreUsed()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
-            var t2 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
+            var t2 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1 == t2;
@@ -221,7 +221,7 @@
         public void OperatorEquals_ShouldBeTrue_WhenSameObjectIsUsed()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             #pragma warning disable 252,253
@@ -236,7 +236,7 @@
         public void OperatorEquals_ShouldBeFalse_WhenEqualsNull()
         {
             // arrange
-            var t1 = new Timestamp(2010, 11, 09, 23);
+            var t1 = Timestamp.Create(2010, 11, 09, 23);
 
             // act
             var result = t1 == (Timestamp)null;

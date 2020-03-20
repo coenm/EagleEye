@@ -1,8 +1,6 @@
 ﻿namespace EagleEye.Photo.Domain.Test.CommandHandlers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -66,7 +64,7 @@
                 .And.NotBeEmpty()
                 .And.HaveCount(1)
                 .And.AllBeOfType<DateTimeTakenChanged>()
-                .And.BeEquivalentTo(new DateTimeTakenChanged(photoGuid, new Timestamp(2012, 11, 24)));
+                .And.BeEquivalentTo(new DateTimeTakenChanged(photoGuid, Timestamp.Create(2012, 11, 24)));
             A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustNotHaveHappened();
             A.CallTo(() => session.Commit(ct)).MustHaveHappenedOnceExactly();
         }

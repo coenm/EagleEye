@@ -323,7 +323,7 @@
             //                    {
             //                        //return fi.Identifier.StartsWith(options.PathPrefix);
             //                    };
-                              //            }
+            //            }
 
             Startup.ConfigureContainer(
                 container,
