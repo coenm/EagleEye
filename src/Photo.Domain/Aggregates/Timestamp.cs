@@ -8,15 +8,9 @@
 
         public TimestampPrecision Precision { get; set; }
 
-        public static bool operator ==(Timestamp x, Timestamp y)
-        {
-            return x?.Equals(y) ?? y is null;
-        }
+        public static bool operator ==(Timestamp x, Timestamp y) => x?.Equals(y) ?? y is null;
 
-        public static bool operator !=(Timestamp x, Timestamp y)
-        {
-            return !(x == y);
-        }
+        public static bool operator !=(Timestamp x, Timestamp y) => !(x == y);
 
         public static Timestamp Create(int year, int? month = null, int? day = null, int? hour = null, int? minutes = null, int? seconds = null)
         {
