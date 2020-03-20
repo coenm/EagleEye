@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     using CommandLine;
     using CQRSlite.Commands;
@@ -47,43 +48,51 @@
 
         private static Container container;
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             container = new Container();
-            Run(args);
+            await Run(args);
         }
 
-        public static void Run(string[] args)
+        private static async Task Run(string[] args)
         {
-            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions, ListReadModelOptions>(args)
-                .WithParsed<UpdateSimilarityOptions>(UpdateSimilarity)
-                .WithParsed<SearchDuplicateFileOptions>(SearchDuplicateFile)
-                .WithParsed<AutoDeleteSameFile>(AutoDeleteSameFile)
-                .WithParsed<MoveOptions>(MoveFiles)
-                .WithParsed<UpdateIndexOptions>(UpdateIndex)
-                .WithParsed<CheckIndexOptions>(CheckIndex)
-                .WithParsed<SearchOptions>(Search)
-                .WithParsed<ListReadModelOptions>(ListAllReadModel)
-                .WithParsed<FindAndHandleDuplicatesOptions>(FindAndProcessDuplicates)
-                .WithNotParsed(errs =>
-                {
-                    Console.WriteLine("Could not parse the arguments.");
-                });
+            Task task = Task.CompletedTask;
 
-            Console.WriteLine("Done.");
-            // Console.WriteLine("Done. Press enter to exit.");
-            // Console.ReadLine();
+            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions, ListReadModelOptions>(args)
+                .WithParsed<UpdateSimilarityOptions>(option => task = UpdateSimilarity(option))
+                .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
+                .WithParsed<AutoDeleteSameFile>(option => task = AutoDeleteSameFile(option))
+                .WithParsed<MoveOptions>(option => task = MoveFiles(option))
+                .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
+                .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
+                .WithParsed<SearchOptions>(async option => await Search(option))
+                .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
+                .WithParsed<FindAndHandleDuplicatesOptions>(option => task = FindAndProcessDuplicates(option))
+                .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
+
+            try
+            {
+                await task;
+                Console.WriteLine("Done.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error occurred. Press enter to exit.");
+                Console.WriteLine(e);
+                Console.ReadLine();
+            }
         }
 
-        private static void ListAllReadModel(ListReadModelOptions opts)
+        private static async Task ListAllReadModel(ListReadModelOptions opts)
         {
             Startup.ConfigureContainer(
                 container,
                 opts.IndexFile,
                 Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
                 Startup.CreateFullFilename("EventStore.db"));
-            Startup.InitializeAllServices(container).GetAwaiter().GetResult(); // todo
+            await Startup.InitializeAllServices(container);
             Startup.StartServices(container);
+
             try
             {
                 var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
@@ -91,32 +100,32 @@
                 var search = container.GetInstance<IReadModel>();
 
                 var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
-                dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+                await dispatcher.Send(command, CancellationToken.None);
 
                 var commandDateTime = new SetDateTimeTakenCommand(command.Id, null, Timestamp.Create(2010, 04));
-                dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
+                await dispatcher.Send(commandDateTime);
 
                 ICommand tagCommand = new RemoveTagsFromPhotoCommand(command.Id, null, "zoo");
-                dispatcher.Send(tagCommand).GetAwaiter().GetResult();
+                await dispatcher.Send(tagCommand);
 
                 tagCommand = new AddTagsToPhotoCommand(command.Id, null, "zooo");
-                dispatcher.Send(tagCommand).GetAwaiter().GetResult();
+                await dispatcher.Send(tagCommand);
 
                 var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 324);
-                dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
+                await dispatcher.Send(commandUpdateHash);
 
                 command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
-                dispatcher.Send(command, CancellationToken.None).GetAwaiter().GetResult();
+                await dispatcher.Send(command, CancellationToken.None);
 
                 commandDateTime = new SetDateTimeTakenCommand(command.Id, null, Timestamp.Create(2010, 04));
-                dispatcher.Send(commandDateTime).GetAwaiter().GetResult();
+                await dispatcher.Send(commandDateTime);
 
                 commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 2343434);
-                dispatcher.Send(commandUpdateHash).GetAwaiter().GetResult();
+                await dispatcher.Send(commandUpdateHash);
 
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
 
-                var result = readModelFacade.GetAllPhotosAsync().GetAwaiter().GetResult();
+                var result = await readModelFacade.GetAllPhotosAsync();
 
                 if (result == null)
                 {
@@ -213,12 +222,12 @@
             container.Dispose();
         }
 
-        private static void UpdateSimilarity(UpdateSimilarityOptions options)
+        private static Task UpdateSimilarity(UpdateSimilarityOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.IndexFile))
             {
                 Console.WriteLine("IndexFile file cannot be empty.");
-                return;
+                return Task.CompletedTask;
             }
 
             Startup.ConfigureContainer(
@@ -253,10 +262,13 @@
             }
 
             Console.WriteLine("Done!");
+            return Task.CompletedTask;
         }
 
-        private static void SearchDuplicateFile(SearchDuplicateFileOptions options)
+        private static async Task SearchDuplicateFile(SearchDuplicateFileOptions options)
         {
+            await Task.Yield(); // stupid ;-)
+
             if (string.IsNullOrWhiteSpace(options.OriginalImageFile))
             {
                 Console.WriteLine("Image file cannot be empty.");
@@ -384,8 +396,10 @@
             Console.WriteLine("DONE.");
         }
 
-        private static void AutoDeleteSameFile(AutoDeleteSameFile options)
+        private static async Task AutoDeleteSameFile(AutoDeleteSameFile options)
         {
+            await Task.Yield(); // stupid ;-)
+
             Startup.ConfigureContainer(
                 container,
                 options.IndexFile,
@@ -456,8 +470,10 @@
             }
         }
 
-        private static void MoveFiles(MoveOptions options)
+        private static async Task MoveFiles(MoveOptions options)
         {
+            await Task.Yield(); // stupid ;-)
+
             if (string.IsNullOrWhiteSpace(options.Directory))
             {
                 Console.WriteLine("Cannot be null or empty");
@@ -520,8 +536,10 @@
             }
         }
 
-        private static void Search(SearchOptions options)
+        private static async Task Search(SearchOptions options)
         {
+            await Task.Yield(); // stupid ;-)
+
             Startup.ConfigureContainer(
                 container,
                 options.IndexFile,
@@ -609,11 +627,13 @@
         /// <summary>
         /// Remove index if file does not exist anymore.
         /// </summary>
-        private static void CheckIndex(CheckIndexOptions options)
+        private static async Task CheckIndex(CheckIndexOptions options)
         {
             // todo input validation
-//            var diRoot = new DirectoryInfo(RootPath).FullName;
-//            var rp = RootPath;
+            //            var diRoot = new DirectoryInfo(RootPath).FullName;
+            //            var rp = RootPath;
+
+            await Task.Yield(); // stupid ;-)
 
             Startup.ConfigureContainer(
                 container,
@@ -642,8 +662,10 @@
             }
         }
 
-        private static void UpdateIndex(UpdateIndexOptions options)
+        private static async Task UpdateIndex(UpdateIndexOptions options)
         {
+            await Task.Yield(); // stupid ;-)
+
             // todo input validation
             if (!Directory.Exists(options.DirectoryToIndex))
             {
@@ -715,8 +737,10 @@
             return result;
         }
 
-        private static void FindAndProcessDuplicates(FindAndHandleDuplicatesOptions opts)
+        private static async Task FindAndProcessDuplicates(FindAndHandleDuplicatesOptions opts)
         {
+            await Task.Yield(); // stupid ;-)
+
             if (string.IsNullOrWhiteSpace(opts.IndexFile))
                 ShowError($"Indexfile cannot be null or empty.");
 
