@@ -1,3 +1,28 @@
+# exiftool config file
+%Image::ExifTool::UserDefined = (
+   'Image::ExifTool::XMP::Main' => {
+       CoenmEaglEeye => {
+           SubDirectory => {
+               TagTable => 'Image::ExifTool::UserDefined::CoenmEaglEeye',
+           },
+       },
+   },
+);
+
+%Image::ExifTool::UserDefined::CoenmEaglEeye = (
+   GROUPS        => { 0 => 'XMP', 1 => 'XMP-CoenmEaglEeye', 2 => 'Other' },
+   # (use whatever URI you want in the next line)
+   NAMESPACE     => { 'CoenmEaglEeye' => 'http://ns.github.com/coenm/EagleEye/1.0/' },
+   WRITABLE      => 'string',
+  
+   ForeignKeys => {
+       Name => 'ForeignKeys', # (specified only to get proper capitalization)
+       Writable => 'string',
+       List => 'Bag',
+   },
+);
+1;  #end 
+
 # NOTE: All tag names used in the following tables are case sensitive.
 
 # The %Image::ExifTool::UserDefined hash defines new tags to be added
