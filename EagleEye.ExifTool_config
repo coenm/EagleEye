@@ -3,37 +3,44 @@
     'Image::ExifTool::XMP::Main' => {
         CoenmEaglEeye => {
             SubDirectory => {
-                TagTable => 'Image::ExifTool::UserDefined::CoenmEaglEye',
+                TagTable => 'Image::ExifTool::UserDefined::CoenmEagleEye',
             },
         },
     },
 );
 
-%Image::ExifTool::UserDefined::CoenmEaglEye = (
-    GROUPS => { 0 => 'XMP', 1 => 'XMP-CoenmEaglEye', 2 => 'Other' },
-    NAMESPACE => { 'CoenmEaglEye' => 'http://ns.github.com/coenm/EagleEye/1.0/' }, # just an uri
+%Image::ExifTool::UserDefined::CoenmEagleEye = (
+    GROUPS => { 0 => 'XMP', 1 => 'XMP-CoenmEagleEye', 2 => 'Other' },
+    NAMESPACE => { 'CoenmEagleEye' => 'http://ns.github.com/coenm/EagleEye/1.0/' }, # just an uri
     WRITABLE => 'string',
 
+    # Original filehash before adding and fixing metadata.
+    # exiftool -config EagleEye.ExifTool_config -xmp-CoenmEagleEye:FileHash="abcDef.-:+=^!/*?&<>()[]{}@%$#"
     FileHash => {
         Name => 'FileHash', # (specified only to get proper capitalization)
         Writable => 'string', # Z85 encoded sha256
     },
 
-    RawImageHash => {
-        Name => 'RawImageHash',
-        Writable => 'string', # Z85 encoded sha256
-    },
-
+    # Generated file id. Multiple files can have same id (due to file copying, probably not by coincidence).
     Id => {
         Name => 'Id',
         Writable => 'string', # C# Guid.ToString() 
     },
 
+    # Timestamp of adding this metadata
     Timestamp => {
         Name => 'Timestamp',
         Writable => 'date', # "YYYY:mm:dd HH:MM:SS[.ss][+/-HH:MM]"
     },
 
+    # Raw image hash. Can be multiple due to cropping, changing colors etc. etc.
+    RawImageHash => {
+        Name => 'RawImageHash',
+        Writable => 'string', # Z85 encoded sha256
+        List => 'Bag', 
+    },
+
+    # EagleEye metadata. json serialized.
     Metadata => {
         Name => 'Metadata',
         Writable => 'string',
@@ -41,3 +48,5 @@
     },
 );
 1;  #end 
+
+ 
