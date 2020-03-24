@@ -1,24 +1,43 @@
 # exiftool config file
 %Image::ExifTool::UserDefined = (
-   'Image::ExifTool::XMP::Main' => {
-       CoenmEaglEeye => {
-           SubDirectory => {
-               TagTable => 'Image::ExifTool::UserDefined::CoenmEaglEye',
-           },
-       },
-   },
+    'Image::ExifTool::XMP::Main' => {
+        CoenmEaglEeye => {
+            SubDirectory => {
+                TagTable => 'Image::ExifTool::UserDefined::CoenmEaglEye',
+            },
+        },
+    },
 );
 
 %Image::ExifTool::UserDefined::CoenmEaglEye = (
-   GROUPS        => { 0 => 'XMP', 1 => 'XMP-CoenmEaglEye', 2 => 'Other' },
-   # (use whatever URI you want in the next line)
-   NAMESPACE     => { 'CoenmEaglEye' => 'http://ns.github.com/coenm/EagleEye/1.0/' },
-   WRITABLE      => 'string',
-  
-   ForeignKeys => {
-       Name => 'ForeignKeys', # (specified only to get proper capitalization)
-       Writable => 'string', #'integer'
-       List => 'Bag', #    List => 'Seq', # structures may also be elements of a list
-   },
+    GROUPS => { 0 => 'XMP', 1 => 'XMP-CoenmEaglEye', 2 => 'Other' },
+    NAMESPACE => { 'CoenmEaglEye' => 'http://ns.github.com/coenm/EagleEye/1.0/' }, # just an uri
+    WRITABLE => 'string',
+
+    FileHash => {
+        Name => 'FileHash', # (specified only to get proper capitalization)
+        Writable => 'string', # Z85 encoded sha256
+    },
+
+    RawImageHash => {
+        Name => 'RawImageHash',
+        Writable => 'string', # Z85 encoded sha256
+    },
+
+    Id => {
+        Name => 'Id',
+        Writable => 'string', # C# Guid.ToString() 
+    },
+
+    Timestamp => {
+        Name => 'Timestamp',
+        Writable => 'date', # "YYYY:mm:dd HH:MM:SS[.ss][+/-HH:MM]"
+    },
+
+    Metadata => {
+        Name => 'Metadata',
+        Writable => 'string',
+        List => 'Bag', #    List => 'Seq', # structures may also be elements of a list
+    },
 );
 1;  #end 
