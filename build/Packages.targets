@@ -3,8 +3,8 @@
 
   <!--Include in every project -->
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" PrivateAssets="all" />
-    <PackageReference Include="NLog" Version="4.6.8" />
+    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
+    <PackageReference Include="NLog" Version="4.7.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -15,7 +15,8 @@
 
   <PropertyGroup>
     <VersionLuceneNet>4.8.0-beta00007</VersionLuceneNet>
-    <VersionSimpleInjector>4.9.1</VersionSimpleInjector>
+    <VersionSimpleInjector>4.9.2</VersionSimpleInjector>
+    <VersionMicrosoftEntityFrameworkAndData>3.1.3</VersionMicrosoftEntityFrameworkAndData>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,17 +25,17 @@
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
     <PackageReference Update="SimpleInjector" Version="$(VersionSimpleInjector)" />
     <PackageReference Update="SimpleInjector.Packaging" Version="$(VersionSimpleInjector)" />
-    <PackageReference Update="Dawn.Guard" Version="1.11.0" />
-    <PackageReference Update="CqrsLite" Version="1.31.0" />
-    <PackageReference Update="MetadataExtractor" Version="2.3.0" />
+    <PackageReference Update="Dawn.Guard" Version="1.12.0" />
+    <PackageReference Update="CqrsLite" Version="1.31.1" />
+    <PackageReference Update="MetadataExtractor" Version="2.3.1" />
     <PackageReference Update="NetMQ" Version="4.0.0.207" />
     <PackageReference Update="CommandLineParser" Version="2.7.82" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Update="ShellProgressBar" Version="5.0.0" />
-    <PackageReference Update="System.Memory" Version="4.5.3" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.2" />
-    <PackageReference Update="Microsoft.Data.Sqlite" Version="3.1.2" />
+    <PackageReference Update="System.Memory" Version="4.5.4" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="$(VersionMicrosoftEntityFrameworkAndData)" />
+    <PackageReference Update="Microsoft.Data.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" />
     <PackageReference Update="MimeTypes" Version="1.1.0" />
 
     <!-- lucene -->
@@ -51,7 +52,7 @@
     <PackageReference Update="Lucene.Net.Suggest" Version="$(VersionLuceneNet)" />
 
     <!-- hangfire -->
-    <PackageReference Update="Hangfire.Core" Version="1.7.9" />
+    <PackageReference Update="Hangfire.Core" Version="1.7.11" />
     <PackageReference Update="Hangfire.MemoryStorage" Version="1.7.0" />
     <PackageReference Update="Hangfire.SQLite" Version="1.4.2" />
 
@@ -69,16 +70,16 @@
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
 
     <!--Unittesting-->
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Update="FakeItEasy" Version="6.0.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Update="FakeItEasy" Version="6.0.1" />
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
-    <PackageReference Update="FluentAssertions" Version="5.10.2" />
+    <PackageReference Update="FluentAssertions" Version="5.10.3" />
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
-    <PackageReference Update="Verify.Xunit" Version="1.24.1" />
+    <PackageReference Update="Verify.Xunit" Version="1.33.0" />
 
     <!--Test coverage -->
-    <PackageReference Update="coverlet.msbuild" Version="2.8.0" />
-    <PackageReference Update="coverlet.collector" Version="1.2.0" />
+    <PackageReference Update="coverlet.msbuild" Version="2.8.1" />
+    <PackageReference Update="coverlet.collector" Version="1.2.1" />
 
   </ItemGroup>
 
