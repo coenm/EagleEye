@@ -3,9 +3,9 @@
 
   <!--Include in every project -->
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
-    <PackageReference Include="NLog" Version="4.7.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" IsImplicitlyDefined="true"/>
+    <PackageReference Include="NLog" Version="4.7.0" IsImplicitlyDefined="true"/>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" IsImplicitlyDefined="true">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -20,66 +20,66 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="CoenM.AsyncExifTool" Version="1.0.1" />
-    <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0004" />
-    <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" />
-    <PackageReference Update="SimpleInjector" Version="$(VersionSimpleInjector)" />
-    <PackageReference Update="SimpleInjector.Packaging" Version="$(VersionSimpleInjector)" />
-    <PackageReference Update="Dawn.Guard" Version="1.12.0" />
-    <PackageReference Update="CqrsLite" Version="1.31.1" />
-    <PackageReference Update="MetadataExtractor" Version="2.3.1" />
-    <PackageReference Update="NetMQ" Version="4.0.0.207" />
-    <PackageReference Update="CommandLineParser" Version="2.7.82" />
-    <PackageReference Update="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Update="ShellProgressBar" Version="5.0.0" />
-    <PackageReference Update="System.Memory" Version="4.5.4" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="$(VersionMicrosoftEntityFrameworkAndData)" />
-    <PackageReference Update="Microsoft.Data.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" />
-    <PackageReference Update="MimeTypes" Version="1.1.0" />
+    <PackageReference Update="CoenM.AsyncExifTool" Version="1.0.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0004" IsImplicitlyDefined="true"/>
+    <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="SimpleInjector" Version="$(VersionSimpleInjector)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="SimpleInjector.Packaging" Version="$(VersionSimpleInjector)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Dawn.Guard" Version="1.12.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="CqrsLite" Version="1.31.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="MetadataExtractor" Version="2.3.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="NetMQ" Version="4.0.0.207" IsImplicitlyDefined="true"/>
+    <PackageReference Update="CommandLineParser" Version="2.7.82" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Newtonsoft.Json" Version="12.0.3" IsImplicitlyDefined="true"/>
+    <PackageReference Update="ShellProgressBar" Version="5.0.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="System.Memory" Version="4.5.4" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="$(VersionMicrosoftEntityFrameworkAndData)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Microsoft.Data.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="MimeTypes" Version="1.1.0" IsImplicitlyDefined="true"/>
 
     <!-- lucene -->
-    <PackageReference Update="Lucene.Net" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Analysis.Common" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Expressions" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Facet" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Join" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Memory" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Misc" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Queries" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.QueryParser" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Spatial" Version="$(VersionLuceneNet)" />
-    <PackageReference Update="Lucene.Net.Suggest" Version="$(VersionLuceneNet)" />
+    <PackageReference Update="Lucene.Net" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Analysis.Common" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Expressions" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Facet" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Join" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Memory" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Misc" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Queries" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.QueryParser" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Spatial" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Lucene.Net.Suggest" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
 
     <!-- hangfire -->
-    <PackageReference Update="Hangfire.Core" Version="1.7.11" />
-    <PackageReference Update="Hangfire.MemoryStorage" Version="1.7.0" />
-    <PackageReference Update="Hangfire.SQLite" Version="1.4.2" />
+    <PackageReference Update="Hangfire.Core" Version="1.7.11" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Hangfire.MemoryStorage" Version="1.7.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Hangfire.SQLite" Version="1.4.2" IsImplicitlyDefined="true"/>
 
     <!-- NEventStore -->
-    <PackageReference Update="NEventStore" Version="7.0.0" />
-    <PackageReference Update="NEventStore.Persistence.Sql" Version="7.2.0" />
-    <PackageReference Update="NEventStore.Serialization.Json" Version="7.0.0" />
+    <PackageReference Update="NEventStore" Version="7.0.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="NEventStore.Persistence.Sql" Version="7.2.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="NEventStore.Serialization.Json" Version="7.0.0" IsImplicitlyDefined="true"/>
 
     <!-- xunit -->
-    <PackageReference Update="xunit" Version="2.4.1" />
-    <PackageReference Update="xunit.analyzers" Version="0.10.0" />
-    <PackageReference Update="xunit.categories" Version="2.0.4" />
-    <PackageReference Update="xunit.runner.console" Version="2.4.1" />
-    <PackageReference Update="xunit.runner.reporters" Version="2.4.1" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Update="xunit" Version="2.4.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="xunit.analyzers" Version="0.10.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="xunit.categories" Version="2.0.4" IsImplicitlyDefined="true"/>
+    <PackageReference Update="xunit.runner.console" Version="2.4.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="xunit.runner.reporters" Version="2.4.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" IsImplicitlyDefined="true"/>
 
     <!--Unittesting-->
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-    <PackageReference Update="FakeItEasy" Version="6.0.1" />
-    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" />
-    <PackageReference Update="FluentAssertions" Version="5.10.3" />
-    <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="FakeItEasy" Version="6.0.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="FluentAssertions" Version="5.10.3" IsImplicitlyDefined="true"/>
+    <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" IsImplicitlyDefined="true"/>
     <PackageReference Update="Verify.Xunit" Version="1.33.0" />
 
     <!--Test coverage -->
-    <PackageReference Update="coverlet.msbuild" Version="2.8.1" />
-    <PackageReference Update="coverlet.collector" Version="1.2.1" />
+    <PackageReference Update="coverlet.msbuild" Version="2.8.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="coverlet.collector" Version="1.2.1" IsImplicitlyDefined="true"/>
 
   </ItemGroup>
 
