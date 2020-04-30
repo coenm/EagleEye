@@ -22,6 +22,7 @@
         {
             imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
+                .Where(file => file.EndsWith("1.jpg"))
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
