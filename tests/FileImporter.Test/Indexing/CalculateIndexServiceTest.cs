@@ -1,16 +1,14 @@
 ﻿namespace EagleEye.FileImporter.Test.Indexing
 {
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
-    using EagleEye.FileImporter.Json;
     using EagleEye.ImageHash.PhotoProvider;
     using EagleEye.TestHelper;
-    using FluentAssertions;
     using VerifyXunit;
     using Xunit;
     using Xunit.Abstractions;
@@ -33,7 +31,6 @@
         public Task CalculateIndexOfFilesTest()
         {
             // arrange
-            var expectedResult = JsonEncoding.Deserialize<List<ImageData>>(TestImagesIndex.IndexJson).Select(MapThis);
             var fileService = new RelativeSystemFileService(TestImages.InputImagesDirectoryFullPath);
             var sut = new CalculateIndexService(
                 new FileSha256HashProvider(fileService),
@@ -44,21 +41,7 @@
             var result = sut.CalculateIndex(imageFileNames);
 
             // assert
-            var preparedResult = result.Select(MapThis);
-            preparedResult.Should().BeEquivalentTo(expectedResult);
             return Verify(result);
-        }
-
-        private static dynamic MapThis(ImageData data)
-        {
-            return new
-                       {
-                           MapedIdentifier = data.Identifier,
-                           MapedAverageHash = data.Hashes.AverageHash,
-                           MapedDifferenceHash = data.Hashes.DifferenceHash,
-                           MapedFileHash = data.Hashes.FileHash,
-                           MapedPerceptualHash = data.Hashes.PerceptualHash,
-                       };
         }
 
         /// <summary>
