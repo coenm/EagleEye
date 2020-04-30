@@ -22,7 +22,7 @@
         {
             imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
-                .Where(file => file.EndsWith("1.jpg"))
+                .Where(file => file.Contains("1") || file.Contains("2") || file.Contains("3"))
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }

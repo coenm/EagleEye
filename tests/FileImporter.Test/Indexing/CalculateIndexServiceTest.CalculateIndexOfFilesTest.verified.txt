@@ -8,5 +8,65 @@
       DifferenceHash: 3573764330010097788,
       PerceptualHash: 15585629762494286247
     }
+  },
+  {
+    Identifier: '1_without_metadata.jpg',
+    Hashes: {
+      FileHash: 'u5/QuZANn4YbOJr+w4JsT9bDGW4+SPX80C8dfKPE67w=',
+      ImageHash: 'zR2ka9i35sc2ylfI4GtuCmzO3XkuRg00c8FC1DJgPkg=',
+      AverageHash: 18442214084176449028,
+      DifferenceHash: 3573764330010097788,
+      PerceptualHash: 15585629762494286247
+    }
+  },
+  {
+    Identifier: '1wa.jpg',
+    Hashes: {
+      FileHash: 'UfvWEnN17Q6cPX52xfJTvshfwvaFTejW5g4qnJiPBsQ=',
+      ImageHash: '9Rigfs79zwgspQUlrlvR3xNBc8lb/I9egTBktjyQKEg=',
+      AverageHash: 18442214084176449028,
+      DifferenceHash: 3573764330010097788,
+      PerceptualHash: 15585629762494286247
+    }
+  },
+  {
+    Identifier: '2.jpg',
+    Hashes: {
+      FileHash: '9ZTb+KkMDS5eOS+tAHkFcpjkIEHH4Upjn7MQmA9dJ78=',
+      ImageHash: 'l7IKh9058gfTiyZzGZN3AJj3UFMNQAo1MlUB7za+vW4=',
+      AverageHash: 4093965717081112447,
+      DifferenceHash: 16187753204465006332,
+      PerceptualHash: 11979645924150615927
+    }
+  },
+  {
+    Identifier: '2wa.jpg',
+    Hashes: {
+      FileHash: 'JoiK8qwmb3YPct6hmATcxi1IdniBshnWEgW6tz+5mks=',
+      ImageHash: 'KYB4ItMIGRuzUaQpK6U1Dn+t2RZhjFL7o0m6HrlR+Ic=',
+      AverageHash: 4093965717081112447,
+      DifferenceHash: 17628905085225662206,
+      PerceptualHash: 11979645924150615927
+    }
+  },
+  {
+    Identifier: '3.jpg',
+    Hashes: {
+      FileHash: '0Ve31F+WSrHmFHllVkQOH5QLuDqOaA9g3OoQZVEFmnU=',
+      ImageHash: 'sfH8OGOR3//aTeLqk8Y2g4l50AXtxQEqqTKzDGpZO6E=',
+      AverageHash: 1746901995957518336,
+      DifferenceHash: 17327732025059362952,
+      PerceptualHash: 13994443045429955730
+    }
+  },
+  {
+    Identifier: '3wa.jpg',
+    Hashes: {
+      FileHash: '+qbAPXKUOlxp4Xuubr3bPZXqKKK2sNtZB/MBT4odxuI=',
+      ImageHash: 'RmhxA9EEIDQCTeWuVY5CGq78B3HBcTVlc8DnhE8Zoyo=',
+      AverageHash: 1746901995957518336,
+      DifferenceHash: 17363901559566682248,
+      PerceptualHash: 13994443045429955730
+    }
   }
 ]
