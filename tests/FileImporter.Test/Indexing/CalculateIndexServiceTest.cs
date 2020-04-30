@@ -21,6 +21,7 @@
         {
             imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
+                .Where(x => !x.EndsWith("1_without_metadata.jpg"))
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
