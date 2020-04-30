@@ -68,5 +68,75 @@
       DifferenceHash: 11790867279050390505,
       PerceptualHash: 17998763484001462542
     }
+  },
+  {
+    Identifier: '4.jpg',
+    Hashes: {
+      FileHash: 'xog2WTs6cUSLZTNWFaQzvg+AXSYxBo7YWjJWOm12J7A=',
+      ImageHash: '3fw8slQ+xyvHF/Ripxggr/sGPeCbgxsN3PAauY30260=',
+      AverageHash: 3474298655623479295,
+      DifferenceHash: 7477875751872212224,
+      PerceptualHash: 12415618312693406938
+    }
+  },
+  {
+    Identifier: '4wa.jpg',
+    Hashes: {
+      FileHash: '+SY6u460MJj+v5Vkg2xcSzokfTLyIP67CdG09qCQGNQ=',
+      ImageHash: '+GBv+iAWenO/mARe3ac+9PL41f8OD00DDoNkj6jaoac=',
+      AverageHash: 3474298655623479295,
+      DifferenceHash: 7477875751872211200,
+      PerceptualHash: 12415618312693406938
+    }
+  },
+  {
+    Identifier: '6.jpg',
+    Hashes: {
+      FileHash: 'uts1PiFvxmHu1raRhJISdLcKybLXW2XUTvg8N4YzKLs=',
+      ImageHash: 'ASSN5TLFns/tDE+Tx0HcblNUPxHKZoHEeZK0agPqNA0=',
+      AverageHash: 210451300351,
+      DifferenceHash: 130174362314118373,
+      PerceptualHash: 9456493324026080337
+    }
+  },
+  {
+    Identifier: '6wa.jpg',
+    Hashes: {
+      FileHash: 'Qo0oqPztoIpasFb9C6mgWf29gmoxci0NQX3clQf/i3Y=',
+      ImageHash: '/JitLEKR7cH30P/K6/HmLzj+dvL4pcZvbXSIV8pRqqs=',
+      AverageHash: 210451300351,
+      DifferenceHash: 130174362314118885,
+      PerceptualHash: 9456493324026080337
+    }
+  },
+  {
+    Identifier: '7.jpg',
+    Hashes: {
+      FileHash: 'DRtt5+yaP40otzEpQuUsWKsangEPe+WHXDOQnjM7h20=',
+      ImageHash: '6PI87psoUwKrNeWR60sYGr/P+uBXfex9Ij3CgIV24gk=',
+      AverageHash: 4453327437823,
+      DifferenceHash: 421364555712865764,
+      PerceptualHash: 9456489234212284012
+    }
+  },
+  {
+    Identifier: '7wa.jpg',
+    Hashes: {
+      FileHash: 'yBcJquUAEKrNkrf361Cg73czWc5wueXoLmyJgVL03Tc=',
+      ImageHash: 'WAwoWC0Cc7WCIqyTZIrCc8qyvPF9ne6Zo+n1sB32aAc=',
+      AverageHash: 4453327437823,
+      DifferenceHash: 421364555712882148,
+      PerceptualHash: 9456489234212284012
+    }
+  },
+  {
+    Identifier: '8.jpg',
+    Hashes: {
+      FileHash: 'KpcNNllPeNqVyciLCpsS63RTjRlziTtv99FCguuUf5k=',
+      ImageHash: 'GG4gjDWoiDfBhELpK2x8sF+YozXIGyKSM4/Z5lw5++Y=',
+      AverageHash: 18012702927131052843,
+      DifferenceHash: 11790867279050390505,
+      PerceptualHash: 17998763484001462542
+    }
   }
 ]

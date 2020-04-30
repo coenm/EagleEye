@@ -1,7 +1,10 @@
 ﻿namespace EagleEye.FileImporter.Test.Indexing
 {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
@@ -16,14 +19,13 @@
     public class CalculateIndexServiceTest : VerifyBase
     {
         private readonly string[] imageFileNames;
+        private readonly IComparer<string> comparer = new StupidWindowsAndLinuxDoNotOrderStringsTheSame();
 
         public CalculateIndexServiceTest(ITestOutputHelper output)
             : base(output)
         {
             imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
-                // .Where(file => file.Contains("1") || file.Contains("2") || file.Contains("3"))
-                .Where(file => !file.Contains("1") && !file.Contains("2") && !file.Contains("3"))
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
@@ -42,7 +44,7 @@
             var result = sut.CalculateIndex(imageFileNames);
 
             // assert
-            return Verify(result.OrderBy(x => x.Identifier));
+            return Verify(result.OrderBy(x => x.Identifier, comparer));
         }
 
         /// <summary>
@@ -54,6 +56,20 @@
         {
             var slnDirectoryLength = TestImages.InputImagesDirectoryFullPath.Length;
             return fullFilename.Remove(0, slnDirectoryLength);
+        }
+
+        private class StupidWindowsAndLinuxDoNotOrderStringsTheSame : IComparer<string>
+        {
+            int IComparer<string>.Compare(string x, string y)
+            {
+                if (x == y)
+                    return 0;
+
+                var preparedX = x.Replace('_', '.');
+                var preparedY = y.Replace('_', '.');
+
+                return preparedX.CompareTo(preparedY);
+            }
         }
     }
 }
