@@ -22,7 +22,8 @@
         {
             imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
-                .Where(file => file.Contains("1") || file.Contains("2") || file.Contains("3"))
+                // .Where(file => file.Contains("1") || file.Contains("2") || file.Contains("3"))
+                .Where(file => !file.Contains("1") && !file.Contains("2") && !file.Contains("3"))
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
