@@ -40,7 +40,7 @@
             var result = sut.CalculateIndex(imageFileNames);
 
             // assert
-            return Verify(result);
+            return Verify(result.OrderBy(x => x.Identifier));
         }
 
         /// <summary>

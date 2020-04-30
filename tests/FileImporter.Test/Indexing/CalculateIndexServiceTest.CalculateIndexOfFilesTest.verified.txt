@@ -10,20 +10,20 @@
     }
   },
   {
-    Identifier: '1wa.jpg',
+    Identifier: '1_without_metadata.jpg',
     Hashes: {
-      FileHash: 'UfvWEnN17Q6cPX52xfJTvshfwvaFTejW5g4qnJiPBsQ=',
-      ImageHash: '9Rigfs79zwgspQUlrlvR3xNBc8lb/I9egTBktjyQKEg=',
+      FileHash: 'u5/QuZANn4YbOJr+w4JsT9bDGW4+SPX80C8dfKPE67w=',
+      ImageHash: 'zR2ka9i35sc2ylfI4GtuCmzO3XkuRg00c8FC1DJgPkg=',
       AverageHash: 18442214084176449028,
       DifferenceHash: 3573764330010097788,
       PerceptualHash: 15585629762494286247
     }
   },
   {
-    Identifier: '1_without_metadata.jpg',
+    Identifier: '1wa.jpg',
     Hashes: {
-      FileHash: 'u5/QuZANn4YbOJr+w4JsT9bDGW4+SPX80C8dfKPE67w=',
-      ImageHash: 'zR2ka9i35sc2ylfI4GtuCmzO3XkuRg00c8FC1DJgPkg=',
+      FileHash: 'UfvWEnN17Q6cPX52xfJTvshfwvaFTejW5g4qnJiPBsQ=',
+      ImageHash: '9Rigfs79zwgspQUlrlvR3xNBc8lb/I9egTBktjyQKEg=',
       AverageHash: 18442214084176449028,
       DifferenceHash: 3573764330010097788,
       PerceptualHash: 15585629762494286247
