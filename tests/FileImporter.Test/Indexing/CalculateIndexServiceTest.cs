@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure.ContentResolver;
@@ -11,23 +11,26 @@
     using EagleEye.ImageHash.PhotoProvider;
     using EagleEye.TestHelper;
     using FluentAssertions;
+    using VerifyXunit;
     using Xunit;
+    using Xunit.Abstractions;
 
-    public class CalculateIndexServiceTest
+    public class CalculateIndexServiceTest : VerifyBase
     {
         private readonly string[] imageFileNames;
 
-        public CalculateIndexServiceTest()
+        public CalculateIndexServiceTest(ITestOutputHelper output)
+            : base(output)
         {
             imageFileNames = Directory
                 .GetFiles(TestImages.InputImagesDirectoryFullPath, "*.jpg", SearchOption.AllDirectories)
-                .Where(x => !x.EndsWith("1_without_metadata.jpg"))
+                .Where(filename => !filename.EndsWith("1_without_metadata.jpg"))
                 .Select(ConvertToRelativeFilename)
                 .ToArray();
         }
 
         [Fact]
-        public void CalculateIndexOfFilesTest()
+        public Task CalculateIndexOfFilesTest()
         {
             // arrange
             var expectedResult = JsonEncoding.Deserialize<List<ImageData>>(TestImagesIndex.IndexJson).Select(MapThis);
@@ -43,6 +46,7 @@
             // assert
             var preparedResult = result.Select(MapThis);
             preparedResult.Should().BeEquivalentTo(expectedResult);
+            return Verify(result);
         }
 
         private static dynamic MapThis(ImageData data)
