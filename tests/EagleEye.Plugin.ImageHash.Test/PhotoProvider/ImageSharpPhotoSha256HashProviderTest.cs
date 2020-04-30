@@ -12,6 +12,7 @@
     public class ImageSharpPhotoSha256HashProviderTest
     {
         private const string ExistingImageFilename = "1.jpg";
+        private const string ExistingImageFilenameWithoutMetadata = "1_without_metadata.jpg";
         private readonly ImageSharpPhotoSha256HashProvider sut;
         private readonly IFileService fileService;
 
@@ -20,10 +21,13 @@
             fileService = A.Fake<IFileService>();
             A.CallTo(() => fileService.OpenRead(ExistingImageFilename))
                 .ReturnsLazily(call => TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename));
+            A.CallTo(() => fileService.OpenRead(ExistingImageFilenameWithoutMetadata))
+                .ReturnsLazily(call => TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilenameWithoutMetadata));
 
             sut = new ImageSharpPhotoSha256HashProvider(fileService);
 
             TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilename).Should().NotBeNull();
+            TestHelper.TestImages.ReadRelativeImageFile(ExistingImageFilenameWithoutMetadata).Should().NotBeNull();
         }
 
         [Fact]
@@ -73,6 +77,19 @@
             // assert
             result.Should().NotBeNull();
             CoenM.Encoding.Z85.Encode(result.ToArray()).Should().Be("+]JP}/TH1-hP/ax&a)iqy%H<Ze>cpbBhph)ggipp");
+        }
+
+        [Fact]
+        public async Task ProvideAsync_ShouldReturnSameHash_WhenFileOnlyDiffersInMetadata()
+        {
+            // arrange
+
+            // act
+            var result1 = await sut.ProvideAsync(ExistingImageFilename);
+            var result2 = await sut.ProvideAsync(ExistingImageFilenameWithoutMetadata);
+
+            // assert
+            result1.ToArray().Should().BeEquivalentTo(result2.ToArray());
         }
 
         [Fact]
