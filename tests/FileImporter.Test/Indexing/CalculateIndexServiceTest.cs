@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     using EagleEye.Core.DefaultImplementations.PhotoInformationProviders;
@@ -62,13 +61,18 @@
         {
             int IComparer<string>.Compare(string x, string y)
             {
+                if (x == null)
+                    throw new ArgumentNullException(nameof(x));
+                if (y == null)
+                    throw new ArgumentNullException(nameof(y));
+
                 if (x == y)
                     return 0;
 
                 var preparedX = x.Replace('_', '.');
                 var preparedY = y.Replace('_', '.');
 
-                return preparedX.CompareTo(preparedY);
+                return string.CompareOrdinal(preparedX, preparedY);
             }
         }
     }
