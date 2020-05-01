@@ -15,37 +15,31 @@
     WRITABLE => 'string',
 
     # Original filehash before adding and fixing metadata.
-    # exiftool -config EagleEye.ExifTool_config -xmp-CoenmEagleEye:FileHash="abcDef.-:+=^!/*?&<>()[]{}@%$#"
-    FileHash => {
-        Name => 'FileHash', # (specified only to get proper capitalization)
+    # exiftool -config EagleEye.ExifTool_config -xmp-CoenmEagleEye:EagleEyeFileHash="abcDef.-:+=^!/*?&<>()[]{}@%$#"
+    EagleEyeFileHash => {
+        Name => 'EagleEyeFileHash', # (specified only to get proper capitalization)
         Writable => 'string', # Z85 encoded sha256
     },
 
     # Generated file id. Multiple files can have same id (due to file copying, probably not by coincidence).
-    Id => {
-        Name => 'Id',
+    EagleEyeId => {
+        Name => 'EagleEyeId',
         Writable => 'string', # C# Guid.ToString() 
     },
 
     # Timestamp of adding this metadata
-    Timestamp => {
-        Name => 'Timestamp',
+    EagleEyeTimestamp => {
+        Name => 'EagleEyeTimestamp',
         Writable => 'date', # "YYYY:mm:dd HH:MM:SS[.ss][+/-HH:MM]"
     },
 
     # Raw image hash. Can be multiple due to cropping, changing colors etc. etc.
-    RawImageHash => {
-        Name => 'RawImageHash',
+    EagleEyeRawImageHash => {
+        Name => 'EagleEyeRawImageHash',
         Writable => 'string', # Z85 encoded sha256
         List => 'Bag', 
     },
 
-    # EagleEye metadata. json serialized.
-    Metadata => {
-        Name => 'Metadata',
-        Writable => 'string',
-        List => 'Bag', #    List => 'Seq', # structures may also be elements of a list
-    },
 );
 1;  #end 
 
