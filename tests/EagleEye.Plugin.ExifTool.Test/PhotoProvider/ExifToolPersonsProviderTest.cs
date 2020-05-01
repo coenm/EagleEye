@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
     using System.Collections.Generic;
@@ -12,44 +12,37 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    public class ExifToolTagsProviderTest
+    public class ExifToolPersonsProviderTest
     {
         private const string Filename = "DUMMY";
 
         private const string MetadataXmp = @"
   ""XMP"": {
-    ""Subject"": [
-      ""dog"",
-      ""New York"",
-      ""puppy""
-    ],
+    ""PersonInImage"": [
+	  ""Bob"",
+	  ""Alice"",
+	  ""Stephen Hawking"",
+	  ""Nelson Mandela""
+	]
   },";
 
-        private const string MetadataXmpDc = @"
-  ""XMP-dc"": {
-    ""Subject"": [
-      ""dog"",
-      ""New York"",
-      ""puppy""
-    ],
+        private const string MetadataXmpIptcExt = @"
+  ""XMP-iptcExt"": {
+    ""PersonInImage"": [
+	  ""Bob"",
+	  ""Alice"",
+	  ""Stephen Hawking"",
+	  ""Nelson Mandela""
+	]
   },";
 
-        private const string MetadataIptc = @"
-  ""IPTC"": {
-    ""Keywords"": [
-      ""dog"",
-      ""New York"",
-      ""puppy""
-    ],
-  }";
-
-        private readonly ExifToolTagsProvider sut;
+        private readonly ExifToolPersonsProvider sut;
         private readonly IExifTool exiftool;
 
-        public ExifToolTagsProviderTest()
+        public ExifToolPersonsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
-            sut = new ExifToolTagsProvider(exiftool);
+            sut = new ExifToolPersonsProvider(exiftool);
         }
 
         [Fact]
@@ -79,7 +72,7 @@
         }
 
         [Theory]
-        [InlineData(@"""XMP-dc"": {}")]
+        [InlineData(@"""XMP-iptcExt"": {}")]
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
@@ -95,18 +88,17 @@
 
         [Theory]
         [InlineData(MetadataXmp)]
-        [InlineData(MetadataXmpDc)]
-        [InlineData(MetadataIptc)]
-        [InlineData(MetadataXmp + MetadataIptc)]
-        public async Task ProvideShouldFillTagsTest(string data)
+        [InlineData(MetadataXmpIptcExt)]
+        public async Task ProvideShouldFillPersonsTest(string data)
         {
             // arrange
-            var expectedTags = new List<string>
-                                   {
-                                       "dog",
-                                       "New York",
-                                       "puppy",
-                                   };
+            var expectedPersons = new List<string>
+            {
+                "Bob",
+                "Alice",
+                "Stephen Hawking",
+                "Nelson Mandela",
+            };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
@@ -114,7 +106,7 @@
             var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            result.Should().BeEquivalentTo(expectedTags);
+            result.Should().BeEquivalentTo(expectedPersons);
         }
 
         private static string ConvertToJsonArray(string data)

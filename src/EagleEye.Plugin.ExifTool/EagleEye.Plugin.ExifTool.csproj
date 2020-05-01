@@ -12,6 +12,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" />
+    <PackageReference Include="CoenM.Encoding.Z85e" />
   </ItemGroup>
 
   <ItemGroup>

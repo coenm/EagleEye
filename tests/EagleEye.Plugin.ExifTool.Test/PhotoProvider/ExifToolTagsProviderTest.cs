@@ -1,9 +1,9 @@
-﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Data;
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.PhotoProvider;
     using FakeItEasy;
@@ -12,39 +12,44 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    public class ExifToolGpsProviderTest
+    public class ExifToolTagsProviderTest
     {
         private const string Filename = "DUMMY";
 
-        private const string MetadataGps = @"
-""GPS"": {
-    ""GPSLatitudeRef"": ""North"",
-    ""GPSLatitude"": 40.736072,
-    ""GPSLongitudeRef"": ""West"",
-    ""GPSLongitude"": 73.994293,
+        private const string MetadataXmp = @"
+  ""XMP"": {
+    ""Subject"": [
+      ""dog"",
+      ""New York"",
+      ""puppy""
+    ],
   },";
 
-        private const string MetadataXmpExif = @"
-""XMP-exif"": {
-    ""GPSLatitude"": ""+40.736072"",
-    ""GPSLongitude"": -73.994293,
+        private const string MetadataXmpDc = @"
+  ""XMP-dc"": {
+    ""Subject"": [
+      ""dog"",
+      ""New York"",
+      ""puppy""
+    ],
+  },";
+
+        private const string MetadataIptc = @"
+  ""IPTC"": {
+    ""Keywords"": [
+      ""dog"",
+      ""New York"",
+      ""puppy""
+    ],
   }";
 
-        private const string MetadataComposite = @"
-""Composite"": {
-    ""GPSLatitude"": ""+40.736072"",
-    ""GPSLatitudeRef"": ""North"",
-    ""GPSLongitude"": -73.994293,
-    ""GPSLongitudeRef"": ""West"",
-  }";
-
-        private readonly ExifToolGpsProvider sut;
+        private readonly ExifToolTagsProvider sut;
         private readonly IExifTool exiftool;
 
-        public ExifToolGpsProviderTest()
+        public ExifToolTagsProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
-            sut = new ExifToolGpsProvider(exiftool);
+            sut = new ExifToolTagsProvider(exiftool);
         }
 
         [Fact]
@@ -74,7 +79,7 @@
         }
 
         [Theory]
-        [InlineData(@"""Composite"": {}")]
+        [InlineData(@"""XMP-dc"": {}")]
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
@@ -85,17 +90,23 @@
             var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            result.Should().BeNull();
+            result.Should().BeEmpty();
         }
 
         [Theory]
-        [InlineData(MetadataGps)]
-        [InlineData(MetadataXmpExif)]
-        [InlineData(MetadataComposite)]
-        public async Task ProvideShouldFillCoordinatesTest(string data)
+        [InlineData(MetadataXmp)]
+        [InlineData(MetadataXmpDc)]
+        [InlineData(MetadataIptc)]
+        [InlineData(MetadataXmp + MetadataIptc)]
+        public async Task ProvideShouldFillTagsTest(string data)
         {
             // arrange
-            var expectedGpsCoordinate = new Coordinate(40.736072f, -73.994293f);
+            var expectedTags = new List<string>
+                                   {
+                                       "dog",
+                                       "New York",
+                                       "puppy",
+                                   };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
@@ -103,7 +114,7 @@
             var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            result.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
+            result.Should().BeEquivalentTo(expectedTags);
         }
 
         private static string ConvertToJsonArray(string data)

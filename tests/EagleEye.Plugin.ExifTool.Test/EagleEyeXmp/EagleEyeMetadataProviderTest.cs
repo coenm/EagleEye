@@ -1,10 +1,14 @@
-﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.EagleEyeXmp
 {
     using System;
+    using System.Collections.Generic;
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Data;
+    using EagleEye.Core.EagleEyeXmp;
     using EagleEye.ExifTool;
+    using EagleEye.ExifTool.EagleEyeXmp;
     using EagleEye.ExifTool.PhotoProvider;
     using FakeItEasy;
     using FluentAssertions;
@@ -12,39 +16,38 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    public class ExifToolDateTakenProviderTest
+    public class EagleEyeMetadataProviderTest
     {
         private const string Filename = "DUMMY";
 
-        private const string MetadataExif = @"
-  ""EXIF"": {
-    ""ModifyDate"": ""2018:01:04 23:32:50"",
-    ""DateTimeOriginal"": ""2018:01:01 18:05:20"",
-    ""CreateDate"": ""2018:01:01 18:05:18""
+        private const string Json = @"
+   ""XMP-x"": {
+    ""XMPToolkit"": ""Image::ExifTool 11.97""
+  },
+  ""XMP-CoenmEagleEye"": {
+    ""EagleEyeFileHash"": ""Po3uzG!/]&^fFFFUZDbOp?QL0.7Cb<AK7ZBf]PdG"",
+    ""EagleEyeId"": ""zFv82GPb>8M^jhj*7YC<"",
+    ""EagleEyeRawImageHash"": [""Po3uzG!/]&^fFFFUZDbOp?QL0.7Cb<AK7ZBf]PdG""],
+    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59.123+02:00""
+  },
+  ""Composite"": {
+    ""ImageSize"": ""766x1024"",
+    ""Megapixels"": 0.784
   }";
 
-        private const string MetadataXmp = @"
-  ""XMP"": {
-    ""DateTimeOriginal"": ""2018:01:01 15:05:27+01:00"",
-    ""GPSDateTime"": ""2018:01:01 17:05:18Z"",
-    ""DateCreated"": ""2018:01:01 18:05:18.347054"",
-    ""CreateDate"": ""2018:01:01 18:05:18.347054"",
-    ""ModifyDate"": ""2018:01:04 23:32:50+01:00""
-  },";
-
-        private readonly ExifToolDateTakenProvider sut;
+        private readonly EagleEyeMetadataProvider sut;
         private readonly IExifTool exiftool;
         private readonly MediaObject media;
 
-        public ExifToolDateTakenProviderTest()
+        public EagleEyeMetadataProviderTest()
         {
             exiftool = A.Fake<IExifTool>();
-            sut = new ExifToolDateTakenProvider(exiftool);
+            sut = new EagleEyeMetadataProvider(exiftool);
             media = new MediaObject(Filename);
         }
 
         [Fact]
-        public void CanProvideInformationShouldReturnTrueTest()
+        public void CanProvideInformation_ShouldReturnTrue()
         {
             // arrange
 
@@ -56,18 +59,45 @@
         }
 
         [Fact]
-        public async Task ProvideCanHandleNullResponseFromExiftoolTest()
+        public async Task ProvideCanHandleNullResponseFromExiftoolC()
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(null as JObject));
+                .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(Json))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
-            media.DateTimeTaken.Should().BeNull();
+            result.Should().BeEquivalentTo(
+                new EagleEyeMetadata
+                {
+                    Id = new Guid("B9C5696E-8C84-4EFD-97CE-D72ADA148B24"),
+                    Timestamp = new DateTime(2022, 12, 06, 11, 36, 59, 123),
+                    RawImageHash = new List<byte[]>
+                        {
+                            new byte[32],
+                        },
+                    FileHash = new byte[32],
+                });
         }
+
+
+        [Fact]
+        public async Task ProvideCanHandleNullResponseFromExiftool()
+        {
+            // arrange
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+                .Returns(Task.FromResult(null as JObject));
+
+            // act
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+
+            // assert
+            result.Should().BeNull();
+        }
+
+
 
         [Theory]
         [InlineData(@"""Composite"": {}")]
@@ -78,28 +108,28 @@
              .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
 
             // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
 
             // assert
             media.DateTimeTaken.Should().BeNull();
         }
 
-        [Theory]
-        [InlineData(MetadataExif, 2018, 01, 01, 18, 05, 20)]
-        [InlineData(MetadataXmp, 2018, 01, 01, 15, 05, 27)]
-        public async Task ProvideShouldFillCoordinatesTest(string data, int year, int month, int day, int hour, int minute, int second)
-        {
-            // arrange
-            var expectedResult = new Timestamp(year, month, day, hour, minute, second);
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
-
-            // act
-            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
-
-            // assert
-            media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
-        }
+        // [Theory]
+        // [InlineData(MetadataExif, 2018, 01, 01, 18, 05, 20)]
+        // [InlineData(MetadataXmp, 2018, 01, 01, 15, 05, 27)]
+        // public async Task ProvideShouldFillCoordinatesTest(string data, int year, int month, int day, int hour, int minute, int second)
+        // {
+        //     // arrange
+        //     var expectedResult = new Timestamp(year, month, day, hour, minute, second);
+        //     A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+        //      .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
+        //
+        //     // act
+        //     var result = await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
+        //
+        //     // assert
+        //     media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
+        // }
 
         [Theory]
         [InlineData("2012:01:23 22:13:25")]
