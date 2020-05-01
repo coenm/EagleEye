@@ -36,8 +36,8 @@
                 "-c",
                 "%+.6f",
 
-                "-struct",
-                "-g", // group
+                ExifToolArguments.Struct,
+                ExifToolArguments.OutputGroupHeadings(0),
             };
             sut = new ExifToolAdapter(config, defaultArgs);
         }
