@@ -9,6 +9,7 @@
 
     using CommandLine;
     using CQRSlite.Commands;
+    using Dawn;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
@@ -16,6 +17,7 @@
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Json;
+    using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
@@ -58,14 +60,25 @@
         {
             Task task = Task.CompletedTask;
 
-            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions, ListReadModelOptions>(args)
+            Parser.Default.ParseArguments<
+                    UpdateImportedImagesOptions,
+                    UpdateSimilarityOptions,
+                    AutoDeleteSameFile,
+                    MoveOptions,
+                    UpdateIndexOptions,
+                    CheckIndexOptions,
+                    SearchOptions,
+                    SearchDuplicateFileOptions,
+                    FindAndHandleDuplicatesOptions,
+                    ListReadModelOptions>(args)
+                .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<UpdateSimilarityOptions>(option => task = UpdateSimilarity(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
                 .WithParsed<AutoDeleteSameFile>(option => task = AutoDeleteSameFile(option))
                 .WithParsed<MoveOptions>(option => task = MoveFiles(option))
                 .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
                 .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
-                .WithParsed<SearchOptions>(async option => await Search(option))
+                .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
                 .WithParsed<FindAndHandleDuplicatesOptions>(option => task = FindAndProcessDuplicates(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
@@ -81,6 +94,56 @@
                 Console.WriteLine(e);
                 Console.ReadLine();
             }
+        }
+
+        private static async Task UpdateImportedImages(UpdateImportedImagesOptions option)
+        {
+            Guard.Argument(option, nameof(option)).NotNull();
+
+            Startup.ConfigureContainer(
+                container,
+                Path.GetTempFileName(),
+                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                Startup.CreateFullFilename("EventStore.db"));
+
+            await Startup.InitializeAllServices(container);
+            Startup.StartServices(container);
+
+            if (!Directory.Exists(option.ProcessingDirectory))
+            {
+                Console.WriteLine("Directory does not exist.");
+                return;
+            }
+
+            var diDirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
+            var files = Directory
+                .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
+                .ToArray();
+
+            var indexService = container.GetInstance<CalculateIndexService>();
+            var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
+
+            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            {
+                foreach (var index in files)
+                {
+                    progressBar.Tick(index);
+
+                    await commandHandler.HandleAsync(option.ProcessingDirectory).ConfigureAwait(false);
+
+                    var items = new string[1];
+                    items[0] = index;
+
+                    var result = indexService.CalculateIndex(items).Single();
+
+
+                    Console.WriteLine("Press enter for next");
+                    Console.ReadKey();
+                }
+            }
+
+            Console.WriteLine("DONE");
+            Console.ReadKey();
         }
 
         private static async Task ListAllReadModel(ListReadModelOptions opts)
