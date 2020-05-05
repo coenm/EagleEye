@@ -5,6 +5,11 @@
 
     public class EagleEyeMetadata
     {
+        public EagleEyeMetadata()
+        {
+            RawImageHash = new List<byte[]>();
+        }
+
         /// <summary>
         /// Generated Id. Should never change. It is possible to have multiple files with the same id due to copying.
         /// </summary>

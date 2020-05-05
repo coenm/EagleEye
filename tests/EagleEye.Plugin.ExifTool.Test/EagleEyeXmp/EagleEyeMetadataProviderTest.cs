@@ -2,14 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Security.Cryptography;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Data;
     using EagleEye.Core.EagleEyeXmp;
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.EagleEyeXmp;
-    using EagleEye.ExifTool.PhotoProvider;
     using FakeItEasy;
     using FluentAssertions;
     using Newtonsoft.Json;
@@ -25,10 +23,10 @@
     ""XMPToolkit"": ""Image::ExifTool 11.97""
   },
   ""XMP-CoenmEagleEye"": {
-    ""EagleEyeFileHash"": ""Po3uzG!/]&^fFFFUZDbOp?QL0.7Cb<AK7ZBf]PdG"",
-    ""EagleEyeId"": ""zFv82GPb>8M^jhj*7YC<"",
-    ""EagleEyeRawImageHash"": [""Po3uzG!/]&^fFFFUZDbOp?QL0.7Cb<AK7ZBf]PdG""],
-    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59.123+02:00""
+    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
+    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
+    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
+    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
   },
   ""Composite"": {
     ""ImageSize"": ""766x1024"",
@@ -63,7 +61,7 @@
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-                .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(Json))));
+                .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(Json))));
 
             // act
             var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
@@ -72,16 +70,28 @@
             result.Should().BeEquivalentTo(
                 new EagleEyeMetadata
                 {
-                    Id = new Guid("B9C5696E-8C84-4EFD-97CE-D72ADA148B24"),
-                    Timestamp = new DateTime(2022, 12, 06, 11, 36, 59, 123),
+                    Id = new Guid("1990D286-AD75-43B0-9AF9-0011034D12F7"),
+                    Timestamp = new DateTime(2022, 12, 06, 11, 36, 59),
                     RawImageHash = new List<byte[]>
                         {
-                            new byte[32],
+                            new byte[]
+                            {
+                                0x59, 0xb9, 0xf3, 0x74, 0x14, 0x34, 0x9b, 0x4f, 0xab, 0x2a, 0x37, 0x17, 0x50, 0x77, 0x6f, 0xb3,
+                                0xe2, 0x63, 0x29, 0xd9, 0x9f, 0x98, 0x38, 0x65, 0x5b, 0x7f, 0x89, 0xf0, 0xab, 0x35, 0x18, 0x27,
+                            },
+                            new byte[]
+                            {
+                                0x2c, 0x61, 0x4d, 0xd5, 0x02, 0xd3, 0x50, 0x53, 0x1c, 0x62, 0xdf, 0xe8, 0xab, 0xd0, 0x6b, 0xe6,
+                                0x57, 0xcf, 0x48, 0x73, 0xb2, 0xc7, 0x5b, 0x8e, 0xc6, 0xb1, 0x72, 0x3f, 0x33, 0xff, 0x7b, 0xa0,
+                            },
                         },
-                    FileHash = new byte[32],
+                    FileHash = new byte[]
+                        {
+                            0xbf, 0xf9, 0xe3, 0x23, 0x56, 0x9b, 0x52, 0x8c, 0x34, 0x66, 0xed, 0xda, 0x51, 0x26, 0x31, 0x7b,
+                            0x6c, 0xdb, 0x62, 0x8b, 0x3e, 0xe9, 0x6c, 0xaf, 0x15, 0xa6, 0x6d, 0xd0, 0x9f, 0x60, 0x3c, 0x16,
+                        },
                 });
         }
-
 
         [Fact]
         public async Task ProvideCanHandleNullResponseFromExiftool()
@@ -97,85 +107,12 @@
             result.Should().BeNull();
         }
 
-
-
-        [Theory]
-        [InlineData(@"""Composite"": {}")]
-        public async Task ProvideCanHandleIncompleteDataTest(string data)
-        {
-            // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-             .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
-
-            // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
-
-            // assert
-            media.DateTimeTaken.Should().BeNull();
-        }
-
-        // [Theory]
-        // [InlineData(MetadataExif, 2018, 01, 01, 18, 05, 20)]
-        // [InlineData(MetadataXmp, 2018, 01, 01, 15, 05, 27)]
-        // public async Task ProvideShouldFillCoordinatesTest(string data, int year, int month, int day, int hour, int minute, int second)
-        // {
-        //     // arrange
-        //     var expectedResult = new Timestamp(year, month, day, hour, minute, second);
-        //     A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-        //      .Returns(Task.FromResult(ConvertToJobject(ConvertToJsonArray(data))));
-        //
-        //     // act
-        //     var result = await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
-        //
-        //     // assert
-        //     media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
-        // }
-
-        [Theory]
-        [InlineData("2012:01:23 22:13:25")]
-        [InlineData("2012-01-23 22:13:25")]
-        [InlineData("2012:01:23 22:13:25+00:00")]
-        [InlineData("2012-01-23 22:13:25+00:00")]
-        [InlineData("2012:01:23 22:13:25+01:00")]
-        [InlineData("2012-01-23 22:13:25+01:00")]
-        [InlineData("2012:01:23 22:13:25+05")]
-        [InlineData("2012-01-23 22:13:25+05")]
-        [InlineData("2012:01:23 22:13:25+5")]
-        [InlineData("2012-01-23 22:13:25+5")]
-        public void ParseFullDate_ShouldParseMultipleFormatsTest(string timestamp)
-        {
-            // arrange
-
-            // act
-            var result = ExifToolDateTakenProvider.ParseFullDate(timestamp);
-
-            // assert
-            result.Should().Be(new DateTime(2012, 01, 23, 22, 13, 25));
-        }
-
-        [Theory]
-        [InlineData("2012 01 23 22:13:25")] // space between date instead of ':', or '-'.
-        [InlineData("2012:01:23 22 13 25")] // space between time instead of ':'
-        [InlineData("sdflkjsd34l*@#$ rubbish")]
-        [InlineData("")]
-        [InlineData(null)]
-        public void ParseFullDate_ShouldReturnNullOnWrongFormat(string timestamp)
-        {
-            // arrange
-
-            // act
-            var result = ExifToolDateTakenProvider.ParseFullDate(timestamp);
-
-            // assert
-            result.Should().BeNull();
-        }
-
         private static string ConvertToJsonArray(string data)
         {
             return "[{ " + data + " }]";
         }
 
-        private static JObject ConvertToJobject(string data)
+        private static JObject ConvertToJObject(string data)
         {
             try
             {

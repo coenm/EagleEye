@@ -35,29 +35,11 @@
             if (resultExiftool == null)
                 return null;
 
-            return GetTagsFromFullJsonObject(resultExiftool);
-        }
-
-        private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
-        {
-            if (!(jsonObject[tagsKey] is JToken tagsToken))
-                return Enumerable.Empty<string>();
-
-            if (tagsToken.Type != JTokenType.Array)
-                return Enumerable.Empty<string>();
-
-            var result = new List<string>(tagsToken.Count());
-            foreach (var tag in tagsToken.Values<string>())
-            {
-                if (!string.IsNullOrWhiteSpace(tag))
-                    result.Add(tag);
-            }
-
-            return result;
+            return GetInformationFromFullJsonObject(resultExiftool);
         }
 
         [CanBeNull]
-        private EagleEyeMetadata GetTagsFromFullJsonObject(JObject data)
+        private EagleEyeMetadata GetInformationFromFullJsonObject(JObject data)
         {
             var result = new EagleEyeMetadata();
 
@@ -80,6 +62,31 @@
             if (fileHashBytes != null)
                 result.FileHash = fileHashBytes;
 
+            if (headerObject["EagleEyeRawImageHash"] is JToken rawImageHashToken)
+            {
+                if (rawImageHashToken.Type == JTokenType.Array)
+                {
+                    var rawImageHashes = new List<string>(rawImageHashToken.Count());
+                    foreach (var item in rawImageHashToken.Values<string>())
+                    {
+                        if (!string.IsNullOrWhiteSpace(item))
+                            rawImageHashes.Add(item);
+                    }
+
+                    foreach (var z85Encoded in rawImageHashes.Distinct().Where(x => !string.IsNullOrWhiteSpace(x)))
+                    {
+                        try
+                        {
+                            result.RawImageHash.Add(CoenM.Encoding.Z85.Decode(z85Encoded));
+                        }
+                        catch (Exception)
+                        {
+                            // ignore
+                        }
+                    }
+                }
+            }
+
             return result;
         }
 
@@ -99,7 +106,7 @@
             }
         }
 
-        private string TryGetString([NotNull] JObject data, [NotNull] string key)
+        private static string TryGetString([NotNull] JObject data, [NotNull] string key)
         {
             if (!(data[key] is JToken token))
                 return null;
@@ -126,7 +133,6 @@
 
             return null;
         }
-
 
         // ReSharper disable once MemberCanBePrivate.Global
         // Method is public for unittest purposes.
