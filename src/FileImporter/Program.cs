@@ -120,7 +120,6 @@
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
                 .ToArray();
 
-            var indexService = container.GetInstance<CalculateIndexService>();
             var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
@@ -130,12 +129,6 @@
                     progressBar.Tick(index);
 
                     await commandHandler.HandleAsync(option.ProcessingDirectory).ConfigureAwait(false);
-
-                    var items = new string[1];
-                    items[0] = index;
-
-                    var result = indexService.CalculateIndex(items).Single();
-
 
                     Console.WriteLine("Press enter for next");
                     Console.ReadKey();

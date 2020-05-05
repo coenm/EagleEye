@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Dawn;
@@ -14,35 +15,42 @@
     [UsedImplicitly]
     public class UpdateImportImageCommandHandler
     {
-        private readonly IFileSha256HashProvider _fileSha256Service;
-        private readonly IPhotoSha256HashProvider _photoSha256HashProvider;
+        private readonly IEnumerable<IFileSha256HashProvider> _fileSha256Service;
+        private readonly IEnumerable<IPhotoSha256HashProvider> _photoSha256HashProvider;
         private readonly IDateTimeService _dateTimeService;
+        private readonly IEagleEyeMetadataProvider _eagleEyeMetadataProvider;
 
         public UpdateImportImageCommandHandler(
-            [NotNull] IFileSha256HashProvider fileSha256Service,
-            [NotNull] IPhotoSha256HashProvider photoSha256HashProvider,
-            [NotNull] IDateTimeService dateTimeService)
+            // [NotNull] IEnumerable<IFileSha256HashProvider> fileSha256Service,
+            // [NotNull] IEnumerable<IPhotoSha256HashProvider> photoSha256HashProvider,
+            [NotNull] IDateTimeService dateTimeService,
+            [NotNull] IEagleEyeMetadataProvider eagleEyeMetadataProvider)
         {
-            Guard.Argument(fileSha256Service, nameof(fileSha256Service)).NotNull();
-            Guard.Argument(photoSha256HashProvider, nameof(photoSha256HashProvider)).NotNull();
+            // Guard.Argument(fileSha256Service, nameof(fileSha256Service)).NotNull();
+            // Guard.Argument(photoSha256HashProvider, nameof(photoSha256HashProvider)).NotNull();
             Guard.Argument(dateTimeService, nameof(dateTimeService)).NotNull();
-            _fileSha256Service = fileSha256Service;
-            _photoSha256HashProvider = photoSha256HashProvider;
+            Guard.Argument(eagleEyeMetadataProvider, nameof(eagleEyeMetadataProvider)).NotNull();
+            // _fileSha256Service = fileSha256Service;
+            // _photoSha256HashProvider = photoSha256HashProvider;
             _dateTimeService = dateTimeService;
+            _eagleEyeMetadataProvider = eagleEyeMetadataProvider;
         }
 
         public async Task HandleAsync(string filename)
         {
+            return;
             // check if file exists
             if (!File.Exists(filename))
                 return;
 
             // check if file contains metadata
-            // var imageMetaData = await .GetMetadata(filename).ConfigureAwait(false);
+            var imageMetaData = await _eagleEyeMetadataProvider.ProvideAsync(filename).ConfigureAwait(false);
+            if (imageMetaData != null)
+                return;
 
             // if not -> get metadata
-            var data = await _fileSha256Service.ProvideAsync(filename).ConfigureAwait(false);
-            var data2 = await _photoSha256HashProvider.ProvideAsync(filename).ConfigureAwait(false);
+            var data = await _fileSha256Service.First().ProvideAsync(filename).ConfigureAwait(false);
+            var data2 = await _photoSha256HashProvider.First().ProvideAsync(filename).ConfigureAwait(false);
             var fileId = Guid.NewGuid();
 
             // update metadata
@@ -56,7 +64,6 @@
                             data2.ToArray(),
                         },
                 };
-
         }
     }
 }
