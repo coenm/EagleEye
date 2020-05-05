@@ -2,13 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Threading.Tasks;
 
     using Dawn;
     using EagleEye.Core.Data;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
-    using EagleEye.ExifTool.PhotoProvider.Parsing;
+    using EagleEye.ExifTool.Parsing;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
@@ -62,39 +61,6 @@
                 media.SetDateTimeTaken(dateTimeTaken);
         }
 
-        // ReSharper disable once MemberCanBePrivate.Global
-        // Method is public for unittest purposes.
-        // Improvement by extracting to new (static?) class
-        [Pure]
-        internal static DateTime? ParseFullDate(string data)
-        {
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:ss", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:sszzz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:sszzz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:sszz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:sszz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:ssz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:ssz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            return null;
-        }
-
         [CanBeNull]
         [Pure]
         private static Timestamp GetDateTimeFromFullJsonObject(JObject data)
@@ -138,7 +104,7 @@
 
                 case JTokenType.String:
                     var dateTimeString = token.Value<string>();
-                    var dt = ParseFullDate(dateTimeString);
+                    var dt = DateTimeParsing.ParseFullDate(dateTimeString);
                     if (dt == null)
                         return null;
                     return Timestamp.FromDateTime(dt.Value);

@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.PhotoProvider.Parsing
+﻿namespace EagleEye.ExifTool.Parsing
 {
     using Dawn;
     using JetBrains.Annotations;

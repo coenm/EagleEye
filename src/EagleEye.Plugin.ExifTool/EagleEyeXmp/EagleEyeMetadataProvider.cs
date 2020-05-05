@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Dawn;
     using EagleEye.Core.EagleEyeXmp;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
+    using EagleEye.ExifTool.Parsing;
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
@@ -128,41 +128,8 @@
 
                 case JTokenType.String:
                     var dateTimeString = token.Value<string>();
-                    return ParseFullDate(dateTimeString);
+                    return DateTimeParsing.ParseFullDate(dateTimeString);
             }
-
-            return null;
-        }
-
-        // ReSharper disable once MemberCanBePrivate.Global
-        // Method is public for unittest purposes.
-        // Improvement by extracting to new (static?) class
-        [Pure]
-        internal static DateTime? ParseFullDate(string data)
-        {
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:ss", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:sszzz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:sszzz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:sszz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:sszz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy:MM:dd HH:mm:ssz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
-
-            if (DateTimeOffset.TryParseExact(data, "yyyy-MM-dd HH:mm:ssz", null, DateTimeStyles.None, out dateTimeOffset))
-                return dateTimeOffset.DateTime;
 
             return null;
         }
