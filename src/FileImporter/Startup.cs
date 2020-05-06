@@ -1,38 +1,14 @@
 ﻿namespace EagleEye.FileImporter
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
-    using CQRSlite.Caching;
-    using CQRSlite.Commands;
-    using CQRSlite.Domain;
-    using CQRSlite.Routing;
     using Dawn;
-    using EagleEye.Core.DefaultImplementations;
-    using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
-    using EagleEye.FileImporter.Indexing;
-    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-    using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
-    using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
-    using EagleEye.FileImporter.Similarity;
-    using EagleEye.Photo.ReadModel.SearchEngineLucene;
     using JetBrains.Annotations;
     using SimpleInjector;
-
-    public class ConnectionStrings
-    {
-        public string Similarity { get; set; }
-
-        public string HangFire { get; set; }
-
-        public string FilenameEventStore { get; set; }
-
-        public string IndexFile { get; set; }
-    }
 
     public static class Startup
     {
@@ -44,25 +20,17 @@
         {
             Guard.Argument(connectionStrings, nameof(connectionStrings)).NotNull();
 
-            // string indexFilename = connectionStrings.IndexFile;
             string connectionStringHangFire = connectionStrings.HangFire;
-            string filenameEventStore = connectionStrings.FilenameEventStore;
-
-            // Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
-            Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
-
-            string userDir = GetUserDirectory();
+            var userDir = GetUserDirectory();
 
             var connectionStringSimilarity = CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.db"));
 
             var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
-            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, filenameEventStore);
+            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, connectionStrings.FilenameEventStore);
             bootstrapper.RegisterPhotoDatabaseReadModel("InMemory a");
             bootstrapper.RegisterSearchEngineReadModel("InMemory a");
             bootstrapper.RegisterSimilarityReadModel(connectionStringSimilarity, "InMemory a");
-            var result = bootstrapper.Finalize();
-
-            return result;
+            return bootstrapper.Finalize();
 
             // var similarityFilename = indexFilename + ".similarity.json";
 
