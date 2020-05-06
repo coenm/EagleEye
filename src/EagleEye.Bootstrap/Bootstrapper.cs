@@ -142,7 +142,7 @@
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
-            container.RegisterInstance<IFileService>(SystemFileService.Instance);
+            container.RegisterInstance<IFileService>(SystemFileService.Instance); // RelativeSystemFileService
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
             container.RegisterSingleton<IFileSha256HashProvider, FileSha256HashProvider>();
