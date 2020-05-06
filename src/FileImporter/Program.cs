@@ -25,7 +25,6 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using ShellProgressBar;
-    using SimpleInjector;
 
     using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
 
@@ -48,11 +47,20 @@
             ProgressCharacter = '─',
         };
 
-        private static Container container;
+        // private static Container container;
+
+        private static ConnectionStrings connectionStrings;
 
         public static async Task Main(string[] args)
         {
-            container = new Container();
+            connectionStrings = new ConnectionStrings
+                {
+                    IndexFile = Path.GetTempFileName(),
+                    HangFire = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                    FilenameEventStore = Startup.CreateFullFilename("EventStore.db"),
+                };
+
+            //container = new Container();
             await Run(args);
         }
 
@@ -100,11 +108,7 @@
         {
             Guard.Argument(option, nameof(option)).NotNull();
 
-            Startup.ConfigureContainer(
-                container,
-                Path.GetTempFileName(),
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             await Startup.InitializeAllServices(container);
             Startup.StartServices(container);
@@ -124,28 +128,23 @@
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
-                foreach (var index in files)
+                foreach (var file in files)
                 {
-                    progressBar.Tick(index);
+                    progressBar.Tick(file);
 
-                    await commandHandler.HandleAsync(option.ProcessingDirectory).ConfigureAwait(false);
-
-                    Console.WriteLine("Press enter for next");
-                    Console.ReadKey();
+                    await commandHandler.HandleAsync(file).ConfigureAwait(false);
                 }
             }
 
             Console.WriteLine("DONE");
+            container.Dispose();
             Console.ReadKey();
         }
 
         private static async Task ListAllReadModel(ListReadModelOptions opts)
         {
-            Startup.ConfigureContainer(
-                container,
-                opts.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = opts.IndexFile;
+            var container = Startup.ConfigureContainer(connectionStrings);
             await Startup.InitializeAllServices(container);
             Startup.StartServices(container);
 
@@ -286,11 +285,8 @@
                 return Task.CompletedTask;
             }
 
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var similarityRepository = container.GetInstance<SimilarityService>();
@@ -392,12 +388,8 @@
             //                        //return fi.Identifier.StartsWith(options.PathPrefix);
             //                    };
             //            }
-
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
@@ -455,12 +447,8 @@
         private static async Task AutoDeleteSameFile(AutoDeleteSameFile options)
         {
             await Task.Yield(); // stupid ;-)
-
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var contentResolver = container.GetInstance<EagleEye.Core.Interfaces.Core.IFileService>();
@@ -596,11 +584,8 @@
         {
             await Task.Yield(); // stupid ;-)
 
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var everything = new Everything();
@@ -691,11 +676,7 @@
 
             await Task.Yield(); // stupid ;-)
 
-            Startup.ConfigureContainer(
-                container,
-                options.OutputFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var persistentService = container.GetInstance<PersistentFileIndexService>();
@@ -732,16 +713,12 @@
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
 
             var rp = string.Empty;
-//            if (diDirToIndex.StartsWith(diRoot))
-//            {
-//                rp = RootPath;
-//            }
+            //            if (diDirToIndex.StartsWith(diRoot))
+            //            {
+            //                rp = RootPath;
+            //            }
 
-            Startup.ConfigureContainer(
-                container,
-                options.OutputFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            var container = Startup.ConfigureContainer(connectionStrings);
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -11,15 +12,16 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    internal class ExifToolAdapter : IExifTool
+    internal class ExifToolAdapter : IExifTool, IDisposable
     {
         private readonly AsyncExifTool exiftoolImpl;
 
-        public ExifToolAdapter([NotNull] IExifToolConfig config, [CanBeNull] IReadOnlyCollection<string> defaultArgs)
+        public ExifToolAdapter([NotNull] IExifToolConfig config, [CanBeNull] IExifToolArguments arguments)
         {
             Guard.Argument(config, nameof(config)).NotNull();
+            var args = arguments?.Arguments?.ToArray();
 
-            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, defaultArgs);
+            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, args);
             exiftoolImpl = new AsyncExifTool(exiftoolConfig);
             exiftoolImpl.Initialize();
         }
@@ -40,7 +42,7 @@
 
                 return jsonArray[0] as JObject;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
             }
@@ -49,6 +51,11 @@
         public ValueTask DisposeAsync()
         {
            return exiftoolImpl.DisposeAsync();
+        }
+
+        void IDisposable.Dispose()
+        {
+            exiftoolImpl.DisposeAsync().GetAwaiter().GetResult();
         }
     }
 }
