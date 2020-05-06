@@ -116,7 +116,7 @@
             Guard.Argument(container, nameof(container)).NotNull();
 
             container.Options.AllowOverridingRegistrations = true;
-            container.Register<IExifTool>(A.Dummy<IExifTool>, Lifestyle.Singleton);
+            container.Register<IExifToolReader>(A.Dummy<IExifToolReader>, Lifestyle.Singleton);
         }
     }
 }

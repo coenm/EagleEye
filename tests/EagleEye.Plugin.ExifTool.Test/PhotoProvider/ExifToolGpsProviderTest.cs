@@ -39,11 +39,11 @@
   }";
 
         private readonly ExifToolGpsProvider sut;
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
         public ExifToolGpsProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
+            exiftool = A.Fake<IExifToolReader>();
             sut = new ExifToolGpsProvider(exiftool);
         }
 

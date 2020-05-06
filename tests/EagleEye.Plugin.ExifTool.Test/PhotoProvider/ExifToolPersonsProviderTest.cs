@@ -37,11 +37,11 @@
   },";
 
         private readonly ExifToolPersonsProvider sut;
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
         public ExifToolPersonsProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
+            exiftool = A.Fake<IExifToolReader>();
             sut = new ExifToolPersonsProvider(exiftool);
         }
 

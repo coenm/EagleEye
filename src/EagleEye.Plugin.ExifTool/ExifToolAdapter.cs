@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using CoenM.ExifToolLib;
@@ -12,7 +13,7 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    internal class ExifToolAdapter : IExifTool, IDisposable
+    internal class ExifToolAdapter : IExifToolReader, IExifToolWriter, IDisposable
     {
         private readonly AsyncExifTool exiftoolImpl;
 
@@ -46,6 +47,14 @@
             {
                 return null;
             }
+        }
+
+        public async Task WriteAsync(string filename, IEnumerable<string> exiftoolArgs, CancellationToken ct = default)
+        {
+            var args = exiftoolArgs.ToList();
+            args.Add(filename);
+
+            _ = await exiftoolImpl.ExecuteAsync(args, ct).ConfigureAwait(false);
         }
 
         public ValueTask DisposeAsync()

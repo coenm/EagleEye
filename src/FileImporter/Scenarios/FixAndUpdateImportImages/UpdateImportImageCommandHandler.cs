@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Dawn;
@@ -15,54 +16,60 @@
     [UsedImplicitly]
     public class UpdateImportImageCommandHandler
     {
-        private readonly IFileSha256HashProvider _fileSha256Service;
-        private readonly IEnumerable<IPhotoSha256HashProvider> _photoSha256HashProvider;
-        private readonly IDateTimeService _dateTimeService;
-        private readonly IEagleEyeMetadataProvider _eagleEyeMetadataProvider;
+        private readonly IFileSha256HashProvider fileSha256Service;
+        private readonly IEnumerable<IPhotoSha256HashProvider> photoSha256HashProvider;
+        private readonly IDateTimeService dateTimeService;
+        private readonly IEagleEyeMetadataProvider eagleEyeMetadataProvider;
+        private readonly IEagleEyeMetadataWriter eagleEyeMetadataWriter;
 
         public UpdateImportImageCommandHandler(
             [NotNull] IFileSha256HashProvider fileSha256Service,
             [NotNull] IEnumerable<IPhotoSha256HashProvider> photoSha256HashProvider,
             [NotNull] IDateTimeService dateTimeService,
-            [NotNull] IEagleEyeMetadataProvider eagleEyeMetadataProvider)
+            [NotNull] IEagleEyeMetadataProvider eagleEyeMetadataProvider,
+            [NotNull] IEagleEyeMetadataWriter eagleEyeMetadataWriter)
         {
             Guard.Argument(fileSha256Service, nameof(fileSha256Service)).NotNull();
             Guard.Argument(photoSha256HashProvider, nameof(photoSha256HashProvider)).NotNull();
             Guard.Argument(dateTimeService, nameof(dateTimeService)).NotNull();
             Guard.Argument(eagleEyeMetadataProvider, nameof(eagleEyeMetadataProvider)).NotNull();
-            _fileSha256Service = fileSha256Service;
-            _photoSha256HashProvider = photoSha256HashProvider;
-            _dateTimeService = dateTimeService;
-            _eagleEyeMetadataProvider = eagleEyeMetadataProvider;
+            Guard.Argument(eagleEyeMetadataWriter, nameof(eagleEyeMetadataWriter)).NotNull();
+
+            this.fileSha256Service = fileSha256Service;
+            this.photoSha256HashProvider = photoSha256HashProvider;
+            this.dateTimeService = dateTimeService;
+            this.eagleEyeMetadataProvider = eagleEyeMetadataProvider;
+            this.eagleEyeMetadataWriter = eagleEyeMetadataWriter;
         }
 
-        public async Task HandleAsync(string filename)
+        public async Task HandleAsync([NotNull] string filename, CancellationToken ct = default)
         {
             // check if file exists
             if (!File.Exists(filename))
                 return;
 
             // check if file contains metadata
-            var imageMetaData = await _eagleEyeMetadataProvider.ProvideAsync(filename).ConfigureAwait(false);
+            var imageMetaData = await eagleEyeMetadataProvider.ProvideAsync(filename).ConfigureAwait(false);
             if (imageMetaData != null)
                 return;
 
             // if not -> get metadata
-            var data = await _fileSha256Service.ProvideAsync(filename).ConfigureAwait(false);
-            var data2 = await _photoSha256HashProvider.First().ProvideAsync(filename).ConfigureAwait(false);
-            var fileId = Guid.NewGuid();
+            var data = await fileSha256Service.ProvideAsync(filename).ConfigureAwait(false);
+            var data2 = await photoSha256HashProvider.First().ProvideAsync(filename).ConfigureAwait(false);
 
             // update metadata
             var metadata = new EagleEyeMetadata
                 {
                     Id = Guid.NewGuid(),
                     FileHash = data.ToArray(),
-                    Timestamp = _dateTimeService.Now,
+                    Timestamp = dateTimeService.Now,
                     RawImageHash = new List<byte[]>
                         {
                             data2.ToArray(),
                         },
                 };
+
+            await eagleEyeMetadataWriter.WriteAsync(filename, metadata, ct).ConfigureAwait(false);
         }
     }
 }

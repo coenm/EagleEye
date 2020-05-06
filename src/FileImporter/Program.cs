@@ -610,7 +610,7 @@
                             continue;
 
                         similar.Add(index);
-                        everything.Show(similar);
+                        await everything.Show(similar);
                         Console.WriteLine("Press enter for next");
                         Console.ReadKey();
                     }

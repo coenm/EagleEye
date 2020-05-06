@@ -22,9 +22,9 @@
             new MetadataHeaderKeyPair(MetadataHeaderKeyPair.Keys.Composite, MetadataHeaderKeyPair.Keys.Composite, "SubSecCreateDate"),
         };
 
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
-        public ExifToolDateTakenProvider([NotNull] IExifTool exiftool)
+        public ExifToolDateTakenProvider([NotNull] IExifToolReader exiftool)
         {
             Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;

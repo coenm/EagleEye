@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Dawn;
@@ -12,11 +13,59 @@
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
+    internal class EagleEyeMetadataWriter : IEagleEyeMetadataWriter
+    {
+        private readonly IExifToolWriter exiftool;
+
+        public EagleEyeMetadataWriter([NotNull] IExifToolWriter exiftool)
+        {
+            Guard.Argument(exiftool, nameof(exiftool)).NotNull();
+            this.exiftool = exiftool;
+        }
+
+        public async Task WriteAsync(string filename, EagleEyeMetadata metadata, CancellationToken ct = default)
+        {
+            Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
+            Guard.Argument(metadata, nameof(metadata)).NotNull();
+
+            ct.ThrowIfCancellationRequested();
+
+            var args = new List<string>
+                {
+                    $"XMP-CoenmEagleEye:EagleEyeId={CoenM.Encoding.Z85.Encode(metadata.Id.ToByteArray())}",
+                };
+
+            if (metadata.FileHash == null)
+                args.Add("XMP-CoenmEagleEye:EagleEyeFileHash=");
+            else
+                args.Add("XMP-CoenmEagleEye:EagleEyeFileHash=" + CoenM.Encoding.Z85.Encode(metadata.FileHash));
+
+            var ts = metadata.Timestamp.ToString("yyyy:MM:dd HH:mm:ss");
+            args.Add("XMP-CoenmEagleEye:EagleEyeTimestamp=" + ts);
+
+            foreach (var bytes in metadata.RawImageHash ?? Enumerable.Empty<byte[]>())
+            {
+                var z85Bytes = CoenM.Encoding.Z85.Encode(bytes);
+                args.Add("XMP-CoenmEagleEye:EagleEyeTimestamp-=" + z85Bytes);
+                args.Add("XMP-CoenmEagleEye:EagleEyeTimestamp+=" + z85Bytes);
+            }
+
+            try
+            {
+                await exiftool.WriteAsync(filename, args, ct).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                int x = e.Message.Length;
+            }
+        }
+    }
+
     internal class EagleEyeMetadataProvider : IEagleEyeMetadataProvider
     {
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
-        public EagleEyeMetadataProvider([NotNull] IExifTool exiftool)
+        public EagleEyeMetadataProvider([NotNull] IExifToolReader exiftool)
         {
             Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;

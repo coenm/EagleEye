@@ -34,12 +34,12 @@
   }";
 
         private readonly EagleEyeMetadataProvider sut;
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
         private readonly MediaObject media;
 
         public EagleEyeMetadataProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
+            exiftool = A.Fake<IExifToolReader>();
             sut = new EagleEyeMetadataProvider(exiftool);
             media = new MediaObject(Filename);
         }

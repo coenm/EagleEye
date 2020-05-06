@@ -19,10 +19,14 @@
 
             container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName()), Lifestyle.Singleton); // todo coenm fix this
             container.Register<IExifToolArguments>(() => new StaticExifToolArguments(StaticExifToolArguments.DefaultArguments), Lifestyle.Singleton);
-            container.Register<IExifTool, ExifToolAdapter>(Lifestyle.Singleton);
-            container.RegisterDecorator<IExifTool, ExifToolCacheDecorator>(Lifestyle.Singleton);
+
+            container.Register<IExifToolWriter, ExifToolAdapter>(Lifestyle.Singleton);
+
+            container.Register<IExifToolReader, ExifToolAdapter>(Lifestyle.Singleton);
+            container.RegisterDecorator<IExifToolReader, ExifToolCacheDecorator>(Lifestyle.Singleton);
 
             container.Register<IEagleEyeMetadataProvider, EagleEyeMetadataProvider>();
+            container.Register<IEagleEyeMetadataWriter, EagleEyeMetadataWriter>();
 
             container.Collection.Append(typeof(IPhotoDateTimeTakenProvider), typeof(ExifToolDateTakenProvider));
             container.Collection.Append(typeof(IPhotoLocationProvider), typeof(ExifToolGpsProvider));

@@ -33,12 +33,12 @@
   },";
 
         private readonly ExifToolDateTakenProvider sut;
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
         private readonly MediaObject media;
 
         public ExifToolDateTakenProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
+            exiftool = A.Fake<IExifToolReader>();
             sut = new ExifToolDateTakenProvider(exiftool);
             media = new MediaObject(Filename);
         }

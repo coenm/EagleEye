@@ -10,9 +10,9 @@
 
     internal class ExifToolLocationProvider : IPhotoLocationProvider
     {
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
-        public ExifToolLocationProvider([NotNull] IExifTool exiftool)
+        public ExifToolLocationProvider([NotNull] IExifToolReader exiftool)
         {
             Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;

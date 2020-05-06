@@ -6,7 +6,7 @@
     using JetBrains.Annotations;
     using Newtonsoft.Json.Linq;
 
-    internal interface IExifTool : IAsyncDisposable
+    internal interface IExifToolReader : IAsyncDisposable
     {
         Task<JObject> GetMetadataAsync([NotNull] string filename);
     }
