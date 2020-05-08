@@ -129,8 +129,8 @@
                 foreach (var file in files)
                 {
                     progressBar.Tick(file);
-
                     await commandHandler.HandleAsync(file).ConfigureAwait(false);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
             }
 

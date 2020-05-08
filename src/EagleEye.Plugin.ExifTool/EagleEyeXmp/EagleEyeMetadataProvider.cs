@@ -41,10 +41,17 @@
         [CanBeNull]
         private EagleEyeMetadata GetInformationFromFullJsonObject(JObject data)
         {
-            var result = new EagleEyeMetadata();
-
-            if (!(data["XMP-CoenmEagleEye"] is JObject headerObject))
+            if (!(data["XMP"] is JObject headerObject))
                 return null;
+
+            var version = TryGetString(headerObject, "EagleEyeVersion");
+            if (string.IsNullOrWhiteSpace(version))
+                return null;
+
+            if (!version.Equals("1"))
+                return null;
+
+            var result = new EagleEyeMetadata();
 
             DateTime? dt = null;
             if ((headerObject["EagleEyeTimestamp"] is JToken token))

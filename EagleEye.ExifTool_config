@@ -24,7 +24,7 @@
     # Generated file id. Multiple files can have same id (due to file copying, probably not by coincidence).
     EagleEyeId => {
         Name => 'EagleEyeId',
-        Writable => 'string', # C# Guid.ToString() 
+        Writable => 'string',
     },
 
     # Timestamp of adding this metadata
@@ -37,10 +37,15 @@
     EagleEyeRawImageHash => {
         Name => 'EagleEyeRawImageHash',
         Writable => 'string', # Z85 encoded sha256
-        List => 'Bag', 
+        List => 'Bag',
+    },
+
+    # VersionInfo for backwards compatibility
+    EagleEyeVersion => {
+        Name => 'EagleEyeVersion',
+        Writable => 'string',
     },
 
 );
-1;  #end 
+1;  #end
 
- 

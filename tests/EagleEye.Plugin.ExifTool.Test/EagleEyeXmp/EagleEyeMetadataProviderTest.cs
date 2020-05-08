@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using EagleEye.Core.Data;
     using EagleEye.Core.EagleEyeXmp;
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.EagleEyeXmp;
@@ -17,31 +16,13 @@
     public class EagleEyeMetadataProviderTest
     {
         private const string Filename = "DUMMY";
-
-        private const string Json = @"
-   ""XMP-x"": {
-    ""XMPToolkit"": ""Image::ExifTool 11.97""
-  },
-  ""XMP-CoenmEagleEye"": {
-    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
-    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
-    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
-    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
-  },
-  ""Composite"": {
-    ""ImageSize"": ""766x1024"",
-    ""Megapixels"": 0.784
-  }";
-
         private readonly EagleEyeMetadataProvider sut;
         private readonly IExifToolReader exiftool;
-        private readonly MediaObject media;
 
         public EagleEyeMetadataProviderTest()
         {
             exiftool = A.Fake<IExifToolReader>();
             sut = new EagleEyeMetadataProvider(exiftool);
-            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -57,11 +38,25 @@
         }
 
         [Fact]
-        public async Task ProvideCanHandleNullResponseFromExiftoolC()
+        public async Task ProvideAsync_ShouldMetadata_WhenEagleEyeVersionIsOneAndDataIsComplete()
         {
             // arrange
+            const string json = @"
+   ""XMP"": {
+    ""XMPToolkit"": ""Image::ExifTool 11.97"",
+    ""EagleEyeVersion"": ""1"",
+    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
+    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
+    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
+    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
+  },
+  ""Composite"": {
+    ""ImageSize"": ""766x1024"",
+    ""Megapixels"": 0.784
+  }";
+
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
-                .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(Json))));
+                .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
 
             // act
             var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
@@ -91,6 +86,34 @@
                             0x6c, 0xdb, 0x62, 0x8b, 0x3e, 0xe9, 0x6c, 0xaf, 0x15, 0xa6, 0x6d, 0xd0, 0x9f, 0x60, 0x3c, 0x16,
                         },
                 });
+        }
+
+        [Fact]
+        public async Task ProvideAsync_ShouldReturnNull_WhenEagleEyeVersionIsNotOne()
+        {
+            // arrange
+            const string json = @"
+   ""XMP"": {
+    ""XMPToolkit"": ""Image::ExifTool 11.97"",
+    ""EagleEyeVersion"": ""2"",
+    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
+    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
+    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
+    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
+  },
+  ""Composite"": {
+    ""ImageSize"": ""766x1024"",
+    ""Megapixels"": 0.784
+  }";
+
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+                .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
+
+            // act
+            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+
+            // assert
+            result.Should().BeNull();
         }
 
         [Fact]

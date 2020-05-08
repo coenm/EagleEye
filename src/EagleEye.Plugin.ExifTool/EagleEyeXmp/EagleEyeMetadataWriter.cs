@@ -32,7 +32,9 @@
 
             var args = new List<string>
                 {
+                    $"{Prefix}Version=1",
                     $"{Prefix}Id={ConvertBytes(metadata.Id.ToByteArray())}",
+                    $"{Prefix}Timestamp={metadata.Timestamp:yyyy:MM:dd HH:mm:sszzz}",
                 };
 
             if (metadata.FileHash == null)
@@ -40,14 +42,11 @@
             else
                 args.Add($"{Prefix}FileHash=" + ConvertBytes(metadata.FileHash));
 
-            var ts = metadata.Timestamp.ToString("yyyy:MM:dd HH:mm:ss");
-            args.Add($"{Prefix}Timestamp=\"" + ts + "\"");
-
             foreach (var bytes in metadata.RawImageHash ?? Enumerable.Empty<byte[]>())
             {
                 var z85Bytes = ConvertBytes(bytes);
-                args.Add($"{Prefix}Timestamp-=" + z85Bytes);
-                args.Add($"{Prefix}Timestamp+=" + z85Bytes);
+                args.Add($"{Prefix}RawImageHash-=" + z85Bytes);
+                args.Add($"{Prefix}RawImageHash+=" + z85Bytes);
             }
 
             try
@@ -56,13 +55,14 @@
             }
             catch (Exception e)
             {
-                int x = e.Message.Length;
+                // todo coenm
+                Console.WriteLine(filename + "  " + e.Message);
             }
         }
 
         private static string ConvertBytes(byte[] bytes)
         {
-            return "\"" + Z85Extended.Encode(bytes) + "\"";
+            return Z85Extended.Encode(bytes);
         }
     }
 }

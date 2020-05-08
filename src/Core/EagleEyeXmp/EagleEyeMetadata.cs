@@ -3,6 +3,9 @@
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Version 1 of metadata.
+    /// </summary>
     public class EagleEyeMetadata
     {
         public EagleEyeMetadata()
