@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-
-  <PropertyGroup>
-    <RestoreSources>
-      $(RestoreSources)
-      https://api.nuget.org/v3/index.json
-      https://pkgs.dev.azure.com/cmunckhof/Imaging/_packaging/Imaging%40Local/nuget/v3/index.json
-    </RestoreSources>
-  </PropertyGroup>
-
   <!--Include in every project -->
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" IsImplicitlyDefined="true"/>

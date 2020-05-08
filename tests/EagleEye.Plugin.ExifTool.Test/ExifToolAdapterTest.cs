@@ -23,7 +23,7 @@
 
             imageFilename.Should().NotBeNullOrEmpty();
 
-            var config = new StaticExiftoolConfig(ExifToolSystemConfiguration.ExifToolExecutable);
+            var config = new StaticExiftoolConfig(ExifToolSystemConfiguration.ExifToolExecutable, null);
             var args = new StaticExifToolArguments(StaticExifToolArguments.DefaultArguments);
 
             sut = new ExifToolAdapter(config, args);

@@ -22,7 +22,7 @@
             Guard.Argument(config, nameof(config)).NotNull();
             var args = arguments?.Arguments?.ToArray();
 
-            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, Encoding.UTF8, args);
+            var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, config.ExifToolConfigFile, Encoding.UTF8, args);
             exiftoolImpl = new AsyncExifTool(exiftoolConfig);
             exiftoolImpl.Initialize();
         }

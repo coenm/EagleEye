@@ -1,5 +1,8 @@
 ﻿namespace EagleEye.ExifTool
 {
+    using System;
+    using System.IO;
+
     using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
@@ -17,7 +20,13 @@
         {
             Guard.Argument(container, nameof(container)).NotNull();
 
-            container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName()), Lifestyle.Singleton); // todo coenm fix this
+            // Assembly.GetExecutingAssembly().
+            var dir = AppDomain.CurrentDomain.BaseDirectory;
+            var exifToolConfigFile = Path.Combine(dir, "EagleEye.ExifTool_config");
+            if (!File.Exists(exifToolConfigFile))
+                exifToolConfigFile = null;
+
+            container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName(), exifToolConfigFile), Lifestyle.Singleton); // todo coenm fix this
             container.Register<IExifToolArguments>(() => new StaticExifToolArguments(StaticExifToolArguments.DefaultArguments), Lifestyle.Singleton);
 
             container.Register<IExifToolWriter, ExifToolAdapter>(Lifestyle.Singleton);
