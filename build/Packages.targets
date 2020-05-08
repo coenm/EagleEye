@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 
+  <PropertyGroup>
+    <RestoreSources>
+      $(RestoreSources);https://pkgs.dev.azure.com/cmunckhof/Imaging/_packaging/Imaging%40Local/nuget/v3/index.json
+    </RestoreSources>
+  </PropertyGroup>
+
   <!--Include in every project -->
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" IsImplicitlyDefined="true"/>
@@ -20,7 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="CoenM.AsyncExifTool" Version="1.0.1" IsImplicitlyDefined="true"/>
+    <PackageReference Update="CoenM.AsyncExifTool" Version="1.1.0-beta.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta0004" IsImplicitlyDefined="true"/>
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="SimpleInjector" Version="$(VersionSimpleInjector)" IsImplicitlyDefined="true"/>
