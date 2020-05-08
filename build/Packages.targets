@@ -3,7 +3,9 @@
 
   <PropertyGroup>
     <RestoreSources>
-      $(RestoreSources);https://pkgs.dev.azure.com/cmunckhof/Imaging/_packaging/Imaging%40Local/nuget/v3/index.json
+      $(RestoreSources)
+      https://api.nuget.org/v3/index.json
+      https://pkgs.dev.azure.com/cmunckhof/Imaging/_packaging/Imaging%40Local/nuget/v3/index.json
     </RestoreSources>
   </PropertyGroup>
 
