@@ -70,7 +70,6 @@
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
-                    UpdateSimilarityOptions,
                     AutoDeleteSameFile,
                     MoveOptions,
                     UpdateIndexOptions,
@@ -80,7 +79,6 @@
                     FindAndHandleDuplicatesOptions,
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
-                .WithParsed<UpdateSimilarityOptions>(option => task = UpdateSimilarity(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
                 .WithParsed<AutoDeleteSameFile>(option => task = AutoDeleteSameFile(option))
                 .WithParsed<MoveOptions>(option => task = MoveFiles(option))
@@ -295,46 +293,6 @@
             Console.ReadKey();
 
             container.Dispose();
-        }
-
-        private static Task UpdateSimilarity(UpdateSimilarityOptions options)
-        {
-            if (string.IsNullOrWhiteSpace(options.IndexFile))
-            {
-                Console.WriteLine("IndexFile file cannot be empty.");
-                return Task.CompletedTask;
-            }
-
-            connectionStrings.IndexFile = options.IndexFile;
-            using var container = Startup.ConfigureContainer(connectionStrings);
-
-            var searchService = container.GetInstance<SearchService>();
-            var similarityRepository = container.GetInstance<SimilarityService>();
-
-            var allIndexes = searchService.FindAll().ToArray();
-
-            using (var progressBar = new ProgressBar(allIndexes.Length, "Search duplicates", ProgressOptions))
-            {
-                using (var subProgressBar = progressBar.Spawn(allIndexes.Length, string.Empty, ChildOptions))
-                {
-                    foreach (var indexedFile in allIndexes)
-                    {
-                        progressBar.Tick(indexedFile.Identifier);
-
-                        var progress = new Progress<FilenameProgressData>(data =>
-                        {
-                            subProgressBar.MaxTicks = data.Total;
-                            subProgressBar.Tick(data.Filename);
-                        });
-
-                        subProgressBar.Tick(0, "start");
-                        similarityRepository.Update(indexedFile, progress);
-                    }
-                }
-            }
-
-            Console.WriteLine("Done!");
-            return Task.CompletedTask;
         }
 
         private static async Task SearchDuplicateFile(SearchDuplicateFileOptions options)
@@ -772,15 +730,6 @@
                     persistentService.AddOrUpdate(index.Single());
                 }
             }
-        }
-
-        private static string ConvertToRelativeFilename(string rootPath, string fullFilename)
-        {
-            var slnDirectoryLength = rootPath.Length;
-            var result = fullFilename.Remove(0, slnDirectoryLength);
-            while (result.Length > 0 && (result[0] == '/' || result[0] == '\\'))
-                result = result.Substring(1);
-            return result;
         }
 
         private static async Task FindAndProcessDuplicates(FindAndHandleDuplicatesOptions opts)
