@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
     using System.Threading.Tasks;
@@ -39,11 +39,11 @@
 }";
 
         private readonly ExifToolLocationProvider sut;
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
         public ExifToolLocationProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
+            exiftool = A.Fake<IExifToolReader>();
             sut = new ExifToolLocationProvider(exiftool);
         }
 

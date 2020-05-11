@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
     using System.Collections.Generic;
@@ -44,11 +44,11 @@
   }";
 
         private readonly ExifToolTagsProvider sut;
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
 
         public ExifToolTagsProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
+            exiftool = A.Fake<IExifToolReader>();
             sut = new ExifToolTagsProvider(exiftool);
         }
 

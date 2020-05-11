@@ -37,7 +37,7 @@
             // arrange
 
             // act
-            sut.EnablePlugin(container);
+            sut.EnablePlugin(container, null);
 
             // assert
             Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);
@@ -51,7 +51,7 @@
             container.Register(A.Dummy<IFileService>, Lifestyle.Singleton);
 
             // act
-            sut.EnablePlugin(container);
+            sut.EnablePlugin(container, null);
 
             // assert
             Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);

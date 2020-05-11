@@ -22,6 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="CoenM.Encoding.Z85e" />
   </ItemGroup>
 
   <ItemGroup>

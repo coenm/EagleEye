@@ -1,5 +1,7 @@
 ﻿namespace EagleEye.ImageHash
 {
+    using System.Collections.Generic;
+
     using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
@@ -12,7 +14,7 @@
     {
         public string Name => nameof(ImageHashPlugin);
 
-        public void EnablePlugin([NotNull] Container container)
+        public void EnablePlugin([NotNull] Container container, [CanBeNull] IReadOnlyDictionary<string, object> settings)
         {
             Guard.Argument(container, nameof(container)).NotNull();
 

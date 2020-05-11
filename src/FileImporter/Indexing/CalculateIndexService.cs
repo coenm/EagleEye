@@ -1,8 +1,9 @@
 ﻿namespace EagleEye.FileImporter.Indexing
 {
     using System.Collections.Generic;
-
+    using System.Threading.Tasks;
     using Dawn;
+
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
 
@@ -27,7 +28,7 @@
             this.photoSha256HashProvider = photoSha256HashProvider;
         }
 
-        public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
+        public async Task<IEnumerable<ImageData>> CalculateIndexAsync(IReadOnlyList<string> fileIdentifiers)
         {
             Guard.Argument(fileIdentifiers, nameof(fileIdentifiers)).NotNull();
 
@@ -35,9 +36,9 @@
 
             for (var index = 0; index < fileIdentifiers.Count; index++)
             {
-                var h = photoHashProvider.ProvideAsync(fileIdentifiers[index]).GetAwaiter().GetResult();
-                var ih = photoSha256HashProvider.ProvideAsync(fileIdentifiers[index]).GetAwaiter().GetResult();
-                var fh = fileSha256HashProvider.ProvideAsync(fileIdentifiers[index]).GetAwaiter().GetResult();
+                var h = await photoHashProvider.ProvideAsync(fileIdentifiers[index]).ConfigureAwait(false);
+                var ih = await photoSha256HashProvider.ProvideAsync(fileIdentifiers[index]).ConfigureAwait(false);
+                var fh = await fileSha256HashProvider.ProvideAsync(fileIdentifiers[index]).ConfigureAwait(false);
 
                 var hashes = new ImageHashValues
                 {
@@ -62,6 +63,11 @@
             }
 
             return result;
+        }
+
+        public IEnumerable<ImageData> CalculateIndex(IReadOnlyList<string> fileIdentifiers)
+        {
+            return CalculateIndexAsync(fileIdentifiers).GetAwaiter().GetResult();
         }
     }
 }

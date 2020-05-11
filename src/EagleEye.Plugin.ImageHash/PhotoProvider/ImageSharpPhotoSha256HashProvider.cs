@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ImageHash.PhotoProvider
 {
     using System;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
     using System.Threading.Tasks;
@@ -12,6 +13,7 @@
     using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Advanced;
     using SixLabors.ImageSharp.PixelFormats;
+    using SixLabors.ImageSharp.Processing;
 
     [UsedImplicitly]
     public class ImageSharpPhotoSha256HashProvider : IPhotoSha256HashProvider
@@ -55,20 +57,19 @@
 
             var data = MemoryMarshal.AsBytes(img.GetPixelSpan()).ToArray();
 
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(data);
+            using var sha256 = SHA256.Create();
+            return sha256.ComputeHash(data);
         }
 
         private ReadOnlyMemory<byte> Provide(string filename)
         {
             Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
 
-            using (var stream = fileService.OpenRead(filename))
-            using (var image = Image.Load<Rgba32>(stream))
-            {
-                var result = CalculateImageHash(image);
-                return new ReadOnlyMemory<byte>(result);
-            }
+            using var stream = fileService.OpenRead(filename);
+            using var image = Image.Load<Rgba32>(stream);
+            image.Mutate(x => x.AutoOrient());
+            var result = CalculateImageHash(image);
+            return new ReadOnlyMemory<byte>(result);
         }
     }
 }

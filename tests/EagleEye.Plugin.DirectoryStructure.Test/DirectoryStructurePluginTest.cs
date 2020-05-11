@@ -35,7 +35,7 @@
             // arrange
 
             // act
-            sut.EnablePlugin(container);
+            sut.EnablePlugin(container, null);
 
             // assert
             Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);

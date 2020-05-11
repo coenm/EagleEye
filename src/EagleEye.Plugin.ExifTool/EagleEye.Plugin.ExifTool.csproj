@@ -7,11 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\EagleEye.ExifTool_config" Link="EagleEye.ExifTool_config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CoenM.AsyncExifTool" />
     <PackageReference Include="Dawn.Guard" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="SimpleInjector.Packaging" />
+    <PackageReference Include="CoenM.Encoding.Z85e" />
   </ItemGroup>
 
   <ItemGroup>

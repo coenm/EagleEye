@@ -6,22 +6,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using CQRSlite.Caching;
-    using CQRSlite.Commands;
-    using CQRSlite.Domain;
-    using CQRSlite.Events;
-    using CQRSlite.Routing;
     using Dawn;
-    using EagleEye.Core.DefaultImplementations;
-    using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
-    using EagleEye.EventStore.NEventStoreAdapter;
-    using EagleEye.FileImporter.Indexing;
-    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-    using EagleEye.FileImporter.Infrastructure.JsonSimilarity;
-    using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
-    using EagleEye.FileImporter.Similarity;
-    using EagleEye.Photo.ReadModel.SearchEngineLucene;
     using JetBrains.Annotations;
     using SimpleInjector;
 
@@ -30,105 +16,35 @@
         /// <summary>
         /// Bootstrap the application by setting up the Dependency Container.
         /// </summary>
-        /// <param name="container">Dependency container.</param>
-        /// <param name="indexFilename">(obsolete).</param>
-        /// <param name="connectionStringHangFire">ConnectionString for HangFire Similarity Database.</param>
-        /// <param name="filenameEventStore">Filename sqlite eventstore.</param>
-        public static void ConfigureContainer(
-            [NotNull] Container container,
-            [NotNull] string indexFilename,
-            [NotNull] string connectionStringHangFire,
-            [CanBeNull] string filenameEventStore)
+        /// <param name="connectionStrings">set of connection strings.</param>
+        public static Container ConfigureContainer([NotNull] ConnectionStrings connectionStrings)
         {
-            Guard.Argument(container, nameof(container)).NotNull();
-            Guard.Argument(indexFilename, nameof(indexFilename)).NotNull().NotWhiteSpace();
-            Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
+            Guard.Argument(connectionStrings, nameof(connectionStrings)).NotNull();
 
-            string userDir = GetUserDirectory();
-
-            var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
-            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, filenameEventStore);
-            bootstrapper.RegisterPhotoDatabaseReadModel("InMemory a");
-            bootstrapper.RegisterSearchEngineReadModel("InMemory a");
-            bootstrapper.RegisterSimilarityReadModel("InMemory a", "InMemory a");
-            var result = bootstrapper.Finalize();
-
-            var similarityFilename = indexFilename + ".similarity.json";
-            // todo check arguments.
-            // container.RegisterSingleton<IContentResolver>(new RelativeFilesystemContentResolver(rootPath));
-            container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
-            container.RegisterInstance<IFileService>(SystemFileService.Instance);
-
-            container.RegisterSingleton<IImageDataRepository>(() => new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
-            container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
-
-            // CQRS lite stuff.
-            container.Register<Router>(Lifestyle.Singleton);
-            container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);
-            container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
-            container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
-
-            RegisterEventStore(container, userDir, filenameEventStore);
-            container.RegisterSingleton<ICache, MemoryCache>();
-
-            // add scoped?!
-            container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton); // Repository has two public constructors (why??)
-            container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
-            container.Register<ISession, Session>(Lifestyle.Singleton); // check.
-
-            RegisterPhotoDomain(container);
-
-            RegisterSearchEngineReadModel(container, Path.Combine(userDir, "Index"));
-
-            var connectionString1 = CreateSqlLiteFileConnectionString(CreateFullFilename("EagleEye.db"));
-            RegisterPhotoDatabaseReadModel(container, connectionString1);
+            string connectionStringHangFire = connectionStrings.HangFire;
+            var userDir = GetUserDirectory();
 
             var connectionStringSimilarity = CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.db"));
-            var connectionStringHangfire1 = CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.Hangfire.db"));
-            RegisterSimilarityReadModel(container, connectionStringSimilarity, connectionStringHangFire);
 
-            // strange stuff..
-            var registrar = new RouteRegistrar(container);
-            registrar.RegisterHandlers(EagleEye.Photo.Domain.Bootstrapper.GetEventHandlerTypesPhotoDomain());
-            registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.GetEventHandlerTypes());
-            registrar.RegisterHandlers(Bootstrapper.GetEventHandlerTypes());
-            registrar.RegisterHandlers(global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.GetEventHandlerTypes());
-        }
+            var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
 
-        private static void RegisterEventStore([NotNull] Container container, string baseDirectory, [CanBeNull] string connectionString)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
+            var config = new Dictionary<string, object>();
 
-            /*
-            // InMemory
-            // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
-            */
+            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, config, connectionStrings.FilenameEventStore);
+            bootstrapper.RegisterPhotoDatabaseReadModel("InMemory a");
+            bootstrapper.RegisterSearchEngineReadModel("InMemory a");
+            bootstrapper.RegisterSimilarityReadModel(connectionStringSimilarity, "InMemory a");
+            return bootstrapper.Finalize();
 
-            /*
-            // File Based
-            container.RegisterSingleton<IEventStore>(
-                () =>
-                {
-                    var basePath = Path.Combine(baseDirectory, "Events");
-                    return new FileBasedEventStore(container.GetInstance<IEventPublisher>(), basePath);
-                });
-            */
+            // var similarityFilename = indexFilename + ".similarity.json";
 
-            // Use NEventStore
-            if (string.IsNullOrWhiteSpace(connectionString))
-                container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
-            else
-                container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
-
-            container.Register<IEventStore>(
-                () =>
-                {
-                    // ReSharper disable once ConvertToLambdaExpression
-                    return container.GetInstance<INEventStoreAdapterFactory>()
-                        .Create(container.GetInstance<IEventPublisher>());
-                },
-                Lifestyle.Singleton);
+            // container.RegisterSingleton<IImageDataRepository>(() => new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
+            // container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
+            //
+            // // add scoped?!
+            // container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton); // Repository has two public constructors (why??)
+            // container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
+            // container.Register<ISession, Session>(Lifestyle.Singleton); // check.
         }
 
         public static string CreateFullFilename([NotNull] string filename)
@@ -178,42 +94,6 @@
         {
             var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             return Path.Combine(userDir, "EagleEye");
-        }
-
-        private static void RegisterSimilarityReadModel([NotNull] Container container, [NotNull] string connectionString, [NotNull] string connectionStringHangFire)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
-            Guard.Argument(connectionStringHangFire, nameof(connectionStringHangFire)).NotNull().NotWhiteSpace();
-
-            global::EagleEye.Photo.ReadModel.Similarity.Bootstrapper.Bootstrap(container, connectionString, connectionStringHangFire);
-        }
-
-        private static void RegisterPhotoDomain([NotNull] Container container)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-
-            EagleEye.Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
-        }
-
-        private static void RegisterPhotoDatabaseReadModel([NotNull] Container container, [CanBeNull] string connectionString)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-            Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
-
-            global::EagleEye.Photo.ReadModel.EntityFramework.Bootstrapper.BootstrapEntityFrameworkReadModel(
-                                                           container,
-                                                           connectionString);
-        }
-
-        private static void RegisterSearchEngineReadModel([NotNull] Container container, [CanBeNull] string indexBaseDirectory)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-
-            Bootstrapper.BootstrapSearchEngineLuceneReadModel(
-                container,
-                string.IsNullOrWhiteSpace(indexBaseDirectory),
-                indexBaseDirectory);
         }
     }
 }

@@ -11,10 +11,10 @@
 
     internal class ExifToolPersonsProvider : IPhotoPersonProvider
     {
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
         private readonly Dictionary<string, string> headers;
 
-        public ExifToolPersonsProvider([NotNull] IExifTool exiftool)
+        public ExifToolPersonsProvider([NotNull] IExifToolReader exiftool)
         {
             Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;

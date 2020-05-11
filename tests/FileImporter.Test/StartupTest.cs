@@ -13,16 +13,16 @@
         {
             // arrange
             var container = new Container();
+            var connectionStrings = new ConnectionStrings
+                {
+                    FilenameEventStore = "dummy",
+                    HangFire = "InMemory HangFire",
+                };
 
             // act
             Action act = () =>
                          {
-                             Startup.ConfigureContainer(
-                                 container,
-                                 "dummy",
-                                 "InMemory hangfire",
-                                 null);
-
+                             Startup.ConfigureContainer(connectionStrings);
                              Startup.VerifyContainer(container);
                          };
 

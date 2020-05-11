@@ -1,4 +1,4 @@
-﻿namespace EagleEye.ExifTool.Test.MediaInformationProviders
+﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
     using System.Threading.Tasks;
@@ -12,39 +12,35 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    public class ExifToolGpsProviderTest
+    public class ExifToolDateTakenProviderTest
     {
         private const string Filename = "DUMMY";
 
-        private const string MetadataGps = @"
-""GPS"": {
-    ""GPSLatitudeRef"": ""North"",
-    ""GPSLatitude"": 40.736072,
-    ""GPSLongitudeRef"": ""West"",
-    ""GPSLongitude"": 73.994293,
+        private const string MetadataExif = @"
+  ""EXIF"": {
+    ""ModifyDate"": ""2018:01:04 23:32:50"",
+    ""DateTimeOriginal"": ""2018:01:01 18:05:20"",
+    ""CreateDate"": ""2018:01:01 18:05:18""
+  }";
+
+        private const string MetadataXmp = @"
+  ""XMP"": {
+    ""DateTimeOriginal"": ""2018:01:01 15:05:27+01:00"",
+    ""GPSDateTime"": ""2018:01:01 17:05:18Z"",
+    ""DateCreated"": ""2018:01:01 18:05:18.347054"",
+    ""CreateDate"": ""2018:01:01 18:05:18.347054"",
+    ""ModifyDate"": ""2018:01:04 23:32:50+01:00""
   },";
 
-        private const string MetadataXmpExif = @"
-""XMP-exif"": {
-    ""GPSLatitude"": ""+40.736072"",
-    ""GPSLongitude"": -73.994293,
-  }";
+        private readonly ExifToolDateTakenProvider sut;
+        private readonly IExifToolReader exiftool;
+        private readonly MediaObject media;
 
-        private const string MetadataComposite = @"
-""Composite"": {
-    ""GPSLatitude"": ""+40.736072"",
-    ""GPSLatitudeRef"": ""North"",
-    ""GPSLongitude"": -73.994293,
-    ""GPSLongitudeRef"": ""West"",
-  }";
-
-        private readonly ExifToolGpsProvider sut;
-        private readonly IExifTool exiftool;
-
-        public ExifToolGpsProviderTest()
+        public ExifToolDateTakenProviderTest()
         {
-            exiftool = A.Fake<IExifTool>();
-            sut = new ExifToolGpsProvider(exiftool);
+            exiftool = A.Fake<IExifToolReader>();
+            sut = new ExifToolDateTakenProvider(exiftool);
+            media = new MediaObject(Filename);
         }
 
         [Fact]
@@ -67,10 +63,10 @@
              .Returns(Task.FromResult(null as JObject));
 
             // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            result.Should().BeNull();
+            media.DateTimeTaken.Should().BeNull();
         }
 
         [Theory]
@@ -82,28 +78,27 @@
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            result.Should().BeNull();
+            media.DateTimeTaken.Should().BeNull();
         }
 
         [Theory]
-        [InlineData(MetadataGps)]
-        [InlineData(MetadataXmpExif)]
-        [InlineData(MetadataComposite)]
-        public async Task ProvideShouldFillCoordinatesTest(string data)
+        [InlineData(MetadataExif, 2018, 01, 01, 18, 05, 20)]
+        [InlineData(MetadataXmp, 2018, 01, 01, 15, 05, 27)]
+        public async Task ProvideShouldFillCoordinatesTest(string data, int year, int month, int day, int hour, int minute, int second)
         {
             // arrange
-            var expectedGpsCoordinate = new Coordinate(40.736072f, -73.994293f);
+            var expectedResult = new Timestamp(year, month, day, hour, minute, second);
             A.CallTo(() => exiftool.GetMetadataAsync(Filename))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+            await sut.ProvideAsync(Filename, media).ConfigureAwait(false);
 
             // assert
-            result.Coordinate.Should().BeEquivalentTo(expectedGpsCoordinate);
+            media.DateTimeTaken.Should().BeEquivalentTo(expectedResult);
         }
 
         private static string ConvertToJsonArray(string data)

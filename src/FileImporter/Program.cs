@@ -9,6 +9,7 @@
 
     using CommandLine;
     using CQRSlite.Commands;
+    using Dawn;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
     using EagleEye.FileImporter.Infrastructure;
@@ -16,14 +17,15 @@
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Json;
+    using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using NLog;
     using ShellProgressBar;
-    using SimpleInjector;
 
     using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
 
@@ -32,6 +34,8 @@
 #pragma warning disable SA1005 // Single line comments should begin with single space
     public static class Program
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
@@ -46,33 +50,51 @@
             ProgressCharacter = '─',
         };
 
-        private static Container container;
+        private static ConnectionStrings connectionStrings;
 
         public static async Task Main(string[] args)
         {
-            container = new Container();
-            await Run(args);
+            connectionStrings = new ConnectionStrings
+                {
+                    IndexFile = Path.GetTempFileName(),
+                    HangFire = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
+                    FilenameEventStore = Startup.CreateFullFilename("EventStore.db"),
+                };
+
+            //container = new Container();
+            await Run(args).ConfigureAwait(false);
         }
 
         private static async Task Run(string[] args)
         {
-            Task task = Task.CompletedTask;
+            var task = Task.CompletedTask;
 
-            Parser.Default.ParseArguments<UpdateSimilarityOptions, AutoDeleteSameFile, MoveOptions, UpdateIndexOptions, CheckIndexOptions, SearchOptions, SearchDuplicateFileOptions, FindAndHandleDuplicatesOptions, ListReadModelOptions>(args)
+            Parser.Default.ParseArguments<
+                    UpdateImportedImagesOptions,
+                    UpdateSimilarityOptions,
+                    AutoDeleteSameFile,
+                    MoveOptions,
+                    UpdateIndexOptions,
+                    CheckIndexOptions,
+                    SearchOptions,
+                    SearchDuplicateFileOptions,
+                    FindAndHandleDuplicatesOptions,
+                    ListReadModelOptions>(args)
+                .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<UpdateSimilarityOptions>(option => task = UpdateSimilarity(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
                 .WithParsed<AutoDeleteSameFile>(option => task = AutoDeleteSameFile(option))
                 .WithParsed<MoveOptions>(option => task = MoveFiles(option))
                 .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
                 .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
-                .WithParsed<SearchOptions>(async option => await Search(option))
+                .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
                 .WithParsed<FindAndHandleDuplicatesOptions>(option => task = FindAndProcessDuplicates(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
 
             try
             {
-                await task;
+                await task.ConfigureAwait(false);
                 Console.WriteLine("Done.");
             }
             catch (Exception e)
@@ -83,13 +105,55 @@
             }
         }
 
+        private static async Task UpdateImportedImages(UpdateImportedImagesOptions option)
+        {
+            Guard.Argument(option, nameof(option)).NotNull();
+
+            using var container = Startup.ConfigureContainer(connectionStrings);
+
+            await Startup.InitializeAllServices(container);
+            Startup.StartServices(container);
+
+            if (!Directory.Exists(option.ProcessingDirectory))
+            {
+                Console.WriteLine("Directory does not exist.");
+                return;
+            }
+
+            var diDirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
+
+            var xJpg = Directory.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
+            var xJpeg = Directory.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
+            var xMov = Directory.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
+            var xMp4 = Directory.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
+
+            // not supported
+            // var xAvi = Directory.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
+            // var xMts = Directory.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
+            // var xWmv = Directory.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
+
+            var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
+
+            var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
+
+            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            {
+                foreach (var file in files)
+                {
+                    progressBar.Tick(file);
+                    await commandHandler.HandleAsync(file).ConfigureAwait(false);
+                }
+            }
+
+            Console.WriteLine("DONE");
+            container.Dispose();
+            Console.ReadKey();
+        }
+
         private static async Task ListAllReadModel(ListReadModelOptions opts)
         {
-            Startup.ConfigureContainer(
-                container,
-                opts.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = opts.IndexFile;
+            using var container = Startup.ConfigureContainer(connectionStrings);
             await Startup.InitializeAllServices(container);
             Startup.StartServices(container);
 
@@ -230,11 +294,8 @@
                 return Task.CompletedTask;
             }
 
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var similarityRepository = container.GetInstance<SimilarityService>();
@@ -336,12 +397,8 @@
             //                        //return fi.Identifier.StartsWith(options.PathPrefix);
             //                    };
             //            }
-
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var indexService = container.GetInstance<CalculateIndexService>();
@@ -399,72 +456,67 @@
         private static async Task AutoDeleteSameFile(AutoDeleteSameFile options)
         {
             await Task.Yield(); // stupid ;-)
-
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var contentResolver = container.GetInstance<EagleEye.Core.Interfaces.Core.IFileService>();
 
             var allIndexes = searchService.FindAll().ToArray();
 
-            using (var progressBar = new ProgressBar(allIndexes.Length, "Initial message", ProgressOptions))
+            using var progressBar = new ProgressBar(allIndexes.Length, "Initial message", ProgressOptions);
+
+            foreach (var index in allIndexes)
             {
-                foreach (var index in allIndexes)
+                progressBar.Tick(index.Identifier);
+
+                // check if file exists.
+                if (!contentResolver.FileExists(index.Identifier))
                 {
-                    progressBar.Tick(index.Identifier);
+                    continue;
+                }
 
-                    // check if file exists.
-                    if (!contentResolver.FileExists(index.Identifier))
+                var duplicates = allIndexes
+                    .Where(f => f != index && f.Hashes.FileHash.SequenceEqual(index.Hashes.FileHash))
+                    .ToList();
+
+                if (!duplicates.Any())
+                    continue;
+
+                var fileInfo = new FileInfo(index.Identifier);
+                var dirIndex = fileInfo.Directory.FullName;
+
+                // var filenameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
+                var duplicatesInSameDirectory = duplicates
+                    .Where(f =>
                     {
-                        continue;
+                        var info = new FileInfo(f.Identifier);
+                        if (info.Directory != null && info.Directory.FullName != dirIndex)
+                            return false;
+
+                        return true;
+                        // var filenameWithoutExt = info.Name.Substring(0, info.Name.Length - info.Extension.Length);
+                        // if (filenameWithoutExt.StartsWith(filenameWithoutExtension))
+                        //     return true;
+                        //
+                        // return false;
+                    })
+                    .ToList();
+
+                if (!duplicatesInSameDirectory.Any())
+                    continue;
+
+                // remove these
+                foreach (var fileToRemove in duplicatesInSameDirectory)
+                {
+                    try
+                    {
+                        if (File.Exists(fileToRemove.Identifier))
+                            File.Delete(fileToRemove.Identifier);
                     }
-
-                    var duplicates = allIndexes
-                        .Where(f => f != index && f.Hashes.FileHash.SequenceEqual(index.Hashes.FileHash))
-                        .ToList();
-
-                    if (!duplicates.Any())
-                        continue;
-
-                    var fileInfo = new FileInfo(index.Identifier);
-                    var dirIndex = fileInfo.Directory.FullName;
-
-                    // var filenameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
-                    var duplicatesInSameDirectory = duplicates
-                        .Where(f =>
-                        {
-                            var info = new FileInfo(f.Identifier);
-                            if (info.Directory != null && info.Directory.FullName != dirIndex)
-                                return false;
-
-                            return true;
-                            // var filenameWithoutExt = info.Name.Substring(0, info.Name.Length - info.Extension.Length);
-                            // if (filenameWithoutExt.StartsWith(filenameWithoutExtension))
-                            //     return true;
-                            //
-                            // return false;
-                        })
-                        .ToList();
-
-                    if (!duplicatesInSameDirectory.Any())
-                        continue;
-
-                    // remove these
-                    foreach (var fileToRemove in duplicatesInSameDirectory)
+                    catch (Exception e)
                     {
-                        try
-                        {
-                            if (File.Exists(fileToRemove.Identifier))
-                                File.Delete(fileToRemove.Identifier);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
+                        Console.WriteLine(e);
                     }
                 }
             }
@@ -492,46 +544,44 @@
                 .EnumerateFiles(directoryInfo.FullName, "*.*", SearchOption.TopDirectoryOnly)
                 .ToArray();
 
-            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
+            foreach (var file in files)
             {
-                foreach (var file in files)
+                progressBar.Tick(file);
+
+                var dt = ExtractDateFromFilename.TryGetFromFilename(file);
+                if (!dt.HasValue)
                 {
-                    progressBar.Tick(file);
+                    continue;
+                }
 
-                    var dt = ExtractDateFromFilename.TryGetFromFilename(file);
-                    if (!dt.HasValue)
-                    {
-                        continue;
-                    }
-
-                    var d = Path.Combine(directoryInfo.FullName, dt.Value.ToString("yyyy-MM-dd"));
-                    if (!Directory.Exists(d))
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory(d);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
-                    }
-
-                    if (!Directory.Exists(d))
-                    {
-                        continue;
-                    }
-
+                var d = Path.Combine(directoryInfo.FullName, dt.Value.ToString("yyyy-MM-dd"));
+                if (!Directory.Exists(d))
+                {
                     try
                     {
-                        var fi = new FileInfo(file);
-                        var destFileName = Path.Combine(d, fi.Name);
-                        File.Move(fi.FullName, destFileName);
+                        Directory.CreateDirectory(d);
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine(e);
                     }
+                }
+
+                if (!Directory.Exists(d))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var fi = new FileInfo(file);
+                    var destFileName = Path.Combine(d, fi.Name);
+                    File.Move(fi.FullName, destFileName);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
                 }
             }
         }
@@ -540,11 +590,8 @@
         {
             await Task.Yield(); // stupid ;-)
 
-            Startup.ConfigureContainer(
-                container,
-                options.IndexFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            connectionStrings.IndexFile = options.IndexFile;
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var everything = new Everything();
@@ -574,7 +621,7 @@
                             continue;
 
                         similar.Add(index);
-                        everything.Show(similar);
+                        await everything.Show(similar);
                         Console.WriteLine("Press enter for next");
                         Console.ReadKey();
                     }
@@ -614,7 +661,7 @@
                         continue;
 
                     similarItems.Add(result);
-                    everything.Show(similarItems);
+                    await everything.Show(similarItems);
                     Console.WriteLine("Press enter for next");
                     Console.ReadKey();
                 }
@@ -635,11 +682,7 @@
 
             await Task.Yield(); // stupid ;-)
 
-            Startup.ConfigureContainer(
-                container,
-                options.OutputFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             var searchService = container.GetInstance<SearchService>();
             var persistentService = container.GetInstance<PersistentFileIndexService>();
@@ -647,17 +690,16 @@
 
             var allIndexes = searchService.FindAll().ToArray();
 
-            using (var progressBar = new ProgressBar(allIndexes.Length, "Initial message", ProgressOptions))
-            {
-                foreach (var index in allIndexes)
-                {
-                    progressBar.Tick(index.Identifier);
+            using var progressBar = new ProgressBar(allIndexes.Length, "Initial message", ProgressOptions);
 
-                    // check if file exists.
-                    if (!contentResolver.FileExists(index.Identifier))
-                    {
-                        persistentService.Delete(index.Identifier);
-                    }
+            foreach (var index in allIndexes)
+            {
+                progressBar.Tick(index.Identifier);
+
+                // check if file exists.
+                if (!contentResolver.FileExists(index.Identifier))
+                {
+                    persistentService.Delete(index.Identifier);
                 }
             }
         }
@@ -676,16 +718,12 @@
             var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
 
             var rp = string.Empty;
-//            if (diDirToIndex.StartsWith(diRoot))
-//            {
-//                rp = RootPath;
-//            }
+            //            if (diDirToIndex.StartsWith(diRoot))
+            //            {
+            //                rp = RootPath;
+            //            }
 
-            Startup.ConfigureContainer(
-                container,
-                options.OutputFile,
-                Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                Startup.CreateFullFilename("EventStore.db"));
+            using var container = Startup.ConfigureContainer(connectionStrings);
 
             var files = Directory
                 .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
@@ -696,36 +734,33 @@
             var indexService = container.GetInstance<CalculateIndexService>();
             var persistentService = container.GetInstance<PersistentFileIndexService>();
 
-            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
+
+            foreach (var file in files)
             {
-                foreach (var file in files)
+                progressBar.Tick(file);
+                var items = new string[1];
+                items[0] = file;
+
+                if (options.Force)
                 {
-                    progressBar.Tick(file);
-                    var items = new string[1];
-                    items[0] = file;
+                    // index and add
+                    progressBar.Message = $"Processing '{file}' ";
+                    var index = indexService.CalculateIndex(items);
+                    persistentService.AddOrUpdate(index.Single());
+                }
+                else
+                {
+                    var foundItem = searchService.FindById(file);
+                    if (foundItem != null)
+                        continue;
 
-                    if (options.Force)
-                    {
-                        // index and add
-                        progressBar.Message = $"Processing '{file}' ";
-                        var index = indexService.CalculateIndex(items);
-                        persistentService.AddOrUpdate(index.Single());
-                    }
-                    else
-                    {
-                        var foundItem = searchService.FindById(file);
-                        if (foundItem != null)
-                            continue;
-
-                        // index and add
-                        progressBar.Message = $"Processing '{file}' ";
-                        var index = indexService.CalculateIndex(items);
-                        persistentService.AddOrUpdate(index.Single());
-                    }
+                    // index and add
+                    progressBar.Message = $"Processing '{file}' ";
+                    var index = indexService.CalculateIndex(items);
+                    persistentService.AddOrUpdate(index.Single());
                 }
             }
-
-            // Console.ReadKey();
         }
 
         private static string ConvertToRelativeFilename(string rootPath, string fullFilename)

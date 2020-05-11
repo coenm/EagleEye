@@ -19,13 +19,13 @@
         private readonly JObject fileResult2;
         private readonly JObject fileResult3;
         private readonly ExifToolCacheDecorator sut;
-        private readonly IExifTool decoratee;
+        private readonly IExifToolReader decoratee;
         private readonly IDateTimeService dateTimeService;
         private readonly DateTime dtInit;
 
         public ExifToolCacheDecoratorTest()
         {
-            decoratee = A.Fake<IExifTool>();
+            decoratee = A.Fake<IExifToolReader>();
 
             fileResult1 = new JObject();
             fileResult2 = new JObject();

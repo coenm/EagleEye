@@ -1,0 +1,51 @@
+# exiftool config file
+%Image::ExifTool::UserDefined = (
+    'Image::ExifTool::XMP::Main' => {
+        CoenmEaglEeye => {
+            SubDirectory => {
+                TagTable => 'Image::ExifTool::UserDefined::CoenmEagleEye',
+            },
+        },
+    },
+);
+
+%Image::ExifTool::UserDefined::CoenmEagleEye = (
+    GROUPS => { 0 => 'XMP', 1 => 'XMP-CoenmEagleEye', 2 => 'Other' },
+    NAMESPACE => { 'CoenmEagleEye' => 'http://ns.github.com/coenm/EagleEye/1.0/' }, # just an uri
+    WRITABLE => 'string',
+
+    # Original filehash before adding and fixing metadata.
+    # exiftool -config EagleEye.ExifTool_config -xmp-CoenmEagleEye:EagleEyeFileHash="abcDef.-:+=^!/*?&<>()[]{}@%$#"
+    EagleEyeFileHash => {
+        Name => 'EagleEyeFileHash', # (specified only to get proper capitalization)
+        Writable => 'string', # Z85 encoded sha256
+    },
+
+    # Generated file id. Multiple files can have same id (due to file copying, probably not by coincidence).
+    EagleEyeId => {
+        Name => 'EagleEyeId',
+        Writable => 'string',
+    },
+
+    # Timestamp of adding this metadata
+    EagleEyeTimestamp => {
+        Name => 'EagleEyeTimestamp',
+        Writable => 'date', # "YYYY:mm:dd HH:MM:SS[.ss][+/-HH:MM]"
+    },
+
+    # Raw image hash. Can be multiple due to cropping, changing colors etc. etc.
+    EagleEyeRawImageHash => {
+        Name => 'EagleEyeRawImageHash',
+        Writable => 'string', # Z85 encoded sha256
+        List => 'Bag',
+    },
+
+    # VersionInfo for backwards compatibility
+    EagleEyeVersion => {
+        Name => 'EagleEyeVersion',
+        Writable => 'string',
+    },
+
+);
+1;  #end
+

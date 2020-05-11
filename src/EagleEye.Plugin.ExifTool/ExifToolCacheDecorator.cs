@@ -9,17 +9,17 @@
     using Newtonsoft.Json.Linq;
     using Nito.AsyncEx;
 
-    internal class ExifToolCacheDecorator : IExifTool
+    internal class ExifToolCacheDecorator : IExifToolReader
     {
         private readonly AsyncLock syncLock = new AsyncLock();
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
         private readonly IDateTimeService dateTimeService;
         private readonly TimeSpan cacheValidity;
         private DateTime cacheTimestamp;
         private Task<JObject> task;
         private string cachedFilename;
 
-        public ExifToolCacheDecorator([NotNull] IExifTool exiftool, [NotNull] IDateTimeService dateTimeService)
+        public ExifToolCacheDecorator([NotNull] IExifToolReader exiftool, [NotNull] IDateTimeService dateTimeService)
         {
             Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             Guard.Argument(dateTimeService, nameof(dateTimeService)).NotNull();

@@ -37,27 +37,27 @@
 
         public static IEnumerable<IEagleEyePlugin> FindAvailablePlugins()
         {
-            using (var container = new Container())
+            using var container = new Container();
+
+            var pluginAssemblies = PluginLocator.FindPluginAssemblies(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+
+            container.RegisterPackages(pluginAssemblies);
+
+            try
             {
-                var pluginAssemblies = PluginLocator.FindPluginAssemblies(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
-
-                container.RegisterPackages(pluginAssemblies);
-
-                try
-                {
-                    return container.GetAllInstances<IEagleEyePlugin>();
-                }
-                catch (ActivationException e)
-                {
-                    Logger.Warn(e, () => $"Could not find plugins due to an ActivationException. {e.Message}");
-                    return Enumerable.Empty<IEagleEyePlugin>();
-                }
+                return container.GetAllInstances<IEagleEyePlugin>();
+            }
+            catch (ActivationException e)
+            {
+                Logger.Warn(e, () => $"Could not find plugins due to an ActivationException. {e.Message}");
+                return Enumerable.Empty<IEagleEyePlugin>();
             }
         }
 
         public static Bootstrapper Initialize(
             [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins,
+            [CanBeNull] IReadOnlyDictionary<string, object> config,
             [CanBeNull] string connectionStringEventStore = null)
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
@@ -67,7 +67,7 @@
 
             bootstrapper.RegisterCore(baseDirectory, connectionStringEventStore);
 
-            bootstrapper.RegisterPlugins(plugins.ToArray());
+            bootstrapper.RegisterPlugins(plugins.ToArray(), config);
 
             return bootstrapper;
         }
@@ -142,7 +142,7 @@
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
 
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
-            container.RegisterInstance<IFileService>(SystemFileService.Instance);
+            container.RegisterInstance<IFileService>(SystemFileService.Instance); // RelativeSystemFileService
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
             container.RegisterSingleton<IFileSha256HashProvider, FileSha256HashProvider>();
@@ -211,13 +211,13 @@
             Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
-        private void RegisterPlugins([NotNull] IEagleEyePlugin[] plugins)
+        private void RegisterPlugins([NotNull] IEagleEyePlugin[] plugins, [CanBeNull] IReadOnlyDictionary<string, object> config)
         {
             Guard.Argument(plugins, nameof(plugins)).NotNull();
 
             foreach (var plugin in plugins)
             {
-                plugin?.EnablePlugin(container);
+                plugin?.EnablePlugin(container, config);
             }
         }
     }

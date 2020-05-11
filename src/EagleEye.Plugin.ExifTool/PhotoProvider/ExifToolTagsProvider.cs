@@ -11,10 +11,10 @@
 
     internal class ExifToolTagsProvider : IPhotoTagProvider
     {
-        private readonly IExifTool exiftool;
+        private readonly IExifToolReader exiftool;
         private readonly Dictionary<string, string> headers;
 
-        public ExifToolTagsProvider([NotNull] IExifTool exiftool)
+        public ExifToolTagsProvider([NotNull] IExifToolReader exiftool)
         {
             Guard.Argument(exiftool, nameof(exiftool)).NotNull();
             this.exiftool = exiftool;
