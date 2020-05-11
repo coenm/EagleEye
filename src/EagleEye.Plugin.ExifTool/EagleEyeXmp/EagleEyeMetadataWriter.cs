@@ -23,7 +23,7 @@
             this.exiftool = exiftool;
         }
 
-        public async Task WriteAsync(string filename, EagleEyeMetadata metadata, CancellationToken ct = default)
+        public async Task WriteAsync(string filename, EagleEyeMetadata metadata, bool overwriteOriginal, CancellationToken ct = default)
         {
             Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
             Guard.Argument(metadata, nameof(metadata)).NotNull();
@@ -48,6 +48,9 @@
                 args.Add($"{Prefix}RawImageHash-=" + z85Bytes);
                 args.Add($"{Prefix}RawImageHash+=" + z85Bytes);
             }
+
+            if (overwriteOriginal)
+                args.Add("-overwrite_original");
 
             try
             {

@@ -57,7 +57,6 @@
             var data = await fileSha256Service.ProvideAsync(filename).ConfigureAwait(false);
             var data2 = await photoSha256HashProvider.First().ProvideAsync(filename).ConfigureAwait(false);
 
-            // update metadata
             var metadata = new EagleEyeMetadata
                 {
                     Id = Guid.NewGuid(),
@@ -69,7 +68,7 @@
                         },
                 };
 
-            await eagleEyeMetadataWriter.WriteAsync(filename, metadata, ct).ConfigureAwait(false);
+            await eagleEyeMetadataWriter.WriteAsync(filename, metadata, overwriteOriginal: true, ct).ConfigureAwait(false);
         }
     }
 }

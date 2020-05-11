@@ -8,6 +8,6 @@
 
     public interface IEagleEyeMetadataWriter
     {
-        Task WriteAsync([NotNull] string filename, [NotNull] EagleEyeMetadata metadata, CancellationToken ct = default);
+        Task WriteAsync([NotNull] string filename, [NotNull] EagleEyeMetadata metadata, bool overwriteOriginal, CancellationToken ct = default);
     }
 }
