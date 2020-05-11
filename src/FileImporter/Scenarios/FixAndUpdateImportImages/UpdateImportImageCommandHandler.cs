@@ -49,7 +49,7 @@
                 return;
 
             // check if file contains metadata
-            var imageMetaData = await eagleEyeMetadataProvider.ProvideAsync(filename).ConfigureAwait(false);
+            var imageMetaData = await eagleEyeMetadataProvider.ProvideAsync(filename, ct).ConfigureAwait(false);
             if (imageMetaData != null)
                 return;
 

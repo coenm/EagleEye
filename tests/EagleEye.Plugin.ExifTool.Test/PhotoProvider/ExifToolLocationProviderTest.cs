@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Data;
@@ -40,6 +41,7 @@
 
         private readonly ExifToolLocationProvider sut;
         private readonly IExifToolReader exiftool;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ExifToolLocationProviderTest()
         {
@@ -63,7 +65,7 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(null as JObject));
 
             // act
@@ -78,7 +80,7 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -99,7 +101,7 @@
                 State = "New York",
                 CountryName = "United States",
             };
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -119,7 +121,7 @@
                                            SubLocation = "Union Square",
                                            CountryCode = "USA",
                                        };
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -143,7 +145,7 @@
                 SubLocation = "Union Square",
                 CountryCode = "USA",
             };
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act

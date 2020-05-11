@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.Core.EagleEyeXmp;
@@ -18,6 +19,7 @@
         private const string Filename = "DUMMY";
         private readonly EagleEyeMetadataProvider sut;
         private readonly IExifToolReader exiftool;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public EagleEyeMetadataProviderTest()
         {
@@ -55,11 +57,11 @@
     ""Megapixels"": 0.784
   }";
 
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
 
             // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, ct).ConfigureAwait(false);
 
             // assert
             result.Should().BeEquivalentTo(
@@ -106,11 +108,11 @@
     ""Megapixels"": 0.784
   }";
 
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
 
             // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, ct).ConfigureAwait(false);
 
             // assert
             result.Should().BeNull();
@@ -120,11 +122,11 @@
         public async Task ProvideCanHandleNullResponseFromExiftool()
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(null as JObject));
 
             // act
-            var result = await sut.ProvideAsync(Filename).ConfigureAwait(false);
+            var result = await sut.ProvideAsync(Filename, ct).ConfigureAwait(false);
 
             // assert
             result.Should().BeNull();

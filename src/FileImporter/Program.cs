@@ -136,12 +136,24 @@
 
             var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
 
+            var fromSeconds = TimeSpan.FromSeconds(5);
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
                 foreach (var file in files)
                 {
                     progressBar.Tick(file);
-                    await commandHandler.HandleAsync(file).ConfigureAwait(false);
+
+                    using var cts = new CancellationTokenSource(fromSeconds);
+
+                    try
+                    {
+                        await commandHandler.HandleAsync(file, cts.Token).ConfigureAwait(false);
+                        await Task.Delay(10, CancellationToken.None).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Logger.Error("Could not UpdateImporteImage due to timeout.");
+                    }
                 }
             }
 

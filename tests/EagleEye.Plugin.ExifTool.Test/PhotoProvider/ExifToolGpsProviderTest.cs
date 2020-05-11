@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Data;
@@ -40,6 +41,7 @@
 
         private readonly ExifToolGpsProvider sut;
         private readonly IExifToolReader exiftool;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ExifToolGpsProviderTest()
         {
@@ -63,7 +65,7 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(null as JObject));
 
             // act
@@ -78,7 +80,7 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -96,7 +98,7 @@
         {
             // arrange
             var expectedGpsCoordinate = new Coordinate(40.736072f, -73.994293f);
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
