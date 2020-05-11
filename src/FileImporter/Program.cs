@@ -69,10 +69,8 @@
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
                     SearchOptions,
-                    SearchDuplicateFileOptions,
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
-                .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
                 .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
@@ -281,133 +279,6 @@
             Console.ReadKey();
 
             container.Dispose();
-        }
-
-        private static async Task SearchDuplicateFile(SearchDuplicateFileOptions options)
-        {
-            await Task.Yield(); // stupid ;-)
-
-            if (string.IsNullOrWhiteSpace(options.OriginalImageFile))
-            {
-                Console.WriteLine("Image file cannot be empty.");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(options.IndexFile))
-            {
-                Console.WriteLine("IndexFile file cannot be empty.");
-                return;
-            }
-
-            var filesToProcess = new List<string>();
-            if (File.Exists(options.OriginalImageFile))
-            {
-                filesToProcess.Add(options.OriginalImageFile);
-            }
-            else
-            {
-                if (!Directory.Exists(options.OriginalImageFile))
-                {
-                    Console.WriteLine("OriginalImage file doesn't exist.");
-                    return;
-                }
-
-                var diDirToIndex = new DirectoryInfo(options.OriginalImageFile).FullName;
-                filesToProcess = Directory
-                    .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
-                    .ToList();
-            }
-
-            if (!filesToProcess.Any())
-            {
-                Console.WriteLine("No files found.");
-                return;
-            }
-
-            if (!File.Exists(options.IndexFile))
-            {
-                Console.WriteLine("Index file doesn't exist.");
-                return;
-            }
-
-            Func<ImageData, bool> tempSpecialPredicate = fi => true;
-            tempSpecialPredicate = fi =>
-            {
-                if (!fi.Identifier.StartsWith(@"D:\Fotoalbum"))
-                    return true;
-
-                var matchYear = false;
-                matchYear |= fi.Identifier.Contains("2015");
-                matchYear |= fi.Identifier.Contains("2016");
-                matchYear |= fi.Identifier.Contains("2017");
-                matchYear |= fi.Identifier.Contains("2018");
-                return matchYear;
-
-                // return fi.Identifier.StartsWith(options.PathPrefix);
-            };
-
-            //            if (string.IsNullOrWhiteSpace(options.PathPrefix))
-            //            {
-            //                if (Directory.Exists(options.PathPrefix))
-            //                    tempSpecialPredicate = fi =>
-            //                    {
-            //                        //return fi.Identifier.StartsWith(options.PathPrefix);
-            //                    };
-            //            }
-            connectionStrings.IndexFile = options.IndexFile;
-            using var container = Startup.ConfigureContainer(connectionStrings);
-
-            var searchService = container.GetInstance<SearchService>();
-            var indexService = container.GetInstance<CalculateIndexService>();
-            var everything = new Everything();
-            var show = false;
-
-            using (var progressBar = new ProgressBar(filesToProcess.Count, "Search duplicates", ProgressOptions))
-            {
-                foreach (var file in filesToProcess)
-                {
-                    progressBar.Tick(file);
-                    if (!File.Exists(file))
-                        continue;
-
-                    var files = new[] { file };
-                    var index = indexService.CalculateIndex(files).Single();
-
-                    var found = int.MaxValue;
-                    var lastSimilar = new List<ImageData>();
-                    var similar = new List<ImageData>();
-                    var matchValue = options.Value;
-
-                    while (found > 10 && matchValue <= 100)
-                    {
-                        lastSimilar = similar;
-                        similar = searchService.FindSimilar(index, matchValue, matchValue, matchValue)
-                            .Where(f => f.Identifier != index.Identifier
-                                        &&
-                                        File.Exists(f.Identifier)
-                                        &&
-                                        tempSpecialPredicate(f))
-                            .ToList();
-                        found = similar.Count;
-                        matchValue++;
-                    }
-
-                    if (!similar.Any())
-                        similar = lastSimilar;
-
-                    if (!similar.Any())
-                        continue;
-
-                    if (show)
-                        Console.ReadKey();
-
-                    similar.Add(index);
-                    everything.Show(similar);
-                    show = true;
-                }
-            }
-
-            Console.WriteLine("DONE.");
         }
 
         private static async Task Search(SearchOptions options)
