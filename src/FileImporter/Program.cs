@@ -70,7 +70,6 @@
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
-                    AutoDeleteSameFile,
                     MoveOptions,
                     UpdateIndexOptions,
                     CheckIndexOptions,
@@ -80,7 +79,6 @@
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
-                .WithParsed<AutoDeleteSameFile>(option => task = AutoDeleteSameFile(option))
                 .WithParsed<MoveOptions>(option => task = MoveFiles(option))
                 .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
                 .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
@@ -420,75 +418,6 @@
             }
 
             Console.WriteLine("DONE.");
-        }
-
-        private static async Task AutoDeleteSameFile(AutoDeleteSameFile options)
-        {
-            await Task.Yield(); // stupid ;-)
-            connectionStrings.IndexFile = options.IndexFile;
-            using var container = Startup.ConfigureContainer(connectionStrings);
-
-            var searchService = container.GetInstance<SearchService>();
-            var contentResolver = container.GetInstance<EagleEye.Core.Interfaces.Core.IFileService>();
-
-            var allIndexes = searchService.FindAll().ToArray();
-
-            using var progressBar = new ProgressBar(allIndexes.Length, "Initial message", ProgressOptions);
-
-            foreach (var index in allIndexes)
-            {
-                progressBar.Tick(index.Identifier);
-
-                // check if file exists.
-                if (!contentResolver.FileExists(index.Identifier))
-                {
-                    continue;
-                }
-
-                var duplicates = allIndexes
-                    .Where(f => f != index && f.Hashes.FileHash.SequenceEqual(index.Hashes.FileHash))
-                    .ToList();
-
-                if (!duplicates.Any())
-                    continue;
-
-                var fileInfo = new FileInfo(index.Identifier);
-                var dirIndex = fileInfo.Directory.FullName;
-
-                // var filenameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
-                var duplicatesInSameDirectory = duplicates
-                    .Where(f =>
-                    {
-                        var info = new FileInfo(f.Identifier);
-                        if (info.Directory != null && info.Directory.FullName != dirIndex)
-                            return false;
-
-                        return true;
-                        // var filenameWithoutExt = info.Name.Substring(0, info.Name.Length - info.Extension.Length);
-                        // if (filenameWithoutExt.StartsWith(filenameWithoutExtension))
-                        //     return true;
-                        //
-                        // return false;
-                    })
-                    .ToList();
-
-                if (!duplicatesInSameDirectory.Any())
-                    continue;
-
-                // remove these
-                foreach (var fileToRemove in duplicatesInSameDirectory)
-                {
-                    try
-                    {
-                        if (File.Exists(fileToRemove.Identifier))
-                            File.Delete(fileToRemove.Identifier);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
-            }
         }
 
         private static async Task MoveFiles(MoveOptions options)
