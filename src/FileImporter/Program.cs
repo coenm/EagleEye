@@ -11,10 +11,6 @@
     using CQRSlite.Commands;
     using Dawn;
     using EagleEye.FileImporter.CmdOptions;
-    using EagleEye.FileImporter.Indexing;
-    using EagleEye.FileImporter.Infrastructure.Everything;
-    using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
-    using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
     using EagleEye.Photo.Domain.Commands;
@@ -68,10 +64,8 @@
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
-                    SearchOptions,
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
-                .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
 
@@ -279,91 +273,6 @@
             Console.ReadKey();
 
             container.Dispose();
-        }
-
-        private static async Task Search(SearchOptions options)
-        {
-            await Task.Yield(); // stupid ;-)
-
-            connectionStrings.IndexFile = options.IndexFile;
-            using var container = Startup.ConfigureContainer(connectionStrings);
-
-            var searchService = container.GetInstance<SearchService>();
-            var everything = new Everything();
-
-            if (string.IsNullOrWhiteSpace(options.DirectoryToIndex))
-            {
-                if (!File.Exists(options.IndexFiles2))
-                {
-                    Console.WriteLine("File doesn't exist");
-                    return;
-                }
-
-                var repo2 = new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(options.IndexFiles2));
-
-                var allFiles = repo2.Find(f => true).Where(f => File.Exists(f.Identifier)).ToList();
-
-                using (var progressBar = new ProgressBar(allFiles.Count, "Initial message", ProgressOptions))
-                {
-                    foreach (var index in allFiles)
-                    {
-                        progressBar.Tick(index.Identifier);
-                        var similar = searchService.FindSimilar(index).ToList();
-                        similar = similar.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
-                        similar = similar.Where(f => File.Exists(f.Identifier)).ToList();
-
-                        if (!similar.Any())
-                            continue;
-
-                        similar.Add(index);
-                        await everything.Show(similar);
-                        Console.WriteLine("Press enter for next");
-                        Console.ReadKey();
-                    }
-                }
-
-                return;
-            }
-
-            if (!Directory.Exists(options.DirectoryToIndex))
-            {
-                Console.WriteLine("Directory does not exist.");
-                return;
-            }
-
-            var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
-            var files = Directory
-                .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
-                .ToArray();
-
-            var indexService = container.GetInstance<CalculateIndexService>();
-
-            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
-            {
-                foreach (var index in files)
-                {
-                    progressBar.Tick(index);
-
-                    var items = new string[1];
-                    items[0] = index;
-
-                    var result = indexService.CalculateIndex(items).Single();
-                    var similarItems = searchService.FindSimilar(result).ToList();
-
-                    similarItems = similarItems.Where(f => !f.Identifier.Contains("ElSheik")).ToList();
-
-                    if (similarItems.Any())
-                        continue;
-
-                    similarItems.Add(result);
-                    await everything.Show(similarItems);
-                    Console.WriteLine("Press enter for next");
-                    Console.ReadKey();
-                }
-            }
-
-            Console.WriteLine("DONE");
-            Console.ReadKey();
         }
     }
 #pragma warning restore SA1005 // Single line comments should begin with single space
