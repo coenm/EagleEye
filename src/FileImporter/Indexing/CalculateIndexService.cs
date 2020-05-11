@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Dawn;
 
+    using Dawn;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
 

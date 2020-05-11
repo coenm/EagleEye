@@ -70,7 +70,6 @@
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
-                    MoveOptions,
                     UpdateIndexOptions,
                     CheckIndexOptions,
                     SearchOptions,
@@ -79,7 +78,6 @@
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
-                .WithParsed<MoveOptions>(option => task = MoveFiles(option))
                 .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
                 .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
                 .WithParsed<SearchOptions>(option => task = Search(option))
@@ -418,70 +416,6 @@
             }
 
             Console.WriteLine("DONE.");
-        }
-
-        private static async Task MoveFiles(MoveOptions options)
-        {
-            await Task.Yield(); // stupid ;-)
-
-            if (string.IsNullOrWhiteSpace(options.Directory))
-            {
-                Console.WriteLine("Cannot be null or empty");
-                return;
-            }
-
-            if (!Directory.Exists(options.Directory))
-            {
-                Console.WriteLine("Directory does not exist");
-                return;
-            }
-
-            var directoryInfo = new DirectoryInfo(options.Directory);
-
-            var files = Directory
-                .EnumerateFiles(directoryInfo.FullName, "*.*", SearchOption.TopDirectoryOnly)
-                .ToArray();
-
-            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
-            foreach (var file in files)
-            {
-                progressBar.Tick(file);
-
-                var dt = ExtractDateFromFilename.TryGetFromFilename(file);
-                if (!dt.HasValue)
-                {
-                    continue;
-                }
-
-                var d = Path.Combine(directoryInfo.FullName, dt.Value.ToString("yyyy-MM-dd"));
-                if (!Directory.Exists(d))
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(d);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
-
-                if (!Directory.Exists(d))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    var fi = new FileInfo(file);
-                    var destFileName = Path.Combine(d, fi.Name);
-                    File.Move(fi.FullName, destFileName);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
         }
 
         private static async Task Search(SearchOptions options)
