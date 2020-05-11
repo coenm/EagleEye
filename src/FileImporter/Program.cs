@@ -68,13 +68,11 @@
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
-                    UpdateIndexOptions,
                     SearchOptions,
                     SearchDuplicateFileOptions,
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
-                .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
                 .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
@@ -495,71 +493,6 @@
 
             Console.WriteLine("DONE");
             Console.ReadKey();
-        }
-
-        private static async Task UpdateIndex(UpdateIndexOptions options)
-        {
-            await Task.Yield(); // stupid ;-)
-
-            // todo input validation
-            if (!Directory.Exists(options.DirectoryToIndex))
-            {
-                Console.WriteLine("Directory does not exist.");
-                return;
-            }
-
-            var diDirToIndex = new DirectoryInfo(options.DirectoryToIndex).FullName;
-
-            var rp = string.Empty;
-            //            if (diDirToIndex.StartsWith(diRoot))
-            //            {
-            //                rp = RootPath;
-            //            }
-
-            using var container = Startup.ConfigureContainer(connectionStrings);
-
-            var files = Directory
-                .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
-//                .Select(f => ConvertToRelativeFilename(rp, f))
-                .ToArray();
-
-            var searchService = container.GetInstance<SearchService>();
-            var indexService = container.GetInstance<CalculateIndexService>();
-            var persistentService = container.GetInstance<PersistentFileIndexService>();
-
-            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
-
-            foreach (var file in files)
-            {
-                progressBar.Tick(file);
-                var items = new string[1];
-                items[0] = file;
-
-                if (options.Force)
-                {
-                    // index and add
-                    progressBar.Message = $"Processing '{file}' ";
-                    var index = indexService.CalculateIndex(items);
-                    persistentService.AddOrUpdate(index.Single());
-                }
-                else
-                {
-                    var foundItem = searchService.FindById(file);
-                    if (foundItem != null)
-                        continue;
-
-                    // index and add
-                    progressBar.Message = $"Processing '{file}' ";
-                    var index = indexService.CalculateIndex(items);
-                    persistentService.AddOrUpdate(index.Single());
-                }
-            }
-        }
-
-        private static void ShowError(string s)
-        {
-            Console.WriteLine(s);
-            throw new Exception(s);
         }
     }
 #pragma warning restore SA1005 // Single line comments should begin with single space
