@@ -23,8 +23,8 @@
             // Assembly.GetExecutingAssembly().
             var dir = AppDomain.CurrentDomain.BaseDirectory;
             var exifToolConfigFile = Path.Combine(dir, "EagleEye.ExifTool_config");
-            if (!File.Exists(exifToolConfigFile))
-                exifToolConfigFile = null;
+            // if (!File.Exists(exifToolConfigFile))
+            exifToolConfigFile = null;
 
             container.Register<IExifToolConfig>(() => new StaticExiftoolConfig(ExifToolExecutable.GetExecutableName(), exifToolConfigFile), Lifestyle.Singleton); // todo coenm fix this
             container.Register<IExifToolArguments>(() => new StaticExifToolArguments(StaticExifToolArguments.DefaultArguments), Lifestyle.Singleton);
