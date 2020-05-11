@@ -69,14 +69,12 @@
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
                     UpdateIndexOptions,
-                    CheckIndexOptions,
                     SearchOptions,
                     SearchDuplicateFileOptions,
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
                 .WithParsed<UpdateIndexOptions>(option => task = UpdateIndex(option))
-                .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
                 .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
@@ -497,39 +495,6 @@
 
             Console.WriteLine("DONE");
             Console.ReadKey();
-        }
-
-        /// <summary>
-        /// Remove index if file does not exist anymore.
-        /// </summary>
-        private static async Task CheckIndex(CheckIndexOptions options)
-        {
-            // todo input validation
-            //            var diRoot = new DirectoryInfo(RootPath).FullName;
-            //            var rp = RootPath;
-
-            await Task.Yield(); // stupid ;-)
-
-            using var container = Startup.ConfigureContainer(connectionStrings);
-
-            var searchService = container.GetInstance<SearchService>();
-            var persistentService = container.GetInstance<PersistentFileIndexService>();
-            var contentResolver = container.GetInstance<EagleEye.Core.Interfaces.Core.IFileService>();
-
-            var allIndexes = searchService.FindAll().ToArray();
-
-            using var progressBar = new ProgressBar(allIndexes.Length, "Initial message", ProgressOptions);
-
-            foreach (var index in allIndexes)
-            {
-                progressBar.Tick(index.Identifier);
-
-                // check if file exists.
-                if (!contentResolver.FileExists(index.Identifier))
-                {
-                    persistentService.Delete(index.Identifier);
-                }
-            }
         }
 
         private static async Task UpdateIndex(UpdateIndexOptions options)
