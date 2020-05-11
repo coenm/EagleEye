@@ -47,6 +47,9 @@
             foreach (var bytes in metadata.RawImageHash ?? Enumerable.Empty<byte[]>())
             {
                 var z85Bytes = ConvertBytes(bytes);
+                if (string.IsNullOrWhiteSpace(z85Bytes))
+                    continue;
+
                 args.Add($"{Prefix}RawImageHash-=" + z85Bytes);
                 args.Add($"{Prefix}RawImageHash+=" + z85Bytes);
             }
