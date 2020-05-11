@@ -12,13 +12,11 @@
     using Dawn;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Indexing;
-    using EagleEye.FileImporter.Infrastructure;
     using EagleEye.FileImporter.Infrastructure.Everything;
     using EagleEye.FileImporter.Infrastructure.FileIndexRepository;
     using EagleEye.FileImporter.Infrastructure.PersistentSerializer;
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
-    using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
@@ -74,7 +72,6 @@
                     CheckIndexOptions,
                     SearchOptions,
                     SearchDuplicateFileOptions,
-                    FindAndHandleDuplicatesOptions,
                     ListReadModelOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
                 .WithParsed<SearchDuplicateFileOptions>(option => task = SearchDuplicateFile(option))
@@ -82,7 +79,6 @@
                 .WithParsed<CheckIndexOptions>(option => task = CheckIndex(option))
                 .WithParsed<SearchOptions>(option => task = Search(option))
                 .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
-                .WithParsed<FindAndHandleDuplicatesOptions>(option => task = FindAndProcessDuplicates(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
 
             try
@@ -593,51 +589,6 @@
                     persistentService.AddOrUpdate(index.Single());
                 }
             }
-        }
-
-        private static async Task FindAndProcessDuplicates(FindAndHandleDuplicatesOptions opts)
-        {
-            await Task.Yield(); // stupid ;-)
-
-            if (string.IsNullOrWhiteSpace(opts.IndexFile))
-                ShowError($"Indexfile cannot be null or empty.");
-
-            if (!File.Exists(opts.IndexFile))
-                ShowError($"File '{opts.IndexFile}' doesn't exist.");
-
-            if (string.IsNullOrWhiteSpace(opts.ProcessingFile))
-                ShowError($"ProcessingFile cannot be null or empty.");
-
-            if (!File.Exists(opts.ProcessingFile))
-                ShowError($"File '{opts.ProcessingFile}' doesn't exist.");
-
-            if (opts.DuplicateAction == FileAction.Move)
-            {
-                if (string.IsNullOrWhiteSpace(opts.DuplicateDir))
-                    ShowError($"DuplicateDir cannot be null or empty.");
-
-                if (!Directory.Exists(opts.DuplicateDir))
-                    Directory.CreateDirectory(opts.DuplicateDir);
-            }
-
-//            var index = ReadInputFile(opts.IndexFile);
-//            var filesToProcess = ReadInputFile(opts.ProcessingFile);
-//
-//
-//            // find duplicate files
-//            var duplicateFiles = filesToProcess
-//                .Where(f => index.Any(file => file.Sha256.SequenceEqual(f.Sha256)))
-//                .ToArray();
-//
-//            // find new files
-//            var newFiles = filesToProcess.Except(duplicateFiles).ToArray();
-//
-//
-//            HandleDuplicates(duplicateFiles, opts);
-//            //HandleNewFiles(newFiles, opts);
-//
-//            JsonEncoding.WriteDataToJsonFile(duplicateFiles, opts.OutputDuplicateFile);
-//            JsonEncoding.WriteDataToJsonFile(newFiles, opts.OutputNewFile);
         }
 
         private static void ShowError(string s)
