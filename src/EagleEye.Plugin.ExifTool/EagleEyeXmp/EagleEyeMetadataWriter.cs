@@ -11,10 +11,12 @@
     using EagleEye.Core.EagleEyeXmp;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
+    using NLog;
 
     internal class EagleEyeMetadataWriter : IEagleEyeMetadataWriter
     {
         private const string Prefix = "-xmp-CoenmEagleEye:EagleEye";
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IExifToolWriter exiftool;
 
         public EagleEyeMetadataWriter([NotNull] IExifToolWriter exiftool)
@@ -58,8 +60,7 @@
             }
             catch (Exception e)
             {
-                // todo coenm
-                Console.WriteLine(filename + "  " + e.Message);
+                Logger.Error($"Error writing metadata to media '{filename}'. {e.Message}");
             }
         }
 

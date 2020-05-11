@@ -12,9 +12,11 @@
     using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using NLog;
 
     internal class ExifToolAdapter : IExifToolReader, IExifToolWriter, IDisposable
     {
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly AsyncExifTool exiftoolImpl;
 
         public ExifToolAdapter([NotNull] IExifToolConfig config, [CanBeNull] IExifToolArguments arguments)
@@ -23,7 +25,8 @@
             var args = arguments?.Arguments?.ToArray();
 
             var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, config.ExifToolConfigFile, Encoding.UTF8, args);
-            exiftoolImpl = new AsyncExifTool(exiftoolConfig);
+            var logger = new ExifToolLogAdapter();
+            exiftoolImpl = new AsyncExifTool(exiftoolConfig, logger);
             exiftoolImpl.Initialize();
         }
 
@@ -45,6 +48,7 @@
             }
             catch (Exception e)
             {
+                Logger.Error(e.Message);
                 return null;
             }
         }
