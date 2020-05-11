@@ -35,16 +35,6 @@
             bootstrapper.RegisterSearchEngineReadModel("InMemory a");
             bootstrapper.RegisterSimilarityReadModel(connectionStringSimilarity, "InMemory a");
             return bootstrapper.Finalize();
-
-            // var similarityFilename = indexFilename + ".similarity.json";
-
-            // container.RegisterSingleton<IImageDataRepository>(() => new SingleImageDataRepository(new JsonToFileSerializer<List<ImageData>>(indexFilename)));
-            // container.RegisterSingleton<ISimilarityRepository>(() => new SingleFileSimilarityRepository(new JsonToFileSerializer<List<SimilarityResultStorage>>(similarityFilename)));
-            //
-            // // add scoped?!
-            // container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton); // Repository has two public constructors (why??)
-            // container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
-            // container.Register<ISession, Session>(Lifestyle.Singleton); // check.
         }
 
         public static string CreateFullFilename([NotNull] string filename)

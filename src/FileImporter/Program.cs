@@ -61,7 +61,6 @@
                     FilenameEventStore = Startup.CreateFullFilename("EventStore.db"),
                 };
 
-            //container = new Container();
             await Run(args).ConfigureAwait(false);
         }
 
