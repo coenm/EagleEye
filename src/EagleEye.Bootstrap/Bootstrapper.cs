@@ -57,6 +57,7 @@
         public static Bootstrapper Initialize(
             [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins,
+            [CanBeNull] IReadOnlyDictionary<string, object> config,
             [CanBeNull] string connectionStringEventStore = null)
         {
             Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
@@ -66,7 +67,7 @@
 
             bootstrapper.RegisterCore(baseDirectory, connectionStringEventStore);
 
-            bootstrapper.RegisterPlugins(plugins.ToArray());
+            bootstrapper.RegisterPlugins(plugins.ToArray(), config);
 
             return bootstrapper;
         }
@@ -210,13 +211,13 @@
             Photo.Domain.Bootstrapper.BootstrapPhotoDomain(container);
         }
 
-        private void RegisterPlugins([NotNull] IEagleEyePlugin[] plugins)
+        private void RegisterPlugins([NotNull] IEagleEyePlugin[] plugins, [CanBeNull] IReadOnlyDictionary<string, object> config)
         {
             Guard.Argument(plugins, nameof(plugins)).NotNull();
 
             foreach (var plugin in plugins)
             {
-                plugin?.EnablePlugin(container);
+                plugin?.EnablePlugin(container, config);
             }
         }
     }

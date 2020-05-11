@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.FileImporter
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -26,7 +27,10 @@
             var connectionStringSimilarity = CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.db"));
 
             var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
-            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, connectionStrings.FilenameEventStore);
+
+            var config = new Dictionary<string, object>();
+
+            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, config, connectionStrings.FilenameEventStore);
             bootstrapper.RegisterPhotoDatabaseReadModel("InMemory a");
             bootstrapper.RegisterSearchEngineReadModel("InMemory a");
             bootstrapper.RegisterSimilarityReadModel(connectionStringSimilarity, "InMemory a");

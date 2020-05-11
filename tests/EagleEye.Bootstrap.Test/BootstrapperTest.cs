@@ -2,28 +2,35 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
 
-    using Dawn;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.ExifTool;
-    using FakeItEasy;
+    using EagleEye.ExifTool.Test;
     using FluentAssertions;
     using SimpleInjector;
     using Xunit;
 
     using Sut = EagleEye.Bootstrap.Bootstrapper;
 
+    [SuppressMessage("ReSharper", "AccessToDisposedClosure", Justification = "Reviewed.")]
     public class BootstrapperTest
     {
         private readonly string tempPath;
         private readonly IEnumerable<IEagleEyePlugin> plugins;
+        private readonly Dictionary<string, object> config;
 
         public BootstrapperTest()
         {
             tempPath = Path.GetTempPath();
             plugins = Sut.FindAvailablePlugins();
+            config = new Dictionary<string, object>
+                {
+                    // { ExifToolPlugin.ConfigKeyExiftoolPluginFullConfigFile, "" },
+                    { ExifToolPlugin.ConfigKeyExiftoolPluginFullExe, ExifToolSystemConfiguration.ExifToolExecutable },
+                };
         }
 
         /// <summary>
@@ -47,9 +54,8 @@
             // arrange
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins);
-            sut.AddRegistrations(MakeSureExifToolCanBeFound);
-            var container = sut.Finalize();
+            var sut = Sut.Initialize(tempPath, plugins, null);
+            using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
@@ -63,10 +69,9 @@
             // arrange
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins);
+            var sut = Sut.Initialize(tempPath, plugins, config);
             sut.RegisterPhotoDatabaseReadModel("InMemory a");
-            sut.AddRegistrations(MakeSureExifToolCanBeFound);
-            var container = sut.Finalize();
+            using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
@@ -81,10 +86,9 @@
             var searchEngineDirectory = Path.Combine(tempPath, "Lucene");
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins);
+            var sut = Sut.Initialize(tempPath, plugins, config);
             sut.RegisterSearchEngineReadModel(searchEngineDirectory);
-            sut.AddRegistrations(MakeSureExifToolCanBeFound);
-            var container = sut.Finalize();
+            using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
@@ -100,23 +104,14 @@
             const string connectionStringHangFire = "InMemory b";
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins);
+            var sut = Sut.Initialize(tempPath, plugins, config);
             sut.RegisterSimilarityReadModel(connectionString, connectionStringHangFire);
-            sut.AddRegistrations(MakeSureExifToolCanBeFound);
-            var container = sut.Finalize();
+            using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
             // assert
             act.Should().NotThrow();
-        }
-
-        private void MakeSureExifToolCanBeFound(Container container)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-
-            container.Options.AllowOverridingRegistrations = true;
-            container.Register<IExifToolReader>(A.Dummy<IExifToolReader>, Lifestyle.Singleton);
         }
     }
 }

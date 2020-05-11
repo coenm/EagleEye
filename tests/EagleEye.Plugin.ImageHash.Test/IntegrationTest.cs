@@ -43,7 +43,7 @@
             var singlePlugin = plugins.Single();
 
             RegisterPluginExternalDependencies(container);
-            singlePlugin.EnablePlugin(container);
+            singlePlugin.EnablePlugin(container, null);
             container.Verify();
 
             var photoHashProviders = container.GetAllInstances<IPhotoHashProvider>().ToArray();
