@@ -53,10 +53,9 @@
 
             var result = new EagleEyeMetadata();
 
-            DateTime? dt = null;
-            if ((headerObject["EagleEyeTimestamp"] is JToken token))
+            if (headerObject["EagleEyeTimestamp"] is { } token)
             {
-                dt = GetDateTimeFromJToken(token);
+                var dt = GetDateTimeFromJToken(token);
                 if (dt.HasValue)
                     result.Timestamp = dt.Value;
             }
@@ -69,7 +68,7 @@
             if (fileHashBytes != null)
                 result.FileHash = fileHashBytes;
 
-            if (headerObject["EagleEyeRawImageHash"] is JToken rawImageHashToken)
+            if (headerObject["EagleEyeRawImageHash"] is { } rawImageHashToken)
             {
                 if (rawImageHashToken.Type == JTokenType.Array)
                 {
@@ -115,11 +114,14 @@
 
         private static string TryGetString([NotNull] JObject data, [NotNull] string key)
         {
-            if (!(data[key] is JToken token))
+            if (!(data[key] is { } token))
                 return null;
 
             if (token.Type == JTokenType.String)
                 return token.Value<string>();
+
+            if (token.Type == JTokenType.Integer)
+                return token.Value<int>().ToString();
 
             return null;
         }
