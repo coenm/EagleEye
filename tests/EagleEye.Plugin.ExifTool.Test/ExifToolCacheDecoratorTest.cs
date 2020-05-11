@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ExifTool.Test
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Interfaces.Core;
@@ -22,6 +23,7 @@
         private readonly IExifToolReader decoratee;
         private readonly IDateTimeService dateTimeService;
         private readonly DateTime dtInit;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ExifToolCacheDecoratorTest()
         {
@@ -33,9 +35,9 @@
 
             dtInit = new DateTime(2000, 1, 2, 3, 4, 5);
 
-            A.CallTo(() => decoratee.GetMetadataAsync(Filename1)).Returns(Task.FromResult(fileResult1));
-            A.CallTo(() => decoratee.GetMetadataAsync(Filename2)).Returns(Task.FromResult(fileResult2));
-            A.CallTo(() => decoratee.GetMetadataAsync(Filename3)).Returns(Task.FromResult(fileResult3));
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename1, ct)).Returns(Task.FromResult(fileResult1));
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename2, ct)).Returns(Task.FromResult(fileResult2));
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename3, ct)).Returns(Task.FromResult(fileResult3));
 
             dateTimeService = A.Fake<IDateTimeService>();
 
@@ -71,11 +73,11 @@
             A.CallTo(() => dateTimeService.Now).Returns(dtInit);
 
             // act
-            var result = await sut.GetMetadataAsync(Filename1).ConfigureAwait(false);
+            var result = await sut.GetMetadataAsync(Filename1, ct).ConfigureAwait(false);
 
             // assert
             result.Should().BeSameAs(fileResult1);
-            A.CallTo(() => decoratee.GetMetadataAsync(Filename1)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename1, ct)).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -86,8 +88,8 @@
              .ReturnsNextFromSequence(dtInit, dtInit.AddMinutes(2));
 
             // act
-            var result1Task = sut.GetMetadataAsync(Filename1);
-            var result2Task = sut.GetMetadataAsync(Filename1);
+            var result1Task = sut.GetMetadataAsync(Filename1, ct);
+            var result2Task = sut.GetMetadataAsync(Filename1, ct);
 
             var result1 = await result1Task.ConfigureAwait(false);
             var result2 = await result2Task.ConfigureAwait(false);
@@ -95,7 +97,7 @@
             // assert
             result1.Should().BeSameAs(fileResult1);
             result2.Should().BeSameAs(fileResult1);
-            A.CallTo(() => decoratee.GetMetadataAsync(Filename1)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => decoratee.GetMetadataAsync(Filename1, ct)).MustHaveHappenedOnceExactly();
         }
     }
 }

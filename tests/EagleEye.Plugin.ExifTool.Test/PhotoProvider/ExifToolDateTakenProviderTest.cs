@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ExifTool.Test.PhotoProvider
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.Core.Data;
@@ -35,6 +36,7 @@
         private readonly ExifToolDateTakenProvider sut;
         private readonly IExifToolReader exiftool;
         private readonly MediaObject media;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ExifToolDateTakenProviderTest()
         {
@@ -59,7 +61,7 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(null as JObject));
 
             // act
@@ -74,7 +76,7 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -91,7 +93,7 @@
         {
             // arrange
             var expectedResult = new Timestamp(year, month, day, hour, minute, second);
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act

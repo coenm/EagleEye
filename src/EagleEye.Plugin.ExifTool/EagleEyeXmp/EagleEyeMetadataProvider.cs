@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Dawn;
@@ -28,9 +29,9 @@
 
         public bool CanProvideInformation(string filename) => !string.IsNullOrWhiteSpace(filename);
 
-        public async Task<EagleEyeMetadata> ProvideAsync(string filename)
+        public async Task<EagleEyeMetadata> ProvideAsync(string filename, CancellationToken ct = default)
         {
-            var resultExiftool = await exiftool.GetMetadataAsync(filename).ConfigureAwait(false);
+            var resultExiftool = await exiftool.GetMetadataAsync(filename, ct).ConfigureAwait(false);
 
             if (resultExiftool == null)
                 return null;

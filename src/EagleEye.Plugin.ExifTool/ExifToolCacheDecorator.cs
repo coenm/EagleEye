@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ExifTool
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Dawn;
@@ -32,18 +33,18 @@
             cacheTimestamp = DateTime.MinValue;
         }
 
-        public async Task<JObject> GetMetadataAsync(string filename)
+        public async Task<JObject> GetMetadataAsync(string filename, CancellationToken ct = default)
         {
             Task<JObject> currentTask;
 
-            using (await syncLock.LockAsync().ConfigureAwait(false))
+            using (await syncLock.LockAsync(ct).ConfigureAwait(false))
             {
                 var now = dateTimeService.Now;
                 if (cachedFilename == null || cachedFilename != filename || now - cacheTimestamp > cacheValidity)
                 {
                     cachedFilename = filename;
                     cacheTimestamp = now;
-                    task = exiftool.GetMetadataAsync(filename);
+                    task = exiftool.GetMetadataAsync(filename, ct);
                 }
 
                 currentTask = task;

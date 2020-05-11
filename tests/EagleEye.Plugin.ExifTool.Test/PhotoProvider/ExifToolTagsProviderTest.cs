@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.ExifTool;
@@ -45,6 +46,7 @@
 
         private readonly ExifToolTagsProvider sut;
         private readonly IExifToolReader exiftool;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ExifToolTagsProviderTest()
         {
@@ -68,7 +70,7 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(null as JObject));
 
             // act
@@ -83,7 +85,7 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -107,7 +109,7 @@
                                        "New York",
                                        "puppy",
                                    };
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act

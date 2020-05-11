@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using EagleEye.ExifTool;
@@ -38,6 +39,7 @@
 
         private readonly ExifToolPersonsProvider sut;
         private readonly IExifToolReader exiftool;
+        private readonly CancellationToken ct = CancellationToken.None;
 
         public ExifToolPersonsProviderTest()
         {
@@ -61,7 +63,7 @@
         public async Task ProvideCanHandleNullResponseFromExiftoolTest()
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(null as JObject));
 
             // act
@@ -76,7 +78,7 @@
         public async Task ProvideCanHandleIncompleteDataTest(string data)
         {
             // arrange
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act
@@ -99,7 +101,7 @@
                 "Stephen Hawking",
                 "Nelson Mandela",
             };
-            A.CallTo(() => exiftool.GetMetadataAsync(Filename))
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
             // act

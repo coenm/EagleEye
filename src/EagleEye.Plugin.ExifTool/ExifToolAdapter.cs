@@ -30,9 +30,9 @@
             exiftoolImpl.Initialize();
         }
 
-        public async Task<JObject> GetMetadataAsync(string filename)
+        public async Task<JObject> GetMetadataAsync(string filename, CancellationToken ct = default)
         {
-            var result = await exiftoolImpl.ExecuteAsync(filename).ConfigureAwait(false);
+            var result = await exiftoolImpl.ExecuteAsync(filename, ct).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(result))
                 return null;
