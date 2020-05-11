@@ -54,7 +54,7 @@
             // arrange
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins, null);
+            var sut = Sut.Initialize(tempPath, plugins, config);
             using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
