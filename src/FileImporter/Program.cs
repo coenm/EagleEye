@@ -24,6 +24,7 @@
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using NLog;
     using ShellProgressBar;
 
     using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
@@ -33,6 +34,8 @@
 #pragma warning disable SA1005 // Single line comments should begin with single space
     public static class Program
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
@@ -64,7 +67,7 @@
 
         private static async Task Run(string[] args)
         {
-            Task task = Task.CompletedTask;
+            var task = Task.CompletedTask;
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
@@ -118,9 +121,18 @@
             }
 
             var diDirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
-            var files = Directory
-                .EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories)
-                .ToArray();
+
+            var xJpg = Directory.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
+            var xJpeg = Directory.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
+            var xMov = Directory.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
+            var xMp4 = Directory.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
+
+            // not supported
+            // var xAvi = Directory.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
+            // var xMts = Directory.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
+            // var xWmv = Directory.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
+
+            var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
 
             var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
 
@@ -130,7 +142,6 @@
                 {
                     progressBar.Tick(file);
                     await commandHandler.HandleAsync(file).ConfigureAwait(false);
-                    await Task.Delay(100).ConfigureAwait(false);
                 }
             }
 
