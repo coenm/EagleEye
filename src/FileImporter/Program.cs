@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.FileImporter
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -23,9 +22,6 @@
 
     using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
 
-#pragma warning disable SA1512 // Single-line comments should not be followed by blank line
-#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
-#pragma warning disable SA1005 // Single line comments should begin with single space
     public static class Program
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
@@ -50,7 +46,6 @@
         {
             connectionStrings = new ConnectionStrings
                 {
-                    IndexFile = Path.GetTempFileName(),
                     HangFire = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
                     FilenameEventStore = Startup.CreateFullFilename("EventStore.db"),
                 };
@@ -64,9 +59,9 @@
 
             Parser.Default.ParseArguments<
                     UpdateImportedImagesOptions,
-                    ListReadModelOptions>(args)
+                    DemoLuceneSearchOptions>(args)
                 .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
-                .WithParsed<ListReadModelOptions>(option => task = ListAllReadModel(option))
+                .WithParsed<DemoLuceneSearchOptions>(option => task = DemoLuceneReadModelSearch(option))
                 .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
 
             try
@@ -113,7 +108,7 @@
 
             var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
 
-            var fromSeconds = TimeSpan.FromSeconds(5);
+            var fromSeconds = TimeSpan.FromSeconds(25);
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
                 foreach (var file in files)
@@ -139,9 +134,8 @@
             Console.ReadKey();
         }
 
-        private static async Task ListAllReadModel(ListReadModelOptions opts)
+        private static async Task DemoLuceneReadModelSearch(DemoLuceneSearchOptions options)
         {
-            connectionStrings.IndexFile = opts.IndexFile;
             using var container = Startup.ConfigureContainer(connectionStrings);
             await Startup.InitializeAllServices(container);
             Startup.StartServices(container);
@@ -275,7 +269,4 @@
             container.Dispose();
         }
     }
-#pragma warning restore SA1005 // Single line comments should begin with single space
-#pragma warning restore SA1515 // Single-line comment should be preceded by blank line
-#pragma warning restore SA1512 // Single-line comments should not be followed by blank line
 }
