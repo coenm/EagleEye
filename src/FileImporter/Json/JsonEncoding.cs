@@ -34,13 +34,8 @@
 
         public static T ReadFromFile<T>(string filename)
         {
-            T result;
-            using (var file = File.OpenText(filename))
-            {
-                result = (T)Serializer.Deserialize(file, typeof(T));
-            }
-
-            return result;
+            using var file = File.OpenText(filename);
+            return (T)Serializer.Deserialize(file, typeof(T));
         }
 
         public static void WriteDataToJsonFile(object obj, string filename)

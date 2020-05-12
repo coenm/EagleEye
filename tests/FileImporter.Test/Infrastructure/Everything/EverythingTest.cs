@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using EagleEye.FileImporter.Indexing;
     using EagleEye.TestHelper;
     using Xunit;
 
@@ -22,10 +21,9 @@
         {
             // arrange
             var sut = new FileImporter.Infrastructure.Everything.Everything();
-            var fileIndexes = imageFileNames.Select(p => new ImageData(p)).ToList();
 
             // act
-            await sut.Show(fileIndexes);
+            await sut.Show(imageFileNames);
 
             // assert
         }
