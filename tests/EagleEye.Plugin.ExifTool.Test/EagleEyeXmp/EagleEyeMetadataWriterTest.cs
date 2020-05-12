@@ -1,5 +1,6 @@
 ﻿namespace EagleEye.ExifTool.Test.EagleEyeXmp
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
@@ -12,37 +13,16 @@
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
-    using Xunit.Abstractions;
 
     [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse", Justification = "Test readability")]
     public class EagleEyeMetadataWriterTest
     {
-        [JetBrains.Annotations.NotNull] private readonly ITestOutputHelper output;
-
-        private const string CorrectJson = @"
-  ""XMP"": {
-    ""XMPToolkit"": ""Image::ExifTool 11.97"",
-    ""EagleEyeVersion"": ""1"",
-    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
-    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
-    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
-    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
-  },
-  ""Composite"": {
-    ""ImageSize"": ""766x1024"",
-    ""Megapixels"": 0.784
-  }";
-
-        private const string Filename = "DUMMY";
         private readonly EagleEyeMetadataWriter sut;
         private readonly IExifToolWriter exiftool;
-        private readonly CancellationToken ct = CancellationToken.None;
         private readonly List<WriteAsyncCall> exiftoolWriteCalls;
 
-        public EagleEyeMetadataWriterTest([JetBrains.Annotations.NotNull] ITestOutputHelper output)
+        public EagleEyeMetadataWriterTest()
         {
-            this.output = output;
-
             exiftool = A.Fake<IExifToolWriter>();
             sut = new EagleEyeMetadataWriter(exiftool);
 
@@ -64,14 +44,14 @@
             var overwriteOriginal = true;
 
             // act
-            await sut.WriteAsync("filename", new EagleEyeMetadata(), overwriteOriginal, CancellationToken.None);
+            await sut.WriteAsync("filename", CreateEmptyEagleEyeMetadata(), overwriteOriginal, CancellationToken.None);
 
             // assert
             var expected = new[]
                 {
                     "-xmp-CoenmEagleEye:EagleEyeVersion=1",
                     "-xmp-CoenmEagleEye:EagleEyeId=00000000000000000000",
-                    "-xmp-CoenmEagleEye:EagleEyeTimestamp=0001:01:01 00:00:00+01:00",
+                    "-xmp-CoenmEagleEye:EagleEyeTimestamp=0001:01:01 00:00:00+00:00",
                     "-xmp-CoenmEagleEye:EagleEyeFileHash=",
                     "-overwrite_original",
                 };
@@ -85,17 +65,26 @@
             var overwriteOriginal = false;
 
             // act
-            await sut.WriteAsync("filename", new EagleEyeMetadata(), overwriteOriginal, CancellationToken.None);
+            await sut.WriteAsync("filename", CreateEmptyEagleEyeMetadata(), overwriteOriginal, CancellationToken.None);
 
             // assert
             var expected = new[]
                 {
                     "-xmp-CoenmEagleEye:EagleEyeVersion=1",
                     "-xmp-CoenmEagleEye:EagleEyeId=00000000000000000000",
-                    "-xmp-CoenmEagleEye:EagleEyeTimestamp=0001:01:01 00:00:00+01:00",
+                    "-xmp-CoenmEagleEye:EagleEyeTimestamp=0001:01:01 00:00:00+00:00",
                     "-xmp-CoenmEagleEye:EagleEyeFileHash=",
                 };
             exiftoolWriteCalls.Should().BeEquivalentTo(new WriteAsyncCall("filename", expected));
+        }
+
+        private static EagleEyeMetadata CreateEmptyEagleEyeMetadata()
+        {
+            return new EagleEyeMetadata
+            {
+                // with set timestamp to make sure test runs on CI in other timezone
+                Timestamp = DateTime.MinValue.ToUniversalTime(),
+            };
         }
 
         private class WriteAsyncCall
