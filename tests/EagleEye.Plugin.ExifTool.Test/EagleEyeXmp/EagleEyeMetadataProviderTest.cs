@@ -95,12 +95,12 @@
         }
 
         [Theory]
-        [InlineData("\"EagleEyeVersion\": \"1\"")] // version is a string
-        [InlineData("\"EagleEyeVersion\": 1")] // version is an integer
+        [InlineData("\"EagleEyeVersion\": \"1\",")] // version is a string
+        [InlineData("\"EagleEyeVersion\": 1,")] // version is an integer
         public async Task ProvideAsync_ShouldReturnMetadata_WhenEagleEyeVersionIsOneAndDataIsComplete(string replacement)
         {
             // arrange
-            string json = GenerateJson("\"EagleEyeVersion\": \"1\"", replacement);
+            string json = GenerateJson("\"EagleEyeVersion\": \"1\",", replacement);
 
             A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
@@ -136,15 +136,15 @@
         }
 
         [Theory]
-        [InlineData("\"EagleEyeVersion\": \" 1 \"")]
-        [InlineData("\"EagleEyeVersion\": \"2\"")]
-        [InlineData("\"EagleEyeVersion\": \"\"")]
-        [InlineData("\"EagleEyeVersion\": \"aaa1\"")]
-        [InlineData("\"EagleEyeVersion\": 3")]
+        [InlineData("\"EagleEyeVersion\": \" 1 \",")]
+        [InlineData("\"EagleEyeVersion\": \"2\",")]
+        [InlineData("\"EagleEyeVersion\": \"\",")]
+        [InlineData("\"EagleEyeVersion\": \"aaa1\",")]
+        [InlineData("\"EagleEyeVersion\": 3,")]
         public async Task ProvideAsync_ShouldReturnNull_WhenEagleEyeVersionIsNotOne(string replacement)
         {
             // arrange
-            string json = GenerateJson("\"EagleEyeVersion\": \"1\"", replacement);
+            string json = GenerateJson("\"EagleEyeVersion\": \"1\",", replacement);
 
             A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
@@ -157,12 +157,12 @@
         }
 
         [Theory]
-        [InlineData("\"EagleEyeVersionX\": \"1\"")] // key name is not ok
+        [InlineData("\"EagleEyeVersionX\": \"1\",")] // key name is not ok
         [InlineData("")]
         public async Task ProvideAsync_ShouldReturnNull_WhenNoEagleEyeVersionKeyFound(string replacement)
         {
             // arrange
-            string json = GenerateJson("\"EagleEyeVersion\": \"1\"", replacement);
+            string json = GenerateJson("\"EagleEyeVersion\": \"1\",", replacement);
 
             A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
