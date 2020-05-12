@@ -16,6 +16,20 @@
 
     public class EagleEyeMetadataProviderTest
     {
+        private const string CorrectJson = @"
+  ""XMP"": {
+    ""XMPToolkit"": ""Image::ExifTool 11.97"",
+    ""EagleEyeVersion"": ""1"",
+    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
+    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
+    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
+    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
+  },
+  ""Composite"": {
+    ""ImageSize"": ""766x1024"",
+    ""Megapixels"": 0.784
+  }";
+
         private const string Filename = "DUMMY";
         private readonly EagleEyeMetadataProvider sut;
         private readonly IExifToolReader exiftool;
@@ -28,7 +42,48 @@
         }
 
         [Fact]
-        public void CanProvideInformation_ShouldReturnTrue()
+        public void Name_ShouldBeNameOfClass()
+        {
+            // arrange
+            var expectedName = sut.GetType().Name;
+
+            // act
+            var result = sut.Name;
+
+            // assert
+            result.Should().Be(expectedName);
+            result.Should().Be("EagleEyeMetadataProvider");
+        }
+
+        [Fact]
+        public void Priority_ShouldNotThrow()
+        {
+            // arrange
+
+            // act
+            Action act = () => _ = sut.Priority;
+
+            // assert
+            act.Should().NotThrow();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void CanProvideInformation_ShouldReturnFalse_WhenFilenameIsNullOrEmpty(string filename)
+        {
+            // arrange
+
+            // act
+            var result = sut.CanProvideInformation(filename);
+
+            // assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void CanProvideInformation_ShouldReturnTrue_WhenFilenameIsNotEmpty()
         {
             // arrange
 
@@ -39,23 +94,13 @@
             result.Should().BeTrue();
         }
 
-        [Fact]
-        public async Task ProvideAsync_ShouldMetadata_WhenEagleEyeVersionIsOneAndDataIsComplete()
+        [Theory]
+        [InlineData("\"EagleEyeVersion\": \"1\",")] // version is a string
+        [InlineData("\"EagleEyeVersion\": 1,")] // version is an integer
+        public async Task ProvideAsync_ShouldReturnMetadata_WhenEagleEyeVersionIsOneAndDataIsComplete(string replacement)
         {
             // arrange
-            const string json = @"
-   ""XMP"": {
-    ""XMPToolkit"": ""Image::ExifTool 11.97"",
-    ""EagleEyeVersion"": ""1"",
-    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
-    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
-    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
-    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
-  },
-  ""Composite"": {
-    ""ImageSize"": ""766x1024"",
-    ""Megapixels"": 0.784
-  }";
+            string json = GenerateJson("\"EagleEyeVersion\": \"1\",", replacement);
 
             A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
                 .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
@@ -90,19 +135,50 @@
                 });
         }
 
+        [Theory]
+        [InlineData("\"EagleEyeVersion\": \" 1 \",")]
+        [InlineData("\"EagleEyeVersion\": \"2\",")]
+        [InlineData("\"EagleEyeVersion\": \"\",")]
+        [InlineData("\"EagleEyeVersion\": \"aaa1\",")]
+        [InlineData("\"EagleEyeVersion\": 3,")]
+        public async Task ProvideAsync_ShouldReturnNull_WhenEagleEyeVersionIsNotOne(string replacement)
+        {
+            // arrange
+            string json = GenerateJson("\"EagleEyeVersion\": \"1\",", replacement);
+
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
+                .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
+
+            // act
+            var result = await sut.ProvideAsync(Filename, ct).ConfigureAwait(false);
+
+            // assert
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("\"EagleEyeVersionX\": \"1\",")] // key name is not ok
+        [InlineData("")]
+        public async Task ProvideAsync_ShouldReturnNull_WhenNoEagleEyeVersionKeyFound(string replacement)
+        {
+            // arrange
+            string json = GenerateJson("\"EagleEyeVersion\": \"1\",", replacement);
+
+            A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
+                .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(json))));
+
+            // act
+            var result = await sut.ProvideAsync(Filename, ct).ConfigureAwait(false);
+
+            // assert
+            result.Should().BeNull();
+        }
+
         [Fact]
-        public async Task ProvideAsync_ShouldReturnNull_WhenEagleEyeVersionIsNotOne()
+        public async Task ProvideAsync_ShouldReturnNull_WhenXmpMetadataFound()
         {
             // arrange
             const string json = @"
-   ""XMP"": {
-    ""XMPToolkit"": ""Image::ExifTool 11.97"",
-    ""EagleEyeVersion"": ""2"",
-    ""EagleEyeFileHash"": ""ZXM[mr?00Cg?Mdeq6[2Ay$&ASkiV)!6@C&{Pi%+%"",
-    ""EagleEyeId"": ""Hshe3B/?(nN!V{}15fB5"",
-    ""EagleEyeRawImageHash"": [""s?jcC6F#pPT134Ap<l&:&:TB<Po}PHtyRI0T2g.w"", ""emzo60[f$A9aE*?Ti+UAsi<AUVD3gf-<6LGgYI/{""],
-    ""EagleEyeTimestamp"": ""2022:12:06 11:36:59+02:00""
-  },
   ""Composite"": {
     ""ImageSize"": ""766x1024"",
     ""Megapixels"": 0.784
@@ -119,7 +195,7 @@
         }
 
         [Fact]
-        public async Task ProvideCanHandleNullResponseFromExiftool()
+        public async Task ProvideAsync_ShouldReturnNull_WhenExiftoolReturnsNull()
         {
             // arrange
             A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
@@ -139,19 +215,19 @@
 
         private static JObject ConvertToJObject(string data)
         {
-            try
-            {
-                var jsonResult = JsonConvert.DeserializeObject(data);
-                var jsonArray = jsonResult as JArray;
-                if (jsonArray?.Count != 1)
-                    return null;
-
-                return jsonArray[0] as JObject;
-            }
-            catch (Exception)
-            {
+            var jsonResult = JsonConvert.DeserializeObject(data);
+            var jsonArray = jsonResult as JArray;
+            if (jsonArray?.Count != 1)
                 return null;
-            }
+
+            return jsonArray[0] as JObject;
+        }
+
+        private string GenerateJson(string search, string replace)
+        {
+            if (CorrectJson.Contains(search))
+                return CorrectJson.Replace(search, replace);
+            throw new Exception($"Search string '{search}' not found.");
         }
     }
 }
