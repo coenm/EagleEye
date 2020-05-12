@@ -35,7 +35,7 @@
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-            return Equals((PicasaPerson) obj);
+            return Equals((PicasaPerson)obj);
         }
 
         public override int GetHashCode()

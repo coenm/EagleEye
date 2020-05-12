@@ -7,7 +7,5 @@
         public string HangFire { get; set; }
 
         public string FilenameEventStore { get; set; }
-
-        public string IndexFile { get; set; }
     }
 }
