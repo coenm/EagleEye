@@ -40,6 +40,7 @@
         }
 
         [CanBeNull]
+        [Pure]
         private EagleEyeMetadata GetInformationFromFullJsonObject(JObject data)
         {
             if (!(data["XMP"] is JObject headerObject))
@@ -97,6 +98,8 @@
             return result;
         }
 
+        [CanBeNull]
+        [Pure]
         private byte[] TryGetZ85Bytes([NotNull] JObject data, [NotNull] string key)
         {
             var s = TryGetString(data, key);
@@ -113,6 +116,8 @@
             }
         }
 
+        [CanBeNull]
+        [Pure]
         private static string TryGetString([NotNull] JObject data, [NotNull] string key)
         {
             if (!(data[key] is { } token))
