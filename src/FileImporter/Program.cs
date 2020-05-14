@@ -1,6 +1,8 @@
 ﻿namespace EagleEye.FileImporter
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -12,6 +14,7 @@
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
+    using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
@@ -46,9 +49,15 @@
         {
             connectionStrings = new ConnectionStrings
                 {
+                    Similarity = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.db")),
                     HangFire = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
                     FilenameEventStore = Startup.CreateFullFilename("EventStore.db"),
+                    LuceneDirectory = ConnectionStrings.LuceneInMemory,
+                    ConnectionStringPhotoDatabase = "InMemory EagleEye",
                 };
+
+            connectionStrings.ConnectionStringPhotoDatabase = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("FullMetadata.db"));
+            connectionStrings.LuceneDirectory = Startup.CreateFullFilename("Lucene");
 
             await Run(args).ConfigureAwait(false);
         }
@@ -266,7 +275,7 @@
             Console.WriteLine("Press enter");
             Console.ReadKey();
 
-            container.Dispose();
+
         }
     }
 }

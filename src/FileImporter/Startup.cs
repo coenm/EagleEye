@@ -21,19 +21,17 @@
         {
             Guard.Argument(connectionStrings, nameof(connectionStrings)).NotNull();
 
-            string connectionStringHangFire = connectionStrings.HangFire;
             var userDir = GetUserDirectory();
-
-            var connectionStringSimilarity = CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.db"));
 
             var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
 
             var config = new Dictionary<string, object>();
 
             var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, config, connectionStrings.FilenameEventStore);
-            bootstrapper.RegisterPhotoDatabaseReadModel("InMemory a");
-            bootstrapper.RegisterSearchEngineReadModel("InMemory a");
-            bootstrapper.RegisterSimilarityReadModel(connectionStringSimilarity, "InMemory a");
+
+            bootstrapper.RegisterPhotoDatabaseReadModel(connectionStrings.ConnectionStringPhotoDatabase);
+            bootstrapper.RegisterSearchEngineReadModel(connectionStrings.LuceneDirectory);
+            bootstrapper.RegisterSimilarityReadModel(connectionStrings.Similarity, connectionStrings.HangFire);
             return bootstrapper.Finalize();
         }
 
@@ -59,6 +57,9 @@
         {
             Guard.Argument(container, nameof(container)).NotNull();
             var instancesToInitialize = container.GetAllInstances<IEagleEyeInitialize>().ToArray();
+            if (instancesToInitialize.Length == 0)
+                return;
+
             await Task.WhenAll(instancesToInitialize.Select(instance => instance.InitializeAsync())).ConfigureAwait(false);
         }
 

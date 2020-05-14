@@ -17,7 +17,7 @@
             var container = new Container();
 
             // act
-            Sut.BootstrapSearchEngineLuceneReadModel(container, true, null);
+            Sut.BootstrapSearchEngineLuceneReadModel(container);
 
             // assert
             Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);

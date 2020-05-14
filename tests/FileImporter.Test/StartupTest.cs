@@ -9,7 +9,7 @@
     public class StartupTest
     {
         [Fact]
-        public void ConfigureContainer_ShouldSucceed_WhenEventStoreConnectionStringIsNull()
+        public void ConfigureContainer_ShouldSucceed_WhenConnectionStringsAreFilled()
         {
             // arrange
             var container = new Container();
@@ -17,6 +17,9 @@
                 {
                     FilenameEventStore = "dummy",
                     HangFire = "InMemory HangFire",
+                    Similarity = "InMemory Similarity",
+                    ConnectionStringPhotoDatabase = "InMemory Photos",
+                    LuceneDirectory = ConnectionStrings.LuceneInMemory,
                 };
 
             // act
