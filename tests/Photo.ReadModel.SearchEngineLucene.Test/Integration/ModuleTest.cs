@@ -20,7 +20,7 @@
         public ModuleTest()
         {
             var container = new Container();
-            EagleEye.Photo.ReadModel.SearchEngineLucene.Bootstrapper.BootstrapSearchEngineLuceneReadModel(container, true, null);
+            EagleEye.Photo.ReadModel.SearchEngineLucene.Bootstrapper.BootstrapSearchEngineLuceneReadModel(container);
             container.Register(typeof(ICancellableEventHandler<>), EagleEye.Photo.ReadModel.SearchEngineLucene.Bootstrapper.GetEventHandlerTypes());
 
             handlerPhotoCreated = container.GetInstance<ICancellableEventHandler<PhotoCreated>>();

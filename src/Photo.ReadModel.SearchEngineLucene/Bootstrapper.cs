@@ -15,17 +15,13 @@
     {
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
-        /// <param name="useInMemoryIndex"><c>true</c> When the InMemory configuration should be used for Lucene, <c>false</c> otherwise.</param>
-        /// <param name="baseDirectory">Base directory for the Lucene index files. Only required and used when <paramref name="useInMemoryIndex"/> is <c>false</c>. Should be a valid directory.</param>
+        /// <param name="baseDirectory">Base directory for the Lucene index files. <c>null</c> Or an empty string will result in an InMemory index.</param>
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapSearchEngineLuceneReadModel(
             [NotNull] Container container,
-            bool useInMemoryIndex = true,
             [CanBeNull] string baseDirectory = null)
         {
             Guard.Argument(container, nameof(container)).NotNull();
-            if (useInMemoryIndex == false)
-                Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull();
 
             container.RegisterSingleton<IPhotoIndex, PhotoIndex>();
 
@@ -40,7 +36,7 @@
             container.Register<LocationClearedFromPhotoEventHandler>();
             container.Register<DateTimeTakenChangedEventHandler>();
 
-            if (useInMemoryIndex)
+            if (string.IsNullOrWhiteSpace(baseDirectory))
                 container.RegisterSingleton<ILuceneDirectoryFactory, RamLuceneDirectoryFactory>();
             else
                 container.RegisterSingleton<ILuceneDirectoryFactory>(() => new FileSystemLuceneDirectoryFactory(baseDirectory));

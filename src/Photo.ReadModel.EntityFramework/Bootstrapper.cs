@@ -20,7 +20,7 @@
 
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
-        /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty.</param>
+        /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty. Should start with 'InMemory' or with 'Filename='.</param>
         /// <exception cref="ArgumentNullException">Thrown when one of the required arguments is <c>null</c>.</exception>
         public static void BootstrapEntityFrameworkReadModel([NotNull] Container container, [NotNull] string connectionString)
         {

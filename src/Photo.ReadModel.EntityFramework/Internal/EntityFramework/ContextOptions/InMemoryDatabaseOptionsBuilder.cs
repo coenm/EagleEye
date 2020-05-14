@@ -34,7 +34,7 @@
             Guard.Argument(connectionString, nameof(connectionString)).NotNull();
 
             return new DbContextOptionsBuilder<EagleEyeDbContext>()
-                .UseInMemoryDatabase(GetNameFromConnectionString(connectionString));
+                .UseInMemoryDatabase(GetNameFromConnectionString(connectionString!));
         }
 
         [NotNull]

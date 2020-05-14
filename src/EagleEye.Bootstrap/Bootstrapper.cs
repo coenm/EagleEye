@@ -92,6 +92,7 @@
             return container;
         }
 
+        /// <param name="indexBaseDirectory">Base directory for the Lucene index files. <c>null</c> Or an empty string will result in an InMemory index.</param>
         public void RegisterSearchEngineReadModel([CanBeNull] string indexBaseDirectory)
         {
             if (readModelSearchEngineEnabled)
@@ -99,7 +100,6 @@
 
             Photo.ReadModel.SearchEngineLucene.Bootstrapper.BootstrapSearchEngineLuceneReadModel(
                 container,
-                string.IsNullOrWhiteSpace(indexBaseDirectory),
                 indexBaseDirectory);
 
             readModelSearchEngineEnabled = true;
@@ -118,6 +118,7 @@
             readModelSimilarityEnabled = true;
         }
 
+        /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty. Should start with 'InMemory' or with 'Filename='.</param>
         public void RegisterPhotoDatabaseReadModel([NotNull] string connectionString)
         {
             Guard.Argument(connectionString, nameof(connectionString)).NotNull().NotWhiteSpace();
