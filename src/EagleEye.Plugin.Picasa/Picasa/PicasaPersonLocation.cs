@@ -5,9 +5,9 @@
     using Dawn;
     using JetBrains.Annotations;
 
-    public class PicasaPerson : IEquatable<PicasaPerson>
+    public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>
     {
-        public PicasaPerson([NotNull] string name, [CanBeNull] RelativeRegion? region = null)
+        public PicasaPersonLocation([NotNull] string name, [CanBeNull] RelativeRegion? region = null)
         {
             Guard.Argument(name, nameof(name)).NotNull().NotWhiteSpace();
             Name = name;
@@ -16,15 +16,19 @@
 
         public string Name { get; }
 
-        [CanBeNull] public RelativeRegion? Region { get; private set; }
+        [CanBeNull]
+        public RelativeRegion? Region { get; }
 
-        public bool Equals(PicasaPerson other)
+        public bool Equals(PicasaPersonLocation other)
         {
             if (ReferenceEquals(null, other))
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            return Name == other.Name;
+
+            return Name == other.Name
+                   &&
+                   Nullable.Equals(Region, other.Region);
         }
 
         public override bool Equals(object obj)
@@ -35,12 +39,16 @@
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-            return Equals((PicasaPerson)obj);
+
+            return Equals((PicasaPersonLocation) obj);
         }
 
         public override int GetHashCode()
         {
-            return Name != null ? Name.GetHashCode() : 0;
+            unchecked
+            {
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ Region.GetHashCode();
+            }
         }
     }
 }

@@ -65,11 +65,11 @@
         public async Task GetDataShouldUsePicasaIniFileToGetPersonDataTest()
         {
             // arrange
-            var expectedResult = new FileWithPersons("image.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Nelson Mandela"));
+            var expectedResult = new FileWithPersons("image.jpg", new PicasaPersonLocation("Stephen Hawking"), new PicasaPersonLocation("Nelson Mandela"));
             var fileWithPersonsList = new[]
                                           {
-                                              new FileWithPersons("imageA.jpg", new PicasaPerson("Alice"), new PicasaPerson("Bob")),
-                                              new FileWithPersons("imageC.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Alice"), new PicasaPerson("Bob")),
+                                              new FileWithPersons("imageA.jpg", new PicasaPersonLocation("Alice"), new PicasaPersonLocation("Bob")),
+                                              new FileWithPersons("imageC.jpg", new PicasaPersonLocation("Stephen Hawking"), new PicasaPersonLocation("Alice"), new PicasaPersonLocation("Bob")),
                                               expectedResult,
                                           };
             sut.SetGetFileAndPersonDataImplementation(stream =>
@@ -93,9 +93,9 @@
             var mreSimulateTaskDuration = new ManualResetEventSlim(false);
             var methodInvokedCounter = 0;
 
-            var dataImageA = new FileWithPersons("imageA.jpg", new PicasaPerson("Alice"), new PicasaPerson("Bob"));
-            var dataImageB = new FileWithPersons("image.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Nelson Mandela"));
-            var dataImageC = new FileWithPersons("imageC.jpg", new PicasaPerson("Stephen Hawking"), new PicasaPerson("Alice"), new PicasaPerson("Bob"));
+            var dataImageA = new FileWithPersons("imageA.jpg", new PicasaPersonLocation("Alice"), new PicasaPersonLocation("Bob"));
+            var dataImageB = new FileWithPersons("image.jpg", new PicasaPersonLocation("Stephen Hawking"), new PicasaPersonLocation("Nelson Mandela"));
+            var dataImageC = new FileWithPersons("imageC.jpg", new PicasaPersonLocation("Stephen Hawking"), new PicasaPersonLocation("Alice"), new PicasaPersonLocation("Bob"));
             sut.SetGetFileAndPersonDataImplementation(_ =>
                                                        {
                                                            methodInvokedCounter++;

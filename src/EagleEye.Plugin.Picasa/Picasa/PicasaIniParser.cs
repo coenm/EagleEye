@@ -7,6 +7,10 @@
 
     using EagleEye.Picasa.IniParser;
 
+    /// <summary>
+    /// Picasa ini parser to obtain faces.
+    /// </summary>
+    /// <remarks>See <see href="https://gist.github.com/fbuchinger/1073823" /> for more information about reading picasa.ini files.</remarks>
     public static class PicasaIniParser
     {
         private const string Contacts2Section = "Contacts2";
@@ -44,10 +48,10 @@
                         if (singleCoordinateAndKey.Length != 2)
                             continue;
 
-                        var coordinate = DecodeRect64ToRelativeCoordinates(singleCoordinateAndKey[0]);
-                        var personName = GetName(singleCoordinateAndKey[1], contacts);
+                        var coordinate = DecodeRect64ToRelativeCoordinates(ref singleCoordinateAndKey[0]);
+                        var personName = GetName(ref singleCoordinateAndKey[1], contacts);
                         if (!string.IsNullOrWhiteSpace(personName))
-                            fileWithPersons.AddPerson(new PicasaPerson(personName, coordinate));
+                            fileWithPersons.AddPerson(new PicasaPersonLocation(personName, coordinate));
                     }
                 }
 
@@ -57,7 +61,7 @@
             return result;
         }
 
-        private static RelativeRegion? DecodeRect64ToRelativeCoordinates(string rect64)
+        private static RelativeRegion? DecodeRect64ToRelativeCoordinates(ref string rect64)
         {
             const int expectedLength = 7 + 16 + 1;
             if (rect64 == null)
@@ -69,10 +73,12 @@
             if (!rect64.EndsWith(")"))
                 return null;
 
-            var left = FromString(rect64, 0 + 7);
-            var top = FromString(rect64, 4 + 7);
-            var right = FromString(rect64, 8 + 7);
-            var bottom = FromString(rect64, 12 + 7);
+            const int rect64StringLength = 7; // length of "rect64("
+
+            var left = FromString(ref rect64, 0 + rect64StringLength);
+            var top = FromString(ref rect64, 4 + rect64StringLength);
+            var right = FromString(ref rect64, 8 + rect64StringLength);
+            var bottom = FromString(ref rect64, 12 + rect64StringLength);
 
             var relativeLeft = (float)left / (float)ushort.MaxValue;
             var relativeTop = (float)top / (float)ushort.MaxValue;
@@ -82,7 +88,7 @@
             return new RelativeRegion(relativeLeft, relativeTop, relativeRight, relativeBottom);
         }
 
-        private static ushort FromString(string input, int startIndex)
+        private static ushort FromString(ref string input, int startIndex)
         {
             var bytes = StringToByteArray(input.Substring(startIndex, 4));
 
@@ -100,7 +106,7 @@
                 .ToArray();
         }
 
-        private static string GetName(string key, IniData contacts)
+        private static string GetName(ref string key, IniData contacts)
         {
             if (!contacts.Content.ContainsKey(key))
                 return string.Empty;

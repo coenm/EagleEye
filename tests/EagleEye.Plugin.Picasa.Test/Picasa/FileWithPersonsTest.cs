@@ -10,14 +10,14 @@
 
         public FileWithPersonsTest()
         {
-            sut = new FileWithPersons("file1.jpg", new PicasaPerson("Bob"));
+            sut = new FileWithPersons("file1.jpg", new PicasaPersonLocation("Bob"));
         }
 
         [Fact]
         public void Ctor_ShouldSetDataTest()
         {
             sut.Filename.Should().Be("file1.jpg");
-            sut.Persons.Should().BeEquivalentTo(new PicasaPerson("Bob"));
+            sut.Persons.Should().BeEquivalentTo(new PicasaPersonLocation("Bob"));
         }
 
         [Fact]
@@ -26,10 +26,10 @@
             // arrange
 
             // act
-            sut.AddPerson(new PicasaPerson("Carl"));
+            sut.AddPerson(new PicasaPersonLocation("Carl"));
 
             // assert
-            sut.Persons.Should().BeEquivalentTo(new PicasaPerson("Bob"), new PicasaPerson("Carl"));
+            sut.Persons.Should().BeEquivalentTo(new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Carl"));
         }
 
         [Fact]
@@ -38,10 +38,10 @@
             // arrange
 
             // act
-            sut.AddPerson(new PicasaPerson("Bob"));
+            sut.AddPerson(new PicasaPersonLocation("Bob"));
 
             // assert
-            sut.Persons.Should().BeEquivalentTo(new PicasaPerson("Bob"));
+            sut.Persons.Should().BeEquivalentTo(new PicasaPersonLocation("Bob"));
         }
 
         [Fact]
@@ -61,7 +61,7 @@
         public void ToString_ReturnsFileWithPersonsTest()
         {
             // arrange
-            sut = new FileWithPersons("file.jpg", new PicasaPerson("Bob"), new PicasaPerson("Alice"));
+            sut = new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice"));
 
             // act
             var result = sut.ToString();
