@@ -119,7 +119,7 @@
                 new NumericDocValuesField(KeyVersion, data.Version),
                 new StoredField(KeyVersion, data.Version),
 
-                new StringField(KeyFilename, data.FileName ?? string.Empty, Field.Store.YES),
+                new TextField(KeyFilename, data.FileName ?? string.Empty, Field.Store.YES),
                 new StringField(KeyFileType, data.FileMimeType ?? string.Empty, Field.Store.YES),
 
                 // location data
