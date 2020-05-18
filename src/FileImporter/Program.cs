@@ -155,8 +155,11 @@
                 var dispatcher = container.GetInstance<ICommandSender>();
                 var search = container.GetInstance<IReadModel>();
 
-                var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
+                var command = new CreatePhotoCommand($"file abc {DateTime.Now}", new byte[32], "image/jpeg");
                 await dispatcher.Send(command, CancellationToken.None);
+
+                var commandUpdateTags = new AddTagsToPhotoCommand(command.Id, null, "zoo", "holiday");
+                await dispatcher.Send(commandUpdateTags);
 
                 var commandDateTime = new SetDateTimeTakenCommand(command.Id, null, Timestamp.Create(2010, 04));
                 await dispatcher.Send(commandDateTime);
@@ -170,8 +173,11 @@
                 var commandUpdateHash = new UpdatePhotoHashCommand(command.Id, null, "DingDong", 324);
                 await dispatcher.Send(commandUpdateHash);
 
-                command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg", new[] { "zoo", "holiday" }, null);
+                command = new CreatePhotoCommand($"file abcd {DateTime.Now}", new byte[32], "image/jpeg");
                 await dispatcher.Send(command, CancellationToken.None);
+
+                commandUpdateTags = new AddTagsToPhotoCommand(command.Id, null, "zoo", "holiday");
+                await dispatcher.Send(commandUpdateTags);
 
                 commandDateTime = new SetDateTimeTakenCommand(command.Id, null, Timestamp.Create(2010, 04));
                 await dispatcher.Send(commandDateTime);
