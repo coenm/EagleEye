@@ -1,29 +1,30 @@
 ﻿namespace Photo.ReadModel.SearchEngineLucene.Test.Internal.EventHandlers
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
-    using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
 
-    using TimestampPrecision = EagleEye.Photo.Domain.Aggregates.TimestampPrecision;
+    using Domain = EagleEye.Photo.Domain.Aggregates;
+    using ReadModel = EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
 
     public class DateTimeTakenChangedEventHandlerTest
     {
         private readonly DateTimeTakenChangedEventHandler sut;
         private readonly IPhotoIndex photoIndex;
-        private readonly EagleEye.Photo.Domain.Aggregates.Timestamp eventDateTime;
+        private readonly Domain.Timestamp eventDateTime;
 
         public DateTimeTakenChangedEventHandlerTest()
         {
             photoIndex = A.Fake<IPhotoIndex>();
             sut = new DateTimeTakenChangedEventHandler(photoIndex);
-            eventDateTime = EagleEye.Photo.Domain.Aggregates.Timestamp.Create(2021, 7, 25, 23, 55, 32);
+            eventDateTime = Domain.Timestamp.Create(2021, 7, 25, 23, 55, 32);
         }
 
         [Fact]
@@ -50,32 +51,42 @@
             await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
 
             // assert
-            A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustNotHaveHappened();
+            A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<ReadModel.Photo>._)).MustNotHaveHappened();
         }
 
-        [Fact]
-        public async Task Handle_ShouldReIndexPhotoWithUpdatedDateTime_WhenPhotoExists()
+        [Theory]
+        [MemberData(nameof(Timestamps))]
+
+        internal async Task Handle_ShouldReIndexPhotoWithUpdatedDateTime_WhenPhotoExists(Domain.Timestamp eventTimestamp, ReadModel.Timestamp expectedTimestamp)
         {
             // arrange
             var guid = Guid.NewGuid();
-            Photo newPhoto = null;
-            var photoSearchResult = new PhotoSearchResult(1)
-            {
-                DateTimeTaken = Timestamp.FromDateTime(new DateTime(1999, 1, 1)),
-            };
+            ReadModel.Photo newPhoto = null;
+            var photoSearchResult = new ReadModel.PhotoSearchResult(1)
+                {
+                    DateTimeTaken = ReadModel.Timestamp.FromDateTime(new DateTime(1999, 1, 1)),
+                };
 
-            A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._))
-                .Invokes(call => { newPhoto = call.Arguments[0] as Photo; });
+            A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<ReadModel.Photo>._)).Invokes(call => newPhoto = call.Arguments[0] as ReadModel.Photo);
             A.CallTo(() => photoIndex.Search(guid)).Returns(photoSearchResult);
 
             // act
-            await sut.Handle(new DateTimeTakenChanged(guid, eventDateTime));
+            await sut.Handle(new DateTimeTakenChanged(guid, eventTimestamp));
 
             // assert
-            A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<Photo>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => photoIndex.ReIndexMediaFileAsync(A<ReadModel.Photo>._)).MustHaveHappenedOnceExactly();
             newPhoto.Should().NotBeNull();
-            var expectedTimestamp = new Timestamp(eventDateTime.Value, EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model.TimestampPrecision.Second);
             newPhoto.DateTimeTaken.Should().BeEquivalentTo(expectedTimestamp);
+        }
+
+        public static IEnumerable<object[]> Timestamps()
+        {
+            yield return new object[] { Domain.Timestamp.Create(2020), new ReadModel.Timestamp(new DateTime(2020, 1, 1), ReadModel.TimestampPrecision.Year), };
+            yield return new object[] { Domain.Timestamp.Create(2020, 6), new ReadModel.Timestamp(new DateTime(2020, 6, 1), ReadModel.TimestampPrecision.Month), };
+            yield return new object[] { Domain.Timestamp.Create(2020, 9, 4), new ReadModel.Timestamp(new DateTime(2020, 9, 4), ReadModel.TimestampPrecision.Day), };
+            yield return new object[] { Domain.Timestamp.Create(2020, 12, 4, 14), new ReadModel.Timestamp(new DateTime(2020, 12, 4, 14, 0, 0), ReadModel.TimestampPrecision.Hour), };
+            yield return new object[] { Domain.Timestamp.Create(2020, 12, 4, 12, 51), new ReadModel.Timestamp(new DateTime(2020, 12, 4, 12, 51, 0), ReadModel.TimestampPrecision.Minute), };
+            yield return new object[] { Domain.Timestamp.Create(2020, 12, 4, 14, 1, 0), new ReadModel.Timestamp(new DateTime(2020, 12, 4, 14, 1, 0), ReadModel.TimestampPrecision.Second), };
         }
     }
 }
