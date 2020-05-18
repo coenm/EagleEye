@@ -10,12 +10,10 @@
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using JetBrains.Annotations;
-    using NLog;
 
     [UsedImplicitly]
     internal class DateTimeTakenChangedEventHandler : ICancellableEventHandler<DateTimeTakenChanged>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
         public DateTimeTakenChangedEventHandler([NotNull] IPhotoIndex photoIndex)

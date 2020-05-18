@@ -11,12 +11,10 @@
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using JetBrains.Annotations;
-    using NLog;
 
     [UsedImplicitly]
     internal class TagsAddedToPhotoEventHandler : ICancellableEventHandler<TagsAddedToPhoto>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
         public TagsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
@@ -34,8 +32,7 @@
                 return;
 
             storedItem.Version = message.Version;
-            if (storedItem.Tags == null)
-                storedItem.Tags = new List<string>();
+            storedItem.Tags ??= new List<string>();
 
             var newEntries = message.Tags.Distinct()
                 .Where(item => !storedItem.Tags.Contains(item))
