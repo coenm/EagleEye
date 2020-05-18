@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     using CQRSlite.Domain;
     using CQRSlite.Events;
@@ -38,6 +39,35 @@
 
             // assert
             result.Should().BeTrue();
+        }
+
+        [Fact]
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull", Justification = "This is the test scenario")]
+        public void ShouldMakeSnapshot_ShouldReturnFalse_WhenArgumentIsNull()
+        {
+            // arrange
+            var sut = new ConfigurableSnapshotStrategy(1);
+            AggregateRoot aggregate = null;
+
+            // act
+            var result = sut.ShouldMakeSnapShot(aggregate);
+
+            // assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ShouldMakeSnapshot_ShouldReturnFalse_WhenAggregateIsNotSnapshotable()
+        {
+            // arrange
+            var sut = new ConfigurableSnapshotStrategy(1);
+            AggregateRoot aggregate = new NotSnapshotableOnlyAggregateRootClass();
+
+            // act
+            var result = sut.ShouldMakeSnapShot(aggregate);
+
+            // assert
+            result.Should().BeFalse();
         }
 
         [Fact]
