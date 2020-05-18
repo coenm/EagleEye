@@ -4,27 +4,20 @@
 
     using EagleEye.Photo.Domain.Aggregates;
 
-    public static class TimestampPrecisionMapper
+    internal static class TimestampPrecisionMapper
     {
         public static TimestampPrecision Convert(Commands.Inner.TimestampPrecision precision)
         {
-            switch (precision)
+            return precision switch
             {
-            case Commands.Inner.TimestampPrecision.Year:
-                return TimestampPrecision.Year;
-            case Commands.Inner.TimestampPrecision.Month:
-                return TimestampPrecision.Month;
-            case Commands.Inner.TimestampPrecision.Day:
-                return TimestampPrecision.Day;
-            case Commands.Inner.TimestampPrecision.Hour:
-                return TimestampPrecision.Hour;
-            case Commands.Inner.TimestampPrecision.Minute:
-                return TimestampPrecision.Minute;
-            case Commands.Inner.TimestampPrecision.Second:
-                return TimestampPrecision.Second;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(precision), precision, null);
-            }
+                Commands.Inner.TimestampPrecision.Year => TimestampPrecision.Year,
+                Commands.Inner.TimestampPrecision.Month => TimestampPrecision.Month,
+                Commands.Inner.TimestampPrecision.Day => TimestampPrecision.Day,
+                Commands.Inner.TimestampPrecision.Hour => TimestampPrecision.Hour,
+                Commands.Inner.TimestampPrecision.Minute => TimestampPrecision.Minute,
+                Commands.Inner.TimestampPrecision.Second => TimestampPrecision.Second,
+                _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null)
+            };
         }
     }
 }
