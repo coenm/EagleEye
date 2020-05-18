@@ -40,7 +40,7 @@
             container.Register<IExifToolWriter, ExifToolAdapter>(Lifestyle.Singleton);
 
             container.Register<IExifToolReader, ExifToolAdapter>(Lifestyle.Singleton);
-            // container.RegisterDecorator<IExifToolReader, ExifToolCacheDecorator>(Lifestyle.Singleton);
+            container.RegisterDecorator<IExifToolReader, ExifToolCacheDecorator>(Lifestyle.Singleton);
 
             container.Register<IEagleEyeMetadataProvider, EagleEyeMetadataProvider>();
             container.Register<IEagleEyeMetadataWriter, EagleEyeMetadataWriter>();
