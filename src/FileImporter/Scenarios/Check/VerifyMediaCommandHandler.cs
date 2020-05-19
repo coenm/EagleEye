@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Dawn;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
@@ -51,22 +52,22 @@
         {
             // check if file exists
             if (!File.Exists(filename))
-                return new VerifyMediaResult(filename, VerifyMediaResult.VerifyMediaResultState.FileNotExist, null);
+                return new VerifyMediaResult(filename, VerifyMediaResultState.FileNotExist, null);
 
             // check if file contains metadata
             var imageMetaData = await eagleEyeMetadataProvider.ProvideAsync(filename, ct).ConfigureAwait(false);
             if (imageMetaData == null)
-                return new VerifyMediaResult(filename, VerifyMediaResult.VerifyMediaResultState.NoMetadataAvailable, null);
+                return new VerifyMediaResult(filename, VerifyMediaResultState.NoMetadataAvailable, null);
 
             // if not -> get metadata
             var data2 = await photoSha256HashProvider.First().ProvideAsync(filename).ConfigureAwait(false);
 
             var rawImageHash = data2.ToArray();
 
-            if (rawImageHash != null && rawImageHash.Length > 0)
+            if (rawImageHash.Length > 0)
             {
                 if (imageMetaData.RawImageHash == null || imageMetaData.RawImageHash.Count == 0)
-                    return new VerifyMediaResult(filename, VerifyMediaResult.VerifyMediaResultState.MetadataIncorrect, imageMetaData);
+                    return new VerifyMediaResult(filename, VerifyMediaResultState.MetadataIncorrect, imageMetaData);
 
                 var found = false;
                 foreach (var item in imageMetaData.RawImageHash)
@@ -78,10 +79,10 @@
                 }
 
                 if (!found)
-                    return new VerifyMediaResult(filename, VerifyMediaResult.VerifyMediaResultState.MetadataIncorrect, imageMetaData);
+                    return new VerifyMediaResult(filename, VerifyMediaResultState.MetadataIncorrect, imageMetaData);
             }
 
-            return new VerifyMediaResult(filename, VerifyMediaResult.VerifyMediaResultState.MetadataCorrect, imageMetaData);
+            return new VerifyMediaResult(filename, VerifyMediaResultState.MetadataCorrect, imageMetaData);
         }
     }
 }

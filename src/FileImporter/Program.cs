@@ -187,9 +187,9 @@
 
                 await File.WriteAllTextAsync($"M:\\todo\\output_{DateTime.Now:yyyyMMddHHmmss}.json", JsonConvert.SerializeObject(results));
 
-                var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.VerifyMediaResultState.NoMetadataAvailable);
-                var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.VerifyMediaResultState.MetadataIncorrect);
-                var correct = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.VerifyMediaResultState.MetadataCorrect);
+                var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.NoMetadataAvailable);
+                var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataIncorrect);
+                var correct = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataCorrect);
 
                 var metadatas = results.Where(x => x.Value.Metadata != null).Select(x => x.Value).ToArray();
                 var duplicateIds = metadatas.Where(x => metadatas.Count(y => y.Metadata.Id == x.Metadata.Id) > 1).ToArray();
