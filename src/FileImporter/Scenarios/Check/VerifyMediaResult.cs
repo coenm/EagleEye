@@ -1,10 +1,10 @@
-﻿namespace EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages
+﻿namespace EagleEye.FileImporter.Scenarios.Check
 {
     using EagleEye.Core.EagleEyeXmp;
 
     public class VerifyMediaResult
     {
-        public VerifyMediaResult(string filename, MyState state, EagleEyeMetadata metadata)
+        public VerifyMediaResult(string filename, VerifyMediaResultState state, EagleEyeMetadata metadata)
         {
             Filename = filename;
             State = state;
@@ -13,19 +13,8 @@
 
         public string Filename { get; }
 
-        public MyState State { get; }
+        public VerifyMediaResultState State { get; }
 
         public EagleEyeMetadata Metadata { get; }
-
-        public enum MyState
-        {
-            FileNotExist,
-
-            NoMetadataAvailable,
-
-            MetadataIncorrect,
-
-            MetadataCorrect,
-        }
     }
 }

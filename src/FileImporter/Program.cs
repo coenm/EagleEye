@@ -14,6 +14,7 @@
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Json;
+    using EagleEye.FileImporter.Scenarios.Check;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
@@ -186,9 +187,9 @@
 
                 await File.WriteAllTextAsync($"M:\\todo\\output_{DateTime.Now:yyyyMMddHHmmss}.json", JsonConvert.SerializeObject(results));
 
-                var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.MyState.NoMetadataAvailable);
-                var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.MyState.MetadataIncorrect);
-                var correct = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.MyState.MetadataCorrect);
+                var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.VerifyMediaResultState.NoMetadataAvailable);
+                var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.VerifyMediaResultState.MetadataIncorrect);
+                var correct = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResult.VerifyMediaResultState.MetadataCorrect);
 
                 var metadatas = results.Where(x => x.Value.Metadata != null).Select(x => x.Value).ToArray();
                 var duplicateIds = metadatas.Where(x => metadatas.Count(y => y.Metadata.Id == x.Metadata.Id) > 1).ToArray();
@@ -206,8 +207,8 @@
                 {
                     Logger.Info(" -> none <-");
                 }
-                Logger.Info(string.Empty);
 
+                Logger.Info(string.Empty);
 
                 Logger.Info(string.Empty);
                 Logger.Info("---- Incorrect Items ----");
@@ -222,8 +223,8 @@
                 {
                     Logger.Info(" -> none <-");
                 }
-                Logger.Info(string.Empty);
 
+                Logger.Info(string.Empty);
 
                 Logger.Info(string.Empty);
                 Logger.Info("---- DuplicateIds Items ----");
@@ -231,16 +232,15 @@
                 {
                     foreach (var item in duplicateIds)
                     {
-                        Logger.Info($" - {item.Filename} {item.Metadata.Id.ToString()}");
+                        Logger.Info($" - {item.Filename} {item.Metadata.Id}");
                     }
                 }
                 else
                 {
                     Logger.Info(" -> none <-");
                 }
+
                 Logger.Info(string.Empty);
-
-
 
                 Logger.Info(string.Empty);
                 Logger.Info("---- Correct Items ----");
@@ -255,9 +255,8 @@
                 {
                     Logger.Info(" -> none <-");
                 }
+
                 Logger.Info(string.Empty);
-
-
             }
 
             Console.WriteLine("DONE");
@@ -349,7 +348,6 @@
                 var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
                 var dispatcher = container.GetInstance<ICommandSender>();
                 var search = container.GetInstance<IReadModel>();
-
 
                 if (!Directory.Exists(option.Directory))
                 {
