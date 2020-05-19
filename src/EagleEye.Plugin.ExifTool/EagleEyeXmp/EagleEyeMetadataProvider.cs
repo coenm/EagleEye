@@ -100,7 +100,7 @@
 
         [CanBeNull]
         [Pure]
-        private byte[] TryGetZ85Bytes([NotNull] JObject data, [NotNull] string key)
+        private static byte[] TryGetZ85Bytes([NotNull] JObject data, [NotNull] string key)
         {
             var s = TryGetString(data, key);
             if (s == null)

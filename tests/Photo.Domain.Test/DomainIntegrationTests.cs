@@ -47,11 +47,14 @@
 
             // act
             var hash = new byte[32];
-            var command = new CreatePhotoCommand("aap", hash, "image/jpeg", new[] { "zoo", "holiday" }, null);
+            var command = new CreatePhotoCommand("me.jpg", hash, "image/jpeg");
             var guid = command.Id;
             await handler2.Handle(command, default).ConfigureAwait(false);
 
-            var addTagsCommand = new AddTagsToPhotoCommand(guid, version, "summer", "holiday");
+            var addTagsCommand = new AddTagsToPhotoCommand(guid, version, "zoo", "holiday" );
+            await handler1.Handle(addTagsCommand, default).ConfigureAwait(false);
+
+            addTagsCommand = new AddTagsToPhotoCommand(guid, version, "summer", "holiday");
             await handler1.Handle(addTagsCommand, default).ConfigureAwait(false);
 
             addTagsCommand = new AddTagsToPhotoCommand(guid, version, "summer", "soccer");

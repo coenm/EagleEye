@@ -9,7 +9,6 @@
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.CommandHandlers.Exceptions;
     using EagleEye.Photo.Domain.Commands;
-    using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.Domain.Services;
     using FakeItEasy;
     using FluentAssertions;
@@ -38,7 +37,7 @@
             // arrange
 
             // act
-            await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime", null, null), ct);
+            await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime"), ct);
 
             // assert
             A.CallTo(() => uniqueFilenameService.Claim("a.jpg")).MustHaveHappenedOnceExactly();
@@ -51,7 +50,7 @@
             A.CallTo(() => uniqueFilenameService.Claim("a.jpg")).Returns(null);
 
             // act
-            Func<Task> act = async () => await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime", null, null), ct);
+            Func<Task> act = async () => await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime"), ct);
 
             // assert
             act.Should().Throw<PhotoAlreadyExistsException>();
@@ -65,7 +64,7 @@
             A.CallTo(() => uniqueFilenameService.Claim("a.jpg")).Returns(token);
 
             // act
-            await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime", null, null), ct);
+            await sut.Handle(new CreatePhotoCommand("a.jpg", new byte[32], "mime"), ct);
 
             // assert
             A.CallTo(() => session.Add(A<Photo>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();

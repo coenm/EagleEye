@@ -4,7 +4,7 @@
 
     public abstract class PersonsCommandBase : CommandBase
     {
-        internal PersonsCommandBase(Guid id, int expectedVersion, params string[] persons)
+        internal PersonsCommandBase(Guid id, int? expectedVersion, params string[] persons)
         : base(id, expectedVersion)
         {
             Persons = persons;

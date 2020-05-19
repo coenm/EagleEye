@@ -16,7 +16,6 @@
     [UsedImplicitly]
     internal class PersonsAddedToPhotoEventHandler : ICancellableEventHandler<PersonsAddedToPhoto>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
         public PersonsAddedToPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
@@ -34,8 +33,7 @@
                 return;
 
             storedItem.Version = message.Version;
-            if (storedItem.Persons == null)
-                storedItem.Persons = new List<string>();
+            storedItem.Persons ??= new List<string>();
 
             var newEntries = message.Persons.Distinct()
                 .Where(item => !storedItem.Persons.Contains(item))

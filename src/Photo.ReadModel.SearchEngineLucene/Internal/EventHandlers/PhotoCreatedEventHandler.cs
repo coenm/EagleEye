@@ -1,6 +1,5 @@
 ﻿namespace EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.EventHandlers
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -10,11 +9,9 @@
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using JetBrains.Annotations;
-    using NLog;
 
     internal class PhotoCreatedEventHandler : ICancellableEventHandler<PhotoCreated>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
         public PhotoCreatedEventHandler([NotNull] IPhotoIndex photoIndex)

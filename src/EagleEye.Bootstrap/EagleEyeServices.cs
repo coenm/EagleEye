@@ -25,7 +25,7 @@
 
             this.container = container;
             state = State.Empty;
-            startedServices = new IEagleEyeProcess[0];
+            startedServices = Array.Empty<IEagleEyeProcess>();
         }
 
         private enum State

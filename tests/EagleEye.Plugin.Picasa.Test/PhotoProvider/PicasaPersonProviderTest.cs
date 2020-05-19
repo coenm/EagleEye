@@ -54,7 +54,7 @@
             A.CallTo(() => picasaService.CanProvideData(DummyFilename))
                 .Returns(true);
             A.CallTo(() => picasaService.GetDataAsync(DummyFilename))
-             .Returns(Task.FromResult(new FileWithPersons(DummyFilename, new PicasaPerson("Alice"), new PicasaPerson("Bob"))));
+             .Returns(Task.FromResult(new FileWithPersons(DummyFilename, new PicasaPersonLocation("Alice"), new PicasaPersonLocation("Bob"))));
 
             // act
             var result = await sut.ProvideAsync(DummyFilename).ConfigureAwait(false);

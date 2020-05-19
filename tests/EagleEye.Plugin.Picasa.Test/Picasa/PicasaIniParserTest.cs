@@ -1,18 +1,18 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
 
-    using EagleEye.Picasa.Picasa;
     using FluentAssertions;
+    using VerifyXunit;
     using Xunit;
+    using Xunit.Abstractions;
 
     using Sut = EagleEye.Picasa.Picasa.PicasaIniParser;
 
-    public class PicasaIniParserTest
+    public class PicasaIniParserTest : VerifyBase
     {
         private const string PicasaIniFileContent = @"
 [pica 1.jpg]
@@ -33,25 +33,22 @@ backuphash=11571
 faces=rect64(787e40a89fff7fc0),ffffffffffffffff;rect64(3df8363c8b6289d8),7131e767c91646ae;rect64(7c1f1126c5898483),46c60ba61d7cb034
 backuphash=11571";
 
+        public PicasaIniParserTest(ITestOutputHelper output)
+            : base(output)
+        {
+        }
+
         [Fact]
         public void PicasaFileParserTest()
         {
             // arrange
-            using (var stream = GenerateStreamFromString(PicasaIniFileContent))
-            {
-                // act
-                var result = Sut.Parse(stream).ToList();
+            using var stream = GenerateStreamFromString(PicasaIniFileContent);
 
-                // assert
-                var expectedResult = new List<FileWithPersons>
-                                         {
-                                             new FileWithPersons("pica 1.jpg", new PicasaPerson("Calvin"), new PicasaPerson("David"), new PicasaPerson("Alice")),
-                                             new FileWithPersons("photo 2.jpg", new PicasaPerson("Alice"), new PicasaPerson("Bob")),
-                                             new FileWithPersons("nice photo.jpg", new PicasaPerson("Alice"), new PicasaPerson("Eve Jackson")),
-                                         };
+            // act
+            var result = Sut.Parse(stream).ToList();
 
-                result.Should().BeEquivalentTo(expectedResult);
-            }
+            // assert
+            Verify(result);
         }
 
         [Fact]
@@ -59,16 +56,14 @@ backuphash=11571";
         {
             // arrange
             var removedContacts2SectionContent = PicasaIniFileContent.Replace("[Contacts2]", "[Contacts.jpg]");
+            using var stream = GenerateStreamFromString(removedContacts2SectionContent);
 
-            using (var stream = GenerateStreamFromString(removedContacts2SectionContent))
-            {
-                // act
-                // ReSharper disable once AccessToDisposedClosure
-                Action act = () => _ = Sut.Parse(stream);
+            // act
+            // ReSharper disable once AccessToDisposedClosure
+            Action act = () => _ = Sut.Parse(stream);
 
-                // assert
-                act.Should().Throw<Exception>().WithMessage("Contacts2 not found");
-            }
+            // assert
+            act.Should().Throw<Exception>().WithMessage("Contacts2 not found");
         }
 
         private static MemoryStream GenerateStreamFromString(string value)

@@ -32,6 +32,20 @@
         }
 
         [Theory]
+        [InlineData("    ")]
+        [InlineData(null)]
+        public void CanProvideInformation_ShouldReturnFalse_WhenInputIsNullOrEmpty(string filename)
+        {
+            // arrange
+
+            // act
+            var result = sut.CanProvideInformation(filename);
+
+            // assert
+            result.Should().BeFalse();
+        }
+
+        [Theory]
         [ClassData(typeof(CorrectFilenameTimestampExpectation))]
         public void CanProvideInformation_ShouldReturnTrue(string filename, Timestamp expectedTimestamp)
         {
@@ -43,6 +57,20 @@
             // assert
             result.Should().BeTrue();
             expectedTimestamp.Should().NotBeNull("stupid assertion just to make this test work with two params.");
+        }
+
+        [Theory]
+        [InlineData("    ")]
+        [InlineData(null)]
+        public async Task ProvideAsync_ShouldReturnNull_WhenInputIsNullOrEmpty(string filename)
+        {
+            // arrange
+
+            // act
+            var result = await sut.ProvideAsync(filename);
+
+            // assert
+            result.Should().BeNull();
         }
 
         [Fact]

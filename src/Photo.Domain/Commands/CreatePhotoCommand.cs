@@ -12,19 +12,14 @@
         public CreatePhotoCommand(
             [NotNull] string fileName,
             [NotNull] byte[] fileSha256,
-            [NotNull] string photoMimeType,
-            [CanBeNull] string[] tags,
-            [CanBeNull] string[] persons)
+            [NotNull] string photoMimeType)
         {
             Guard.Argument(fileName, nameof(fileName)).NotNull().NotWhiteSpace();
             Guard.Argument(photoMimeType, nameof(photoMimeType)).NotNull().NotWhiteSpace();
             Guard.Argument(fileSha256, nameof(fileSha256)).NotNull();
 
             Id = Guid.NewGuid();
-
             PhotoMimeType = photoMimeType;
-            Tags = tags;
-            Persons = persons;
             FileName = fileName;
             FileSha256 = fileSha256;
         }
@@ -34,10 +29,6 @@
         [NotNull] public string FileName { get; }
 
         [NotNull] public string PhotoMimeType { get; }
-
-        public string[] Tags { get; }
-
-        public string[] Persons { get; }
 
         [NotNull] public byte[] FileSha256 { get; }
     }

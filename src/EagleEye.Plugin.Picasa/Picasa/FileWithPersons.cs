@@ -5,9 +5,9 @@
 
     public class FileWithPersons
     {
-        private readonly List<PicasaPerson> persons;
+        private readonly List<PicasaPersonLocation> persons;
 
-        public FileWithPersons(string filename, params PicasaPerson[] persons)
+        public FileWithPersons(string filename, params PicasaPersonLocation[] persons)
         {
             Filename = filename;
             this.persons = persons.ToList();
@@ -15,9 +15,9 @@
 
         public string Filename { get; }
 
-        public IEnumerable<PicasaPerson> Persons => persons.AsReadOnly();
+        public IEnumerable<PicasaPersonLocation> Persons => persons.AsReadOnly();
 
-        public void AddPerson(PicasaPerson person)
+        public void AddPerson(PicasaPersonLocation person)
         {
             if (persons.Contains(person))
                 return;

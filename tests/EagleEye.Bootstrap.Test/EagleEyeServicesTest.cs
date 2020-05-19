@@ -72,6 +72,54 @@
             callCounter.Disposed.Count.Should().Be(0);
         }
 
+        [Fact]
+        public void StopServices_DoesNotDoAnything_WhenNotStarted()
+        {
+            // arrange
+            var sut = new EagleEyeServices(container);
+
+            // act
+            Action act = () => sut.StopServices();
+
+            // assert
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public async Task StopServices_DoesNotDoAnything_WhenOnlyInitialized()
+        {
+            // arrange
+            container.Collection.Append<IEagleEyeProcess, DummyEagleEyeProcess1>(Lifestyle.Transient);
+            var sut = new EagleEyeServices(container);
+            await sut.InitializeServices();
+
+            // act
+            Action act = () => sut.StopServices();
+
+            // assert
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public async Task StopServices_StopsStartedServices_WhenStarted()
+        {
+            // arrange
+            container.Collection.Append<IEagleEyeProcess, DummyEagleEyeProcess1>(Lifestyle.Transient);
+            var sut = new EagleEyeServices(container);
+            await sut.InitializeServices();
+            sut.StartServices();
+
+            // assume
+            callCounter.Stopped.Count.Should().Be(0);
+
+            // act
+            sut.StopServices();
+
+            // assert
+            callCounter.Stopped.Count.Should().Be(1);
+        }
+
+        [UsedImplicitly]
         private class DummyEagleEyeInitialize1 : IEagleEyeInitialize
         {
             private readonly EagleEyeInitializeCallCounter callCounter;
@@ -84,11 +132,12 @@
 
             public Task InitializeAsync()
             {
-                callCounter.AddInitializedAsync(name);
+                callCounter.AddInitialized(name);
                 return Task.CompletedTask;
             }
         }
 
+        [UsedImplicitly]
         private class DummyEagleEyeProcess1 : IEagleEyeProcess
         {
             private readonly CallCounter cc;
@@ -107,6 +156,7 @@
             public void Stop() => cc.AddStop(name);
         }
 
+        [UsedImplicitly]
         private class DummyEagleEyeProcess2 : IEagleEyeProcess
         {
             private readonly CallCounter cc;
@@ -130,9 +180,9 @@
             private readonly List<string> initializedList = new List<string>();
             private readonly object syncLockInitialized = new object();
 
-            public List<string> Initialized => initializedList.ToList();
+            public IEnumerable<string> Initialized => initializedList.ToList();
 
-            public void AddInitializedAsync(string name)
+            public void AddInitialized(string name)
             {
                 lock (syncLockInitialized)
                 {

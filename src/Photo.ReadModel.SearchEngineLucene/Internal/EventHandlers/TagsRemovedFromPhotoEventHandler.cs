@@ -10,12 +10,10 @@
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.LuceneNet;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Internal.Model;
     using JetBrains.Annotations;
-    using NLog;
 
     [UsedImplicitly]
     internal class TagsRemovedFromPhotoEventHandler : ICancellableEventHandler<TagsRemovedFromPhoto>
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         [NotNull] private readonly IPhotoIndex photoIndex;
 
         public TagsRemovedFromPhotoEventHandler([NotNull] IPhotoIndex photoIndex)
