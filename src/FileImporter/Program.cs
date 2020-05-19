@@ -1,6 +1,8 @@
 ﻿namespace EagleEye.FileImporter
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -13,9 +15,11 @@
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
+    using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
+    using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using NLog;
@@ -47,15 +51,15 @@
         {
             connectionStrings = new ConnectionStrings
                 {
-                    Similarity = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.db")),
-                    HangFire = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("Similarity.HangFire.db")),
-                    FilenameEventStore = Startup.CreateFullFilename("EventStore.db"),
+                    Similarity = Startup.CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.db")),
+                    HangFire = Startup.CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.HangFire.db")),
+                    FilenameEventStore = CreateFullFilename("EventStore.db"),
                     LuceneDirectory = ConnectionStrings.LuceneInMemory,
                     ConnectionStringPhotoDatabase = "InMemory EagleEye",
                 };
 
-            connectionStrings.ConnectionStringPhotoDatabase = Startup.CreateSqlLiteFileConnectionString(Startup.CreateFullFilename("FullMetadata.db"));
-            connectionStrings.LuceneDirectory = Startup.CreateFullFilename("Lucene");
+            connectionStrings.ConnectionStringPhotoDatabase = Startup.CreateSqlLiteFileConnectionString(CreateFullFilename("FullMetadata.db"));
+            connectionStrings.LuceneDirectory = CreateFullFilename("Lucene");
 
             await Run(args).ConfigureAwait(false);
         }
@@ -86,7 +90,21 @@
             }
         }
 
-        private static async Task UpdateImportedImages(UpdateImportedImagesOptions option)
+        private static string GetUserDirectory()
+        {
+            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return Path.Combine(userDir, "EagleEye");
+        }
+
+        private static string CreateFullFilename([NotNull] string filename)
+        {
+            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
+
+            var baseDir = GetUserDirectory();
+            return Path.Combine(baseDir, filename);
+        }
+
+        private static async Task CheckMetadata(CheckMetadataOptions option)
         {
             Guard.Argument(option, nameof(option)).NotNull();
 

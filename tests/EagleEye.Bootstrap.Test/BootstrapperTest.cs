@@ -54,7 +54,7 @@
             // arrange
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins, config);
+            var sut = Sut.Initialize(plugins, config);
             using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
@@ -69,7 +69,7 @@
             // arrange
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins, config);
+            var sut = Sut.Initialize(plugins, config);
             sut.RegisterPhotoDatabaseReadModel("InMemory a");
             using var container = sut.Finalize();
 
@@ -86,7 +86,7 @@
             var searchEngineDirectory = Path.Combine(tempPath, "Lucene");
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins, config);
+            var sut = Sut.Initialize(plugins, config);
             sut.RegisterSearchEngineReadModel(searchEngineDirectory);
             using var container = sut.Finalize();
 
@@ -104,7 +104,7 @@
             const string connectionStringHangFire = "InMemory b";
 
             // act
-            var sut = Sut.Initialize(tempPath, plugins, config);
+            var sut = Sut.Initialize(plugins, config);
             sut.RegisterSimilarityReadModel(connectionString, connectionStringHangFire);
             using var container = sut.Finalize();
 
