@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -40,36 +41,43 @@
         public IReadModel ReadModel { get; }
 
         /// <summary>
-        /// a/b/x/c.jpg [Adam, Bob, Calvin]
+        /// a/b/x/c.jpg [Adam, Bob, Calvin].
         /// </summary>
         public static PhotoPersonItem Photo1 { get; } = new PhotoPersonItem(
             new Guid("F0C78074-8AB8-416B-8A2B-DC066250F9F1"),
             "a/b/x/c.jpg",
-            "Adam", "Bob", "Calvin");
+            "Adam",
+            "Bob",
+            "Calvin");
 
         /// <summary>
-        /// a/e/dexter.jpg [Bob Jackson, Dexter]
+        /// a/e/dexter.jpg [Bob Jackson, Dexter].
         /// </summary>
         public static PhotoPersonItem Photo2 { get; } = new PhotoPersonItem(
             new Guid("F0C78074-8AB8-416B-8A2B-DC066250F9F2"),
             "a/b/dexter.jpg",
-            "Bob Jackson", "Dexter");
+            "Bob Jackson",
+            "Dexter");
 
         /// <summary>
-        /// a/bobby.jpg [Adam, bob]
+        /// a/bobby.jpg [Adam, bob].
         /// </summary>
         public static PhotoPersonItem Photo3 { get; } = new PhotoPersonItem(
             new Guid("F0C78074-8AB8-416B-8A2B-DC066250F9F3"),
             "a/bobby.jpg",
-            "Adam", "bob");
+            "Adam",
+            "bob");
 
         /// <summary>
-        /// b/x/red bulls/TeamPhoto.jpg [Michael Jordan, Scottie Pippen]
+        /// b/x/red bulls/TeamPhoto.jpg [Michael Jordan, Scottie Pippen].
         /// </summary>
+        [SuppressMessage("ReSharper", "CommentTypo", Justification = "Is a name")]
+        [SuppressMessage("ReSharper", "StringLiteralTypo", Justification = "Is a name")]
         public static PhotoPersonItem Photo4 { get; } = new PhotoPersonItem(
             new Guid("F0C78074-8AB8-416B-8A2B-DC066250F9F4"),
             "b/x/red bulls/TeamPhoto.jpg",
-            "Michael Jordan", "Scottie Pippen");
+            "Michael Jordan",
+            "Scottie Pippen");
 
         public Task Initialize() => initializeTask;
 
