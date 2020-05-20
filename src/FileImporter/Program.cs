@@ -11,6 +11,7 @@
     using CommandLine;
     using CQRSlite.Commands;
     using Dawn;
+    using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Json;
@@ -25,7 +26,9 @@
     using Newtonsoft.Json.Converters;
     using NLog;
     using ShellProgressBar;
+    using SimpleInjector;
 
+    using Directory = System.IO.Directory;
     using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
 
     public static class Program
@@ -50,17 +53,22 @@
 
         public static async Task Main(string[] args)
         {
+            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var baseDirectory = Path.Combine(userDir, "EagleEye");
+
+            string FullPath(string filename) => Path.Combine(baseDirectory, filename);
+
             connectionStrings = new ConnectionStrings
                 {
-                    Similarity = Startup.CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.db")),
-                    HangFire = Startup.CreateSqlLiteFileConnectionString(CreateFullFilename("Similarity.HangFire.db")),
-                    FilenameEventStore = CreateFullFilename("EventStore.db"),
+                    Similarity = Startup.CreateSqlLiteFileConnectionString(FullPath("Similarity.db")),
+                    HangFire = Startup.CreateSqlLiteFileConnectionString(FullPath("Similarity.HangFire.db")),
+                    FilenameEventStore = FullPath("EventStore.db"),
                     LuceneDirectory = ConnectionStrings.LuceneInMemory,
                     ConnectionStringPhotoDatabase = "InMemory EagleEye",
                 };
 
-            connectionStrings.ConnectionStringPhotoDatabase = Startup.CreateSqlLiteFileConnectionString(CreateFullFilename("FullMetadata.db"));
-            connectionStrings.LuceneDirectory = CreateFullFilename("Lucene");
+            connectionStrings.ConnectionStringPhotoDatabase = Startup.CreateSqlLiteFileConnectionString(FullPath("FullMetadata.db"));
+            connectionStrings.LuceneDirectory = FullPath("Lucene");
 
             await Run(args).ConfigureAwait(false);
         }
@@ -69,19 +77,24 @@
         {
             var task = Task.CompletedTask;
 
-            Parser.Default.ParseArguments<
-                    IndexFilesOptions,
-                    UpdateImportedImagesOptions,
-                    CheckMetadataOptions,
-                    DemoLuceneSearchOptions>(args)
-                .WithParsed<IndexFilesOptions>(option => task = Index(option))
-                .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(option))
-                .WithParsed<CheckMetadataOptions>(option => task = CheckMetadata(option))
-                .WithParsed<DemoLuceneSearchOptions>(option => task = DemoLuceneReadModelSearch(option))
-                .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
+            using var container = Startup.ConfigureContainer(connectionStrings);
+
+            await Startup.InitializeAllServices(container);
+            Startup.StartServices(container);
 
             try
             {
+                Parser.Default.ParseArguments<
+                        IndexFilesOptions,
+                        UpdateImportedImagesOptions,
+                        CheckMetadataOptions,
+                        DemoLuceneSearchOptions>(args)
+                    .WithParsed<IndexFilesOptions>(option => task = Index(container, option))
+                    .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(container, option))
+                    .WithParsed<CheckMetadataOptions>(option => task = CheckMetadata(container, option))
+                    .WithParsed<DemoLuceneSearchOptions>(option => task = DemoLuceneReadModelSearch(container, option))
+                    .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
+
                 await task.ConfigureAwait(false);
                 Console.WriteLine("Done.");
             }
@@ -91,32 +104,20 @@
                 Console.WriteLine(e);
                 Console.ReadLine();
             }
+            finally
+            {
+                Startup.StopServices(container);
+            }
         }
 
-        private static string GetUserDirectory()
+        private static async Task CheckMetadata([NotNull] Container container, [NotNull] CheckMetadataOptions option)
         {
-            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            return Path.Combine(userDir, "EagleEye");
-        }
-
-        private static string CreateFullFilename([NotNull] string filename)
-        {
-            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
-
-            var baseDir = GetUserDirectory();
-            return Path.Combine(baseDir, filename);
-        }
-
-        private static async Task CheckMetadata(CheckMetadataOptions option)
-        {
+            Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(option, nameof(option)).NotNull();
 
-            using var container = Startup.ConfigureContainer(connectionStrings);
+            var directoryService = container.GetInstance<IDirectoryService>();
 
-            await Startup.InitializeAllServices(container);
-            Startup.StartServices(container);
-
-            if (!Directory.Exists(option.Directory))
+            if (!directoryService.Exists(option.Directory))
             {
                 Console.WriteLine("Directory does not exist.");
                 return;
@@ -124,15 +125,15 @@
 
             var diDirToIndex = new DirectoryInfo(option.Directory).FullName;
 
-            var xJpg = Directory.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
-            var xJpeg = Directory.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
-            var xMov = Directory.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
-            var xMp4 = Directory.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
+            var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
+            var xJpeg = directoryService.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
+            var xMov = directoryService.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
+            var xMp4 = directoryService.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
 
             // not supported
-            // var xAvi = Directory.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
-            // var xMts = Directory.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
-            // var xWmv = Directory.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
+            // var xAvi = directoryService.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
+            // var xMts = directoryService.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
+            // var xWmv = directoryService.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
 
             var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
 
@@ -260,36 +261,33 @@
             }
 
             Console.WriteLine("DONE");
-            container.Dispose();
             Console.ReadKey();
         }
 
-        private static async Task UpdateImportedImages(UpdateImportedImagesOptions option)
+        private static Task UpdateImportedImages([NotNull] Container container, [NotNull] UpdateImportedImagesOptions option)
         {
+            Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(option, nameof(option)).NotNull();
 
-            using var container = Startup.ConfigureContainer(connectionStrings);
+            var directoryService = container.GetInstance<IDirectoryService>();
 
-            await Startup.InitializeAllServices(container);
-            Startup.StartServices(container);
-
-            if (!Directory.Exists(option.ProcessingDirectory))
+            if (!directoryService.Exists(option.ProcessingDirectory))
             {
                 Console.WriteLine("Directory does not exist.");
-                return;
+                return Task.CompletedTask;
             }
 
             var diDirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
 
-            var xJpg = Directory.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
-            var xJpeg = Directory.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
-            var xMov = Directory.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
-            var xMp4 = Directory.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
+            var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
+            var xJpeg = directoryService.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
+            var xMov = directoryService.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
+            var xMp4 = directoryService.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
 
             // not supported
-            // var xAvi = Directory.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
-            // var xMts = Directory.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
-            // var xWmv = Directory.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
+            // var xAvi = directoryService.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
+            // var xMts = directoryService.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
+            // var xWmv = directoryService.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
 
             var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
 
@@ -333,30 +331,30 @@
             }
 
             Console.WriteLine("DONE");
-            container.Dispose();
             Console.ReadKey();
+            return Task.CompletedTask;
         }
 
-        private static async Task DemoLuceneReadModelSearch(DemoLuceneSearchOptions option)
+        private static async Task DemoLuceneReadModelSearch([NotNull] Container container, [NotNull] DemoLuceneSearchOptions option)
         {
-            using var container = Startup.ConfigureContainer(connectionStrings);
-            await Startup.InitializeAllServices(container);
-            Startup.StartServices(container);
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(option, nameof(option)).NotNull();
+
+            var directoryService = container.GetInstance<IDirectoryService>();
+            var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
+            var dispatcher = container.GetInstance<ICommandSender>();
+            var search = container.GetInstance<IReadModel>();
 
             try
             {
-                var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
-                var dispatcher = container.GetInstance<ICommandSender>();
-                var search = container.GetInstance<IReadModel>();
-
-                if (!Directory.Exists(option.Directory))
+                if (!directoryService.Exists(option.Directory))
                 {
                     Console.WriteLine("Directory does not exist.");
                     return;
                 }
 
                 var diDirToIndex = new DirectoryInfo(option.Directory).FullName;
-                var xJpg = Directory.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
+                var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
 
                 var files = xJpg.Take(1).ToArray();
 
@@ -447,24 +445,19 @@
             {
                 Console.WriteLine(e.Message);
             }
-            finally
-            {
-
-                Startup.StopServices(container);
-            }
 
             Console.WriteLine("Press enter");
             Console.ReadKey();
         }
 
-        private static async Task Index(IndexFilesOptions option)
+        private static async Task Index([NotNull] Container container, [NotNull] IndexFilesOptions option)
         {
-            using var container = Startup.ConfigureContainer(connectionStrings);
-            await Startup.InitializeAllServices(container);
-            Startup.StartServices(container);
+            Guard.Argument(container, nameof(container)).NotNull();
+            Guard.Argument(option, nameof(option)).NotNull();
 
             try
             {
+                var directoryService = container.GetInstance<IDirectoryService>();
                 var dispatcher = container.GetInstance<ICommandSender>();
                 var search = container.GetInstance<IReadModel>();
 
@@ -475,14 +468,14 @@
                 var photoTakenProviders = container.GetAllInstances<IPhotoDateTimeTakenProvider>().ToArray();
                 var photoHashProviders = container.GetAllInstances<IPhotoHashProvider>().ToArray();
 
-                if (!Directory.Exists(option.Directory))
+                if (!directoryService.Exists(option.Directory))
                 {
                     Console.WriteLine("Directory does not exist.");
                     return;
                 }
 
                 var diDirToIndex = new DirectoryInfo(option.Directory).FullName;
-                var xJpg = Directory.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
+                var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
                 var files = xJpg.ToArray();
 
                 using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
@@ -593,10 +586,6 @@
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-            }
-            finally
-            {
-                Startup.StopServices(container);
             }
 
             Console.WriteLine("Press enter");

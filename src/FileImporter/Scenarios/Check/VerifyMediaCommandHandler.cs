@@ -36,18 +36,6 @@
             this.eagleEyeMetadataProvider = eagleEyeMetadataProvider;
         }
 
-        private bool BytesEqual(ref byte[] bytes1, ref byte[] bytes2)
-        {
-            if (bytes1 == null && bytes2 == null)
-                return true;
-            if (bytes1 == null)
-                return false;
-            if (bytes2 == null)
-                return false;
-
-            return bytes1.SequenceEqual(bytes2);
-        }
-
         public async Task<VerifyMediaResult> HandleAsync([NotNull] string filename, CancellationToken ct = default)
         {
             // check if file exists
@@ -83,6 +71,18 @@
             }
 
             return new VerifyMediaResult(filename, VerifyMediaResultState.MetadataCorrect, imageMetaData);
+        }
+
+        private bool BytesEqual(ref byte[] bytes1, ref byte[] bytes2)
+        {
+            if (bytes1 == null && bytes2 == null)
+                return true;
+            if (bytes1 == null)
+                return false;
+            if (bytes2 == null)
+                return false;
+
+            return bytes1.SequenceEqual(bytes2);
         }
     }
 }

@@ -140,6 +140,7 @@
         {
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance); // RelativeSystemFileService
+            container.RegisterInstance<IDirectoryService>(SystemDirectoryService.Instance);
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
             container.RegisterSingleton<IFileSha256HashProvider, FileSha256HashProvider>();
