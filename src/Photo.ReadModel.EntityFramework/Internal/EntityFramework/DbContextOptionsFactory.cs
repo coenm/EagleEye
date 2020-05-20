@@ -29,7 +29,7 @@
                 .Where(x => x.CanHandle(connectionString))
                 .ToList();
 
-            if (!applicable.Any())
+            if (applicable.Count == 0)
                 return null;
 
             if (applicable.Count > 1)

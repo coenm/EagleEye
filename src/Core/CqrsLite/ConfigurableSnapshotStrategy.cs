@@ -30,8 +30,7 @@
 
             if (baseType == null)
                 return false;
-            if (baseType.GetTypeInfo().IsGenericType &&
-                baseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
+            if (baseType.GetTypeInfo().IsGenericType && baseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
                 return true;
             return IsSnapshotable(baseType);
         }

@@ -36,10 +36,8 @@
         {
             try
             {
-                using (var stream = fileService.OpenRead(filename))
-                {
-                    return Task.FromResult(ImageHashing.Calculate(stream));
-                }
+                using var stream = fileService.OpenRead(filename);
+                return Task.FromResult(ImageHashing.Calculate(stream));
             }
             catch (Exception)
             {

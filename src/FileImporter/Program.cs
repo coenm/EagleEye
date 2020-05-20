@@ -127,18 +127,7 @@
             }
 
             var dirToIndex = new DirectoryInfo(option.Directory).FullName;
-
-            var xJpg = directoryService.EnumerateFiles(dirToIndex, "*.jpg", SearchOption.AllDirectories);
-            var xJpeg = directoryService.EnumerateFiles(dirToIndex, "*.jpeg", SearchOption.AllDirectories);
-            var xMov = directoryService.EnumerateFiles(dirToIndex, "*.mov", SearchOption.AllDirectories);
-            var xMp4 = directoryService.EnumerateFiles(dirToIndex, "*.mp4", SearchOption.AllDirectories);
-
-            // not supported
-            // var xAvi = directoryService.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
-            // var xMts = directoryService.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
-            // var xWmv = directoryService.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
-
-            var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
+            var files = GetMediaFiles(directoryService, dirToIndex).ToArray();
 
             var commandHandler = container.GetInstance<VerifyMediaCommandHandler>();
 
@@ -155,7 +144,7 @@
                 Logger.Info($" Found {files.Length} files.");
                 Console.WriteLine($" Found {files.Length} files.");
 
-                var maxDegree = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.75) * 2.0));
+                var maxDegree = Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 2.0));
                 Logger.Info($"Max degree {maxDegree}");
                 Console.WriteLine($"Max degree {maxDegree}");
 
@@ -232,7 +221,7 @@
 
                 Logger.Info(string.Empty);
                 Logger.Info("---- DuplicateIds Items ----");
-                if (duplicateIds.Any())
+                if (duplicateIds.Length > 0)
                 {
                     foreach (var item in duplicateIds)
                     {
@@ -281,18 +270,7 @@
             }
 
             var dirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
-
-            var xJpg = directoryService.EnumerateFiles(dirToIndex, "*.jpg", SearchOption.AllDirectories);
-            var xJpeg = directoryService.EnumerateFiles(dirToIndex, "*.jpeg", SearchOption.AllDirectories);
-            var xMov = directoryService.EnumerateFiles(dirToIndex, "*.mov", SearchOption.AllDirectories);
-            var xMp4 = directoryService.EnumerateFiles(dirToIndex, "*.mp4", SearchOption.AllDirectories);
-
-            // not supported
-            // var xAvi = directoryService.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
-            // var xMts = directoryService.EnumerateFiles(diDirToIndex, "*.mts", SearchOption.AllDirectories);
-            // var xWmv = directoryService.EnumerateFiles(diDirToIndex, "*.wmv", SearchOption.AllDirectories);
-
-            var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
+            var files = GetMediaFiles(directoryService, dirToIndex).ToArray();
 
             var executor = container.GetInstance<UpdateMultipleImagesExecutor>();
             var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
@@ -378,23 +356,25 @@
                 foreach (var item in items)
                     Console.WriteLine($" [{item.Id}] -- ({item.Version}) -- {item.Filename}");
 
-                // https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
-                // search terms:
-                // - id
-                // - version
-                // - filename
-                // - filetype
-                // - city
-                // - countrycode
-                // - country
-                // - state
-                // - sublocation
-                // - longitude
-                // - latitude
-                // - date
-                // - person
-                // - tag
-                // - gps
+                /*
+                https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+                search terms:
+                - id
+                - version
+                - filename
+                - filetype
+                - city
+                - countrycode
+                - country
+                - state
+                - sublocation
+                - longitude
+                - latitude
+                - date
+                - person
+                - tag
+                - gps
+                */
 
                 var jsonSerializerSettings = new JsonSerializerSettings();
                 jsonSerializerSettings.Converters.Add(new StringEnumConverter());
@@ -590,6 +570,17 @@
 
             Console.WriteLine("Press enter");
             Console.ReadKey();
+        }
+
+        private static IEnumerable<string> GetMediaFiles(IDirectoryService directoryService, string path)
+        {
+            var filesJpg = directoryService.EnumerateFiles(path, "*.jpg", SearchOption.AllDirectories);
+            var filesJpeg = directoryService.EnumerateFiles(path, "*.jpeg", SearchOption.AllDirectories);
+            var filesMov = directoryService.EnumerateFiles(path, "*.mov", SearchOption.AllDirectories);
+            var filesMp4 = directoryService.EnumerateFiles(path, "*.mp4", SearchOption.AllDirectories);
+
+            // Not supported extensions: avi, mts, wmv
+            return filesJpg.Concat(filesJpeg).Concat(filesMov).Concat(filesMp4);
         }
     }
 }

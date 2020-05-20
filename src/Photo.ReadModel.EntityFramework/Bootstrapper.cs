@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.Photo.ReadModel.EntityFramework
 {
     using System;
-    using System.Reflection;
 
     using Dawn;
     using EagleEye.Core.Interfaces.Module;
@@ -16,8 +15,6 @@
 
     public static class Bootstrapper
     {
-        private static readonly Assembly ThisAssembly = typeof(Bootstrapper).Assembly;
-
         /// <summary> Bootstrap this module.</summary>
         /// <param name="container">The IOC container. Cannot be <c>null</c>.</param>
         /// <param name="connectionString">Connection string to be used in EntityFramework. Cannot be <c>null</c> or empty. Should start with 'InMemory' or with 'Filename='.</param>

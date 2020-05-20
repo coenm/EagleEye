@@ -159,15 +159,13 @@
 
         private void IndexStaticDocuments()
         {
-            using (var writer = new IndexWriter(directory, indexWriterConfig))
+            using var writer = new IndexWriter(directory, indexWriterConfig);
+            foreach (var photo in StaticDocuments.Photos)
             {
-                foreach (var photo in StaticDocuments.Photos)
-                {
-                    IndexDocs(writer, photo);
-                }
-
-                writer.ForceMerge(1);
+                IndexDocs(writer, photo);
             }
+
+            writer.ForceMerge(1);
         }
 
         private void DeleteFromIndex(Term term)
@@ -178,11 +176,9 @@
                                          RAMBufferSizeMB = 256.0,
                                      };
 
-            using (var writer = new IndexWriter(directory, indexWriterConfig))
-            {
-                writer.DeleteDocuments(term);
-                writer.ForceMerge(1);
-            }
+            using var writer = new IndexWriter(directory, indexWriterConfig);
+            writer.DeleteDocuments(term);
+            writer.ForceMerge(1);
         }
     }
 }

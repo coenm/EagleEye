@@ -106,15 +106,13 @@
 
         private void IndexStaticDocuments()
         {
-            using (var writer = new IndexWriter(directory, indexWriterConfig))
+            using var writer = new IndexWriter(directory, indexWriterConfig);
+            foreach (var person in GetPersons())
             {
-                foreach (var person in GetPersons())
-                {
-                    IndexDocs(writer, person);
-                }
-
-                writer.ForceMerge(1);
+                IndexDocs(writer, person);
             }
+
+            writer.ForceMerge(1);
         }
 
         private IEnumerable<SearchResults<PersonDto>> Filter(Filter filter)

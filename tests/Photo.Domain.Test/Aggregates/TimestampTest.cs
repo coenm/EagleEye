@@ -225,8 +225,10 @@
 
             // act
             #pragma warning disable 252,253
+            #pragma warning disable CS1718 // Comparison made to same variable
             var result = t1 == ((object)t1);
-            #pragma warning restore 252,253
+            #pragma warning restore CS1718 // Comparison made to same variable
+            #pragma warning restore 252, 253
 
             // assert
             result.Should().BeTrue("sut is a value object");

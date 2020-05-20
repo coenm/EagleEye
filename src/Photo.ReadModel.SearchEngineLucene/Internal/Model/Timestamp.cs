@@ -26,23 +26,16 @@
 
         public override string ToString()
         {
-            switch (Precision)
+            return Precision switch
             {
-            case TimestampPrecision.Year:
-                return Value.ToString("yyyy0000000000");
-            case TimestampPrecision.Month:
-                return Value.ToString("yyyyMM00000000");
-            case TimestampPrecision.Day:
-                return Value.ToString("yyyyMMdd000000");
-            case TimestampPrecision.Hour:
-                return Value.ToString("yyyyMMddHH0000");
-            case TimestampPrecision.Minute:
-                return Value.ToString("yyyyMMddHHmm00");
-            case TimestampPrecision.Second:
-                return Value.ToString("yyyyMMddHHmmss");
-            default:
-                throw new ArgumentOutOfRangeException();
-            }
+                TimestampPrecision.Year => Value.ToString("yyyy0000000000"),
+                TimestampPrecision.Month => Value.ToString("yyyyMM00000000"),
+                TimestampPrecision.Day => Value.ToString("yyyyMMdd000000"),
+                TimestampPrecision.Hour => Value.ToString("yyyyMMddHH0000"),
+                TimestampPrecision.Minute => Value.ToString("yyyyMMddHHmm00"),
+                TimestampPrecision.Second => Value.ToString("yyyyMMddHHmmss"),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
     }
 }

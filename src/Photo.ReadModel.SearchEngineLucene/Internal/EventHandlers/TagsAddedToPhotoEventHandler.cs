@@ -38,7 +38,7 @@
                 .Where(item => !storedItem.Tags.Contains(item))
                 .ToArray();
 
-            if (!newEntries.Any())
+            if (newEntries.Length == 0)
                 return;
 
             storedItem.Tags.AddRange(newEntries);

@@ -70,7 +70,7 @@
 
         private string CreateFilename(Guid eventId)
         {
-            return Path.Combine(basePath, $"{eventId.ToString()}.json");
+            return Path.Combine(basePath, $"{eventId}.json");
         }
 
         [NotNull]

@@ -32,11 +32,9 @@
 
         private static string GetConfiguredExiftoolVersion()
         {
-            using (var stream = OpenRead())
-            using (var streamReader = new StreamReader(stream))
-            {
-                return streamReader.ReadToEnd().Trim();
-            }
+            using var stream = OpenRead();
+            using var streamReader = new StreamReader(stream);
+            return streamReader.ReadToEnd().Trim();
         }
 
         private static Stream OpenRead()
