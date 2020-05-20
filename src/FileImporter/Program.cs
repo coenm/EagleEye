@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -40,6 +41,7 @@
             ProgressCharacter = '─',
             ForegroundColor = ConsoleColor.Yellow,
             BackgroundColor = ConsoleColor.DarkYellow,
+            EnableTaskBarProgress = true,
         };
 
         private static readonly ProgressBarOptions ChildOptions = new ProgressBarOptions
@@ -47,6 +49,7 @@
             ForegroundColor = ConsoleColor.Green,
             BackgroundColor = ConsoleColor.DarkGreen,
             ProgressCharacter = '─',
+            CollapseWhenFinished = true,
         };
 
         private static ConnectionStrings connectionStrings;
@@ -123,12 +126,12 @@
                 return;
             }
 
-            var diDirToIndex = new DirectoryInfo(option.Directory).FullName;
+            var dirToIndex = new DirectoryInfo(option.Directory).FullName;
 
-            var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
-            var xJpeg = directoryService.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
-            var xMov = directoryService.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
-            var xMp4 = directoryService.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
+            var xJpg = directoryService.EnumerateFiles(dirToIndex, "*.jpg", SearchOption.AllDirectories);
+            var xJpeg = directoryService.EnumerateFiles(dirToIndex, "*.jpeg", SearchOption.AllDirectories);
+            var xMov = directoryService.EnumerateFiles(dirToIndex, "*.mov", SearchOption.AllDirectories);
+            var xMp4 = directoryService.EnumerateFiles(dirToIndex, "*.mp4", SearchOption.AllDirectories);
 
             // not supported
             // var xAvi = directoryService.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
@@ -264,7 +267,7 @@
             Console.ReadKey();
         }
 
-        private static Task UpdateImportedImages([NotNull] Container container, [NotNull] UpdateImportedImagesOptions option)
+        private static async Task UpdateImportedImages([NotNull] Container container, [NotNull] UpdateImportedImagesOptions option)
         {
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(option, nameof(option)).NotNull();
@@ -274,15 +277,15 @@
             if (!directoryService.Exists(option.ProcessingDirectory))
             {
                 Console.WriteLine("Directory does not exist.");
-                return Task.CompletedTask;
+                return;
             }
 
-            var diDirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
+            var dirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
 
-            var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
-            var xJpeg = directoryService.EnumerateFiles(diDirToIndex, "*.jpeg", SearchOption.AllDirectories);
-            var xMov = directoryService.EnumerateFiles(diDirToIndex, "*.mov", SearchOption.AllDirectories);
-            var xMp4 = directoryService.EnumerateFiles(diDirToIndex, "*.mp4", SearchOption.AllDirectories);
+            var xJpg = directoryService.EnumerateFiles(dirToIndex, "*.jpg", SearchOption.AllDirectories);
+            var xJpeg = directoryService.EnumerateFiles(dirToIndex, "*.jpeg", SearchOption.AllDirectories);
+            var xMov = directoryService.EnumerateFiles(dirToIndex, "*.mov", SearchOption.AllDirectories);
+            var xMp4 = directoryService.EnumerateFiles(dirToIndex, "*.mp4", SearchOption.AllDirectories);
 
             // not supported
             // var xAvi = directoryService.EnumerateFiles(diDirToIndex, "*.avi", SearchOption.AllDirectories);
@@ -291,48 +294,45 @@
 
             var files = xJpg.Concat(xJpeg).Concat(xMov).Concat(xMp4).ToArray();
 
-            var commandHandler = container.GetInstance<UpdateImportImageCommandHandler>();
-
-            var fromSeconds = TimeSpan.FromSeconds(25);
+            var executor = container.GetInstance<UpdateMultipleImagesExecutor>();
+            var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
             {
-                var progress = new Progress<FilenameProgressData>(data =>
-                {
-                    // progressBar.MaxTicks = data.Total;
-                    progressBar.Tick(data.Filename);
-                });
+                var progress = new Progress<FileProcessingProgress>(data =>
+                                                        {
+                                                            progressBars.AddOrUpdate(
+                                                                                     data.Filename,
+                                                                                     filename =>
+                                                                                     {
+                                                                                         var bar = progressBar.Spawn(data.TotalSteps, filename, ChildOptions);
+                                                                                         while (bar.CurrentTick < data.Step)
+                                                                                             bar.Tick();
+                                                                                         return bar;
+                                                                                     },
+                                                                                     (_, bar) =>
+                                                                                     {
+                                                                                         if (bar == null)
+                                                                                             return null;
 
-                Logger.Info($" Found {files.Length} files.");
-                Console.WriteLine($" Found {files.Length} files.");
+                                                                                         bar.Tick();
+                                                                                         if (bar.CurrentTick < bar.MaxTicks)
+                                                                                             return bar;
 
-                var maxDegree = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.75) * 2.0));
+                                                                                         bar.Dispose();
+                                                                                         progressBar.Tick();
+                                                                                         return null;
+                                                                                     });
+                                                        });
 
-                Parallel.ForEach(
-                    files,
-                    new ParallelOptions { MaxDegreeOfParallelism = maxDegree },
-                    file =>
-                    {
-                        using var cts = new CancellationTokenSource(fromSeconds);
-                        try
-                        {
-                            commandHandler.HandleAsync(file, cts.Token).ConfigureAwait(false).GetAwaiter().GetResult();
-                            (progress as IProgress<FilenameProgressData>)?.Report(new FilenameProgressData(0, 0, file));
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            Logger.Error("Could not UpdateImporteImage due to timeout.");
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Warn(e.Message);
-                        }
-                    });
+                await executor.ExecuteAsync(files, progress, CancellationToken.None).ConfigureAwait(false);
+
+                foreach (var item in progressBars)
+                    item.Value.Dispose();
             }
 
             Console.WriteLine("DONE");
             Console.ReadKey();
-            return Task.CompletedTask;
         }
 
         private static async Task DemoLuceneReadModelSearch([NotNull] Container container, [NotNull] DemoLuceneSearchOptions option)
