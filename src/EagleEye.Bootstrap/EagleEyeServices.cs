@@ -41,7 +41,7 @@
             if (state == State.Empty)
             {
                 var instancesToInitialize = GetAllInstancesOrEmpty<IEagleEyeInitialize>(container).ToArray();
-                if (instancesToInitialize.Any())
+                if (instancesToInitialize.Length > 0)
                     await Task.WhenAll(instancesToInitialize.Select(instance => instance.InitializeAsync())).ConfigureAwait(false);
 
                 state = State.Initialized;

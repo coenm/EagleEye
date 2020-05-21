@@ -49,19 +49,17 @@
         private static byte[] CalculateStreamHash([NotNull] Stream input)
         {
             Guard.Argument(input, nameof(input)).NotNull();
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(input);
+            using var sha256 = SHA256.Create();
+            return sha256.ComputeHash(input);
         }
 
         private ReadOnlyMemory<byte> Provide(string filename)
         {
             Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
 
-            using (var stream = fileService.OpenRead(filename))
-            {
-                var result = CalculateStreamHash(stream);
-                return new ReadOnlyMemory<byte>(result);
-            }
+            using var stream = fileService.OpenRead(filename);
+            var result = CalculateStreamHash(stream);
+            return new ReadOnlyMemory<byte>(result);
         }
     }
 }

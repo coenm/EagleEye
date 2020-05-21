@@ -82,37 +82,33 @@
 
         private void IndexStaticDocuments()
         {
-            using (var writer = new IndexWriter(directory, indexWriterConfig))
+            using var writer = new IndexWriter(directory, indexWriterConfig);
+            foreach (var item in GetDocuments())
             {
-                foreach (var item in GetDocuments())
-                {
-                    IndexDocs(writer, item);
-                }
-
-                writer.ForceMerge(1);
+                IndexDocs(writer, item);
             }
+
+            writer.ForceMerge(1);
         }
 
         private IEnumerable<NumberFacetResult> FacetSearch()
         {
-            using (var reader = DirectoryReader.Open(directory))
-            {
-                var facetsCollector = new FacetsCollector();
-                var searcher = new IndexSearcher(reader);
+            using var reader = DirectoryReader.Open(directory);
+            var facetsCollector = new FacetsCollector();
+            var searcher = new IndexSearcher(reader);
 
-                searcher.Search(new MatchAllDocsQuery(), facetsCollector);
+            searcher.Search(new MatchAllDocsQuery(), facetsCollector);
 
-                Facets facets = new Int64RangeFacetCounts(
-                    nameof(DocumentDto.Price),
-                    facetsCollector,
-                    new Int64Range("0-10", 0L, true, 10L, true),
-                    new Int64Range("10-100", 10L, true, 100L, false),
-                    new Int64Range("100-1000", 100L, true, 1000L, false),
-                    new Int64Range(">1000", 1000L, true, long.MaxValue, true));
+            Facets facets = new Int64RangeFacetCounts(
+                                                      nameof(DocumentDto.Price),
+                                                      facetsCollector,
+                                                      new Int64Range("0-10", 0L, true, 10L, true),
+                                                      new Int64Range("10-100", 10L, true, 100L, false),
+                                                      new Int64Range("100-1000", 100L, true, 1000L, false),
+                                                      new Int64Range(">1000", 1000L, true, long.MaxValue, true));
 
-                var result = facets.GetTopChildren(10, nameof(DocumentDto.Price));
-                return result.LabelValues.Select(item => new NumberFacetResult(item.Label, item.Value));
-            }
+            var result = facets.GetTopChildren(10, nameof(DocumentDto.Price));
+            return result.LabelValues.Select(item => new NumberFacetResult(item.Label, item.Value));
         }
     }
 }

@@ -3,9 +3,9 @@
     using CommandLine;
     using JetBrains.Annotations;
 
-    [Verb("lucene", HelpText = "demo lucene read model search.")]
+    [Verb("check", HelpText = "Check metadata.")]
     [UsedImplicitly]
-    internal class DemoLuceneSearchOptions
+    internal class CheckMetadataOptions
     {
         [Option(shortName: 'd', longName: "directory", HelpText = "Directory to find media files.", Required = true)]
         public string Directory { get; set; }

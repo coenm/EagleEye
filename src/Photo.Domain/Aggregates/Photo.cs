@@ -62,7 +62,7 @@
                                            !this.tags.Contains(item))
                                 .ToArray();
 
-            if (addedTags.Any())
+            if (addedTags.Length > 0)
                 ApplyChange(new TagsAddedToPhoto(Id, addedTags));
         }
 
@@ -75,7 +75,7 @@
                                   .Where(tag => this.tags.Contains(tag))
                                   .ToArray();
 
-            if (tagsRemoved.Any())
+            if (tagsRemoved.Length > 0)
                 ApplyChange(new TagsRemovedFromPhoto(Id, tagsRemoved));
         }
 
@@ -91,7 +91,7 @@
                                           !this.persons.Contains(item))
                                .ToArray();
 
-            if (added.Any())
+            if (added.Length > 0)
                 ApplyChange(new PersonsAddedToPhoto(Id, added));
         }
 
@@ -104,7 +104,7 @@
                                  .Where(item => this.persons.Contains(item))
                                  .ToArray();
 
-            if (removed.Any())
+            if (removed.Length > 0)
                 ApplyChange(new PersonsRemovedFromPhoto(Id, removed));
         }
 

@@ -62,7 +62,7 @@
                     normalHandlers2.Add(h2);
             }
 
-            if (!normalHandlers2.Any())
+            if (normalHandlers2.Count == 0)
                 return Task.FromResult(0);
 
             var tasks = new Task[normalHandlers2.Count];

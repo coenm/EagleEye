@@ -315,32 +315,16 @@
             if (string.IsNullOrWhiteSpace(dateString))
                 return null;
 
-            Model.TimestampPrecision precision;
-
-            switch (dateString.Length)
+            Model.TimestampPrecision precision = dateString.Length switch
             {
-            case 4:
-                precision = Model.TimestampPrecision.Year;
-                break;
-            case 6:
-                precision = Model.TimestampPrecision.Month;
-                break;
-            case 8:
-                precision = Model.TimestampPrecision.Day;
-                break;
-            case 10:
-                precision = Model.TimestampPrecision.Hour;
-                break;
-            case 12:
-                precision = Model.TimestampPrecision.Minute;
-                break;
-            case 14:
-                precision = Model.TimestampPrecision.Second;
-                break;
-            default:
-                precision = Model.TimestampPrecision.Second;
-                break;
-            }
+                4 => Model.TimestampPrecision.Year,
+                6 => Model.TimestampPrecision.Month,
+                8 => Model.TimestampPrecision.Day,
+                10 => Model.TimestampPrecision.Hour,
+                12 => Model.TimestampPrecision.Minute,
+                14 => Model.TimestampPrecision.Second,
+                _ => Model.TimestampPrecision.Second
+            };
 
             return new Model.Timestamp(DateTools.StringToDate(dateString), precision);
         }
@@ -403,25 +387,18 @@
             spatialStrategy = new RecursivePrefixTreeStrategy(grid, KeyLocGps);
         }
 
-        private DateTools.Resolution PrecisionToResolution(Model.TimestampPrecision precision)
+        private static DateTools.Resolution PrecisionToResolution(Model.TimestampPrecision precision)
         {
-            switch (precision)
+            return precision switch
             {
-                case Model.TimestampPrecision.Year:
-                    return DateTools.Resolution.YEAR;
-                case Model.TimestampPrecision.Month:
-                    return DateTools.Resolution.MONTH;
-                case Model.TimestampPrecision.Day:
-                    return DateTools.Resolution.DAY;
-                case Model.TimestampPrecision.Hour:
-                    return DateTools.Resolution.HOUR;
-                case Model.TimestampPrecision.Minute:
-                    return DateTools.Resolution.MINUTE;
-                case Model.TimestampPrecision.Second:
-                    return DateTools.Resolution.SECOND;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(precision), precision, null);
-            }
+                Model.TimestampPrecision.Year => DateTools.Resolution.YEAR,
+                Model.TimestampPrecision.Month => DateTools.Resolution.MONTH,
+                Model.TimestampPrecision.Day => DateTools.Resolution.DAY,
+                Model.TimestampPrecision.Hour => DateTools.Resolution.HOUR,
+                Model.TimestampPrecision.Minute => DateTools.Resolution.MINUTE,
+                Model.TimestampPrecision.Second => DateTools.Resolution.SECOND,
+                _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null)
+            };
         }
     }
 }

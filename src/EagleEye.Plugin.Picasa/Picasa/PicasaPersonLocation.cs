@@ -40,7 +40,7 @@
             if (obj.GetType() != GetType())
                 return false;
 
-            return Equals((PicasaPersonLocation) obj);
+            return Equals((PicasaPersonLocation)obj);
         }
 
         public override int GetHashCode()

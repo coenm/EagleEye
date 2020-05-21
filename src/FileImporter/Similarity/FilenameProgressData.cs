@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.FileImporter.Similarity
 {
-    public struct FilenameProgressData
+    public readonly struct FilenameProgressData
     {
         public FilenameProgressData(int current, int total, string filename)
         {

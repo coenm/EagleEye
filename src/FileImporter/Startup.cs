@@ -21,24 +21,16 @@
         {
             Guard.Argument(connectionStrings, nameof(connectionStrings)).NotNull();
 
-            var userDir = GetUserDirectory();
-
             var plugins = EagleEye.Bootstrap.Bootstrapper.FindAvailablePlugins();
 
             var config = new Dictionary<string, object>();
 
-            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(userDir, plugins, config, connectionStrings.FilenameEventStore);
+            var bootstrapper = EagleEye.Bootstrap.Bootstrapper.Initialize(plugins, config, connectionStrings.FilenameEventStore);
 
             bootstrapper.RegisterPhotoDatabaseReadModel(connectionStrings.ConnectionStringPhotoDatabase);
             bootstrapper.RegisterSearchEngineReadModel(connectionStrings.LuceneDirectory);
             bootstrapper.RegisterSimilarityReadModel(connectionStrings.Similarity, connectionStrings.HangFire);
             return bootstrapper.Finalize();
-        }
-
-        public static string CreateFullFilename([NotNull] string filename)
-        {
-            Guard.Argument(filename, nameof(filename)).NotNull().NotWhiteSpace();
-            return Path.Combine(GetUserDirectory(), filename);
         }
 
         public static string CreateSqlLiteFileConnectionString([NotNull] string fullFilename)
@@ -79,12 +71,6 @@
             {
                 eagleEyeProcess.Stop();
             }
-        }
-
-        private static string GetUserDirectory()
-        {
-            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            return Path.Combine(userDir, "EagleEye");
         }
     }
 }

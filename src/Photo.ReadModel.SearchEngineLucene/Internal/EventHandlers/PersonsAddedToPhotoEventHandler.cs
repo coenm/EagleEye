@@ -39,7 +39,7 @@
                 .Where(item => !storedItem.Persons.Contains(item))
                 .ToArray();
 
-            if (!newEntries.Any())
+            if (newEntries.Length == 0)
                 return;
 
             storedItem.Persons.AddRange(newEntries);

@@ -55,17 +55,15 @@
         }
 
         public static Bootstrapper Initialize(
-            [NotNull] string baseDirectory,
             [NotNull] IEnumerable<IEagleEyePlugin> plugins,
             [CanBeNull] IReadOnlyDictionary<string, object> config,
             [CanBeNull] string connectionStringEventStore = null)
         {
-            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
             Guard.Argument(plugins, nameof(plugins)).NotNull();
 
             var bootstrapper = new Bootstrapper();
 
-            bootstrapper.RegisterCore(baseDirectory, connectionStringEventStore);
+            bootstrapper.RegisterCore(connectionStringEventStore);
 
             bootstrapper.RegisterPlugins(plugins.ToArray(), config);
 
@@ -138,18 +136,17 @@
             action?.Invoke(container);
         }
 
-        private void RegisterCore([NotNull] string baseDirectory, [CanBeNull] string connectionStringEventStore)
+        private void RegisterCore([CanBeNull] string connectionStringEventStore)
         {
-            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
-
             container.RegisterInstance<IDateTimeService>(SystemDateTimeService.Instance);
             container.RegisterInstance<IFileService>(SystemFileService.Instance); // RelativeSystemFileService
+            container.RegisterInstance<IDirectoryService>(SystemDirectoryService.Instance);
 
             container.RegisterSingleton<IPhotoMimeTypeProvider, MimeTypeProvider>();
             container.RegisterSingleton<IFileSha256HashProvider, FileSha256HashProvider>();
 
             RegisterCqrsLite();
-            RegisterEventStore(baseDirectory, connectionStringEventStore);
+            RegisterEventStore(connectionStringEventStore);
 
             RegisterPhotoDomain();
         }
@@ -171,10 +168,8 @@
             container.Register<ISession, Session>(Lifestyle.Singleton);
         }
 
-        private void RegisterEventStore(string baseDirectory, [CanBeNull] string connectionString)
+        private void RegisterEventStore([CanBeNull] string connectionString)
         {
-            Guard.Argument(baseDirectory, nameof(baseDirectory)).NotNull().NotWhiteSpace();
-
             /*
                         // InMemory
                         // container.RegisterSingleton<IEventStore, InMemoryEventStore>();
