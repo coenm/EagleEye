@@ -272,7 +272,8 @@
             var dirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
             var files = GetMediaFiles(directoryService, dirToIndex).ToArray();
 
-            var executor = container.GetInstance<UpdateMultipleImagesExecutor>();
+            var singleExecutor = container.GetInstance<UpdateImportImageCommandHandler>();
+            var executor = new UpdateMultipleImagesExecutor(singleExecutor);
             var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
 
             using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))

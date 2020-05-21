@@ -15,9 +15,9 @@
     public class UpdateMultipleImagesExecutor
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        [NotNull] private readonly UpdateImportImageCommandHandler updateImportImageCommandHandler;
+        [NotNull] private readonly IUpdateImportImageCommandHandler updateImportImageCommandHandler;
 
-        public UpdateMultipleImagesExecutor([NotNull] UpdateImportImageCommandHandler updateImportImageCommandHandler)
+        public UpdateMultipleImagesExecutor([NotNull] IUpdateImportImageCommandHandler updateImportImageCommandHandler)
         {
             Guard.Argument(updateImportImageCommandHandler, nameof(updateImportImageCommandHandler)).NotNull();
             this.updateImportImageCommandHandler = updateImportImageCommandHandler;

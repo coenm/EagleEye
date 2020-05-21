@@ -14,7 +14,7 @@
     using JetBrains.Annotations;
 
     [UsedImplicitly]
-    public class UpdateImportImageCommandHandler
+    public class UpdateImportImageCommandHandler : IUpdateImportImageCommandHandler
     {
         private readonly IFileSha256HashProvider fileSha256Service;
         private readonly IEnumerable<IPhotoSha256HashProvider> photoSha256HashProvider;
