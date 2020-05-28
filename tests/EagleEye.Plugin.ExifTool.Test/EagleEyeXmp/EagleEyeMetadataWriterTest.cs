@@ -78,6 +78,39 @@
             exiftoolWriteCalls.Should().BeEquivalentTo(new WriteAsyncCall("filename", expected));
         }
 
+        [Fact]
+        public async Task WriteAsync_ShouldWriteToExiftool_WhenFileHashAndRawImageHashAreNotEmpty()
+        {
+            // arrange
+            var overwriteOriginal = true;
+            var metadata = CreateEmptyEagleEyeMetadata();
+            metadata.FileHash = new Guid("FF7325D3919E40E2A049B2F0671C8D7A").ToByteArray();
+            metadata.RawImageHash = new List<byte[]>
+                                    {
+                                        new Guid("3863B8CE29CD4E989585F76804A651B4").ToByteArray(),
+                                        new Guid("5B6415594D2E4713BE512B431D18EE85").ToByteArray(),
+                                        new byte[0],
+                                    };
+
+            // act
+            await sut.WriteAsync("filename", metadata, overwriteOriginal, CancellationToken.None);
+
+            // assert
+            var expected = new[]
+                           {
+                               "-xmp-CoenmEagleEye:EagleEyeVersion=1",
+                               "-xmp-CoenmEagleEye:EagleEyeId=00000000000000000000",
+                               "-xmp-CoenmEagleEye:EagleEyeTimestamp=0001:01:01 00:00:00+00:00",
+                               "-xmp-CoenmEagleEye:EagleEyeFileHash=^<o8nO@@1$PH(DUxb([S",
+                               "-xmp-CoenmEagleEye:EagleEyeRawImageHash-==Bvvz+{/2PM4!%C1G256",
+                               "-xmp-CoenmEagleEye:EagleEyeRawImageHash+==Bvvz+{/2PM4!%C1G256",
+                               "-xmp-CoenmEagleEye:EagleEyeRawImageHash-=sRUEKe>)0HZelyF9t[i#",
+                               "-xmp-CoenmEagleEye:EagleEyeRawImageHash+=sRUEKe>)0HZelyF9t[i#",
+                               "-overwrite_original",
+                           };
+            exiftoolWriteCalls.Should().BeEquivalentTo(new WriteAsyncCall("filename", expected));
+        }
+
         private static EagleEyeMetadata CreateEmptyEagleEyeMetadata()
         {
             return new EagleEyeMetadata

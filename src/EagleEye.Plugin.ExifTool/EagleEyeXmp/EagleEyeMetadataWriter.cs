@@ -16,7 +16,7 @@
     internal class EagleEyeMetadataWriter : IEagleEyeMetadataWriter
     {
         private const string Prefix = "-xmp-CoenmEagleEye:EagleEye";
-        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IExifToolWriter exiftool;
 
         public EagleEyeMetadataWriter([NotNull] IExifToolWriter exiftool)
