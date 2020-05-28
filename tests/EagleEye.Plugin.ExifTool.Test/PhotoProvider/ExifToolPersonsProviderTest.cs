@@ -37,6 +37,27 @@
 	]
   },";
 
+        private const string MetadataXpmRegion = @"
+""XMP"": {
+    ""XMPToolkit"": ""Image::ExifTool 8.16"",
+    ""Location"": ""Dont care"",
+    ""RegionInfoMP"": {
+      ""Regions"": [{
+        ""PersonDisplayName"": ""Bob"",
+        ""Rectangle"": ""0.4775006, 0.4016632, 0.0677501, 0.1049973""
+      },{
+        ""PersonDisplayName"": ""Alice"",
+        ""Rectangle"": ""0.2829938, 0.2569925, 0.05125505, 0.09134048""
+      },{
+        ""PersonDisplayName"": ""Stephen Hawking"",
+        ""Rectangle"": ""0.1889983, 0.2606699, 0.04850842, 0.08265814""
+      },{
+        ""PersonDisplayName"": ""Nelson Mandela"",
+        ""Rectangle"": ""0.1889983, 0.2606699, 0.04850842, 0.08265814""
+      }]
+    },
+  },";
+
         private readonly ExifToolPersonsProvider sut;
         private readonly IExifToolReader exiftool;
         private readonly CancellationToken ct = CancellationToken.None;
@@ -91,16 +112,17 @@
         [Theory]
         [InlineData(MetadataXmp)]
         [InlineData(MetadataXmpIptcExt)]
+        [InlineData(MetadataXpmRegion)]
         public async Task ProvideShouldFillPersonsTest(string data)
         {
             // arrange
             var expectedPersons = new List<string>
-            {
-                "Bob",
-                "Alice",
-                "Stephen Hawking",
-                "Nelson Mandela",
-            };
+                {
+                    "Bob",
+                    "Alice",
+                    "Stephen Hawking",
+                    "Nelson Mandela",
+                };
             A.CallTo(() => exiftool.GetMetadataAsync(Filename, ct))
              .Returns(Task.FromResult(ConvertToJObject(ConvertToJsonArray(data))));
 
