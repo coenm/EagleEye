@@ -10,13 +10,13 @@
     public class UniqueFilenameServiceTest
     {
         private readonly UniqueFilenameService sut;
-        private readonly IFilenameRepository repository;
+        private readonly IMediaFilenameRepository repository;
         private readonly string filename;
 
         public UniqueFilenameServiceTest()
         {
             filename = "dummy";
-            repository = A.Fake<IFilenameRepository>();
+            repository = A.Fake<IMediaFilenameRepository>();
             sut = new UniqueFilenameService(repository);
         }
 

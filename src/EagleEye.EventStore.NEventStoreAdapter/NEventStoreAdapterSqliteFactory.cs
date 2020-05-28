@@ -4,6 +4,7 @@
 
     using CQRSlite.Events;
     using Dawn;
+    using EagleEye.Core.Interfaces.Core;
     using JetBrains.Annotations;
     using Microsoft.Data.Sqlite;
     using NEventStore;
@@ -12,7 +13,7 @@
     using NEventStore.Serialization.Json;
 
     [UsedImplicitly]
-    public class NEventStoreAdapterSqliteFactory : INEventStoreAdapterFactory, IDisposable
+    public class NEventStoreAdapterSqliteFactory : INEventStoreAdapterFactory, INEventStoreEventExporterAdapterFactory, IDisposable
     {
         [NotNull] private readonly IStoreEvents store;
 
@@ -50,6 +51,11 @@
         public void Dispose()
         {
             store.Dispose();
+        }
+
+        IEventExporter INEventStoreEventExporterAdapterFactory.Create()
+        {
+            return new NEventStoreEventExporter(store);
         }
     }
 }

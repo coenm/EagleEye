@@ -4,12 +4,15 @@
 
     using CQRSlite.Events;
     using Dawn;
+
+    using EagleEye.Core.Interfaces.Core;
+
     using JetBrains.Annotations;
     using NEventStore;
     using NEventStore.Serialization.Json;
 
     [UsedImplicitly]
-    public class NEventStoreAdapterInMemoryFactory : INEventStoreAdapterFactory, IDisposable
+    public class NEventStoreAdapterInMemoryFactory : INEventStoreAdapterFactory, INEventStoreEventExporterAdapterFactory, IDisposable
     {
         [NotNull] private readonly IStoreEvents store;
 
@@ -33,6 +36,11 @@
         public void Dispose()
         {
             store.Dispose();
+        }
+
+        IEventExporter INEventStoreEventExporterAdapterFactory.Create()
+        {
+            return new NEventStoreEventExporter(store);
         }
     }
 }

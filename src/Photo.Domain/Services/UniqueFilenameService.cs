@@ -8,10 +8,10 @@
     internal class UniqueFilenameService : IUniqueFilenameService
     {
         [NotNull] private readonly object syncLock = new object();
-        [NotNull] private readonly IFilenameRepository repository;
+        [NotNull] private readonly IMediaFilenameRepository repository;
         [NotNull] private readonly List<string> claimedFileNames;
 
-        public UniqueFilenameService([NotNull] IFilenameRepository repository)
+        public UniqueFilenameService([NotNull] IMediaFilenameRepository repository)
         {
             Guard.Argument(repository, nameof(repository)).NotNull();
             this.repository = repository;

@@ -5,11 +5,11 @@
     using Dawn;
     using JetBrains.Annotations;
 
-    internal class InMemoryFilenameRepository : IFilenameRepository
+    internal class InMemoryMediaFilenameRepository : IMediaFilenameRepository
     {
         [NotNull] private readonly ConcurrentDictionary<string, object> registeredFileNames;
 
-        public InMemoryFilenameRepository()
+        public InMemoryMediaFilenameRepository()
         {
             registeredFileNames = new ConcurrentDictionary<string, object>();
         }
