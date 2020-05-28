@@ -111,6 +111,20 @@
             exiftoolWriteCalls.Should().BeEquivalentTo(new WriteAsyncCall("filename", expected));
         }
 
+        [Fact]
+        public void WriteAsync_ShouldNotThrow_WhenExifToolThrows()
+        {
+            // arrange
+            A.CallTo(() => exiftool.WriteAsync(A<string>._, A<IEnumerable<string>>._, A<CancellationToken>._))
+             .Throws(new Exception("thrown by test"));
+
+            // act
+            Func<Task> act = async () => await sut.WriteAsync("filename", CreateEmptyEagleEyeMetadata(), overwriteOriginal: true, CancellationToken.None);
+
+            // assert
+            act.Should().NotThrow();
+        }
+
         private static EagleEyeMetadata CreateEmptyEagleEyeMetadata()
         {
             return new EagleEyeMetadata
