@@ -186,9 +186,18 @@
 
             // Use NEventStore
             if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                // same instance (https://simpleinjector.readthedocs.io/en/latest/howto.html#register-multiple-interfaces-with-the-same-implementation)
                 container.Register<INEventStoreAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
+                container.Register<INEventStoreEventExporterAdapterFactory, NEventStoreAdapterInMemoryFactory>(Lifestyle.Singleton);
+            }
             else
-                container.Register<INEventStoreAdapterFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
+            {
+                // not sure if this is the way to do this.
+                container.Register<NEventStoreAdapterSqliteFactory>(() => new NEventStoreAdapterSqliteFactory(connectionString), Lifestyle.Singleton);
+                container.Register<INEventStoreAdapterFactory>(() => container.GetInstance<NEventStoreAdapterSqliteFactory>(), Lifestyle.Singleton);
+                container.Register<INEventStoreEventExporterAdapterFactory>(() => container.GetInstance<NEventStoreAdapterSqliteFactory>(), Lifestyle.Singleton);
+            }
 
             container.Register<IEventStore>(
                                             () =>
@@ -198,6 +207,8 @@
                                                                 .Create(container.GetInstance<IEventPublisher>());
                                             },
                                             Lifestyle.Singleton);
+
+            container.Register<IEventExporter>(() => container.GetInstance<INEventStoreEventExporterAdapterFactory>().Create(), Lifestyle.Singleton);
         }
 
         private void RegisterPhotoDomain()

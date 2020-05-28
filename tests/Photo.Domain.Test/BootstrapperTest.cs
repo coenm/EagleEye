@@ -4,6 +4,7 @@
 
     using CQRSlite.Domain;
     using FakeItEasy;
+    using FakeItEasy.Sdk;
     using FluentAssertions;
     using SimpleInjector;
     using Xunit;
@@ -17,6 +18,7 @@
         {
             // arrange
             var container = new Container();
+            RegisterExternalDependencies(container);
             container.Register(A.Dummy<ISession>);
 
             // act
@@ -25,6 +27,12 @@
             // assert
             Action assert = () => container.Verify(VerificationOption.VerifyAndDiagnose);
             assert.Should().NotThrow();
+        }
+
+        private static void RegisterExternalDependencies(Container container)
+        {
+            foreach (var @type in Sut.ExternalRequiredInterfaces())
+                container.Register(@type, () => Create.Dummy(@type));
         }
     }
 }

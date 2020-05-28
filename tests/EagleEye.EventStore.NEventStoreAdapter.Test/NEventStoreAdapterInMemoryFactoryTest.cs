@@ -41,5 +41,19 @@
             // assert
             act.Should().NotThrow();
         }
+
+        [Fact]
+        public void ExplicitInterfaceCreate_ShouldReturnNEventStoreEventExporter()
+        {
+            // arrange
+
+            // act
+            var result = ((INEventStoreEventExporterAdapterFactory)sut).Create();
+
+            // assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NEventStoreEventExporter>();
+        }
+
     }
 }

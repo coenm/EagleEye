@@ -1,10 +1,13 @@
 ﻿namespace EagleEye.Photo.Domain
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
 
     using CQRSlite.Commands;
     using Dawn;
+    using EagleEye.Core.Interfaces.Core;
+    using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.Domain.CommandHandlers;
     using EagleEye.Photo.Domain.Decorators;
     using EagleEye.Photo.Domain.Services;
@@ -28,7 +31,14 @@
             container.RegisterDecorator(typeof(ICancellableCommandHandler<>), typeof(VerifyTokenCommandHandlerDecorator<>), Lifestyle.Transient);
 
             container.Register<IUniqueFilenameService, UniqueFilenameService>(Lifestyle.Singleton);
-            container.Register<IFilenameRepository, InMemoryFilenameRepository>(Lifestyle.Singleton);
+            container.Register<IMediaFilenameRepository, InMemoryMediaFilenameRepository>(Lifestyle.Singleton);
+
+            container.Collection.Append<IEagleEyeInitialize, ModuleInitializer>();
+        }
+
+        public static IEnumerable<Type> ExternalRequiredInterfaces()
+        {
+            yield return typeof(IEventExporter);
         }
 
         public static Type[] GetEventHandlerTypesPhotoDomain()

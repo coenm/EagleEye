@@ -1,6 +1,6 @@
 ﻿namespace EagleEye.Photo.Domain.Services
 {
-    internal interface IFilenameRepository
+    internal interface IMediaFilenameRepository
     {
         bool Contains(string filename);
 

@@ -2,7 +2,8 @@
 {
     using System.Threading.Tasks;
 
-    using Dawn;    using EagleEye.Core.Interfaces.Module;
+    using Dawn;
+    using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
     using JetBrains.Annotations;
 
