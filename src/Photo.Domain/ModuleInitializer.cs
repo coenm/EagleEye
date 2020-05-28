@@ -5,12 +5,10 @@
     using System.Threading.Tasks;
 
     using Dawn;
-
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.Domain.Events;
     using EagleEye.Photo.Domain.Services;
-
     using JetBrains.Annotations;
 
     [UsedImplicitly]
@@ -29,18 +27,13 @@
 
         public async Task InitializeAsync()
         {
-            if (!(mediaRepository is InMemoryMediaFilenameRepository inMemoryMediaFilenameRepository))
-                return;
-
             var events = await eventExporter.GetAsync(DateTime.MinValue, CancellationToken.None).ConfigureAwait(false);
 
             foreach (var evt in events)
             {
                 if (evt is PhotoCreated photoCreatedEvent)
-                    inMemoryMediaFilenameRepository.Add(photoCreatedEvent.FileName);
+                    mediaRepository.Add(photoCreatedEvent.FileName);
             }
-
-            // await dbContextFactory.Initialize().ConfigureAwait(false);
         }
     }
 }
