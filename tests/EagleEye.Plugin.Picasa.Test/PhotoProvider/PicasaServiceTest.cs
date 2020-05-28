@@ -9,13 +9,9 @@
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Picasa.PhotoProvider;
     using EagleEye.Picasa.Picasa;
-
     using FakeItEasy;
-
     using FluentAssertions;
-
     using JetBrains.Annotations;
-
     using Xunit;
 
     public class PicasaServiceTest : IDisposable
@@ -59,6 +55,46 @@
 
             // assert
             result.Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GetDataAsync_ShouldThrow_WhenFilenameIsNullOrEmpty(string filename)
+        {
+            // arrange
+
+            // act
+            Func<Task> act = async () => await sut.GetDataAsync(filename);
+
+            // assert
+            act.Should().Throw<ArgumentException>();
+        }
+
+        [Fact]
+        public async Task GetDataAsync_ShouldReturnNull_WhenPicasaFileWasNotFound()
+        {
+            // arrange
+            A.CallTo(() => fileService.FileExists(A<string>._)).Returns(false);
+
+            // act
+            var result = await sut.GetDataAsync("Image.jpg");
+
+            // assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetDataAsync_ShouldReturnNull_WhenFileServiceThrows()
+        {
+            // arrange
+            A.CallTo(() => fileService.FileExists(A<string>._)).Throws(new Exception("thrown by test"));
+
+            // act
+            var result = await sut.GetDataAsync("Image.jpg");
+
+            // assert
+            result.Should().BeNull();
         }
 
         [Fact]

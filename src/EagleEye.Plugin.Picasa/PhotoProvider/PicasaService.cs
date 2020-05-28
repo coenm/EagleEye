@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Dawn;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Picasa.Picasa;
     using JetBrains.Annotations;
@@ -20,6 +21,8 @@
 
         public PicasaService([NotNull] IFileService fileService)
         {
+            Guard.Argument(fileService, nameof(fileService)).NotNull();
+
             this.fileService = fileService;
             tasks = new ConcurrentDictionary<string, Task<IEnumerable<FileWithPersons>>>();
         }
@@ -33,9 +36,14 @@
             return picasaFilename != null;
         }
 
-        public async Task<FileWithPersons> GetDataAsync(string filename)
+        public async Task<FileWithPersons> GetDataAsync([NotNull] string filename)
         {
+            Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
+
             var picasaFilename = DeterminePicasaFilename(filename);
+            if (picasaFilename == null)
+                return null;
+
             var results = await GetOrCreateTask(picasaFilename).ConfigureAwait(false);
             return results.FirstOrDefault(item => item.Filename.Equals(Path.GetFileName(filename)));
         }
@@ -50,20 +58,20 @@
             return PicasaIniParser.Parse(stream);
         }
 
-        private Task<IEnumerable<FileWithPersons>> GetOrCreateTask(string picasaFilename)
+        private Task<IEnumerable<FileWithPersons>> GetOrCreateTask([NotNull] string picasaFilename)
         {
+            Guard.Argument(picasaFilename, nameof(picasaFilename)).NotNull().NotEmpty();
+
             lock (syncLock)
             {
                 if (tasks.TryGetValue(picasaFilename, out var cachedTask))
                     return cachedTask;
 
                 var task = Task.Run(() =>
-                {
-                    using (var stream = fileService.OpenRead(picasaFilename))
                     {
+                        using var stream = fileService.OpenRead(picasaFilename);
                         return GetFileAndPersonData(stream);
-                    }
-                });
+                    });
 
                 tasks.TryAdd(picasaFilename, task);
                 return task;
@@ -73,8 +81,7 @@
         [CanBeNull]
         private string DeterminePicasaFilename([NotNull] string mediaFilename)
         {
-            if (string.IsNullOrWhiteSpace(mediaFilename))
-                return null;
+            Guard.Argument(mediaFilename, nameof(mediaFilename)).NotNull().NotEmpty();
 
             try
             {

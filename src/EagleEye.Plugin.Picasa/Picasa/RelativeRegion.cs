@@ -5,7 +5,7 @@
     /// <summary>
     /// From Relative to absolute region, multiply the left and right with the width of the picture, and the top and bottom with the height.
     /// </summary>
-    public struct RelativeRegion : IEquatable<RelativeRegion>
+    public readonly struct RelativeRegion : IEquatable<RelativeRegion>
     {
         public RelativeRegion(float left, float top, float right, float bottom)
         {
