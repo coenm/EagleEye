@@ -38,29 +38,12 @@
             if (exiftoolResult == null)
                 return null;
 
-            var persons = GetTagsFromFullJsonObject(exiftoolResult);
-            return persons.Distinct().ToList();
+            var persons1 = GetPersonsFromFullJsonObject(exiftoolResult);
+            var persons2 = GetPersonsFromSpecificStructureInJsonObject(exiftoolResult);
+            return persons1.Concat(persons2).Distinct().ToList();
         }
 
-        private static IEnumerable<string> GetTagsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
-        {
-            if (!(jsonObject[tagsKey] is JToken tagsToken))
-                return Enumerable.Empty<string>();
-
-            if (tagsToken.Type != JTokenType.Array)
-                return Enumerable.Empty<string>();
-
-            var result = new List<string>(tagsToken.Count());
-            foreach (var tag in tagsToken.Values<string>())
-            {
-                if (!string.IsNullOrWhiteSpace(tag))
-                    result.Add(tag);
-            }
-
-            return result;
-        }
-
-        private IEnumerable<string> GetTagsFromFullJsonObject(JObject data)
+        private IEnumerable<string> GetPersonsFromFullJsonObject([NotNull] JObject data)
         {
             var result = new List<string>();
 
@@ -69,10 +52,51 @@
                 if (!(data[header.Key] is JObject headerObject))
                     continue;
 
-                result.AddRange(GetTagsFromSingleJsonObject(headerObject, header.Value));
+                result.AddRange(GetPersonsFromSingleJsonObject(headerObject, header.Value));
             }
 
             return result;
+        }
+
+        private static IEnumerable<string> GetPersonsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
+        {
+            if (!(jsonObject[tagsKey] is { } tagsToken))
+                yield break;
+
+            if (tagsToken.Type != JTokenType.Array)
+                yield break;
+
+            foreach (var tag in tagsToken.Values<string>())
+            {
+                if (!string.IsNullOrWhiteSpace(tag))
+                    yield return tag;
+            }
+        }
+
+        private static IEnumerable<string> GetPersonsFromSpecificStructureInJsonObject([NotNull] JObject data)
+        {
+            if (!(data["XMP"] is JObject headerObject))
+                yield break;
+
+            if (!(headerObject["RegionInfoMP"] is JObject regionInfoObject))
+                yield break;
+
+            if (!(regionInfoObject["Regions"] is { } regionObject))
+                yield break;
+
+            if (regionObject.Type != JTokenType.Array)
+                yield break;
+
+            foreach (var tag in regionObject.Values<JObject>())
+            {
+                if (!(tag["PersonDisplayName"] is { } personDisplayNameToken))
+                    continue;
+
+                if (personDisplayNameToken.Type != JTokenType.String)
+                    continue;
+
+                yield return personDisplayNameToken.Value<string>();
+            }
         }
     }
 }
