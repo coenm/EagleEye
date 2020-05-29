@@ -23,7 +23,7 @@
 
             var contacts = iniContent.SingleOrDefault(x => x.Section == Contacts2Section);
             if (contacts == null)
-                throw new Exception($"{Contacts2Section} not found");
+                return Enumerable.Empty<FileWithPersons>();
 
             var result = new List<FileWithPersons>(iniContent.Count - 1);
 
