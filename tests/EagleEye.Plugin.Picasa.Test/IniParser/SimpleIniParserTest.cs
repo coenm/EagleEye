@@ -59,7 +59,7 @@ b=c
             var result = Sut.Parse(stream);
 
             // assert
-            result.Count.Should().Be(1);
+            result.Should().ContainSingle();
             result[0].Section.Should().Be("Section1");
             result[0].Content.Should().BeEquivalentTo(expectedContent);
         }
@@ -87,7 +87,7 @@ redo=enhance=1;";
             var result = Sut.Parse(stream);
 
             // assert
-            result.Count.Should().Be(1);
+            result.Should().ContainSingle();
             result[0].Section.Should().Be("filename.jpg");
             result[0].Content.Should().BeEquivalentTo(expectedContent);
         }
