@@ -4,7 +4,6 @@
 
     using EagleEye.Photo.Domain.Commands.Base;
     using EagleEye.Photo.Domain.Commands.Inner;
-
     using JetBrains.Annotations;
 
     [PublicAPI]

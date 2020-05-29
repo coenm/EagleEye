@@ -44,7 +44,6 @@
         [NotNull] private readonly Analyzer analyzer;
         [NotNull] private readonly IndexWriter indexWriter;
         [NotNull] private readonly SearcherManager searcherManager;
-        [NotNull] private readonly QueryParser queryParser;
         [NotNull] private readonly Directory indexDirectory;
 
         private SpatialContext spatialContext;
@@ -87,11 +86,6 @@
                                                             }
                                                         });
 */
-
-            queryParser = new MultiFieldQueryParser(
-                                                     LuceneNetVersion.Version,
-                                                     new[] { KeyLocCity, KeyLocCountry, KeyId, KeyFilename, }, // todo define fields
-                                                     analyzer);
 
             var indexWriterConfig = new IndexWriterConfig(LuceneNetVersion.Version, analyzer)
                                         {
@@ -237,7 +231,7 @@
         {
             // Parse the query - assuming it's not a single term but an actual query string
             // the QueryParser used is using the same analyzer used for indexing
-            var query = queryParser.Parse(queryString);
+            var query = CreateQueryParser().Parse(queryString);
             return Search(query, null, out totalHits);
         }
 
@@ -341,6 +335,14 @@
                 return id;
 
             return Guid.Empty;
+        }
+
+        private MultiFieldQueryParser CreateQueryParser()
+        {
+            return new MultiFieldQueryParser(
+                                             LuceneNetVersion.Version,
+                                             new[] { KeyLocCity, KeyLocCountry, KeyId, KeyFilename, }, // todo define fields
+                                             analyzer);
         }
 
         private void RemoveFromIndexByFilename([NotNull] string filename)
