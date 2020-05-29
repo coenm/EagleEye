@@ -29,6 +29,19 @@
         }
 
         [Fact]
+        public void UtcNow_ShouldUseSystemDateTimeUtcNow()
+        {
+            // Not able to check if sut uses System.UtcNow to get the current datetime.
+            // This test checks if the resulting value is almost the same as the current DateTime.Now.
+
+            // act
+            var result = sut.UtcNow;
+
+            // assert
+            result.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
         public void SystemDateTimeServiceTodayShouldUseSystemDateTimeTodayTest()
         {
             // Not able to check if sut uses System.DateTime to get the current datetime.

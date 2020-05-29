@@ -7,5 +7,10 @@
         DateTime Now { get; }
 
         DateTime Today { get; }
+
+        /// <summary>
+        /// Retrieves the current system time in UTC.
+        /// </summary>
+        DateTimeOffset UtcNow { get; }
     }
 }

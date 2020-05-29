@@ -4,7 +4,7 @@
 
     using EagleEye.Core.Interfaces.Core;
 
-    public class SystemDateTimeService : IDateTimeService
+    public sealed class SystemDateTimeService : IDateTimeService
     {
         private SystemDateTimeService()
         {
@@ -15,5 +15,7 @@
         public DateTime Now => DateTime.Now;
 
         public DateTime Today => DateTime.Today;
+
+        public DateTimeOffset UtcNow => DateTimeOffset.UtcNow;
     }
 }
