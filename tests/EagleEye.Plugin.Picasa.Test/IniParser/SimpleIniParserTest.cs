@@ -24,14 +24,13 @@
         public void EmptyIniFileShouldResultInAnEmptyResultTest()
         {
             // arrange
-            using (var stream = GenerateStreamFromString(string.Empty))
-            {
-                // act
-                var result = Sut.Parse(stream);
+            using var stream = GenerateStreamFromString(string.Empty);
 
-                // assert
-                result.Should().BeEmpty();
-            }
+            // act
+            var result = Sut.Parse(stream);
+
+            // assert
+            result.Should().BeEmpty();
         }
 
         [Fact]
@@ -54,16 +53,43 @@ b=c
                                       { "b", "c" },
                                   };
 
-            using (var stream = GenerateStreamFromString(content))
-            {
-                // act
-                var result = Sut.Parse(stream);
+            using var stream = GenerateStreamFromString(content);
 
-                // assert
-                result.Count.Should().Be(1);
-                result[0].Section.Should().Be("Section1");
-                result[0].Content.Should().BeEquivalentTo(expectedContent);
-            }
+            // act
+            var result = Sut.Parse(stream);
+
+            // assert
+            result.Count.Should().Be(1);
+            result[0].Section.Should().Be("Section1");
+            result[0].Content.Should().BeEquivalentTo(expectedContent);
+        }
+
+        [Fact]
+        public void Parse_ShouldParseEntriesWithEqualSignAsValue()
+        {
+            // arrange
+            const string content = @"
+[filename.jpg]
+backuphash=2199
+faces=rect64(79291f3aa9295f39),5abc219b7ccc1022
+redo=enhance=1;";
+
+            var expectedContent = new Dictionary<string, string>
+                                  {
+                                      { "backuphash", "2199" },
+                                      { "faces", "rect64(79291f3aa9295f39),5abc219b7ccc1022" },
+                                      { "redo", "enhance=1;" },
+                                  };
+
+            using var stream = GenerateStreamFromString(content);
+
+            // act
+            var result = Sut.Parse(stream);
+
+            // assert
+            result.Count.Should().Be(1);
+            result[0].Section.Should().Be("filename.jpg");
+            result[0].Content.Should().BeEquivalentTo(expectedContent);
         }
 
         [Fact]
@@ -71,12 +97,11 @@ b=c
         {
             // arrange
             const string content = "[Abc\r\nkey=value\r\n";
-            using (var stream = GenerateStreamFromString(content))
-            {
-                // act
-                // assert
-                Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
-            }
+            using var stream = GenerateStreamFromString(content);
+
+            // act
+            // assert
+            Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
         }
 
         [Fact]

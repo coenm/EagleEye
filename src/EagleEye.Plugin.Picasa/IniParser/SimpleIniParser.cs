@@ -30,13 +30,11 @@
 
             try
             {
-                using (var reader = new StreamReader(stream))
-                {
-                    var content = reader.ReadToEnd();
-                    return content
-                           .Replace("\r\n", "\n")
-                           .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                }
+                using var reader = new StreamReader(stream);
+                var content = reader.ReadToEnd();
+                return content
+                       .Replace("\r\n", "\n")
+                       .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
             catch (Exception e)
             {
@@ -107,7 +105,7 @@
 
             line = line.Trim();
 
-            var result = line.Split(KeyValueSeparator, StringSplitOptions.RemoveEmptyEntries);
+            var result = line.Split(KeyValueSeparator, 2, StringSplitOptions.RemoveEmptyEntries);
 
             if (result.Length != 2)
                 throw new ArgumentException($"Cannot parse {line}");
