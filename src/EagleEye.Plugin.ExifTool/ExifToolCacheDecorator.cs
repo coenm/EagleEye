@@ -1,62 +1,98 @@
 ﻿namespace EagleEye.ExifTool
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Threading;
     using System.Threading.Tasks;
 
     using Dawn;
     using EagleEye.Core.Interfaces.Core;
     using JetBrains.Annotations;
+    using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Internal;
     using Newtonsoft.Json.Linq;
-    using Nito.AsyncEx;
 
     internal class ExifToolCacheDecorator : IExifToolReader
     {
-        private readonly AsyncLock syncLock = new AsyncLock();
-        private readonly IExifToolReader exiftool;
-        private readonly IDateTimeService dateTimeService;
-        private readonly TimeSpan cacheValidity;
-        private DateTime cacheTimestamp;
-        private Task<JObject> task;
-        private string cachedFilename;
+        private readonly IExifToolReader decoratee;
+        private readonly MemoryCache cache;
+        private readonly ConcurrentDictionary<string, SemaphoreSlim> locks = new ConcurrentDictionary<string, SemaphoreSlim>();
+        private readonly MemoryCacheEntryOptions cacheEntryOptions;
 
-        public ExifToolCacheDecorator([NotNull] IExifToolReader exiftool, [NotNull] IDateTimeService dateTimeService)
+        public ExifToolCacheDecorator([NotNull] IExifToolReader decoratee, [NotNull] IDateTimeService dateTimeService)
         {
-            Guard.Argument(exiftool, nameof(exiftool)).NotNull();
+            Guard.Argument(decoratee, nameof(decoratee)).NotNull();
             Guard.Argument(dateTimeService, nameof(dateTimeService)).NotNull();
-            cacheValidity = TimeSpan.FromMinutes(5); // todo make this configurable.
-            this.exiftool = exiftool;
-            this.dateTimeService = dateTimeService;
+            this.decoratee = decoratee;
 
-            cachedFilename = null;
-            task = null;
-            cacheTimestamp = DateTime.MinValue;
+            cache = new MemoryCache(
+                                    new MemoryCacheOptions
+                                    {
+                                        SizeLimit = 32,
+                                        Clock = new MemoryCacheClockAdapter(dateTimeService),
+                                    });
+
+            cacheEntryOptions = new MemoryCacheEntryOptions()
+                                .SetSize(1)
+                                .SetPriority(CacheItemPriority.Normal)
+                                .SetSlidingExpiration(TimeSpan.FromMinutes(2))
+                                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
         }
 
-        public async Task<JObject> GetMetadataAsync(string filename, CancellationToken ct = default)
+        public async Task<JObject> GetMetadataAsync([NotNull] string filename, CancellationToken ct = default)
         {
-            Task<JObject> currentTask;
+            Guard.Argument(filename, nameof(filename)).NotNull().NotEmpty();
 
-            using (await syncLock.LockAsync(ct).ConfigureAwait(false))
+            ct.ThrowIfCancellationRequested();
+
+            if (cache.TryGetValue(filename, out JObject result))
+                return result;
+
+            var mutex = locks.GetOrAdd(filename, _ => new SemaphoreSlim(1, 1));
+
+            await mutex.WaitAsync(ct).ConfigureAwait(false);
+
+            try
             {
-                var now = dateTimeService.Now;
-                if (cachedFilename == null || cachedFilename != filename || now - cacheTimestamp > cacheValidity)
-                {
-                    cachedFilename = filename;
-                    cacheTimestamp = now;
-                    task = exiftool.GetMetadataAsync(filename, ct);
-                }
+                if (cache.TryGetValue(filename, out result))
+                    return result;
 
-                currentTask = task;
+                result = await decoratee.GetMetadataAsync(filename, ct).ConfigureAwait(false);
+                if (result == null)
+                    return null;
+
+                cache.Set(filename, result, cacheEntryOptions);
+                return result;
             }
-
-            // todo what if the result is an exception, should we cache that one too?
-            return await currentTask.ConfigureAwait(false);
+            finally
+            {
+                locks.TryRemove(filename, out _);
+                mutex.Release();
+            }
         }
 
         public ValueTask DisposeAsync()
         {
-            return exiftool.DisposeAsync();
+            foreach ((string _, SemaphoreSlim @lock) in locks)
+                @lock.Dispose();
+
+            locks.Clear();
+
+            cache.Dispose();
+            return decoratee.DisposeAsync();
+        }
+
+        private class MemoryCacheClockAdapter : ISystemClock
+        {
+            private readonly IDateTimeService dateTimeService;
+
+            public MemoryCacheClockAdapter(IDateTimeService dateTimeService)
+            {
+                Guard.Argument(dateTimeService, nameof(dateTimeService)).NotNull();
+                this.dateTimeService = dateTimeService;
+            }
+
+            public DateTimeOffset UtcNow => dateTimeService.UtcNow;
         }
     }
 }
