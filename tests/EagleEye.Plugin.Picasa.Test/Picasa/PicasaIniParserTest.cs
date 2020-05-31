@@ -52,18 +52,17 @@ backuphash=11571";
         }
 
         [Fact]
-        public void Parse_ContentWithoutContacts2Section_ShouldThrowTest()
+        public void Parse_ContentWithoutContacts2Section_ShouldReturnEmpty()
         {
             // arrange
             var removedContacts2SectionContent = PicasaIniFileContent.Replace("[Contacts2]", "[Contacts.jpg]");
             using var stream = GenerateStreamFromString(removedContacts2SectionContent);
 
             // act
-            // ReSharper disable once AccessToDisposedClosure
-            Action act = () => _ = Sut.Parse(stream);
+            var result = Sut.Parse(stream);
 
             // assert
-            act.Should().Throw<Exception>().WithMessage("Contacts2 not found");
+            result.Should().BeEmpty();
         }
 
         private static MemoryStream GenerateStreamFromString(string value)
