@@ -54,6 +54,5 @@
             result.Should().NotBeNull();
             result.Should().BeOfType<NEventStoreEventExporter>();
         }
-
     }
 }
