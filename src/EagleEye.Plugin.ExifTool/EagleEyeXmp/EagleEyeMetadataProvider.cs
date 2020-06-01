@@ -41,6 +41,24 @@
 
         [CanBeNull]
         [Pure]
+        private static byte[] TryGetZ85Bytes([NotNull] JObject data, [NotNull] string key)
+        {
+            var s = TryGetString(data, key);
+            if (s == null)
+                return null;
+
+            try
+            {
+                return CoenM.Encoding.Z85.Decode(s);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        [Pure]
         private EagleEyeMetadata GetInformationFromFullJsonObject(JObject data)
         {
             if (!(data["XMP"] is JObject headerObject))
@@ -96,24 +114,6 @@
             }
 
             return result;
-        }
-
-        [CanBeNull]
-        [Pure]
-        private static byte[] TryGetZ85Bytes([NotNull] JObject data, [NotNull] string key)
-        {
-            var s = TryGetString(data, key);
-            if (s == null)
-                return null;
-
-            try
-            {
-                return CoenM.Encoding.Z85.Decode(s);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
 
         [CanBeNull]

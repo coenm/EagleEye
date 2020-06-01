@@ -43,21 +43,6 @@
             return persons1.Concat(persons2).Distinct().ToList();
         }
 
-        private IEnumerable<string> GetPersonsFromFullJsonObject([NotNull] JObject data)
-        {
-            var result = new List<string>();
-
-            foreach (var header in headers)
-            {
-                if (!(data[header.Key] is JObject headerObject))
-                    continue;
-
-                result.AddRange(GetPersonsFromSingleJsonObject(headerObject, header.Value));
-            }
-
-            return result;
-        }
-
         private static IEnumerable<string> GetPersonsFromSingleJsonObject([NotNull] JObject jsonObject, [NotNull] string tagsKey)
         {
             if (!(jsonObject[tagsKey] is { } tagsToken))
@@ -97,6 +82,21 @@
 
                 yield return personDisplayNameToken.Value<string>();
             }
+        }
+
+        private IEnumerable<string> GetPersonsFromFullJsonObject([NotNull] JObject data)
+        {
+            var result = new List<string>();
+
+            foreach (var header in headers)
+            {
+                if (!(data[header.Key] is JObject headerObject))
+                    continue;
+
+                result.AddRange(GetPersonsFromSingleJsonObject(headerObject, header.Value));
+            }
+
+            return result;
         }
     }
 }
