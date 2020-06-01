@@ -52,10 +52,7 @@
                 return true;
 
             var aggregateVersion = aggregate.Version;
-            if ((aggregateVersion % snapshotInterval) + uncommittedChangesCount >= snapshotInterval)
-                return true;
-
-            return false;
+            return (aggregateVersion % snapshotInterval) + uncommittedChangesCount >= snapshotInterval;
         }
     }
 }

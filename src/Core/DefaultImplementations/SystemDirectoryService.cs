@@ -5,7 +5,7 @@
 
     using EagleEye.Core.Interfaces.Core;
 
-    public class SystemDirectoryService : IDirectoryService
+    public sealed class SystemDirectoryService : IDirectoryService
     {
         private SystemDirectoryService()
         {

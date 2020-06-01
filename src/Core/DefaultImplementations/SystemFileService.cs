@@ -4,7 +4,7 @@
 
     using EagleEye.Core.Interfaces.Core;
 
-    public class SystemFileService : IFileService
+    public sealed class SystemFileService : IFileService
     {
         private SystemFileService()
         {
