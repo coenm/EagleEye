@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -13,15 +12,16 @@
     using CQRSlite.Commands;
     using Dawn;
     using EagleEye.Core.Interfaces.Core;
-    using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Scenarios.Check;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
+    using EagleEye.FileImporter.Scenarios.UpdateIndex;
     using EagleEye.FileImporter.Similarity;
-    using EagleEye.Photo.Domain.Commands;
     using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
+    using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface.Model;
+
     using JetBrains.Annotations;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
@@ -29,8 +29,7 @@
     using ShellProgressBar;
     using SimpleInjector;
 
-    using Directory = System.IO.Directory;
-    using Timestamp = EagleEye.Photo.Domain.Commands.Inner.Timestamp;
+    using Timestamp = Photo.Domain.Commands.Inner.Timestamp;
 
     public static class Program
     {
@@ -57,7 +56,10 @@
         public static async Task Main(string[] args)
         {
             var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var baseDirectory = Path.Combine(userDir, "EagleEye");
+            // var baseDirectory = Path.Combine(userDir, "EagleEye", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            var baseDirectory = Path.Combine(userDir, "EagleEye", "20200529114747");
+
+            Directory.CreateDirectory(baseDirectory);
 
             string FullPath(string filename) => Path.Combine(baseDirectory, filename);
 
@@ -76,6 +78,7 @@
             await Run(args).ConfigureAwait(false);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AccessToDisposedClosure", Justification = "Manual verification.")]
         private static async Task Run(string[] args)
         {
             var task = Task.CompletedTask;
@@ -91,24 +94,24 @@
                         IndexFilesOptions,
                         UpdateImportedImagesOptions,
                         CheckMetadataOptions,
-                        DemoLuceneSearchOptions>(args)
+                        SearchOptions>(args)
                     .WithParsed<IndexFilesOptions>(option => task = Index(container, option))
                     .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(container, option))
                     .WithParsed<CheckMetadataOptions>(option => task = CheckMetadata(container, option))
-                    .WithParsed<DemoLuceneSearchOptions>(option => task = DemoLuceneReadModelSearch(container, option))
+                    .WithParsed<SearchOptions>(option => task = Search(container, option))
                     .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
 
                 await task.ConfigureAwait(false);
-                Console.WriteLine("Done.");
+                Console.WriteLine("Done.Press enter to exit.");
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error occurred. Press enter to exit.");
                 Console.WriteLine(e);
-                Console.ReadLine();
             }
             finally
             {
+                Console.ReadLine();
                 Startup.StopServices(container);
             }
         }
@@ -178,7 +181,7 @@
                         }
                     });
 
-                await File.WriteAllTextAsync($"M:\\todo\\output_{DateTime.Now:yyyyMMddHHmmss}.json", JsonConvert.SerializeObject(results));
+                await File.WriteAllTextAsync($"M:\\todo\\output_{DateTime.Now:yyyyMMddHHmmss}.json", JsonConvert.SerializeObject(results)).ConfigureAwait(false);
 
                 var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.NoMetadataAvailable);
                 var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataIncorrect);
@@ -251,9 +254,6 @@
 
                 Logger.Info(string.Empty);
             }
-
-            Console.WriteLine("DONE");
-            Console.ReadKey();
         }
 
         private static async Task UpdateImportedImages([NotNull] Container container, [NotNull] UpdateImportedImagesOptions option)
@@ -276,86 +276,40 @@
             var executor = new UpdateMultipleImagesExecutor(singleExecutor);
             var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
 
-            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
-            {
-                var progress = new Progress<FileProcessingProgress>(data =>
-                                                        {
-                                                            progressBars.AddOrUpdate(
-                                                                                     data.Filename,
-                                                                                     filename =>
-                                                                                     {
-                                                                                         var bar = progressBar.Spawn(data.TotalSteps, filename, ChildOptions);
-                                                                                         while (bar.CurrentTick < data.Step)
-                                                                                             bar.Tick();
-                                                                                         return bar;
-                                                                                     },
-                                                                                     (_, bar) =>
-                                                                                     {
-                                                                                         if (bar == null)
-                                                                                             return null;
+            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
 
-                                                                                         bar.Tick();
-                                                                                         if (bar.CurrentTick < bar.MaxTicks)
-                                                                                             return bar;
+            var progress = new Progress<FileProcessingProgress>(data => progressBars.AddOrUpdate(
+                                                                                                 data.Filename,
+                                                                                                 filename => SpawnChildProgressBar(progressBar, data, filename),
+                                                                                                 (_, childProgressBar) => UpdateProgress(progressBar, data, childProgressBar)));
 
-                                                                                         bar.Dispose();
-                                                                                         progressBar.Tick();
-                                                                                         return null;
-                                                                                     });
-                                                        });
+            await executor.ExecuteAsync(files, progress, CancellationToken.None).ConfigureAwait(false);
 
-                await executor.ExecuteAsync(files, progress, CancellationToken.None).ConfigureAwait(false);
-
-                foreach (var item in progressBars)
-                    item.Value.Dispose();
-            }
-
-            Console.WriteLine("DONE");
-            Console.ReadKey();
+            // to be sure.
+            foreach (var item in progressBars)
+                item.Value?.Dispose();
         }
 
-        private static async Task DemoLuceneReadModelSearch([NotNull] Container container, [NotNull] DemoLuceneSearchOptions option)
+        private static async Task Search([NotNull] Container container, [NotNull] SearchOptions option)
         {
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(option, nameof(option)).NotNull();
 
-            var directoryService = container.GetInstance<IDirectoryService>();
-            var readModelFacade = container.GetInstance<IReadModelEntityFramework>();
-            var dispatcher = container.GetInstance<ICommandSender>();
             var search = container.GetInstance<IReadModel>();
 
             try
             {
-                if (!directoryService.Exists(option.Directory))
-                {
-                    Console.WriteLine("Directory does not exist.");
-                    return;
-                }
-
-                var diDirToIndex = new DirectoryInfo(option.Directory).FullName;
-                var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
-
-                var files = xJpg.Take(1).ToArray();
-
                 // search for photos
-                var result = await readModelFacade.GetAllPhotosAsync();
-
-                if (result == null)
+                var found = await SearchAndShow(search);
+                bool @continue = true;
+                while (found || @continue)
                 {
-                    Console.WriteLine("ReadModel returned null");
-                    return;
+                    found = await SearchAndShow(search );
+                    if (found == false)
+                        @continue = AskForNewSearch();
                 }
 
-                if (result.Any() == false)
-                {
-                    Console.WriteLine("ReadModel returned no items.");
-                    return;
-                }
-
-                var items = result.ToList();
-                Console.WriteLine("Files found:");
-                foreach (var item in items)
-                    Console.WriteLine($" [{item.Id}] -- ({item.Version}) -- {item.Filename}");
+                Console.WriteLine("Stop");
 
                 /*
                 https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
@@ -376,59 +330,66 @@
                 - tag
                 - gps
                 */
-
-                var jsonSerializerSettings = new JsonSerializerSettings();
-                jsonSerializerSettings.Converters.Add(new StringEnumConverter());
-                jsonSerializerSettings.Converters.Add(new Z85ByteArrayJsonConverter());
-
-                var searchQuery = "tag:zoo";
-                var searchResults = search.FullSearch(searchQuery);
-
-                searchResults = search.FullSearch(searchQuery);
-
-                if (searchResults.Count > 0)
-                {
-                    var everything = new FileImporter.Infrastructure.Everything.Everything();
-                    await everything.Show(searchResults.Select(x => x.Filename));
-                    Console.WriteLine("Press enter to continue");
-                    Console.ReadLine();
-                }
-
-                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
-                Console.WriteLine();
-
-                searchQuery = "tag:zo~"; // should also match zoo ;-)
-                searchResults = search.FullSearch(searchQuery);
-                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
-                Console.WriteLine();
-
-                searchQuery = "tag:zo*"; // should also match zoo and zooo ;-)
-                searchResults = search.FullSearch(searchQuery);
-                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
-                Console.WriteLine();
-
-                searchQuery = "tag:zo"; // should match nothing.
-                searchResults = search.FullSearch(searchQuery);
-                Console.WriteLine($"{searchQuery}  --  {searchResults.Count}");
-                Console.WriteLine(JsonConvert.SerializeObject(searchResults, Formatting.Indented, jsonSerializerSettings));
-                Console.WriteLine();
-
-                Console.WriteLine();
-                Console.WriteLine();
-                Thread.Sleep(1000 * 5);
-                Console.WriteLine("Press enter");
-                Console.ReadKey();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+        }
 
-            Console.WriteLine("Press enter");
-            Console.ReadKey();
+        private static bool AskForNewSearch()
+        {
+            Console.WriteLine("Do you want to search something else? (yY)");
+            var result = Console.ReadLine();
+            var firstChar = result?.FirstOrDefault();
+            if (firstChar == null)
+                return false;
+            if (firstChar == 'y')
+                return true;
+            if (firstChar == 'Y')
+                return true;
+            return false;
+        }
+
+        private static async Task<bool> SearchAndShow(IReadModel search)
+        {
+            Console.WriteLine("Enter query and press enter.");
+            var query = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(query))
+                return false;
+
+            var searchResults = new List<PhotoResult>(0);
+
+            try
+            {
+                searchResults = search.FullSearch(query);
+                if (searchResults.Count <= 0)
+                    return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+
+            Console.WriteLine($"Found {searchResults.Count} items.");
+
+            try
+            {
+                var everything = new Infrastructure.Everything.Everything();
+                await everything.Show(searchResults.Select(x => x.Filename));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
+            return true;
+
         }
 
         private static async Task Index([NotNull] Container container, [NotNull] IndexFilesOptions option)
@@ -436,141 +397,92 @@
             Guard.Argument(container, nameof(container)).NotNull();
             Guard.Argument(option, nameof(option)).NotNull();
 
-            try
+            var directoryService = container.GetInstance<IDirectoryService>();
+
+            if (!directoryService.Exists(option.Directory))
             {
-                var directoryService = container.GetInstance<IDirectoryService>();
-                var dispatcher = container.GetInstance<ICommandSender>();
-                var search = container.GetInstance<IReadModel>();
-
-                var mimeTypeProvider = container.GetInstance<IPhotoMimeTypeProvider>();
-                var fileHashProvider = container.GetInstance<IFileSha256HashProvider>();
-                var tagsProvider = container.GetAllInstances<IPhotoTagProvider>().Single();
-                var personsProviders = container.GetAllInstances<IPhotoPersonProvider>().ToArray();
-                var photoTakenProviders = container.GetAllInstances<IPhotoDateTimeTakenProvider>().ToArray();
-                var photoHashProviders = container.GetAllInstances<IPhotoHashProvider>().ToArray();
-
-                if (!directoryService.Exists(option.Directory))
-                {
-                    Console.WriteLine("Directory does not exist.");
-                    return;
-                }
-
-                var diDirToIndex = new DirectoryInfo(option.Directory).FullName;
-                var xJpg = directoryService.EnumerateFiles(diDirToIndex, "*.jpg", SearchOption.AllDirectories);
-                var files = xJpg.ToArray();
-
-                using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
-                {
-                    foreach (var file in files)
-                    {
-                        // check if file is already in the index  (using lucene search)
-                        progressBar.Tick(file);
-
-                        var f = file.Replace(":\\", " ").Replace("\\", " ").Replace("/", " ");
-                        var searchFileQuery = "filename:\"" + f + "\"";
-                        var count = search.Count(searchFileQuery);
-
-                        if (count > 1)
-                        {
-                            Logger.Warn($"More than 1 files found. Go to next one. Search query: '{searchFileQuery}'");
-                            continue;
-                        }
-
-                        var guid = Guid.Empty;
-
-                        if (count == 0)
-                        {
-                            // add
-                            var mimeType = string.Empty;
-                            if (mimeTypeProvider.CanProvideInformation(file))
-                                mimeType = await mimeTypeProvider.ProvideAsync(file).ConfigureAwait(false);
-
-                            byte[] hash = new byte[32];
-                            if (fileHashProvider.CanProvideInformation(file))
-                            {
-                                var fileHashResult = await fileHashProvider.ProvideAsync(file).ConfigureAwait(false);
-                                hash = fileHashResult.ToArray();
-                            }
-
-                            var createCommand = new CreatePhotoCommand(file, hash, mimeType);
-                            guid = createCommand.Id;
-                            await dispatcher.Send(createCommand, CancellationToken.None).ConfigureAwait(false);
-
-                            if (tagsProvider.CanProvideInformation(file))
-                            {
-                                var tags = await tagsProvider.ProvideAsync(file).ConfigureAwait(false);
-                                var updateTagsCommand = new AddTagsToPhotoCommand(guid, null, tags.ToArray());
-                                await dispatcher.Send(updateTagsCommand).ConfigureAwait(false);
-                            }
-
-                            foreach (var personProvider in personsProviders.OrderBy(x => x.Priority))
-                            {
-                                if (!personProvider.CanProvideInformation(file))
-                                    continue;
-
-                                var persons = await personProvider.ProvideAsync(file).ConfigureAwait(false);
-                                var personsCommand = new AddPersonsToPhotoCommand(guid, null, persons.ToArray());
-                                await dispatcher.Send(personsCommand).ConfigureAwait(false);
-                            }
-
-                            foreach (var photoTakenProvider in photoTakenProviders.OrderBy(x => x.Priority))
-                            {
-                                if (!photoTakenProvider.CanProvideInformation(file))
-                                    continue;
-
-                                var timestamp = await photoTakenProvider.ProvideAsync(file).ConfigureAwait(false);
-                                var setDateTimeTakenCommand = new SetDateTimeTakenCommand(guid, null, new Timestamp
-                                {
-                                    Year = timestamp.Value.Year,
-                                    Month = timestamp.Value.Month,
-                                    Day = timestamp.Value.Day,
-                                    Hour = timestamp.Value.Hour,
-                                    Minutes = timestamp.Value.Minute,
-                                    Seconds = timestamp.Value.Second,
-                                });
-                                await dispatcher.Send(setDateTimeTakenCommand).ConfigureAwait(false);
-                            }
-
-                            foreach (var photoHashProvider in photoHashProviders.OrderBy(x => x.Priority))
-                            {
-                                if (!photoHashProvider.CanProvideInformation(file))
-                                    continue;
-
-                                var hashes = await photoHashProvider.ProvideAsync(file).ConfigureAwait(false);
-
-                                var tasks = hashes.Select(hash =>
-                                {
-                                    var updatePhotoHashCommand = new UpdatePhotoHashCommand(guid, null, hash.HashName, hash.Hash);
-                                    return dispatcher.Send(updatePhotoHashCommand);
-                                });
-
-                                await Task.WhenAll(tasks).ConfigureAwait(false);
-                            }
-                        }
-                        else
-                        {
-                            var guids = search.Search(searchFileQuery);
-                            if (guids.Count != 1)
-                            {
-                                Logger.Warn("Race condition. Not the expected single result happened.");
-                                continue;
-                            }
-
-                            guid = guids.Single().Id;
-                        }
-                    }
-                }
-
-                Console.WriteLine("Press enter");
-                Console.ReadKey();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Directory does not exist.");
+                return;
             }
 
-            Console.WriteLine("Press enter");
-            Console.ReadKey();
+            var dirToIndex = new DirectoryInfo(option.Directory).FullName;
+            var files = GetMediaFiles(directoryService, dirToIndex).ToArray();
+
+            var singleExecutor = container.GetInstance<UpdateIndexExecutor>();
+            var executor = new UpdateMultipleIndexesExecutor(singleExecutor);
+
+            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
+
+            var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
+
+            var progress = new Progress<FileProcessingProgress>(data => progressBars.AddOrUpdate(
+                                                                                                 data.Filename,
+                                                                                                 filename => SpawnChildProgressBar(progressBar, data, filename),
+                                                                                                 (_, childProgressBar) => UpdateProgress(progressBar, data, childProgressBar)));
+
+            await executor.ExecuteAsync(files, progress, CancellationToken.None).ConfigureAwait(false);
+
+            // to be sure.
+            foreach (var item in progressBars)
+                item.Value?.Dispose();
+        }
+
+        private static Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
+        private static readonly object spawnLock = new object();
+
+        private static ChildProgressBar SpawnChildProgressBar(ProgressBar parent, FileProcessingProgress fileProcessingProgress, string message)
+        {
+            ChildProgressBar bar;
+
+            lock (spawnLock)
+            {
+                if (!spawnedFiles.ContainsKey(fileProcessingProgress.Filename))
+                    bar = parent.Spawn(int.MaxValue, message, ChildOptions);
+                else
+                    bar = spawnedFiles[fileProcessingProgress.Filename];
+            }
+
+            if (fileProcessingProgress.Step == 0)
+                return bar;
+
+            if (fileProcessingProgress.Step == fileProcessingProgress.TotalSteps)
+            {
+                bar.Tick(int.MaxValue);
+                return bar;
+            }
+
+            decimal totalSteps = ((decimal)fileProcessingProgress.Step / (decimal)fileProcessingProgress.TotalSteps);
+            var x = Math.Floor(totalSteps * int.MaxValue);
+            var step = (int)x;
+            bar.Tick(step);
+            return bar;
+        }
+
+        private static ChildProgressBar UpdateProgress(ProgressBar parentProgressBar, FileProcessingProgress fileProcessingProgress, ChildProgressBar childProgressBar)
+        {
+            if (childProgressBar == null)
+                return null;
+
+            if (fileProcessingProgress.Step == fileProcessingProgress.TotalSteps)
+            {
+                childProgressBar.Tick(int.MaxValue);
+                // childProgressBar.Dispose();
+                parentProgressBar.Tick();
+                return childProgressBar;
+            }
+            else if (fileProcessingProgress.Step == 0)
+            {
+                childProgressBar.Tick(0);
+                return childProgressBar;
+            }
+            else
+            {
+                decimal totalSteps = ((decimal)fileProcessingProgress.Step / (decimal)fileProcessingProgress.TotalSteps);
+                decimal decimalStep = Math.Floor(totalSteps * int.MaxValue);
+                var step = (int)decimalStep;
+                childProgressBar.Tick(step);
+                return childProgressBar;
+            }
         }
 
         private static IEnumerable<string> GetMediaFiles(IDirectoryService directoryService, string path)

@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     using CQRSlite.Caching;
     using CQRSlite.Commands;
@@ -18,10 +20,11 @@
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using EagleEye.EventStore.NEventStoreAdapter;
     using JetBrains.Annotations;
+    using Nito.AsyncEx;
     using NLog;
     using SimpleInjector;
 
-    public class Bootstrapper
+    public sealed class Bootstrapper
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -157,6 +160,7 @@
             container.Register<ICommandSender>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
+            // container.RegisterDecorator<ICommandSender, RetryCommandSenderDecorator>(Lifestyle.Singleton);
 
             container.RegisterSingleton<ICache, MemoryCache>();
 
@@ -164,8 +168,11 @@
 
             // Repository has two public constructors.
             container.Register<IRepository>(() => new Repository(container.GetInstance<IEventStore>()), Lifestyle.Singleton);
-            container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
+            // container.RegisterDecorator<IRepository, CacheRepository>(Lifestyle.Singleton);
+            container.RegisterDecorator<IRepository, ConcurrencyRepositoryDecorator>(Lifestyle.Singleton);
+
             container.Register<ISession, Session>(Lifestyle.Singleton);
+            container.RegisterDecorator<ISession, ConcurrencySessionDecorator>(Lifestyle.Singleton);
         }
 
         private void RegisterEventStore([CanBeNull] string connectionString)
@@ -207,6 +214,7 @@
                                                                 .Create(container.GetInstance<IEventPublisher>());
                                             },
                                             Lifestyle.Singleton);
+            container.RegisterDecorator<IEventStore, ConcurrencyEventStoreDecorator>(Lifestyle.Singleton);
 
             container.Register<IEventExporter>(() => container.GetInstance<INEventStoreEventExporterAdapterFactory>().Create(), Lifestyle.Singleton);
         }
@@ -225,6 +233,89 @@
             foreach (var plugin in plugins)
             {
                 plugin?.EnablePlugin(container, config);
+            }
+        }
+    }
+
+    internal class ConcurrencySessionDecorator : ISession
+    {
+        private readonly ISession decoratee;
+        private readonly AsyncLock mutex = new AsyncLock();
+
+        public ConcurrencySessionDecorator(ISession decoratee)
+        {
+            this.decoratee = decoratee;
+        }
+
+        public async Task Add<T>(T aggregate, CancellationToken cancellationToken = new CancellationToken())
+            where T : AggregateRoot
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+                await decoratee.Add(aggregate, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<T> Get<T>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = new CancellationToken())
+            where T : AggregateRoot
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+                return await decoratee.Get<T>(id, expectedVersion, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task Commit(CancellationToken cancellationToken = new CancellationToken())
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+                await decoratee.Commit(cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    internal class ConcurrencyRepositoryDecorator : IRepository
+    {
+        private readonly IRepository decoratee;
+        private readonly AsyncLock mutex = new AsyncLock();
+
+        public ConcurrencyRepositoryDecorator(IRepository decoratee)
+        {
+            this.decoratee = decoratee;
+        }
+
+        public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = new CancellationToken())
+            where T : AggregateRoot
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+                await decoratee.Save(aggregate, expectedVersion, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = new CancellationToken())
+            where T : AggregateRoot
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+                return await decoratee.Get<T>(aggregateId, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    internal class ConcurrencyEventStoreDecorator : IEventStore
+    {
+        private readonly IEventStore decoratee;
+        private readonly AsyncLock mutex = new AsyncLock();
+
+        public ConcurrencyEventStoreDecorator([NotNull] IEventStore decoratee)
+        {
+            this.decoratee = decoratee;
+        }
+
+        public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = new CancellationToken())
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+            {
+                await decoratee.Save(events, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        public async Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = new CancellationToken())
+        {
+            using (await mutex.LockAsync(cancellationToken).ConfigureAwait(false))
+            {
+                return await decoratee.Get(aggregateId, fromVersion, cancellationToken).ConfigureAwait(false);
             }
         }
     }

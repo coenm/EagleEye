@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Similarity
+﻿namespace EagleEye.FileImporter
 {
     public readonly struct FileProcessingProgress
     {

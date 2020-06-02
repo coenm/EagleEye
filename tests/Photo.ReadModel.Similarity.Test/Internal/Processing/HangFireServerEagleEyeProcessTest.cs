@@ -43,6 +43,21 @@
         }
 
         [Fact]
+        public void Stop_ShouldStop_WhenStarted()
+        {
+            // arrange
+            JobStorage.Current = new MemoryStorage(new MemoryStorageOptions());
+            var sut = new HangFireServerEagleEyeProcess();
+            sut.Start();
+
+            // act
+            Action act = () => sut.Stop();
+
+            // assert
+            act.Should().NotThrow();
+        }
+
+        [Fact]
         public void Stop_ShouldNotThrow_WhenNotStarted()
         {
             // arrange
