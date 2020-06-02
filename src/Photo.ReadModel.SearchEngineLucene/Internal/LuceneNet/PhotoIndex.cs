@@ -195,8 +195,7 @@
 
             try
             {
-                if (query == null)
-                    query = new MatchAllDocsQuery();
+                query ??= new MatchAllDocsQuery();
 
                 var topDocs = filter == null
                                   ? searcher.Search(query, 1)
@@ -323,7 +322,7 @@
             return new Model.Timestamp(DateTools.StringToDate(dateString), precision);
         }
 
-        private Guid GetId([NotNull] Document doc)
+        private static Guid GetId([NotNull] Document doc)
         {
             Guard.Argument(doc, nameof(doc)).NotNull();
 
@@ -331,10 +330,21 @@
             if (string.IsNullOrWhiteSpace(guidString))
                 return Guid.Empty;
 
-            if (Guid.TryParse(guidString, out var id))
-                return id;
+            return Guid.TryParse(guidString, out var id) ? id : Guid.Empty;
+        }
 
-            return Guid.Empty;
+        private static DateTools.Resolution PrecisionToResolution(Model.TimestampPrecision precision)
+        {
+            return precision switch
+            {
+                Model.TimestampPrecision.Year => DateTools.Resolution.YEAR,
+                Model.TimestampPrecision.Month => DateTools.Resolution.MONTH,
+                Model.TimestampPrecision.Day => DateTools.Resolution.DAY,
+                Model.TimestampPrecision.Hour => DateTools.Resolution.HOUR,
+                Model.TimestampPrecision.Minute => DateTools.Resolution.MINUTE,
+                Model.TimestampPrecision.Second => DateTools.Resolution.SECOND,
+                _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null)
+            };
         }
 
         private MultiFieldQueryParser CreateQueryParser()
@@ -387,20 +397,6 @@
             SpatialPrefixTree grid = new GeohashPrefixTree(spatialContext, maxLevels);
 
             spatialStrategy = new RecursivePrefixTreeStrategy(grid, KeyLocGps);
-        }
-
-        private static DateTools.Resolution PrecisionToResolution(Model.TimestampPrecision precision)
-        {
-            return precision switch
-            {
-                Model.TimestampPrecision.Year => DateTools.Resolution.YEAR,
-                Model.TimestampPrecision.Month => DateTools.Resolution.MONTH,
-                Model.TimestampPrecision.Day => DateTools.Resolution.DAY,
-                Model.TimestampPrecision.Hour => DateTools.Resolution.HOUR,
-                Model.TimestampPrecision.Minute => DateTools.Resolution.MINUTE,
-                Model.TimestampPrecision.Second => DateTools.Resolution.SECOND,
-                _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null)
-            };
         }
     }
 }
