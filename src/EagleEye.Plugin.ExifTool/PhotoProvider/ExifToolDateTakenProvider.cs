@@ -86,7 +86,7 @@
             if (!(data[header] is JObject headerObject))
                 return null;
 
-            if (!(headerObject[key] is JToken token))
+            if (!(headerObject[key] is { } token))
                 return null;
 
             return GetDateTimeFromJToken(token);

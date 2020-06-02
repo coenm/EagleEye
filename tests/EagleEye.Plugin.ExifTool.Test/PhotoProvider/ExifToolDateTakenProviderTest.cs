@@ -42,7 +42,7 @@
         {
             exiftool = A.Fake<IExifToolReader>();
             sut = new ExifToolDateTakenProvider(exiftool);
-            media = new MediaObject(Filename);
+            media = new MediaObject();
         }
 
         [Fact]
