@@ -1,7 +1,6 @@
 ﻿namespace Photo.ReadModel.Similarity.Test.Internal.EventHandlers
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
@@ -14,42 +13,35 @@
     using EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs;
     using FakeItEasy;
     using FluentAssertions;
-    using Hangfire;
-    using Hangfire.Common;
-    using Hangfire.States;
     using Photo.ReadModel.Similarity.Test.Mocks;
     using Xunit;
 
-    public class PhotoHashClearedSimilarityEventHandlerTest : IDisposable
+    public class PhotoHashClearedSimilarityEventHandlerTest : IAsyncLifetime, IDisposable
     {
         private const int Version = 0;
         private const string HashAlgorithm1 = "hashAlgo1";
         private const string HashAlgorithm2 = "hashAlgo2";
 
         private readonly InMemorySimilarityDbContextFactory contextFactory;
-        private readonly IInternalStatelessSimilarityRepository repository;
-        private readonly IBackgroundJobClient hangFireClient;
         private readonly PhotoHashClearedSimilarityEventHandler sut;
-        private readonly List<Job> jobsAdded;
+        private readonly HangFireTestHelper hangFireTestHelper;
         private readonly DateTimeOffset timestamp;
 
         public PhotoHashClearedSimilarityEventHandlerTest()
         {
             timestamp = DateTimeOffset.UtcNow;
-
             contextFactory = new InMemorySimilarityDbContextFactory();
-            contextFactory.Initialize().GetAwaiter().GetResult();
-
-            repository = A.Fake<InternalSimilarityRepository>();
-
-            hangFireClient = A.Fake<IBackgroundJobClient>();
-
-            jobsAdded = new List<Job>();
-            A.CallTo(() => hangFireClient.Create(A<Job>._, A<IState>._))
-                .Invokes(call => jobsAdded.Add(call.Arguments[0] as Job));
-
-            sut = new PhotoHashClearedSimilarityEventHandler(repository, contextFactory, hangFireClient);
+            IInternalStatelessSimilarityRepository repository = A.Fake<InternalSimilarityRepository>();
+            hangFireTestHelper = new HangFireTestHelper();
+            sut = new PhotoHashClearedSimilarityEventHandler(repository, contextFactory, hangFireTestHelper.HangFireClient);
         }
+
+        public async Task InitializeAsync()
+        {
+            await contextFactory.Initialize();
+        }
+
+        public Task DisposeAsync() => Task.CompletedTask;
 
         public void Dispose() => contextFactory.Dispose();
 
@@ -73,8 +65,7 @@
                 ctx.Scores.Should().BeEmpty();
             }
 
-            A.CallTo(() => hangFireClient.Create(A<Job>._, A<IState>._)).MustHaveHappenedOnceExactly();
-            AssertHangFireJobHasBeenCreated(typeof(ClearPhotoHashResultsJob), nameof(ClearPhotoHashResultsJob.Execute), guid, Version, HashAlgorithm1);
+            hangFireTestHelper.AssertSingleHangFireJobHasBeenCreated(typeof(ClearPhotoHashResultsJob), nameof(ClearPhotoHashResultsJob.Execute), guid, Version, HashAlgorithm1);
         }
 
         [Theory]
@@ -95,11 +86,11 @@
 
             using (var ctx = contextFactory.CreateDbContext())
             {
-                ctx.HashIdentifiers.Add(hashIdentifier1);
-                ctx.HashIdentifiers.Add(hashIdentifier2);
-                ctx.PhotoHashes.Add(photoHash11);
-                ctx.PhotoHashes.Add(photoHash12);
-                ctx.PhotoHashes.Add(photoHash21);
+                await ctx.HashIdentifiers.AddAsync(hashIdentifier1);
+                await ctx.HashIdentifiers.AddAsync(hashIdentifier2);
+                await ctx.PhotoHashes.AddAsync(photoHash11);
+                await ctx.PhotoHashes.AddAsync(photoHash12);
+                await ctx.PhotoHashes.AddAsync(photoHash21);
 
                 await ctx.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -118,8 +109,7 @@
                 ctx.Scores.Should().BeEmpty();
             }
 
-            A.CallTo(() => hangFireClient.Create(A<Job>._, A<IState>._)).MustHaveHappenedOnceExactly();
-            AssertHangFireJobHasBeenCreated(typeof(ClearPhotoHashResultsJob), nameof(ClearPhotoHashResultsJob.Execute), guid1, eventVersion, HashAlgorithm1);
+            hangFireTestHelper.AssertSingleHangFireJobHasBeenCreated(typeof(ClearPhotoHashResultsJob), nameof(ClearPhotoHashResultsJob.Execute), guid1, eventVersion, HashAlgorithm1);
         }
 
         [DebuggerStepThrough]
@@ -153,15 +143,6 @@
                 Version = version,
                 TimeStamp = timestamp,
             };
-        }
-
-        private void AssertHangFireJobHasBeenCreated(Type type, string methodName, params object[] parameters)
-        {
-            jobsAdded.Should().Contain(item =>
-                    item.Type == type
-                    &&
-                    item.Method.Name == methodName)
-                .Which.Args.Should().BeEquivalentTo(parameters);
         }
     }
 }

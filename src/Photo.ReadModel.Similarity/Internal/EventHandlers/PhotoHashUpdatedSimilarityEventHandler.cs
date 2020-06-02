@@ -47,9 +47,7 @@
                 if (existingItem != null)
                 {
                     if (existingItem.Version > message.Version)
-                    {
                         return;
-                    }
 
                     existingItem.Version = message.Version;
                     existingItem.Hash = message.Hash;
@@ -59,18 +57,18 @@
                 else
                 {
                     var newItem = new PhotoHash
-                    {
-                        Id = message.Id,
-                        Version = message.Version,
-                        HashIdentifier = hashIdentifier,
-                        Hash = message.Hash,
-                    };
+                        {
+                            Id = message.Id,
+                            Version = message.Version,
+                            HashIdentifier = hashIdentifier,
+                            Hash = message.Hash,
+                        };
+
                     await db.PhotoHashes.AddAsync(newItem, ct)
                         .ConfigureAwait(false);
                 }
 
-                await db.SaveChangesAsync(ct)
-                    .ConfigureAwait(false);
+                await db.SaveChangesAsync(ct).ConfigureAwait(false);
             }
 
             hangFireClient.Enqueue<UpdatePhotoHashResultsJob>(job => job.Execute(message.Id, message.Version, message.HashIdentifier));

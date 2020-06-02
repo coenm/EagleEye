@@ -24,7 +24,7 @@
             var result = photoIndex.Search(query, out _);
 
             // todo skip, take,
-            return result.Select(MapToPhotoResult).ToList();
+            return result.Select(MapToPhotoResult).OrderBy(x => x.Score).ToList();
         }
 
         public List<Interface.Model.PhotoIdResult> Search(string query)
@@ -32,7 +32,7 @@
             var result = photoIndex.Search(query, out _);
 
             // todo skip, take
-            return result.Select(MapToPhotoIdResult).ToList();
+            return result.Select(MapToPhotoIdResult).OrderBy(x => x.Score).ToList();
         }
 
         public int Count(string query)
@@ -42,7 +42,7 @@
         }
 
         [NotNull]
-        private Interface.Model.PhotoResult MapToPhotoResult([NotNull] Model.PhotoSearchResult photo)
+        private static Interface.Model.PhotoResult MapToPhotoResult([NotNull] Model.PhotoSearchResult photo)
         {
             Guard.Argument(photo, nameof(photo)).NotNull();
 
@@ -51,8 +51,8 @@
                 photo.Id,
                 photo.FileName,
                 photo.FileMimeType,
-                photo.Tags.ToList().AsReadOnly(),
-                photo.Persons.ToList().AsReadOnly(),
+                photo.Tags?.ToList().AsReadOnly() ?? new List<string>(0).AsReadOnly(),
+                photo.Persons?.ToList().AsReadOnly() ?? new List<string>(0).AsReadOnly(),
                 Interface.Model.Location.Create(
                     photo.LocationCountryCode,
                     photo.LocationCountryName,
@@ -64,7 +64,7 @@
         }
 
         [NotNull]
-        private Interface.Model.PhotoIdResult MapToPhotoIdResult([NotNull] Model.PhotoSearchResult photo)
+        private static Interface.Model.PhotoIdResult MapToPhotoIdResult([NotNull] Model.PhotoSearchResult photo)
         {
             Guard.Argument(photo, nameof(photo)).NotNull();
             return new Interface.Model.PhotoIdResult(photo.Id, photo.Score);

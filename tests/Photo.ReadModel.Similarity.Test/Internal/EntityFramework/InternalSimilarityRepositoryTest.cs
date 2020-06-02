@@ -30,39 +30,34 @@
             var guid1 = Guid.NewGuid();
             var guid2 = Guid.NewGuid();
 
-            using (var ctx = ctxFactory.CreateDbContext())
-            {
-                hashIdentifier1 = CreateHashIdentifiers(1, "aa");
-                hashIdentifier2 = CreateHashIdentifiers(2, "bb");
-                hashIdentifier3 = CreateHashIdentifiers(3, "cc");
+            using var ctx = ctxFactory.CreateDbContext();
+            hashIdentifier1 = CreateHashIdentifiers(1, "aa");
+            hashIdentifier2 = CreateHashIdentifiers(2, "bb");
+            hashIdentifier3 = CreateHashIdentifiers(3, "cc");
 
-                ctx.HashIdentifiers.AddRange(hashIdentifier1, hashIdentifier2, hashIdentifier3);
+            ctx.HashIdentifiers.AddRange(hashIdentifier1, hashIdentifier2, hashIdentifier3);
 
-                photoHash11 = CreatePhotoHash(guid1, hashIdentifier1, 1, 2);
-                photoHash12 = CreatePhotoHash(guid2, hashIdentifier1, 2, 4);
-                photoHash21 = CreatePhotoHash(guid1, hashIdentifier2, 3, 6);
+            photoHash11 = CreatePhotoHash(guid1, hashIdentifier1, 1, 2);
+            photoHash12 = CreatePhotoHash(guid2, hashIdentifier1, 2, 4);
+            photoHash21 = CreatePhotoHash(guid1, hashIdentifier2, 3, 6);
 
-                ctx.PhotoHashes.AddRange(photoHash11, photoHash12, photoHash21);
-                ctx.SaveChanges();
-            }
+            ctx.PhotoHashes.AddRange(photoHash11, photoHash12, photoHash21);
+            ctx.SaveChanges();
         }
 
         [Fact]
         public void GetPhotoHashesByHashIdentifier_ShouldReturnCorrectItemsWithoutHashIdentifier()
         {
-            using (var ctx = ctxFactory.CreateDbContext())
-            {
-                // arrange
+            using var ctx = ctxFactory.CreateDbContext();
+            // arrange
 
-                // act
-                var result = sut.GetPhotoHashesByHashIdentifier(ctx, hashIdentifier1);
+            // act
+            var result = sut.GetPhotoHashesByHashIdentifier(ctx, hashIdentifier1);
 
-                // assert
-                result.Should().BeEquivalentTo(
-                    new[] { photoHash11, photoHash12 },
-                    config => config.Excluding(hash =>
-                        hash.HashIdentifier)); // HashIdentifier is not included in the query
-            }
+            // assert
+            result.Should().BeEquivalentTo(
+                                           new[] { photoHash11, photoHash12 },
+                                           config => config.Excluding(hash => hash.HashIdentifier)); // HashIdentifier is not included in the query
         }
 
         [DebuggerStepThrough]

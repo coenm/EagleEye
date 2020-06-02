@@ -1,7 +1,6 @@
 ﻿namespace EagleEye.Photo.ReadModel.Similarity.Internal.Processing.Jobs
 {
     using System;
-    using System.Linq;
 
     using Dawn;
     using EagleEye.Photo.ReadModel.Similarity.Internal.EntityFramework;
@@ -27,17 +26,15 @@
         {
             Guard.Argument(hashIdentifierString, nameof(hashIdentifierString)).NotNull().NotWhiteSpace();
 
-            using (var db = contextFactory.CreateDbContext())
-            {
-                var hashIdentifier = repository.GetOrAddHashIdentifier(db, hashIdentifierString);
+            using var db = contextFactory.CreateDbContext();
 
-                var itemsToDelete = repository.GetHashScoresByIdAndBeforeVersion(db, hashIdentifier.Id, id, version);
+            var hashIdentifier = repository.GetOrAddHashIdentifier(db, hashIdentifierString);
+            var itemsToDelete = repository.GetHashScoresByIdAndBeforeVersion(db, hashIdentifier.Id, id, version);
 
-                if (itemsToDelete.Any())
-                    db.Scores.RemoveRange(itemsToDelete);
+            if (itemsToDelete.Count > 0)
+                db.Scores.RemoveRange(itemsToDelete);
 
-                db.SaveChanges();
-            }
+            db.SaveChanges();
         }
     }
 }
