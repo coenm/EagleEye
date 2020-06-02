@@ -27,7 +27,7 @@
         public void AssertSingleHangFireJobHasBeenCreated(Type type, string methodName, params object[] parameters)
         {
             A.CallTo(() => HangFireClient.Create(A<Job>._, A<IState>._)).MustHaveHappenedOnceExactly();
-            jobsAdded.Should().HaveCount(1);
+            jobsAdded.Should().ContainSingle();
             jobsAdded.Should()
                      .Contain(item =>
                                   item.Type == type

@@ -391,7 +391,7 @@
             spatialContext = SpatialContext.GEO;
 
             // Results in sub-meter precision for geohash
-            var maxLevels = 11;
+            const int maxLevels = 11;
 
             // This can also be constructed from SpatialPrefixTreeFactory
             SpatialPrefixTree grid = new GeohashPrefixTree(spatialContext, maxLevels);

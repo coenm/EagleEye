@@ -9,31 +9,26 @@
     using System.Threading.Tasks;
 
     using CommandLine;
-    using CQRSlite.Commands;
     using Dawn;
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.FileImporter.CmdOptions;
-    using EagleEye.FileImporter.Json;
     using EagleEye.FileImporter.Scenarios.Check;
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
     using EagleEye.FileImporter.Scenarios.UpdateIndex;
     using EagleEye.FileImporter.Similarity;
-    using EagleEye.Photo.ReadModel.EntityFramework.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface.Model;
-
     using JetBrains.Annotations;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
     using NLog;
     using ShellProgressBar;
     using SimpleInjector;
 
-    using Timestamp = Photo.Domain.Commands.Inner.Timestamp;
-
     public static class Program
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
+        private static readonly object spawnLock = new object();
 
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
@@ -85,7 +80,7 @@
 
             using var container = Startup.ConfigureContainer(connectionStrings);
 
-            await Startup.InitializeAllServices(container);
+            await Startup.InitializeAllServices(container).ConfigureAwait(false);
             Startup.StartServices(container);
 
             try
@@ -99,7 +94,7 @@
                     .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(container, option))
                     .WithParsed<CheckMetadataOptions>(option => task = CheckMetadata(container, option))
                     .WithParsed<SearchOptions>(option => task = Search(container, option))
-                    .WithNotParsed(errs => Console.WriteLine("Could not parse the arguments."));
+                    .WithNotParsed(errs => Console.WriteLine($"Could not parse the arguments. {errs.First()}"));
 
                 await task.ConfigureAwait(false);
                 Console.WriteLine("Done.Press enter to exit.");
@@ -136,124 +131,122 @@
 
             var fromSeconds = TimeSpan.FromSeconds(25);
 
-            using (var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions))
+            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
+            var progress = new Progress<FilenameProgressData>(data =>
+                                                              {
+                                                                  // progressBar.MaxTicks = data.Total;
+                                                                  progressBar.Tick(data.Filename);
+                                                              });
+
+            Logger.Info($" Found {files.Length} files.");
+            Console.WriteLine($" Found {files.Length} files.");
+
+            var maxDegree = Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 2.0));
+            Logger.Info($"Max degree {maxDegree}");
+            Console.WriteLine($"Max degree {maxDegree}");
+
+            maxDegree = Math.Min(maxDegree, 8);
+            maxDegree = Math.Max(maxDegree, 2);
+            Logger.Info($"Max degree {maxDegree}");
+            Console.WriteLine($"Max degree {maxDegree}");
+
+            IEnumerable<KeyValuePair<string, VerifyMediaResult>> initialCollection = Enumerable.Empty<KeyValuePair<string, VerifyMediaResult>>();
+            var results = new ConcurrentDictionary<string, VerifyMediaResult>(maxDegree, initialCollection, null);
+
+            Parallel.ForEach(
+                             files,
+                             new ParallelOptions { MaxDegreeOfParallelism = maxDegree },
+                             file =>
+                             {
+                                 using var cts = new CancellationTokenSource(fromSeconds);
+                                 try
+                                 {
+                                     VerifyMediaResult result = commandHandler.HandleAsync(file, cts.Token).ConfigureAwait(false).GetAwaiter().GetResult();
+                                     results.TryAdd(file, result);
+                                     (progress as IProgress<FilenameProgressData>)?.Report(new FilenameProgressData(0, 0, file));
+                                 }
+                                 catch (OperationCanceledException)
+                                 {
+                                     Logger.Error("Could not UpdateImporteImage due to timeout.");
+                                 }
+                                 catch (Exception e)
+                                 {
+                                     Logger.Warn(e.Message);
+                                 }
+                             });
+
+            await File.WriteAllTextAsync($"M:\\todo\\output_{DateTime.Now:yyyyMMddHHmmss}.json", JsonConvert.SerializeObject(results)).ConfigureAwait(false);
+
+            var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.NoMetadataAvailable);
+            var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataIncorrect);
+            var correct = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataCorrect);
+
+            var metadatas = results.Where(x => x.Value.Metadata != null).Select(x => x.Value).ToArray();
+            var duplicateIds = metadatas.Where(x => metadatas.Count(y => y.Metadata.Id == x.Metadata.Id) > 1).ToArray();
+
+            Logger.Info(string.Empty);
+            Logger.Info("---- Empty Items ----");
+            if (emptyItems.Any())
             {
-                var progress = new Progress<FilenameProgressData>(data =>
+                foreach (var item in emptyItems)
                 {
-                    // progressBar.MaxTicks = data.Total;
-                    progressBar.Tick(data.Filename);
-                });
-
-                Logger.Info($" Found {files.Length} files.");
-                Console.WriteLine($" Found {files.Length} files.");
-
-                var maxDegree = Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75 * 2.0));
-                Logger.Info($"Max degree {maxDegree}");
-                Console.WriteLine($"Max degree {maxDegree}");
-
-                maxDegree = Math.Min(maxDegree, 8);
-                maxDegree = Math.Max(maxDegree, 2);
-                Logger.Info($"Max degree {maxDegree}");
-                Console.WriteLine($"Max degree {maxDegree}");
-
-                IEnumerable<KeyValuePair<string, VerifyMediaResult>> initialCollection = Enumerable.Empty<KeyValuePair<string, VerifyMediaResult>>();
-                var results = new ConcurrentDictionary<string, VerifyMediaResult>(maxDegree, initialCollection, null);
-
-                Parallel.ForEach(
-                    files,
-                    new ParallelOptions { MaxDegreeOfParallelism = maxDegree },
-                    file =>
-                    {
-                        using var cts = new CancellationTokenSource(fromSeconds);
-                        try
-                        {
-                            VerifyMediaResult result = commandHandler.HandleAsync(file, cts.Token).ConfigureAwait(false).GetAwaiter().GetResult();
-                            results.TryAdd(file, result);
-                            (progress as IProgress<FilenameProgressData>)?.Report(new FilenameProgressData(0, 0, file));
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            Logger.Error("Could not UpdateImporteImage due to timeout.");
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Warn(e.Message);
-                        }
-                    });
-
-                await File.WriteAllTextAsync($"M:\\todo\\output_{DateTime.Now:yyyyMMddHHmmss}.json", JsonConvert.SerializeObject(results)).ConfigureAwait(false);
-
-                var emptyItems = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.NoMetadataAvailable);
-                var incorrect = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataIncorrect);
-                var correct = results.Select(x => x.Value).Where(x => x.State == VerifyMediaResultState.MetadataCorrect);
-
-                var metadatas = results.Where(x => x.Value.Metadata != null).Select(x => x.Value).ToArray();
-                var duplicateIds = metadatas.Where(x => metadatas.Count(y => y.Metadata.Id == x.Metadata.Id) > 1).ToArray();
-
-                Logger.Info(string.Empty);
-                Logger.Info("---- Empty Items ----");
-                if (emptyItems.Any())
-                {
-                    foreach (var item in emptyItems)
-                    {
-                        Logger.Info($" - {item.Filename}");
-                    }
+                    Logger.Info($" - {item.Filename}");
                 }
-                else
-                {
-                    Logger.Info(" -> none <-");
-                }
-
-                Logger.Info(string.Empty);
-
-                Logger.Info(string.Empty);
-                Logger.Info("---- Incorrect Items ----");
-                if (incorrect.Any())
-                {
-                    foreach (var item in incorrect)
-                    {
-                        Logger.Info($" - {item.Filename}");
-                    }
-                }
-                else
-                {
-                    Logger.Info(" -> none <-");
-                }
-
-                Logger.Info(string.Empty);
-
-                Logger.Info(string.Empty);
-                Logger.Info("---- DuplicateIds Items ----");
-                if (duplicateIds.Length > 0)
-                {
-                    foreach (var item in duplicateIds)
-                    {
-                        Logger.Info($" - {item.Filename} {item.Metadata.Id}");
-                    }
-                }
-                else
-                {
-                    Logger.Info(" -> none <-");
-                }
-
-                Logger.Info(string.Empty);
-
-                Logger.Info(string.Empty);
-                Logger.Info("---- Correct Items ----");
-                if (correct.Any())
-                {
-                    foreach (var item in correct)
-                    {
-                        Logger.Info($" - {item.Filename}");
-                    }
-                }
-                else
-                {
-                    Logger.Info(" -> none <-");
-                }
-
-                Logger.Info(string.Empty);
             }
+            else
+            {
+                Logger.Info(" -> none <-");
+            }
+
+            Logger.Info(string.Empty);
+
+            Logger.Info(string.Empty);
+            Logger.Info("---- Incorrect Items ----");
+            if (incorrect.Any())
+            {
+                foreach (var item in incorrect)
+                {
+                    Logger.Info($" - {item.Filename}");
+                }
+            }
+            else
+            {
+                Logger.Info(" -> none <-");
+            }
+
+            Logger.Info(string.Empty);
+
+            Logger.Info(string.Empty);
+            Logger.Info("---- DuplicateIds Items ----");
+            if (duplicateIds.Length > 0)
+            {
+                foreach (var item in duplicateIds)
+                {
+                    Logger.Info($" - {item.Filename} {item.Metadata.Id}");
+                }
+            }
+            else
+            {
+                Logger.Info(" -> none <-");
+            }
+
+            Logger.Info(string.Empty);
+
+            Logger.Info(string.Empty);
+            Logger.Info("---- Correct Items ----");
+            if (correct.Any())
+            {
+                foreach (var item in correct)
+                {
+                    Logger.Info($" - {item.Filename}");
+                }
+            }
+            else
+            {
+                Logger.Info(" -> none <-");
+            }
+
+            Logger.Info(string.Empty);
         }
 
         private static async Task UpdateImportedImages([NotNull] Container container, [NotNull] UpdateImportedImagesOptions option)
@@ -300,12 +293,12 @@
             try
             {
                 // search for photos
-                var found = await SearchAndShow(search);
+                var found = await SearchAndShow(search).ConfigureAwait(false);
                 bool @continue = true;
                 while (found || @continue)
                 {
-                    found = await SearchAndShow(search );
-                    if (found == false)
+                    found = await SearchAndShow(search).ConfigureAwait(false);
+                    if (!found)
                         @continue = AskForNewSearch();
                 }
 
@@ -364,7 +357,7 @@
             try
             {
                 searchResults = search.FullSearch(query);
-                if (searchResults.Count <= 0)
+                if (searchResults.Count == 0)
                     return false;
             }
             catch (Exception e)
@@ -378,7 +371,7 @@
             try
             {
                 var everything = new Infrastructure.Everything.Everything();
-                await everything.Show(searchResults.Select(x => x.Filename));
+                await everything.Show(searchResults.Select(x => x.Filename)).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -389,7 +382,6 @@
             Console.WriteLine("Press enter to continue");
             Console.ReadLine();
             return true;
-
         }
 
         private static async Task Index([NotNull] Container container, [NotNull] IndexFilesOptions option)
@@ -426,9 +418,6 @@
             foreach (var item in progressBars)
                 item.Value?.Dispose();
         }
-
-        private static Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
-        private static readonly object spawnLock = new object();
 
         private static ChildProgressBar SpawnChildProgressBar(ProgressBar parent, FileProcessingProgress fileProcessingProgress, string message)
         {

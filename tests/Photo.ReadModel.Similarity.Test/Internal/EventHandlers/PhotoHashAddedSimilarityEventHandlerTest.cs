@@ -48,7 +48,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = 16UL;
+            const ulong hashValue = 16UL;
 
             // act
             await sut.Handle(CreatePhotoHashAddedEvent(guid, HashAlgorithm1, hashValue, Version, timestamp), CancellationToken.None);
@@ -80,7 +80,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = 16UL;
+            const ulong hashValue = 16UL;
 
             // act
             await sut.Handle(CreatePhotoHashAddedEvent(guid, HashAlgorithm1, hashValue, Version, timestamp), CancellationToken.None);

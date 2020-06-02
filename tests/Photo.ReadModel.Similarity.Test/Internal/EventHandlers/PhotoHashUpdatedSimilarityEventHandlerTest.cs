@@ -49,7 +49,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = 16UL;
+            const ulong hashValue = 16UL;
 
             // act
             await sut.Handle(CreatePhotoHashUpdatedEvent(guid, HashAlgorithm1, hashValue, Version, timestamp), CancellationToken.None);
@@ -81,7 +81,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = 12UL;
+            const ulong hashValue = 12UL;
 
             var alreadyExistingHashIdentifier = CreateHashIdentifiers(1, HashAlgorithm1);
 
@@ -131,7 +131,7 @@
         {
             // arrange
             var guid = Guid.NewGuid();
-            var hashValue = 12UL;
+            const ulong hashValue = 12UL;
             const int currentVersion = 3;
             const int eventVersion = 2;
 
