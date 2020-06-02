@@ -26,7 +26,11 @@
 
             var exiftoolConfig = new AsyncExifToolConfiguration(config.ExifToolExe, config.ExifToolConfigFile, Encoding.UTF8, args);
             var logger = new ExifToolLogAdapter();
-            exiftoolImpl = new AsyncExifTool(exiftoolConfig, logger);
+
+            exiftoolImpl = logger.IsEnabled()
+                               ? new AsyncExifTool(exiftoolConfig, logger)
+                               : new AsyncExifTool(exiftoolConfig);
+
             exiftoolImpl.Initialize();
         }
 

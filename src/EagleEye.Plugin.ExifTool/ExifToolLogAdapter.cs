@@ -24,6 +24,16 @@
             return Logger.IsEnabled(Convert(logLevel));
         }
 
+        public bool IsEnabled()
+        {
+            return IsEnabled(LogLevel.Trace)
+                   || IsEnabled(LogLevel.Debug)
+                   || IsEnabled(LogLevel.Info)
+                   || IsEnabled(LogLevel.Warn)
+                   || IsEnabled(LogLevel.Error)
+                   || IsEnabled(LogLevel.Fatal);
+        }
+
         private static NLog.LogLevel Convert(LogLevel logLevel)
         {
             return logLevel switch
