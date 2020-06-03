@@ -5,7 +5,6 @@
     using System.Reflection;
 
     using Dawn;
-
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.Photo.ReadModel.Similarity.Interface;

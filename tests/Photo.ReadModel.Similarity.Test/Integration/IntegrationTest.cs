@@ -27,7 +27,7 @@
         private readonly Container container;
         private readonly DateTime dtNow;
 
-        public IntegrationTest(Xunit.Abstractions.ITestOutputHelper writer)
+        public IntegrationTest(ITestOutputHelper writer)
         {
             this.writer = writer;
             container = new Container();

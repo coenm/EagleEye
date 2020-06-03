@@ -34,11 +34,9 @@
 
         public async Task<List<string>> GetHashAlgorithmsAsync()
         {
-            using (var db = contextFactory.CreateDbContext())
-            {
-                var result = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
-                return result.Select(x => x.HashIdentifier).ToList();
-            }
+            using var db = contextFactory.CreateDbContext();
+            var result = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
+            return result?.Select(x => x.HashIdentifier).ToList() ?? new List<string>(0);
         }
 
         public async Task<int> CountSimilaritiesAsync(Guid photoGuid, string hashAlgorithm, double scoreThreshold)
@@ -48,19 +46,17 @@
             if (hashAlgorithm == null)
                 return 0;
 
-            using (var db = contextFactory.CreateDbContext())
-            {
-                var hashAlgorithms = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
+            using var db = contextFactory.CreateDbContext();
+            var hashAlgorithms = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
 
-                var singleHashAlgorithm = hashAlgorithms.SingleOrDefault(x => x.HashIdentifier == hashAlgorithm);
-                if (singleHashAlgorithm == null)
-                    return 0;
+            var singleHashAlgorithm = hashAlgorithms?.SingleOrDefault(x => x.HashIdentifier == hashAlgorithm);
+            if (singleHashAlgorithm == null)
+                return 0;
 
-                return await repository
-                             .GetScoresForPhotoAndHashIdentifier(db, photoGuid, singleHashAlgorithm)
-                             .CountAsync(s => s.Score >= scoreThreshold)
-                             .ConfigureAwait(false);
-            }
+            return await repository
+                         .GetScoresForPhotoAndHashIdentifier(db, photoGuid, singleHashAlgorithm)
+                         .CountAsync(s => s.Score >= scoreThreshold)
+                         .ConfigureAwait(false);
         }
 
         public async Task<SimilarityResultSet> GetSimilaritiesAsync(Guid photoGuid, string hashAlgorithm, float scoreThreshold)
@@ -78,23 +74,21 @@
             if (hashAlgorithm == null)
                 return CreateResult();
 
-            using (var db = contextFactory.CreateDbContext())
-            {
-                var hashAlgorithms = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
+            using var db = contextFactory.CreateDbContext();
+            var hashAlgorithms = await repository.GetAllHashIdentifiersAsync(db).ConfigureAwait(false);
 
-                var singleHashAlgorithm = hashAlgorithms.SingleOrDefault(x => x.HashIdentifier == hashAlgorithm);
-                if (singleHashAlgorithm == null)
-                    return CreateResult();
+            var singleHashAlgorithm = hashAlgorithms.SingleOrDefault(x => x.HashIdentifier == hashAlgorithm);
+            if (singleHashAlgorithm == null)
+                return CreateResult();
 
-                var matches = await repository
-                                    .GetScoresForPhotoAndHashIdentifier(db, photoGuid, singleHashAlgorithm)
-                                    .Where(s => s.Score >= scoreThreshold)
-                                    .Select(s => CreateSimilarityResult(photoGuid, s.PhotoA, s.PhotoB, s.Score))
-                                    .ToArrayAsync()
-                                    .ConfigureAwait(false);
+            var matches = await repository
+                                .GetScoresForPhotoAndHashIdentifier(db, photoGuid, singleHashAlgorithm)
+                                .Where(s => s.Score >= scoreThreshold)
+                                .Select(s => CreateSimilarityResult(photoGuid, s.PhotoA, s.PhotoB, s.Score))
+                                .ToArrayAsync()
+                                .ConfigureAwait(false);
 
-                return CreateResult(matches);
-            }
+            return CreateResult(matches);
         }
 
         private static SimilarityResult CreateSimilarityResult(Guid queried, Guid photoA, Guid photoB, double score)

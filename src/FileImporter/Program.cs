@@ -27,8 +27,8 @@
     public static class Program
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
-        private static readonly object spawnLock = new object();
+        private static readonly Dictionary<string, ChildProgressBar> SpawnedFiles = new Dictionary<string, ChildProgressBar>();
+        private static readonly object SpawnLock = new object();
 
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
@@ -423,12 +423,12 @@
         {
             ChildProgressBar bar;
 
-            lock (spawnLock)
+            lock (SpawnLock)
             {
-                if (!spawnedFiles.ContainsKey(fileProcessingProgress.Filename))
+                if (!SpawnedFiles.ContainsKey(fileProcessingProgress.Filename))
                     bar = parent.Spawn(int.MaxValue, message, ChildOptions);
                 else
-                    bar = spawnedFiles[fileProcessingProgress.Filename];
+                    bar = SpawnedFiles[fileProcessingProgress.Filename];
             }
 
             if (fileProcessingProgress.Step == 0)
@@ -440,7 +440,7 @@
                 return bar;
             }
 
-            decimal totalSteps = ((decimal)fileProcessingProgress.Step / (decimal)fileProcessingProgress.TotalSteps);
+            decimal totalSteps = (decimal)fileProcessingProgress.Step / fileProcessingProgress.TotalSteps;
             var x = Math.Floor(totalSteps * int.MaxValue);
             var step = (int)x;
             bar.Tick(step);
@@ -455,7 +455,7 @@
             if (fileProcessingProgress.Step == fileProcessingProgress.TotalSteps)
             {
                 childProgressBar.Tick(int.MaxValue);
-                // childProgressBar.Dispose();
+                /*childProgressBar.Dispose();*/
                 parentProgressBar.Tick();
                 return childProgressBar;
             }
@@ -466,7 +466,7 @@
             }
             else
             {
-                decimal totalSteps = ((decimal)fileProcessingProgress.Step / (decimal)fileProcessingProgress.TotalSteps);
+                decimal totalSteps = (decimal)fileProcessingProgress.Step / fileProcessingProgress.TotalSteps;
                 decimal decimalStep = Math.Floor(totalSteps * int.MaxValue);
                 var step = (int)decimalStep;
                 childProgressBar.Tick(step);
