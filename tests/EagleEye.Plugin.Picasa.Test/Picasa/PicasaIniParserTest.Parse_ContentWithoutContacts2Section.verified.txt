@@ -54,8 +54,7 @@
       ]
     },
     {
-      Filename: 'Contacts.jpg',
-      Persons: []
+      Filename: 'Contacts.jpg'
     },
     {
       Filename: 'photo 2.jpg',
