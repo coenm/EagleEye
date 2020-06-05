@@ -37,11 +37,10 @@
             var fileName = Path.Combine(filename);
 
             // act
-            using (var result = sut.OpenRead(fileName))
-            {
-                // assert
-                result.Should().NotBeNull();
-            }
+            using var result = sut.OpenRead(fileName);
+
+            // assert
+            result.Should().NotBeNull();
         }
     }
 }
