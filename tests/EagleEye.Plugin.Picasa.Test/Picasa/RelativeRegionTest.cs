@@ -9,6 +9,25 @@
     public class RelativeRegionTest
     {
         [Fact]
+        public void Properties_ShouldReturnInitialValues()
+        {
+            // arrange
+            var sut = new RelativeRegion(12, 13, 14, 15);
+
+            // act
+            var left = sut.Left;
+            var top = sut.Top;
+            var right = sut.Right;
+            var bottom = sut.Bottom;
+
+            // assert
+            left.Should().Be(12);
+            top.Should().Be(13);
+            right.Should().Be(14);
+            bottom.Should().Be(15);
+        }
+
+        [Fact]
         public void Equals_ShouldBeFalse_WhenNull()
         {
             // arrange

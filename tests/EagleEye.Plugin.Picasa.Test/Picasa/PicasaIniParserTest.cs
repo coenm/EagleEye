@@ -1,9 +1,9 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
-    using System;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
 
     using FluentAssertions;
     using VerifyXunit;
@@ -39,16 +39,16 @@ backuphash=11571";
         }
 
         [Fact]
-        public void PicasaFileParserTest()
+        public async Task PicasaFileParserTest()
         {
             // arrange
-            using var stream = GenerateStreamFromString(PicasaIniFileContent);
+            await using var stream = GenerateStreamFromString(PicasaIniFileContent);
 
             // act
             var result = Sut.Parse(stream).ToList();
 
             // assert
-            Verify(result);
+            await Verify(result);
         }
 
         [Fact]

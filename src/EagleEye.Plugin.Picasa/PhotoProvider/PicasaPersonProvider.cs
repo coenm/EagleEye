@@ -31,7 +31,7 @@
         {
             var result = await picasaService.GetDataAsync(filename).ConfigureAwait(false);
 
-            return result?.Persons.Select(x => x.Name).Distinct().ToList();
+            return result?.Persons.Select(x => x.Person.Name).Distinct().ToList();
         }
     }
 }

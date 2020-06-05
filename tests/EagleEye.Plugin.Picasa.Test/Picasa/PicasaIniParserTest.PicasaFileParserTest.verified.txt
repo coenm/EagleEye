@@ -3,7 +3,10 @@
     Filename: 'pica 1.jpg',
     Persons: [
       {
-        Name: 'Calvin',
+        Person: {
+          Id: '5bee603ee623542d',
+          Name: 'Calvin'
+        },
         Region: {
           Left: 0.22452125,
           Top: 0.2179446,
@@ -12,7 +15,10 @@
         }
       },
       {
-        Name: 'David',
+        Person: {
+          Id: '8ad3eb33cfdf42ce',
+          Name: 'David'
+        },
         Region: {
           Left: 0.48293278,
           Top: 0.12275883,
@@ -21,7 +27,10 @@
         }
       },
       {
-        Name: 'Alice',
+        Person: {
+          Id: '7131e767c91646ae',
+          Name: 'Alice'
+        },
         Region: {
           Left: 0.6401465,
           Top: 0.25673303,
@@ -35,7 +44,10 @@
     Filename: 'photo 2.jpg',
     Persons: [
       {
-        Name: 'Alice',
+        Person: {
+          Id: '7131e767c91646ae',
+          Name: 'Alice'
+        },
         Region: {
           Left: 0.31250477,
           Top: 0.28493172,
@@ -44,7 +56,10 @@
         }
       },
       {
-        Name: 'Bob',
+        Person: {
+          Id: '4759b81b11610b7a',
+          Name: 'Bob'
+        },
         Region: {
           Left: 0.59085983,
           Top: 0.24359502,
@@ -58,7 +73,10 @@
     Filename: 'nice photo.jpg',
     Persons: [
       {
-        Name: 'Alice',
+        Person: {
+          Id: '7131e767c91646ae',
+          Name: 'Alice'
+        },
         Region: {
           Left: 0.24206913,
           Top: 0.21185626,
@@ -67,7 +85,10 @@
         }
       },
       {
-        Name: 'Eve Jackson',
+        Person: {
+          Id: '46c60ba61d7cb034',
+          Name: 'Eve Jackson'
+        },
         Region: {
           Left: 0.4848554,
           Top: 0.066987105,

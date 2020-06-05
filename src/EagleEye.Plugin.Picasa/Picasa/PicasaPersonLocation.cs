@@ -2,19 +2,24 @@
 {
     using System;
 
-    using Dawn;
     using JetBrains.Annotations;
 
     public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>
     {
-        public PicasaPersonLocation([NotNull] string name, [CanBeNull] RelativeRegion? region = null)
+        public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] RelativeRegion? region = null)
         {
-            Guard.Argument(name, nameof(name)).NotNull().NotWhiteSpace();
-            Name = name;
+            Person = person;
             Region = region;
         }
 
-        public string Name { get; }
+        public PicasaPersonLocation([NotNull] string person, [CanBeNull] RelativeRegion? region = null)
+        {
+            Person = new PicasaPerson(string.Empty, person);
+            Region = region;
+        }
+
+        [NotNull]
+        public PicasaPerson Person { get; }
 
         [CanBeNull]
         public RelativeRegion? Region { get; }
@@ -25,10 +30,7 @@
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-
-            return Name == other.Name
-                   &&
-                   Nullable.Equals(Region, other.Region);
+            return Person.Equals(other.Person) && Nullable.Equals(Region, other.Region);
         }
 
         public override bool Equals(object obj)
@@ -39,7 +41,6 @@
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-
             return Equals((PicasaPersonLocation)obj);
         }
 
@@ -47,7 +48,7 @@
         {
             unchecked
             {
-                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ Region.GetHashCode();
+                return (Person.GetHashCode() * 397) ^ Region.GetHashCode();
             }
         }
     }

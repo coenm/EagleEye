@@ -1,8 +1,11 @@
 ﻿namespace EagleEye.Picasa.Picasa
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     public class FileWithPersons
     {
         private readonly List<PicasaPersonLocation> persons;
@@ -32,8 +35,12 @@
                 return result + "no persons.";
 
             result += "persons:";
-            result = Persons.Aggregate(result, (current, person) => current + " " + person.Name + ",");
+            result = Persons.Aggregate(result, (current, person) => current + " " + person.Person.Name + ",");
             return result.Substring(0, result.Length - 1);
         }
+
+        [DebuggerNonUserCode]
+        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
+        private string DebuggerDisplay => ToString();
     }
 }

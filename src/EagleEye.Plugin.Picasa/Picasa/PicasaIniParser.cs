@@ -49,9 +49,9 @@
                             continue;
 
                         var coordinate = DecodeRect64ToRelativeCoordinates(ref singleCoordinateAndKey[0]);
-                        var personName = GetName(ref singleCoordinateAndKey[1], contacts);
-                        if (!string.IsNullOrWhiteSpace(personName))
-                            fileWithPersons.AddPerson(new PicasaPersonLocation(personName, coordinate));
+                        var contact = GetContact(ref singleCoordinateAndKey[1], contacts);
+                        if (contact.HasValue)
+                            fileWithPersons.AddPerson(new PicasaPersonLocation(contact.Value, coordinate));
                     }
                 }
 
@@ -106,17 +106,20 @@
                 .ToArray();
         }
 
-        private static string GetName(ref string key, IniData contacts)
+        private static PicasaPerson? GetContact(ref string key, IniData contacts)
         {
             if (!contacts.Content.ContainsKey(key))
-                return string.Empty;
+                return null;
 
             var contact = contacts.Content[key];
 
             while (contact.EndsWith(";"))
                 contact = contact.Substring(0, contact.Length - 1);
 
-            return contact;
+            if (string.IsNullOrWhiteSpace(contact))
+                return null;
+
+            return new PicasaPerson(key, contact);
         }
     }
 }
