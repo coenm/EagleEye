@@ -124,7 +124,6 @@
                     name = name.Substring(0, name.Length - 1);
                 yield return new PicasaPerson(item.Key, name);
             }
-
         }
 
         private static PicasaPerson GetOrCreateContact(ref string key, IEnumerable<PicasaPerson> contacts)

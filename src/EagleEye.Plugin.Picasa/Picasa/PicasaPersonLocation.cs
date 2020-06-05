@@ -19,10 +19,18 @@
         }
 
         [NotNull]
-        public PicasaPerson Person { get; }
+        public PicasaPerson Person { get; private set; }
 
         [CanBeNull]
         public RelativeRegion? Region { get; }
+
+        public void UpdatePerson([NotNull] PicasaPerson picasaPerson)
+        {
+            if (string.IsNullOrWhiteSpace(picasaPerson.Name))
+                throw new ArgumentNullException(nameof(picasaPerson.Name));
+
+            Person = picasaPerson;
+        }
 
         public bool Equals(PicasaPersonLocation other)
         {
