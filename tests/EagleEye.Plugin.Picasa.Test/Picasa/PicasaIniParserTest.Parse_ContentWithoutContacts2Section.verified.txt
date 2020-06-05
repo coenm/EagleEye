@@ -18,7 +18,7 @@
         {
           Person: {
             Id: '5bee603ee623542d',
-            Name: 'Calvin'
+            Name: ''
           },
           Region: {
             Left: 0.22452125,
@@ -30,7 +30,7 @@
         {
           Person: {
             Id: '8ad3eb33cfdf42ce',
-            Name: 'David'
+            Name: ''
           },
           Region: {
             Left: 0.48293278,
@@ -42,7 +42,7 @@
         {
           Person: {
             Id: '7131e767c91646ae',
-            Name: 'Alice'
+            Name: ''
           },
           Region: {
             Left: 0.6401465,
@@ -54,12 +54,16 @@
       ]
     },
     {
+      Filename: 'Contacts.jpg',
+      Persons: []
+    },
+    {
       Filename: 'photo 2.jpg',
       Persons: [
         {
           Person: {
             Id: '7131e767c91646ae',
-            Name: 'Alice'
+            Name: ''
           },
           Region: {
             Left: 0.31250477,
@@ -71,7 +75,7 @@
         {
           Person: {
             Id: '4759b81b11610b7a',
-            Name: 'Bob'
+            Name: ''
           },
           Region: {
             Left: 0.59085983,
@@ -100,7 +104,7 @@
         {
           Person: {
             Id: '7131e767c91646ae',
-            Name: 'Alice'
+            Name: ''
           },
           Region: {
             Left: 0.24206913,
@@ -112,7 +116,7 @@
         {
           Person: {
             Id: '46c60ba61d7cb034',
-            Name: 'Eve Jackson'
+            Name: ''
           },
           Region: {
             Left: 0.4848554,
@@ -122,36 +126,6 @@
           }
         }
       ]
-    }
-  ],
-  Persons: [
-    {
-      Id: '7131e767c91646ae',
-      Name: 'Alice'
-    },
-    {
-      Id: '4759b81b11610b7a',
-      Name: 'Bob'
-    },
-    {
-      Id: '5bee603ee623542d',
-      Name: 'Calvin'
-    },
-    {
-      Id: '8ad3eb33cfdf42ce',
-      Name: 'David'
-    },
-    {
-      Id: '46c60ba61d7cb034',
-      Name: 'Eve Jackson'
-    },
-    {
-      Id: 'fd2296b1b887830d',
-      Name: 'Fred Flinsone'
-    },
-    {
-      Id: '646d7c806b7a2c52',
-      Name: 'Gerald'
     }
   ]
 }

@@ -6,6 +6,7 @@
     using System.Linq;
 
     using EagleEye.Picasa.IniParser;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Picasa ini parser to obtain faces.
@@ -17,17 +18,20 @@
         private const string FacesKey = "faces";
         private static readonly string[] CoordinatePersonSeparator = { "," };
 
-        public static IEnumerable<FileWithPersons> Parse(Stream stream)
+        [CanBeNull]
+        public static PicasaIniFile Parse(Stream stream)
         {
             var iniContent = SimpleIniParser.Parse(stream);
 
-            var contacts = iniContent.SingleOrDefault(x => x.Section == Contacts2Section);
-            if (contacts == null)
-                return Enumerable.Empty<FileWithPersons>();
+            if (iniContent == null || iniContent.Count == 0)
+                return null;
 
-            var result = new List<FileWithPersons>(iniContent.Count - 1);
+            var iniContacts = iniContent.SingleOrDefault(x => x.Section == Contacts2Section);
+            var contacts = ParseIniContacts(iniContacts).ToList();
 
-            foreach (var item in iniContent.Where(x => x != contacts))
+            var result = new List<FileWithPersons>(iniContent.Count);
+
+            foreach (var item in iniContent.Where(x => x != iniContacts))
             {
                 var fileWithPersons = new FileWithPersons(item.Section);
                 var facesList = item.Content.Where(x => x.Key == FacesKey).ToList();
@@ -49,16 +53,15 @@
                             continue;
 
                         var coordinate = DecodeRect64ToRelativeCoordinates(ref singleCoordinateAndKey[0]);
-                        var contact = GetContact(ref singleCoordinateAndKey[1], contacts);
-                        if (contact.HasValue)
-                            fileWithPersons.AddPerson(new PicasaPersonLocation(contact.Value, coordinate));
+                        var contact = GetOrCreateContact(ref singleCoordinateAndKey[1], contacts);
+                        fileWithPersons.AddPerson(new PicasaPersonLocation(contact, coordinate));
                     }
                 }
 
                 result.Add(fileWithPersons);
             }
 
-            return result;
+            return new PicasaIniFile(result, contacts);
         }
 
         private static RelativeRegion? DecodeRect64ToRelativeCoordinates(ref string rect64)
@@ -106,20 +109,33 @@
                 .ToArray();
         }
 
-        private static PicasaPerson? GetContact(ref string key, IniData contacts)
+        private static IEnumerable<PicasaPerson> ParseIniContacts([CanBeNull] IniData iniContacts)
         {
-            if (!contacts.Content.ContainsKey(key))
-                return null;
+            if (iniContacts == null)
+                yield break;
 
-            var contact = contacts.Content[key];
+            if (iniContacts.Section != Contacts2Section)
+                yield break;
 
-            while (contact.EndsWith(";"))
-                contact = contact.Substring(0, contact.Length - 1);
+            foreach (var item in iniContacts.Content)
+            {
+                var name = item.Value;
+                while (name.EndsWith(";"))
+                    name = name.Substring(0, name.Length - 1);
+                yield return new PicasaPerson(item.Key, name);
+            }
 
-            if (string.IsNullOrWhiteSpace(contact))
-                return null;
+        }
 
-            return new PicasaPerson(key, contact);
+        private static PicasaPerson GetOrCreateContact(ref string key, IEnumerable<PicasaPerson> contacts)
+        {
+            foreach (var c in contacts)
+            {
+                if (c.Id == key)
+                    return c;
+            }
+
+            return new PicasaPerson(key, string.Empty);
         }
     }
 }

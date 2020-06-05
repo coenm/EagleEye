@@ -12,7 +12,7 @@
     {
         public PicasaPerson([NotNull] string id, [NotNull] string name)
         {
-            Guard.Argument(name, nameof(name)).NotNull().NotEmpty();
+            Guard.Argument(name, nameof(name)).NotNull(); // can be empty
             Guard.Argument(id, nameof(id)).NotNull(); // can be empty
             Id = id;
             Name = name;

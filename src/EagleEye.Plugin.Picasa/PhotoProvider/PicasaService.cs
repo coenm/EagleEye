@@ -55,7 +55,11 @@
 
         protected virtual IEnumerable<FileWithPersons> GetFileAndPersonData([NotNull] Stream stream)
         {
-            return PicasaIniParser.Parse(stream);
+            var result = PicasaIniParser.Parse(stream);
+            if (result == null)
+                return Enumerable.Empty<FileWithPersons>();
+
+            return result.Files ?? Enumerable.Empty<FileWithPersons>();
         }
 
         private Task<IEnumerable<FileWithPersons>> GetOrCreateTask([NotNull] string picasaFilename)

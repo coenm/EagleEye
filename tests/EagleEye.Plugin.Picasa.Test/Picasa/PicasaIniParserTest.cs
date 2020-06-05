@@ -1,11 +1,9 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
     using System.IO;
-    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
-    using FluentAssertions;
     using VerifyXunit;
     using Xunit;
     using Xunit.Abstractions;
@@ -45,24 +43,24 @@ backuphash=11571";
             await using var stream = GenerateStreamFromString(PicasaIniFileContent);
 
             // act
-            var result = Sut.Parse(stream).ToList();
+            var result = Sut.Parse(stream);
 
             // assert
             await Verify(result);
         }
 
         [Fact]
-        public void Parse_ContentWithoutContacts2Section_ShouldReturnEmpty()
+        public async Task Parse_ContentWithoutContacts2Section()
         {
             // arrange
             var removedContacts2SectionContent = PicasaIniFileContent.Replace("[Contacts2]", "[Contacts.jpg]");
-            using var stream = GenerateStreamFromString(removedContacts2SectionContent);
+            await using var stream = GenerateStreamFromString(removedContacts2SectionContent);
 
             // act
             var result = Sut.Parse(stream);
 
             // assert
-            result.Should().BeEmpty();
+            await Verify(result);
         }
 
         private static MemoryStream GenerateStreamFromString(string value)
