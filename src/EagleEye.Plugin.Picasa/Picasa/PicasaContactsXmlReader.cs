@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Scenarios.UpdatePicasaIni
+﻿namespace EagleEye.Picasa.Picasa
 {
     using System;
     using System.Collections.Generic;
@@ -19,7 +19,7 @@
             this.fileService = fileService;
         }
 
-        public List<PicasaXmlContactInformation> GetContactsFromFile([NotNull] string xmlFilename)
+        public List<PicasaPerson> GetContactsFromFile([NotNull] string xmlFilename)
         {
             Guard.Argument(xmlFilename, nameof(xmlFilename)).NotNull().NotEmpty();
             if (fileService.FileExists(xmlFilename))
@@ -30,8 +30,10 @@
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(stream);
             XmlNodeList nodes = xmlDoc.SelectNodes("contacts/contact");
+            if (nodes == null)
+                return new List<PicasaPerson>(0);
 
-            var result = new List<PicasaXmlContactInformation>(nodes.Count);
+            var result = new List<PicasaPerson>(nodes.Count);
             foreach (XmlNode node in nodes)
             {
                 var item = Convert(node);
@@ -42,10 +44,13 @@
             return result;
         }
 
-        private static PicasaXmlContactInformation? Convert(XmlNode node)
+        private static PicasaPerson? Convert(XmlNode node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
+
+            if (node.Attributes == null)
+                return null;
 
             var idAttribute = node.Attributes["id"];
             if (idAttribute == null)
@@ -63,7 +68,7 @@
             if (string.IsNullOrWhiteSpace(name))
                 return null;
 
-            return new PicasaXmlContactInformation(id, name);
+            return new PicasaPerson(id, name);
         }
     }
 }

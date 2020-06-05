@@ -1,10 +1,10 @@
-﻿namespace EagleEye.FileImporter.Test.Scenarios.UpdatePicasaIni
+﻿namespace EagleEye.Picasa.Test.Picasa
 {
     using System.IO;
     using System.Text;
 
     using EagleEye.Core.Interfaces.Core;
-    using EagleEye.FileImporter.Scenarios.UpdatePicasaIni;
+    using EagleEye.Picasa.Picasa;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;
@@ -31,9 +31,9 @@
 
             // assert
             result.Should().BeEquivalentTo(
-                                           new PicasaXmlContactInformation("af8a34a6cdcd1b7f", "Ace"),
-                                           new PicasaXmlContactInformation("50a8d85cd1e165c2", "Bear"),
-                                           new PicasaXmlContactInformation("40cffd0a1c385555", "Case"));
+                                           new PicasaPerson("af8a34a6cdcd1b7f", "Ace"),
+                                           new PicasaPerson("50a8d85cd1e165c2", "Bear"),
+                                           new PicasaPerson("40cffd0a1c385555", "Case"));
         }
 
         [Fact]
@@ -56,8 +56,8 @@
 
             // assert
             result.Should().BeEquivalentTo(
-                                           new PicasaXmlContactInformation("af8a34a6cdcd1b7f", "Ace"),
-                                           new PicasaXmlContactInformation("50a8d85cd1e165c2", "Bear"));
+                                           new PicasaPerson("af8a34a6cdcd1b7f", "Ace"),
+                                           new PicasaPerson("50a8d85cd1e165c2", "Bear"));
         }
 
         [Fact]
@@ -80,8 +80,8 @@
 
             // assert
             result.Should().BeEquivalentTo(
-                                           new PicasaXmlContactInformation("af8a34a6cdcd1b7f", "Ace"),
-                                           new PicasaXmlContactInformation("50a8d85cd1e165c2", "Bear"));
+                                           new PicasaPerson("af8a34a6cdcd1b7f", "Ace"),
+                                           new PicasaPerson("50a8d85cd1e165c2", "Bear"));
         }
 
         private static Stream CreateStream(string content) => new MemoryStream(Encoding.UTF8.GetBytes(content ?? string.Empty));
