@@ -9,5 +9,7 @@
         bool FileExists([NotNull] string filename);
 
         Stream OpenRead([NotNull] string filename);
+
+        Stream OpenWrite(string filename);
     }
 }

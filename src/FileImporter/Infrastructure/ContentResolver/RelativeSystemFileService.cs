@@ -26,6 +26,11 @@
             return SystemFileService.Instance.OpenRead(FullPath(filename));
         }
 
+        public Stream OpenWrite(string filename)
+        {
+            return SystemFileService.Instance.OpenWrite(FullPath(filename));
+        }
+
         private string FullPath(string identifier)
         {
             return Path.Combine(baseDirectory, identifier);

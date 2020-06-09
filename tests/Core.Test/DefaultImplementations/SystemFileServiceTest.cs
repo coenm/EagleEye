@@ -1,10 +1,12 @@
 ﻿namespace EagleEye.Core.Test.DefaultImplementations
 {
+    using System.Collections.Generic;
     using System.IO;
 
     using EagleEye.Core.DefaultImplementations;
     using EagleEye.TestHelper;
     using FluentAssertions;
+    using Pose;
     using Xunit;
 
     public class SystemFileServiceTest
@@ -41,6 +43,25 @@
 
             // assert
             result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void OpenWrite_ShouldCallSystemOpenWrite()
+        {
+            // arrange
+            var fileOpenCalled = new List<string>();
+            var fileShim = Shim.Replace(() => File.Open(Is.A<string>(), Is.A<FileMode>(), Is.A<FileAccess>(), Is.A<FileShare>()))
+                                    .With((string path, FileMode fileMode, FileAccess fileAccess, FileShare fileShare) =>
+                                          {
+                                              fileOpenCalled.Add(string.Join(',', path, fileMode, fileAccess, fileShare));
+                                              return (FileStream)null; // doesn't matter
+                                          });
+
+            // act
+            PoseContext.Isolate(() => _ = sut.OpenWrite("test.jpg"), fileShim);
+
+            // assert
+            fileOpenCalled.Should().BeEquivalentTo($"test.jpg,{FileMode.Open},{FileAccess.Write},{FileShare.Read}");
         }
     }
 }

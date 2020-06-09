@@ -14,6 +14,8 @@
 
         public Stream OpenRead(string filename) => File.OpenRead(filename);
 
+        public Stream OpenWrite(string filename) => File.Open(filename, FileMode.Open, FileAccess.Write, FileShare.Read);
+
         public bool FileExists(string filename) => File.Exists(filename);
     }
 }
