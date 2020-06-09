@@ -42,7 +42,7 @@
             directoryExistsCalled.Should().BeEquivalentTo("test directory");
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor, reason: "Does not work with code coverage")]
         public void EnumerateFiles_ShouldCallAndReturnSystemDirectoryEnumerateFiles_WhenCalled()
         {
             // arrange

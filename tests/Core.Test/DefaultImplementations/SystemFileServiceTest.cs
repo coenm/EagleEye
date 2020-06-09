@@ -5,6 +5,7 @@
 
     using EagleEye.Core.DefaultImplementations;
     using EagleEye.TestHelper;
+    using EagleEye.TestHelper.XUnit.Facts;
     using FluentAssertions;
     using Pose;
     using Xunit;
@@ -45,7 +46,7 @@
             result.Should().NotBeNull();
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor, reason: "Does not work with code coverage")]
         public void OpenWrite_ShouldCallSystemOpenWrite()
         {
             // arrange
