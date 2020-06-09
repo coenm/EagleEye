@@ -22,8 +22,8 @@
         public List<PicasaPerson> GetContactsFromFile([NotNull] string xmlFilename)
         {
             Guard.Argument(xmlFilename, nameof(xmlFilename)).NotNull().NotEmpty();
-            if (fileService.FileExists(xmlFilename))
-                throw new FileNotFoundException(nameof(xmlFilename));
+            if (!fileService.FileExists(xmlFilename))
+                throw new FileNotFoundException(xmlFilename);
 
             using var stream = fileService.OpenRead(xmlFilename);
 

@@ -22,6 +22,10 @@
 
         public string Name { get; }
 
+        [DebuggerNonUserCode]
+        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
+        private string DebuggerDisplay => ToString();
+
         public bool Equals(PicasaPerson other)
         {
             return Id == other.Id && Name == other.Name;
@@ -46,9 +50,5 @@
                        ? $"{Name} (<empty id>)"
                        : $"{Name} ({Id})";
         }
-
-        [DebuggerNonUserCode]
-        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
-        private string DebuggerDisplay => ToString();
     }
 }

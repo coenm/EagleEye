@@ -36,7 +36,7 @@
         public override string ToString()
         {
             var result = $"{Filename} has ";
-            if (!Persons.Any())
+            if (Persons.Count == 0)
                 return result + "no persons.";
 
             result += "persons:";

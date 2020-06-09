@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="Dawn.Guard" />
-    <PackageReference Include="xunit" />
   </ItemGroup>
 
 </Project>
