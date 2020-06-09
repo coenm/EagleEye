@@ -5,10 +5,10 @@
     /// <summary>
     /// Conditional Fact attribute. Test is only executed when ran (or skipped based on TestHostMode) on given TestHost.
     /// </summary>
-    public sealed class ConditionalHostFactAttribute : FactAttribute
+    public sealed class ConditionalHostTheoryAttribute : TheoryAttribute
     {
         [JetBrains.Annotations.PublicAPI]
-        public ConditionalHostFactAttribute(TestHost allowedHosts, string reason = null)
+        public ConditionalHostTheoryAttribute(TestHost allowedHosts, string reason = null)
         {
             if (TestEnvironment.RunsOnAppVeyor && (allowedHosts & TestHost.AppVeyorWindows) == TestHost.AppVeyorWindows)
                 return;
@@ -23,7 +23,7 @@
         }
 
         [JetBrains.Annotations.PublicAPI]
-        public ConditionalHostFactAttribute(TestHostMode mode, TestHost hosts, string reason = null)
+        public ConditionalHostTheoryAttribute(TestHostMode mode, TestHost hosts, string reason = null)
         {
             if (TestEnvironment.RunsOnAppVeyor && (hosts & TestHost.AppVeyorWindows) == TestHost.AppVeyorWindows)
             {
