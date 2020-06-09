@@ -17,7 +17,7 @@
         public PicasaIniFile(PicasaIniFile original)
         {
             Guard.Argument(original, nameof(original)).NotNull();
-            Files = original.Files.ToList();
+            Files = original.Files.Select(f => f.Clone() as FileWithPersons).ToList();
             Persons = original.Persons.ToList();
         }
 

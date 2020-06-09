@@ -7,7 +7,7 @@
     using System.Linq;
 
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
-    public class FileWithPersons : IEquatable<FileWithPersons>
+    public class FileWithPersons : IEquatable<FileWithPersons>,  ICloneable
     {
         private readonly List<PicasaPersonLocation> persons;
 
@@ -20,6 +20,10 @@
         public string Filename { get; }
 
         public List<PicasaPersonLocation> Persons => persons;
+
+        [DebuggerNonUserCode]
+        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
+        private string DebuggerDisplay => ToString();
 
         public void AddPerson(PicasaPersonLocation person)
         {
@@ -40,9 +44,10 @@
             return result.Substring(0, result.Length - 1);
         }
 
-        [DebuggerNonUserCode]
-        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
-        private string DebuggerDisplay => ToString();
+        public object Clone()
+        {
+            return new FileWithPersons(Filename, Persons.Select(p => p.Clone() as PicasaPersonLocation).ToArray());
+        }
 
         public bool Equals(FileWithPersons other)
         {

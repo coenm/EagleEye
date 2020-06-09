@@ -8,9 +8,11 @@
     using EagleEye.FileImporter.Scenarios.UpdatePicasaIni;
     using EagleEye.Picasa.Picasa;
     using FakeItEasy;
+    using VerifyXunit;
     using Xunit;
+    using Xunit.Abstractions;
 
-    public class UpdatePicasaIniFileExecutorTest
+    public class UpdatePicasaIniFileExecutorTest : VerifyBase
     {
         private const string DummyFilename = "dummy.ini";
         private readonly IPicasaContactsProvider picasaContactsProvider;
@@ -19,11 +21,31 @@
         private readonly UpdatePicasaIniFileExecutor sut;
         private readonly IPicaseIniFileWriter picasaIniFileWriter;
 
-        public UpdatePicasaIniFileExecutorTest()
+        private readonly PicasaPerson person123AliceUpdated = new PicasaPerson("123", "AliceUpdated");
+        private readonly PicasaPerson person123Alice = new PicasaPerson("123", "Alice");
+        private readonly PicasaPerson person1234Bob = new PicasaPerson("1234", "Bob");
+
+        private readonly List<WrittenIniFilesData> writtenIniFiles;
+
+        public UpdatePicasaIniFileExecutorTest(ITestOutputHelper output)
+            : base(output)
         {
             picasaContactsProvider = A.Fake<IPicasaContactsProvider>();
             picasaIniFileProvider = A.Fake<IPicasaIniFileProvider>();
             picasaIniFileWriter = A.Fake<IPicaseIniFileWriter>();
+
+            writtenIniFiles = new List<WrittenIniFilesData>();
+            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, A<PicasaIniFile>._))
+             .Invokes(call =>
+                      {
+                          var filename = call.Arguments[0] as string;
+                          var updater = call.Arguments[1] as PicasaIniFileUpdater;
+                          var original = call.Arguments[2] as PicasaIniFile;
+
+                          writtenIniFiles.Add(new WrittenIniFilesData(updater, original));
+                          return;
+                      });
+
             sut = new UpdatePicasaIniFileExecutor(picasaContactsProvider, picasaIniFileProvider, picasaIniFileWriter);
         }
 
@@ -45,18 +67,13 @@
         public async Task ExecuteAsync_ShouldGetContacts_WhenPicasaIniIsNotNull()
         {
             // arrange
-            A.CallTo(() => picasaIniFileProvider.Get(DummyFilename))
-             .Returns(new PicasaIniFile(
-                                        new List<FileWithPersons>
-                                        {
-                                            new FileWithPersons(
-                                                                "A.jpg",
-                                                                new PicasaPersonLocation(
-                                                                                         new PicasaPerson("123", "Alice"),
-                                                                                         new RelativeRegion(1, 2, 3, 4))),
-                                        },
-                                        new List<PicasaPerson>(
-                                                               new[] { new PicasaPerson("123", "Alice"), })));
+            var iniFile = new PicasaIniFileBuilder()
+                          .GetOrAddFile("A.jpg")
+                            .AddPerson(person123Alice, 1)
+                            .Return()
+                          .Build();
+
+            A.CallTo(() => picasaIniFileProvider.Get(DummyFilename)).Returns(iniFile);
 
             // act
             await sut.HandleAsync(DummyFilename, null, CancellationToken.None);
@@ -69,25 +86,15 @@
         public async Task ExecuteAsync_ShouldNotUpdate_WhenOriginalIniIsComplete()
         {
             // arrange
-            A.CallTo(() => picasaContactsProvider.GetPicasaContacts())
-             .Returns(new List<PicasaPerson>
-                      {
-                          new PicasaPerson("123", "AliceUpdated"),
-                          new PicasaPerson("1234", "Bob"),
-                      });
+            SetupPicasaContactsProvider(person123AliceUpdated, person1234Bob);
 
-            A.CallTo(() => picasaIniFileProvider.Get(DummyFilename))
-             .Returns(new PicasaIniFile(
-                                        new List<FileWithPersons>
-                                        {
-                                            new FileWithPersons(
-                                                                "A.jpg",
-                                                                new PicasaPersonLocation(
-                                                                                         new PicasaPerson("123", "Alice"),
-                                                                                         new RelativeRegion(1, 2, 3, 4))),
-                                        },
-                                        new List<PicasaPerson>(
-                                                               new[] { new PicasaPerson("123", "Alice"), })));
+            var iniFile = new PicasaIniFileBuilder()
+                          .GetOrAddFile("A.jpg")
+                            .AddPerson(person123Alice, 1)
+                            .Return()
+                          .Build();
+
+            A.CallTo(() => picasaIniFileProvider.Get(DummyFilename)).Returns(iniFile);
 
             // act
             await sut.HandleAsync(DummyFilename, null, CancellationToken.None);
@@ -100,18 +107,13 @@
         public async Task ExecuteAsync_ShouldUpdate_WhenOriginalIsNotCompleteAndUpdatedFromContacts()
         {
             // arrange
-            A.CallTo(() => picasaContactsProvider.GetPicasaContacts())
-             .Returns(new List<PicasaPerson>
-                      {
-                          new PicasaPerson("123", "AliceUpdated"),
-                          new PicasaPerson("1234", "Bob"),
-                      });
+            SetupPicasaContactsProvider(person123AliceUpdated, person1234Bob);
 
             var picasaIniFile = new PicasaIniFileBuilder()
                                 .GetOrAddFile("A.jpg")
-                                .AddPerson(new PicasaPerson("123", "Alice"), 1)
-                                .AddUnlistedPerson("1234", 2)
-                                .Return()
+                                    .AddPerson(new PicasaPerson("123", "Alice"), 1)
+                                    .AddUnlistedPerson("1234", 2)
+                                    .Return()
                                 .Build();
 
             A.CallTo(() => picasaIniFileProvider.Get(DummyFilename)).Returns(picasaIniFile);
@@ -121,13 +123,12 @@
 
             // assert
             A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, picasaIniFile)).MustHaveHappenedOnceExactly();
+            await Verify(writtenIniFiles);
         }
 
-        private PicasaPersonLocation CreatePicasaPersonLocation(string id, string name, float regionBaseValue)
+        private void SetupPicasaContactsProvider(params PicasaPerson[] persons)
         {
-            return new PicasaPersonLocation(
-                                            new PicasaPerson(id, name),
-                                            new RelativeRegion(regionBaseValue, regionBaseValue + 1, regionBaseValue + 2, regionBaseValue + 3));
+            A.CallTo(() => picasaContactsProvider.GetPicasaContacts()).Returns(persons);
         }
 
         private class PicasaIniFileBuilder
@@ -144,11 +145,11 @@
             public FileWithPersonsBuilder GetOrAddFile(string filename)
             {
                 var item = files.FirstOrDefault(f => f.Filename == filename);
-                if (item == null)
-                {
-                    item = new FileWithPersonsBuilder(filename, this);
-                    files.Add(item);
-                }
+                if (item != null)
+                    return item;
+
+                item = new FileWithPersonsBuilder(filename, this);
+                files.Add(item);
 
                 return item;
             }
@@ -161,7 +162,7 @@
 
             public PicasaIniFile Build()
             {
-                return new PicasaIniFile(files.Select(x => x.Build()).ToList(), contacts.ToList());
+                return new PicasaIniFile(files.Select(x => x.Build()).ToList(), contacts.Distinct().ToList());
             }
         }
 
@@ -179,11 +180,16 @@
 
             public string Filename { get; }
 
-            public FileWithPersonsBuilder AddPerson(PicasaPerson person, float regionBase)
+            public FileWithPersonsBuilder AddPerson(PicasaPerson person, RelativeRegion region)
             {
-                items.Add(new PicasaPersonLocation(person, new RelativeRegion(regionBase, regionBase + 1, regionBase + 2, regionBase + 3)));
+                items.Add(new PicasaPersonLocation(person, region));
                 _ = parent.AddToContacts(person);
                 return this;
+            }
+
+            public FileWithPersonsBuilder AddPerson(PicasaPerson person, float regionBase)
+            {
+                return AddPerson(person, new RelativeRegion(regionBase, regionBase + 1, regionBase + 2, regionBase + 3));
             }
 
             public FileWithPersonsBuilder AddUnlistedPerson(string id, float regionBase)
@@ -202,6 +208,19 @@
             {
                 return new FileWithPersons(Filename, items.ToArray());
             }
+        }
+
+        private class WrittenIniFilesData
+        {
+            public WrittenIniFilesData(PicasaIniFileUpdater updater, PicasaIniFile original)
+            {
+                Updater = updater;
+                Original = original;
+            }
+
+            public PicasaIniFileUpdater Updater { get; }
+
+            public PicasaIniFile Original { get; }
         }
     }
 }

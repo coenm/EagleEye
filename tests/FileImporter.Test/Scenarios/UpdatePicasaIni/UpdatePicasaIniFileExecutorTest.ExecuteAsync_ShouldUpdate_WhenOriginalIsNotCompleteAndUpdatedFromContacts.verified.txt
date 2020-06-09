@@ -1,0 +1,88 @@
+[
+  {
+    Updater: {
+      IniFile: {
+        Files: [
+          {
+            Filename: 'A.jpg',
+            Persons: [
+              {
+                Person: {
+                  Id: '123',
+                  Name: 'Alice'
+                },
+                Region: {
+                  Left: 1.0,
+                  Top: 2.0,
+                  Right: 3.0,
+                  Bottom: 4.0
+                }
+              },
+              {
+                Person: {
+                  Id: '1234',
+                  Name: 'Bob'
+                },
+                Region: {
+                  Left: 2.0,
+                  Top: 3.0,
+                  Right: 4.0,
+                  Bottom: 5.0
+                }
+              }
+            ]
+          }
+        ],
+        Persons: [
+          {
+            Id: '123',
+            Name: 'Alice'
+          },
+          {
+            Id: '1234',
+            Name: 'Bob'
+          }
+        ]
+      }
+    },
+    Original: {
+      Files: [
+        {
+          Filename: 'A.jpg',
+          Persons: [
+            {
+              Person: {
+                Id: '123',
+                Name: 'Alice'
+              },
+              Region: {
+                Left: 1.0,
+                Top: 2.0,
+                Right: 3.0,
+                Bottom: 4.0
+              }
+            },
+            {
+              Person: {
+                Id: '1234',
+                Name: ''
+              },
+              Region: {
+                Left: 2.0,
+                Top: 3.0,
+                Right: 4.0,
+                Bottom: 5.0
+              }
+            }
+          ]
+        }
+      ],
+      Persons: [
+        {
+          Id: '123',
+          Name: 'Alice'
+        }
+      ]
+    }
+  }
+]

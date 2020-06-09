@@ -4,7 +4,7 @@
 
     using JetBrains.Annotations;
 
-    public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>
+    public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>, ICloneable
     {
         public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] RelativeRegion? region = null)
         {
@@ -58,6 +58,11 @@
             {
                 return (Person.GetHashCode() * 397) ^ Region.GetHashCode();
             }
+        }
+
+        public object Clone()
+        {
+            return new PicasaPersonLocation(Person, Region);
         }
     }
 }
