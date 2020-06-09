@@ -18,6 +18,7 @@
     <PackageReference Include="ShellProgressBar" />
     <PackageReference Include="SimpleInjector" />
     <PackageReference Include="System.Memory" />
+    <PackageReference Include="SoftCircuits.IniFileParser" />
   </ItemGroup>
 
   <ItemGroup>

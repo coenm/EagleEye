@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
 
     using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
-    using EagleEye.FileImporter.Similarity;
     using FakeItEasy;
     using FluentAssertions;
     using Xunit;

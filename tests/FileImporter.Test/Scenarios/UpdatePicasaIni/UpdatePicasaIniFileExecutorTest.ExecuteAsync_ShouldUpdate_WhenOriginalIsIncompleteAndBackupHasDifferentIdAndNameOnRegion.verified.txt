@@ -21,30 +21,13 @@
               {
                 Person: {
                   Id: '1234',
-                  Name: 'Bob'
+                  Name: 'Calvin'
                 },
                 Region: {
                   Left: 2.0,
                   Top: 3.0,
                   Right: 4.0,
                   Bottom: 5.0
-                }
-              }
-            ]
-          },
-          {
-            Filename: 'B.jpg',
-            Persons: [
-              {
-                Person: {
-                  Id: '1234',
-                  Name: 'Bob'
-                },
-                Region: {
-                  Left: 4.0,
-                  Top: 5.0,
-                  Right: 6.0,
-                  Bottom: 7.0
                 }
               }
             ]
@@ -57,7 +40,7 @@
           },
           {
             Id: '1234',
-            Name: 'Bob'
+            Name: 'Calvin'
           }
         ]
       }
@@ -89,23 +72,6 @@
                 Top: 3.0,
                 Right: 4.0,
                 Bottom: 5.0
-              }
-            }
-          ]
-        },
-        {
-          Filename: 'B.jpg',
-          Persons: [
-            {
-              Person: {
-                Id: '1234',
-                Name: ''
-              },
-              Region: {
-                Left: 4.0,
-                Top: 5.0,
-                Right: 6.0,
-                Bottom: 7.0
               }
             }
           ]

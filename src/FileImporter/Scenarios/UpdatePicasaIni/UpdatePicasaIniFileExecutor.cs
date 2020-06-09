@@ -13,12 +13,12 @@
     {
         [NotNull] private readonly IPicasaContactsProvider picasaContactsProvider;
         [NotNull] private readonly IPicasaIniFileProvider picasaIniFileProvider;
-        [NotNull] private readonly IPicaseIniFileWriter picasaIniFileWriter;
+        [NotNull] private readonly IPicasaIniFileWriter picasaIniFileWriter;
 
         public UpdatePicasaIniFileExecutor(
             [NotNull] IPicasaContactsProvider picasaContactsProvider,
             [NotNull] IPicasaIniFileProvider picasaIniFileProvider,
-            [NotNull] IPicaseIniFileWriter picasaIniFileWriter)
+            [NotNull] IPicasaIniFileWriter picasaIniFileWriter)
         {
             Guard.Argument(picasaContactsProvider, nameof(picasaContactsProvider)).NotNull();
             Guard.Argument(picasaIniFileProvider, nameof(picasaIniFileProvider)).NotNull();
@@ -40,9 +40,7 @@
                 return;
 
             var updater = new PicasaIniFileUpdater(currentConfig);
-
-            // var backups = picasaIniFileProvider.GetBackups(filename);
-
+            var backups = picasaIniFileProvider.GetBackups(filename).ToList();
             var contacts = picasaContactsProvider.GetPicasaContacts().ToArray();
 
             foreach (var file in currentConfig.Files)
@@ -50,18 +48,44 @@
                 var updatedFile = updater.IniFile.Files.First(f => f.Filename == file.Filename);
                 foreach (var personWithLocation in updatedFile.Persons.ToList())
                 {
-                    if (string.IsNullOrWhiteSpace(personWithLocation.Person.Name))
-                    {
-                        var id = personWithLocation.Person.Id;
+                    if (!string.IsNullOrWhiteSpace(personWithLocation.Person.Name))
+                        continue;
 
+                    var id = personWithLocation.Person.Id;
+                    var region = personWithLocation.Region;
+                    var found = false;
+
+                    if (region.HasValue)
+                    {
+                        // check if backups has item with same coordinates.
+                        var foundPersons = backups
+                                           .SelectMany(picasaIniFile => picasaIniFile.Files)
+                                           .Where(fileWithPersons => fileWithPersons.Filename == file.Filename)
+                                           .SelectMany(fileWithPersons => fileWithPersons.Persons)
+                                           .Where(personLocation => region.Equals(personLocation.Region))
+                                           .Where(x => string.IsNullOrWhiteSpace(x.Person.Name) == false)
+                                           .ToArray();
+
+                        if (foundPersons.Length >= 1)
+                        {
+                            var foundContact = foundPersons[0];
+                            found = true;
+
+                            if (foundPersons.Length > 1)
+                            {
+                                // logging.
+                            }
+
+                            updater.UpdateNameForId(id, foundContact.Person.Name);
+                        }
+                    }
+
+                    if (!found)
+                    {
                         // try get name
                         var selectedContacts = contacts.Where(c => c.Id == id).ToList();
-                        if (selectedContacts.Any())
-                            updater.UpdateNameForId(id, selectedContacts.First().Name);
-                    }
-                    else
-                    {
-                        // todo
+                        if (selectedContacts.Count > 0)
+                            updater.UpdateNameForId(id, selectedContacts[0].Name);
                     }
                 }
             }

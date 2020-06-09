@@ -16,7 +16,11 @@
         public void UpdateNameForId(string id, string name)
         {
             var newContact = new PicasaPerson(id, name);
+            UpdateContactForId(id, newContact);
+        }
 
+        public void UpdateContactForId(string id, PicasaPerson newContact)
+        {
             foreach (var file in IniFile.Files)
             {
                 foreach (var personWithLocation in file.Persons.Where(personWithLocation => personWithLocation.Person.Id == id))
@@ -26,9 +30,7 @@
             }
 
             foreach (var p in IniFile.Persons.Where(p => p.Id == id))
-            {
                 IniFile.Persons.Remove(p);
-            }
 
             IniFile.Persons.Add(newContact);
         }

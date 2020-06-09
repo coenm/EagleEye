@@ -2,7 +2,7 @@
 {
     using EagleEye.Picasa.Picasa;
 
-    public interface IPicaseIniFileWriter
+    public interface IPicasaIniFileWriter
     {
         void Write(string filename, PicasaIniFileUpdater updated, PicasaIniFile original);
     }
