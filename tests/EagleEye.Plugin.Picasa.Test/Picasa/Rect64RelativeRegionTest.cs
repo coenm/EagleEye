@@ -14,6 +14,24 @@
         private const string Rect4 = "rect64(66273ab58849596a)";
         private const string Rect5 = "rect64(3d4b58c75a5681b9)";
 
+        [Theory]
+        [InlineData("rect64(ffffffff)")]
+        [InlineData("rect64(30004000)")]
+        [InlineData("rect64(bfff3000ffff)")]
+        [InlineData("rect64(cfff0000ffff4000)")]
+        [InlineData("rect64(cfffbfffffffffff)")]
+        public void Ctor_ShouldNotThrow_WhenInputIsValid(string input)
+        {
+            // arrange
+            var sut = new Rect64RelativeRegion(input);
+
+            // act
+            var rect = sut.Rect64;
+
+            // assert
+            rect.Should().Be(input);
+        }
+
         [Fact]
         public void Properties_ShouldReturnInitialValues()
         {

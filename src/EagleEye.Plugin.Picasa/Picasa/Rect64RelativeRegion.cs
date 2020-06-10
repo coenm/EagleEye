@@ -50,10 +50,13 @@
 
         private static (float left, float top, float right, float bottom)? DecodeRect64ToRelativeCoordinates(ref string rect64)
         {
-            const int expectedLength = 7 + 16 + 1;
+            const int minLength = 7 + 8 + 1;
+            const int maxLength = 7 + 16 + 1;
             if (rect64 == null)
                 return null;
-            if (rect64.Length != expectedLength)
+            if (rect64.Length < minLength)
+                return null;
+            if (rect64.Length > maxLength)
                 return null;
             if (!rect64.StartsWith("rect64("))
                 return null;
@@ -62,15 +65,28 @@
 
             const int rect64StringLength = 7; // length of "rect64("
 
-            var left = FromString(ref rect64, 0 + rect64StringLength);
-            var top = FromString(ref rect64, 4 + rect64StringLength);
-            var right = FromString(ref rect64, 8 + rect64StringLength);
-            var bottom = FromString(ref rect64, 12 + rect64StringLength);
+            if (rect64.Length == maxLength)
+            {
+                return DecomposeStringToRectangle(ref rect64, rect64StringLength);
+            }
+            else
+            {
+                var data = new string('0', maxLength - rect64.Length) + rect64.Substring(rect64StringLength);
+                return DecomposeStringToRectangle(ref data, 0);
+            }
+        }
 
-            var relativeLeft = (float)left / (float)ushort.MaxValue;
-            var relativeTop = (float)top / (float)ushort.MaxValue;
-            var relativeRight = (float)right / (float)ushort.MaxValue;
-            var relativeBottom = (float)bottom / (float)ushort.MaxValue;
+        private static (float left, float top, float right, float bottom)? DecomposeStringToRectangle(ref string rect64, int startIndex)
+        {
+            var left = FromString(ref rect64, 0 + startIndex);
+            var top = FromString(ref rect64, 4 + startIndex);
+            var right = FromString(ref rect64, 8 + startIndex);
+            var bottom = FromString(ref rect64, 12 + startIndex);
+
+            var relativeLeft = (float) left / (float) ushort.MaxValue;
+            var relativeTop = (float) top / (float) ushort.MaxValue;
+            var relativeRight = (float) right / (float) ushort.MaxValue;
+            var relativeBottom = (float) bottom / (float) ushort.MaxValue;
 
             return (relativeLeft, relativeTop, relativeRight, relativeBottom);
         }
