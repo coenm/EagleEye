@@ -9,6 +9,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(a16a5261b7037516)',
             Left: 0.6305333,
             Top: 0.32179752,
             Right: 0.71490043,
@@ -21,6 +22,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(397a37cb697a77cb)',
             Left: 0.22452125,
             Top: 0.2179446,
             Right: 0.4120241,
@@ -33,6 +35,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(7ba11f6daba15f6d)',
             Left: 0.48293278,
             Top: 0.12275883,
             Right: 0.67043567,
@@ -45,6 +48,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(a3e041b9d3d081b9)',
             Left: 0.6401465,
             Top: 0.25673303,
             Right: 0.8274052,
@@ -65,6 +69,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(500048f1854a9e46)',
             Left: 0.31250477,
             Top: 0.28493172,
             Right: 0.5206683,
@@ -77,6 +82,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(97423e5cc7327e5b)',
             Left: 0.59085983,
             Top: 0.24359502,
             Right: 0.77811855,
@@ -94,6 +100,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(787e40a89fff7fc0)',
             Left: 0.4706798,
             Top: 0.25256732,
             Right: 0.6249943,
@@ -106,6 +113,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(3df8363c8b6289d8)',
             Left: 0.24206913,
             Top: 0.21185626,
             Right: 0.5444724,
@@ -118,6 +126,7 @@
             Name: ''
           },
           Region: {
+            Rect64: 'rect64(7c1f1126c5898483)',
             Left: 0.4848554,
             Top: 0.066987105,
             Right: 0.7716335,

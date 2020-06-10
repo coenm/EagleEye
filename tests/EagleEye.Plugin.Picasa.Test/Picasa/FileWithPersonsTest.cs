@@ -9,6 +9,8 @@
 
     public class FileWithPersonsTest
     {
+        private readonly Rect64RelativeRegion region1 = new Rect64RelativeRegion("rect64(935f5217a1696893)");
+        private readonly Rect64RelativeRegion region2 = new Rect64RelativeRegion("rect64(4f5c884659bb98b2)");
         private FileWithPersons sut;
 
         public FileWithPersonsTest()
@@ -119,7 +121,7 @@
             sut = new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice"));
 
             // act
-            var result = sut.Equals(sut = new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob", new RelativeRegion(1, 2, 3, 4)), new PicasaPersonLocation("Alice")));
+            var result = sut.Equals(sut = new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob", region1), new PicasaPersonLocation("Alice")));
 
             // assert
             result.Should().BeFalse();
@@ -187,8 +189,8 @@
             var suts = new List<FileWithPersons>
                        {
                            new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice")),
-                           new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice", new RelativeRegion(1, 2, 3, 4))),
-                           new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice", new RelativeRegion(1, 2, 3, 3))),
+                           new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice", region1)),
+                           new FileWithPersons("file.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice", region2)),
                            new FileWithPersons("other.jpg", new PicasaPersonLocation("Bob"), new PicasaPersonLocation("Alice")),
                            new FileWithPersons("file.jpg", new PicasaPersonLocation("Alice"), new PicasaPersonLocation("Bob")),
                        };

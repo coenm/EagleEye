@@ -6,13 +6,13 @@
 
     public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>, ICloneable
     {
-        public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] RelativeRegion? region = null)
+        public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] Rect64RelativeRegion? region = null)
         {
             Person = person;
             Region = region;
         }
 
-        public PicasaPersonLocation([NotNull] string person, [CanBeNull] RelativeRegion? region = null)
+        public PicasaPersonLocation([NotNull] string person, [CanBeNull] Rect64RelativeRegion? region = null)
         {
             Person = new PicasaPerson(string.Empty, person);
             Region = region;
@@ -22,7 +22,7 @@
         public PicasaPerson Person { get; private set; }
 
         [CanBeNull]
-        public RelativeRegion? Region { get; }
+        public Rect64RelativeRegion? Region { get; }
 
         public void UpdatePerson([NotNull] PicasaPerson picasaPerson)
         {

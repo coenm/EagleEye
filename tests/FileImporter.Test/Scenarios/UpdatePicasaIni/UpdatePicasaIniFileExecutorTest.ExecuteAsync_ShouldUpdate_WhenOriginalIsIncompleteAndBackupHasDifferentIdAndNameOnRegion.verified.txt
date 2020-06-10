@@ -12,10 +12,11 @@
                   Name: 'Alice'
                 },
                 Region: {
-                  Left: 1.0,
-                  Top: 2.0,
-                  Right: 3.0,
-                  Bottom: 4.0
+                  Rect64: 'rect64(935f5217a1696893)',
+                  Left: 0.5756771,
+                  Top: 0.32066834,
+                  Right: 0.630518,
+                  Bottom: 0.40849927
                 }
               },
               {
@@ -24,10 +25,11 @@
                   Name: 'Calvin'
                 },
                 Region: {
-                  Left: 2.0,
-                  Top: 3.0,
-                  Right: 4.0,
-                  Bottom: 5.0
+                  Rect64: 'rect64(4f5c884659bb98b2)',
+                  Left: 0.3100023,
+                  Top: 0.5323262,
+                  Right: 0.35051498,
+                  Bottom: 0.5964752
                 }
               }
             ]
@@ -56,10 +58,11 @@
                 Name: 'Alice'
               },
               Region: {
-                Left: 1.0,
-                Top: 2.0,
-                Right: 3.0,
-                Bottom: 4.0
+                Rect64: 'rect64(935f5217a1696893)',
+                Left: 0.5756771,
+                Top: 0.32066834,
+                Right: 0.630518,
+                Bottom: 0.40849927
               }
             },
             {
@@ -68,10 +71,11 @@
                 Name: ''
               },
               Region: {
-                Left: 2.0,
-                Top: 3.0,
-                Right: 4.0,
-                Bottom: 5.0
+                Rect64: 'rect64(4f5c884659bb98b2)',
+                Left: 0.3100023,
+                Top: 0.5323262,
+                Right: 0.35051498,
+                Bottom: 0.5964752
               }
             }
           ]

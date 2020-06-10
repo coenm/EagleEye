@@ -1,37 +1,45 @@
 ﻿namespace EagleEye.Picasa.Test.Picasa
 {
-    using System.Collections.Generic;
+    using System.Linq;
 
     using EagleEye.Picasa.Picasa;
     using FluentAssertions;
     using Xunit;
 
-    public class RelativeRegionTest
+    public class Rect64RelativeRegionTest
     {
+        private const string Rect1 = "rect64(935f5217a1696893)";
+        private const string Rect2 = "rect64(4f5c884659bb98b2)";
+        private const string Rect3 = "rect64(49c9348362765a56)";
+        private const string Rect4 = "rect64(66273ab58849596a)";
+        private const string Rect5 = "rect64(3d4b58c75a5681b9)";
+
         [Fact]
         public void Properties_ShouldReturnInitialValues()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
 
             // act
+            var rect = sut.Rect64;
             var left = sut.Left;
             var top = sut.Top;
             var right = sut.Right;
             var bottom = sut.Bottom;
 
             // assert
-            left.Should().Be(12);
-            top.Should().Be(13);
-            right.Should().Be(14);
-            bottom.Should().Be(15);
+            rect.Should().Be(Rect1);
+            left.Should().Be(0.5756771F);
+            top.Should().Be(0.32066834F);
+            right.Should().Be(0.630518F);
+            bottom.Should().Be(0.40849927F);
         }
 
         [Fact]
         public void Equals_ShouldBeFalse_WhenNull()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
 
             // act
             var result = sut.Equals(null);
@@ -44,10 +52,10 @@
         public void Equals_ShouldBeFalse_WhenOtherValues()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
 
             // act
-            var result = sut.Equals(new RelativeRegion(12, 13, 14, 16));
+            var result = sut.Equals(new Rect64RelativeRegion(Rect2));
 
             // assert
             result.Should().BeFalse();
@@ -57,7 +65,7 @@
         public void Equals_ShouldBeTrue_WhenCompareToSameObjectReference()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
 
             // act
             var result = sut.Equals(sut);
@@ -70,10 +78,10 @@
         public void Equals_ShouldBeTrue_WhenCompareToOtherRelativeRegionWithSameValues()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
 
             // act
-            var result = sut.Equals(new RelativeRegion(12, 13, 14, 15));
+            var result = sut.Equals(new Rect64RelativeRegion(Rect1));
 
             // assert
             result.Should().BeTrue();
@@ -83,8 +91,8 @@
         public void Equals_ShouldBeTrue_WhenComparedToOtherObjectWithSameValues()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
-            object relativeRegion = (object)new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
+            object relativeRegion = (object)new Rect64RelativeRegion(Rect1);
 
             // act
             var result = sut.Equals(relativeRegion);
@@ -97,7 +105,7 @@
         public void Equals_ShouldBeFalse_WhenComparedToString()
         {
             // arrange
-            var sut = new RelativeRegion(12, 13, 14, 15);
+            var sut = new Rect64RelativeRegion(Rect1);
             object noteRelativeRegionObject = new string('a', 100);
 
             // act
@@ -108,22 +116,20 @@
         }
 
         [Fact]
-        public void GetHashCode_ShouldDependOnAllFourProperties()
+        public void GetHashCode_ShouldBeDifferentWheRectIsDifferent()
         {
             // arrange
-            var sut1 = new RelativeRegion(10, 12, 13, 14);
-            var sut2 = new RelativeRegion(11, 10, 13, 14);
-            var sut3 = new RelativeRegion(11, 12, 10, 14);
-            var sut4 = new RelativeRegion(11, 12, 13, 10);
+            var suts = new[]
+                       {
+                           new Rect64RelativeRegion(Rect1),
+                           new Rect64RelativeRegion(Rect2),
+                           new Rect64RelativeRegion(Rect3),
+                           new Rect64RelativeRegion(Rect4),
+                           new Rect64RelativeRegion(Rect5),
+                       };
 
             // act
-            var results = new List<int>(4)
-                          {
-                              sut1.GetHashCode(),
-                              sut2.GetHashCode(),
-                              sut3.GetHashCode(),
-                              sut4.GetHashCode(),
-                          };
+            var results = suts.Select(s => s.GetHashCode());
 
             // assert
             results.Should().OnlyHaveUniqueItems();

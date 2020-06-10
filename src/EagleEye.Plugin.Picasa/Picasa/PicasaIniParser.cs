@@ -52,7 +52,7 @@
                         if (singleCoordinateAndKey.Length != 2)
                             continue;
 
-                        var coordinate = DecodeRect64ToRelativeCoordinates(ref singleCoordinateAndKey[0]);
+                        var coordinate = CreateRect64RelativeRegion(singleCoordinateAndKey[0]);
                         var contact = GetOrCreateContact(ref singleCoordinateAndKey[1], contacts);
                         fileWithPersons.AddPerson(new PicasaPersonLocation(contact, coordinate));
                     }
@@ -64,49 +64,16 @@
             return new PicasaIniFile(result, contacts);
         }
 
-        private static RelativeRegion? DecodeRect64ToRelativeCoordinates(ref string rect64)
+        private static Rect64RelativeRegion? CreateRect64RelativeRegion(string rect64)
         {
-            const int expectedLength = 7 + 16 + 1;
-            if (rect64 == null)
+            try
+            {
+                return new Rect64RelativeRegion(rect64);
+            }
+            catch (Exception)
+            {
                 return null;
-            if (rect64.Length != expectedLength)
-                return null;
-            if (!rect64.StartsWith("rect64("))
-                return null;
-            if (!rect64.EndsWith(")"))
-                return null;
-
-            const int rect64StringLength = 7; // length of "rect64("
-
-            var left = FromString(ref rect64, 0 + rect64StringLength);
-            var top = FromString(ref rect64, 4 + rect64StringLength);
-            var right = FromString(ref rect64, 8 + rect64StringLength);
-            var bottom = FromString(ref rect64, 12 + rect64StringLength);
-
-            var relativeLeft = (float)left / (float)ushort.MaxValue;
-            var relativeTop = (float)top / (float)ushort.MaxValue;
-            var relativeRight = (float)right / (float)ushort.MaxValue;
-            var relativeBottom = (float)bottom / (float)ushort.MaxValue;
-
-            return new RelativeRegion(relativeLeft, relativeTop, relativeRight, relativeBottom);
-        }
-
-        private static ushort FromString(ref string input, int startIndex)
-        {
-            var bytes = StringToByteArray(input.Substring(startIndex, 4));
-
-            if (BitConverter.IsLittleEndian)
-                bytes = bytes.Reverse().ToArray();
-
-            return BitConverter.ToUInt16(bytes, 0);
-        }
-
-        private static byte[] StringToByteArray(string hex)
-        {
-            return Enumerable.Range(0, hex.Length)
-                .Where(x => x % 2 == 0)
-                .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                .ToArray();
+            }
         }
 
         private static IEnumerable<PicasaPerson> ParseIniContacts([CanBeNull] IniData iniContacts)
