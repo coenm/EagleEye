@@ -1,9 +1,12 @@
 ﻿namespace EagleEye.Picasa.Picasa
 {
     using System;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
 
     using JetBrains.Annotations;
 
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>, ICloneable
     {
         public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] Rect64RelativeRegion? region = null)
@@ -23,6 +26,17 @@
 
         [CanBeNull]
         public Rect64RelativeRegion? Region { get; }
+
+        [DebuggerNonUserCode]
+        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
+        private string DebuggerDisplay => ToString();
+
+        public override string ToString()
+        {
+            if (Region == null)
+                return Person + " [Region unknown]";
+            return Person + "; Region:" + Region.Value.Rect64;
+        }
 
         public void UpdatePerson([NotNull] PicasaPerson picasaPerson)
         {
