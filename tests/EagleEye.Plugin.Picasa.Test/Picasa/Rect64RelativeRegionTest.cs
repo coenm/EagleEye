@@ -20,6 +20,7 @@
         [InlineData("rect64(bfff3000ffff)")]
         [InlineData("rect64(cfff0000ffff4000)")]
         [InlineData("rect64(cfffbfffffffffff)")]
+        [InlineData("rect64(d5b35a9)")]
         public void Ctor_ShouldNotThrow_WhenInputIsValid(string input)
         {
             // arrange

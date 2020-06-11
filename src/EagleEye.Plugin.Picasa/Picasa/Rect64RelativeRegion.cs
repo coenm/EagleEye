@@ -50,8 +50,9 @@
 
         private static (float left, float top, float right, float bottom)? DecodeRect64ToRelativeCoordinates(ref string rect64)
         {
-            const int minLength = 7 + 8 + 1;
-            const int maxLength = 7 + 16 + 1;
+            const int rect64StringLength = 7; // length of "rect64("
+            const int minLength = rect64StringLength + 1 + 1;
+            const int maxLength = rect64StringLength + 16 + 1;
             if (rect64 == null)
                 return null;
             if (rect64.Length < minLength)
@@ -63,17 +64,11 @@
             if (!rect64.EndsWith(")"))
                 return null;
 
-            const int rect64StringLength = 7; // length of "rect64("
-
             if (rect64.Length == maxLength)
-            {
                 return DecomposeStringToRectangle(ref rect64, rect64StringLength);
-            }
-            else
-            {
-                var data = new string('0', maxLength - rect64.Length) + rect64.Substring(rect64StringLength);
-                return DecomposeStringToRectangle(ref data, 0);
-            }
+
+            var data = new string('0', maxLength - rect64.Length) + rect64.Substring(rect64StringLength);
+            return DecomposeStringToRectangle(ref data, 0);
         }
 
         private static (float left, float top, float right, float bottom)? DecomposeStringToRectangle(ref string rect64, int startIndex)

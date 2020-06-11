@@ -29,7 +29,7 @@
                 }
             }
 
-            foreach (var p in IniFile.Persons.Where(p => p.Id == id))
+            foreach (var p in IniFile.Persons.Where(p => p.Id == id).ToArray())
                 IniFile.Persons.Remove(p);
 
             IniFile.Persons.Add(newContact);
