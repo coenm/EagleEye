@@ -19,7 +19,7 @@
             this.fileService = fileService;
         }
 
-        public List<PicasaPerson> GetContactsFromFile([NotNull] string xmlFilename)
+        public List<PicasaContact> GetContactsFromFile([NotNull] string xmlFilename)
         {
             Guard.Argument(xmlFilename, nameof(xmlFilename)).NotNull().NotEmpty();
             if (!fileService.FileExists(xmlFilename))
@@ -31,9 +31,9 @@
             xmlDoc.Load(stream);
             XmlNodeList nodes = xmlDoc.SelectNodes("contacts/contact");
             if (nodes == null)
-                return new List<PicasaPerson>(0);
+                return new List<PicasaContact>(0);
 
-            var result = new List<PicasaPerson>(nodes.Count);
+            var result = new List<PicasaContact>(nodes.Count);
             foreach (XmlNode node in nodes)
             {
                 var item = Convert(node);
@@ -44,7 +44,7 @@
             return result;
         }
 
-        private static PicasaPerson? Convert(XmlNode node)
+        private static PicasaContact? Convert(XmlNode node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -68,7 +68,22 @@
             if (string.IsNullOrWhiteSpace(name))
                 return null;
 
-            return new PicasaPerson(id, name);
+            string displayValue = null;
+            var displayAttribute = node.Attributes["display"];
+            if (displayAttribute != null)
+                displayValue = displayAttribute.Value;
+
+            string modifiedTimeValue = null;
+            var modifiedTimeAttribute = node.Attributes["modified_time"];
+            if (modifiedTimeAttribute != null)
+                modifiedTimeValue = modifiedTimeAttribute.Value;
+
+            string localContactValue = null;
+            var localContactAttribute = node.Attributes["local_contact"];
+            if (localContactAttribute != null)
+                localContactValue = localContactAttribute.Value;
+
+            return new PicasaContact(id, name, displayValue, modifiedTimeValue, localContactValue);
         }
     }
 }

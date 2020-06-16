@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.FileImporter.Scenarios.UpdatePicasaIni
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Dawn;
     using EagleEye.Core.Interfaces.Core;
@@ -22,7 +23,8 @@
 
         public IEnumerable<PicasaPerson> GetPicasaContacts()
         {
-            return reader.GetContactsFromFile(fileName);
+            return reader.GetContactsFromFile(fileName)
+                         .Select(item => new PicasaPerson(item.Id, item.Name));
         }
     }
 }

@@ -25,8 +25,8 @@
             var content = @"
 <contacts>
  <contact id=""af8a34a6cdcd1b7f"" name=""Ace"" display=""A"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
- <contact id=""50a8d85cd1e165c2"" name=""Bear"" display=""B"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
- <contact id=""40cffd0a1c385555"" name=""Case"" display=""C"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
+ <contact id=""50a8d85cd1e165c2"" name=""Bear"" display=""B"" modified_time=""2011-05-10T16:34:04+01:00"" local_contact=""1""/>
+ <contact id=""40cffd0a1c385555"" name=""Case"" display=""C"" modified_time=""2011-05-10T16:35:04+01:00"" local_contact=""1""/>
 </contacts>";
 
             SetupFileService("dummy", content);
@@ -37,9 +37,9 @@
 
             // assert
             result.Should().BeEquivalentTo(
-                                           new PicasaPerson("af8a34a6cdcd1b7f", "Ace"),
-                                           new PicasaPerson("50a8d85cd1e165c2", "Bear"),
-                                           new PicasaPerson("40cffd0a1c385555", "Case"));
+                                           new PicasaContact("af8a34a6cdcd1b7f", "Ace", "A", "2011-05-10T16:33:04+01:00", "1"),
+                                           new PicasaContact("50a8d85cd1e165c2", "Bear", "B", "2011-05-10T16:34:04+01:00", "1"),
+                                           new PicasaContact("40cffd0a1c385555", "Case", "C", "2011-05-10T16:35:04+01:00", "1"));
         }
 
         [Fact]
@@ -49,7 +49,7 @@
             var content = @"
 <contacts>
  <contact id=""af8a34a6cdcd1b7f"" name=""Ace"" display=""A"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
- <contact id=""50a8d85cd1e165c2"" name=""Bear"" display=""B"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
+ <contact id=""50a8d85cd1e165c2"" name=""Bear"" display=""B"" modified_time=""2011-05-10T16:34:04+01:00"" local_contact=""1""/>
  <contact name=""Case"" display=""C"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
 </contacts>";
 
@@ -61,8 +61,8 @@
 
             // assert
             result.Should().BeEquivalentTo(
-                                           new PicasaPerson("af8a34a6cdcd1b7f", "Ace"),
-                                           new PicasaPerson("50a8d85cd1e165c2", "Bear"));
+                                           new PicasaContact("af8a34a6cdcd1b7f", "Ace", "A", "2011-05-10T16:33:04+01:00", "1"),
+                                           new PicasaContact("50a8d85cd1e165c2", "Bear", "B", "2011-05-10T16:34:04+01:00", "1"));
         }
 
         [Fact]
@@ -72,7 +72,7 @@
             var content = @"
 <contacts>
  <contact id=""af8a34a6cdcd1b7f"" name=""Ace"" display=""A"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
- <contact id=""50a8d85cd1e165c2"" name=""Bear"" display=""B"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
+ <contact id=""50a8d85cd1e165c2"" name=""Bear"" display=""B"" modified_time=""2011-05-10T16:34:04+01:00"" local_contact=""1""/>
  <contact id=""40cffd0a1c385555"" display=""C"" modified_time=""2011-05-10T16:33:04+01:00"" local_contact=""1""/>
 </contacts>";
 
@@ -84,8 +84,8 @@
 
             // assert
             result.Should().BeEquivalentTo(
-                                           new PicasaPerson("af8a34a6cdcd1b7f", "Ace"),
-                                           new PicasaPerson("50a8d85cd1e165c2", "Bear"));
+                                           new PicasaContact("af8a34a6cdcd1b7f", "Ace", "A", "2011-05-10T16:33:04+01:00", "1"),
+                                           new PicasaContact("50a8d85cd1e165c2", "Bear", "B", "2011-05-10T16:34:04+01:00", "1"));
         }
 
         private static Stream CreateStream(string content)
