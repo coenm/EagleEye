@@ -9,7 +9,7 @@
               {
                 Person: {
                   Id: '123',
-                  Name: 'Alice'
+                  Name: 'AliceUpdated'
                 },
                 Region: {
                   Rect64: 'rect64(935f5217a1696893)',
@@ -22,7 +22,7 @@
               {
                 Person: {
                   Id: '1234',
-                  Name: 'Calvin'
+                  Name: 'Bob'
                 },
                 Region: {
                   Rect64: 'rect64(4f5c884659bb98b2)',
@@ -38,11 +38,11 @@
         Persons: [
           {
             Id: '123',
-            Name: 'Alice'
+            Name: 'AliceUpdated'
           },
           {
             Id: '1234',
-            Name: 'Calvin'
+            Name: 'Bob'
           }
         ]
       }

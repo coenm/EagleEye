@@ -90,26 +90,6 @@
         }
 
         [Fact]
-        public async Task ExecuteAsync_ShouldNotUpdate_WhenOriginalIniIsComplete()
-        {
-            // arrange
-            var iniFile = new PicasaIniFileBuilder()
-                          .WithFile("A.jpg")
-                              .AddPerson(person123Alice, region1)
-                              .Return()
-                          .Build();
-
-            SetupPicasaContactsProvider(person123AliceUpdated, person1234Bob);
-            SetupPicasaIniFileProvider(iniFile);
-
-            // act
-            await sut.HandleAsync(DummyFilename, null, CancellationToken.None);
-
-            // assert
-            A.CallTo(picasaIniFileWriter).MustNotHaveHappened();
-        }
-
-        [Fact]
         public async Task ExecuteAsync_ShouldUpdate_WhenOriginalIsNotCompleteAndUpdatedFromContacts()
         {
             // arrange
@@ -163,8 +143,8 @@
             A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, iniFile)).MustHaveHappenedOnceExactly();
             writtenIniFiles[0].Updater.IniFile.Files[0].Persons.Should()
                               .BeEquivalentTo(
-                                              new PicasaPersonLocation(person123Alice, region1),
-                                              new PicasaPersonLocation(new PicasaPerson("1234", "Calvin"), region2));
+                                              new PicasaPersonLocation(person123AliceUpdated, region1),
+                                              new PicasaPersonLocation(person1234Bob, region2));
             await Verify(writtenIniFiles);
         }
 
