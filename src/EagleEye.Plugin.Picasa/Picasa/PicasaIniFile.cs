@@ -37,9 +37,16 @@
             if (ReferenceEquals(this, other))
                 return true;
 
-            return (Equals(Files, other.Files) || Files.SequenceEqual(other.Files))
+            bool ValueEqualWithoutOrder<T>(IList<T> item1, IList<T> item2)
+            {
+                return item1.Count == item2.Count
+                       &&
+                       item1.All(x => item2.Contains(x));
+            }
+
+            return (Equals(Files, other.Files) || ValueEqualWithoutOrder(Files, other.Files))
                    &&
-                   (Equals(Persons, other.Persons) || Persons.SequenceEqual(other.Persons));
+                   (Equals(Persons, other.Persons) || ValueEqualWithoutOrder(Persons, other.Persons));
         }
 
         public override bool Equals(object obj)

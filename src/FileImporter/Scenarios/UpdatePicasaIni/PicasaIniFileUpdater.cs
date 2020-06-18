@@ -34,5 +34,19 @@
 
             IniFile.Persons.Add(newContact);
         }
+
+        public void TagContactInPhoto(string filename, PicasaPersonLocation contact)
+        {
+            var file = IniFile.Files.SingleOrDefault(x => x.Filename == filename);
+            if (file == null)
+                return;
+
+            file.Persons.Add((PicasaPersonLocation)contact.Clone());
+
+            foreach (var p in IniFile.Persons.Where(p => p.Id == contact.Person.Id).ToArray())
+                IniFile.Persons.Remove(p);
+
+            IniFile.Persons.Add(contact.Person);
+        }
     }
 }

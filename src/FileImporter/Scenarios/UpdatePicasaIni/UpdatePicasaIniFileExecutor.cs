@@ -45,15 +45,30 @@
 
             foreach (var file in currentConfig.Files)
             {
+                var contactRegions = file.Persons.Where(p => p.Region.HasValue).Select(p => p.Region.Value).ToArray();
+
+                var backuppedFiles = backups.SelectMany(backup => backup.Files)
+                                           .Where(f => f.Filename == file.Filename
+                                                       &&
+                                                       f.Persons.Any(p => p.Region.HasValue
+                                                                          &&
+                                                                          !contactRegions.Contains(p.Region.Value)))
+                                           .ToList();
+
+                foreach (var backup in backuppedFiles)
+                {
+                    foreach (var contact in backup.Persons.Where(c => c.Region.HasValue && !contactRegions.Contains(c.Region.Value)))
+                    {
+                        // add contact
+                        updater.TagContactInPhoto(file.Filename, contact);
+                    }
+                }
+
                 var updatedFile = updater.IniFile.Files.First(f => f.Filename == file.Filename);
                 foreach (var personWithLocation in updatedFile.Persons.ToList())
                 {
-                    if (!string.IsNullOrWhiteSpace(personWithLocation.Person.Name))
-                        continue;
-
                     var id = personWithLocation.Person.Id;
                     var region = personWithLocation.Region;
-                    var found = false;
 
                     if (region.HasValue)
                     {
@@ -67,26 +82,13 @@
                                            .ToArray();
 
                         if (foundPersons.Length >= 1)
-                        {
-                            var foundContact = foundPersons[0];
-                            found = true;
-
-                            if (foundPersons.Length > 1)
-                            {
-                                // logging.
-                            }
-
-                            updater.UpdateNameForId(id, foundContact.Person.Name);
-                        }
+                            updater.UpdateNameForId(id, foundPersons[0].Person.Name);
                     }
 
-                    if (!found)
-                    {
-                        // try get name
-                        var selectedContacts = contacts.Where(c => c.Id == id).ToList();
-                        if (selectedContacts.Count > 0)
-                            updater.UpdateNameForId(id, selectedContacts[0].Name);
-                    }
+                    // try get name
+                    var selectedContacts = contacts.Where(c => c.Id == id).ToList();
+                    if (selectedContacts.Count > 0)
+                        updater.UpdateNameForId(id, selectedContacts[0].Name);
                 }
             }
 

@@ -56,7 +56,14 @@
             if (ReferenceEquals(this, other))
                 return true;
 
-            return (Equals(persons, other.persons) || persons.SequenceEqual(other.persons))
+            bool ValueEqualWithoutOrder<T>(IList<T> item1, IList<T> item2)
+            {
+                return item1.Count == item2.Count
+                       &&
+                       item1.All(x => item2.Contains(x));
+            }
+
+            return (Equals(persons, other.persons) || ValueEqualWithoutOrder(persons, other.persons))
                    &&
                    Filename == other.Filename;
         }
