@@ -4,6 +4,6 @@
 
     public interface IPicasaIniFileWriter
     {
-        void Write(string filename, PicasaIniFileUpdater updated, PicasaIniFile original);
+        void Write(string filename, PicasaIniFileUpdater updated, PicasaIniFile original, bool onlyContacts = false);
     }
 }

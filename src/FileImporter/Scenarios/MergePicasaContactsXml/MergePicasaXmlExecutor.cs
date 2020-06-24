@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -11,8 +12,6 @@
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.Picasa.Picasa;
     using JetBrains.Annotations;
-
-    using Lucene.Net.Store;
 
     [UsedImplicitly]
     public class MergePicasaXmlExecutor
@@ -34,6 +33,42 @@
             this.fileService = fileService;
         }
 
+        public async Task StripDuplicatesAsync([NotNull] string sourceFile, [NotNull] string destinationFilename, [CanBeNull] IProgress<FileProcessingProgress> progress, CancellationToken ct = default)
+        {
+            Guard.Argument(sourceFile, nameof(sourceFile)).NotNull();
+            Guard.Argument(destinationFilename, nameof(destinationFilename)).NotNull();
+
+            // todo remove
+            await Task.Yield();
+
+            var contacts = picasaContactsReader.GetContactsFromFile(sourceFile);
+
+            var orderedItems = contacts.OrderBy(x => x.Name).ThenBy(x => x.DisplayName).ToList();
+
+            var result = new List<PicasaContact>();
+
+            var mapping = new List<string>();
+            foreach (var item in orderedItems)
+            {
+                var match = result.SingleOrDefault(x => x.Name == item.Name);
+                if (match.Id == default)
+                    result.Add(item);
+                else
+                    mapping.Add($"{item.Id} {match.Id}");
+            }
+
+            var mappingFile = destinationFilename + ".mapping.txt";
+            if (File.Exists(mappingFile))
+                File.Delete(mappingFile);
+            await File.WriteAllLinesAsync(mappingFile, mapping, Encoding.UTF8, ct).ConfigureAwait(false);
+
+            if (File.Exists(destinationFilename))
+                File.Delete(destinationFilename);
+            File.Create(destinationFilename).Close();
+            await using var stream = fileService.OpenWrite(destinationFilename);
+            this.picasaContactsXmlFileWriter.Write(result, stream);
+        }
+
         public async Task HandleAsync([NotNull] string destinationFilename, [NotNull] List<string> sourceFiles, [CanBeNull] IProgress<FileProcessingProgress> progress, CancellationToken ct = default)
         {
             Guard.Argument(destinationFilename, nameof(destinationFilename)).NotNull();
@@ -49,24 +84,27 @@
             {
                 var contacts = picasaContactsReader.GetContactsFromFile(s);
 
-                foreach (var contact in contacts)
+                foreach (var contact1 in contacts)
                 {
-                    if (resultingContacts.Contains(contact))
+                    var contact = ContactNameMapping.RenameContact(contact1);
+                    if (contact.HasValue == false)
                         continue;
 
-                    var sameId = resultingContacts.Where(x => x.Id == contact.Id).ToList();
+                    if (resultingContacts.Contains(contact.Value))
+                        continue;
+
+                    var sameId = resultingContacts.Where(x => x.Id == contact.Value.Id).ToList();
                     if (sameId.Count == 0)
-                        resultingContacts.Add(contact);
-                    else
-                        resultingContacts.Add(contact);
+                        resultingContacts.Add(contact.Value);
                 }
             }
 
             if (File.Exists(destinationFilename))
                 File.Delete(destinationFilename);
             File.Create(destinationFilename).Close();
+
             await using var stream = fileService.OpenWrite(destinationFilename);
-            this.picasaContactsXmlFileWriter.Write(resultingContacts, stream);
+            picasaContactsXmlFileWriter.Write(resultingContacts, stream);
         }
     }
 }

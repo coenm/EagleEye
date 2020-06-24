@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using EagleEye.Core.DefaultImplementations;
     using EagleEye.FileImporter.Scenarios.UpdatePicasaIni;
     using EagleEye.Picasa.Picasa;
     using FakeItEasy;
@@ -42,7 +43,7 @@
             picasaIniFileWriter = A.Fake<IPicasaIniFileWriter>();
 
             writtenIniFiles = new List<WrittenIniFilesData>();
-            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, A<PicasaIniFile>._))
+            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, A<PicasaIniFile>._, true))
              .Invokes(call =>
                       {
                           var filename = call.Arguments[0] as string;
@@ -53,7 +54,7 @@
                           return;
                       });
 
-            sut = new UpdatePicasaIniFileExecutor(picasaContactsProvider, picasaIniFileProvider, picasaIniFileWriter);
+            sut = new UpdatePicasaIniFileExecutor(SystemFileService.Instance, picasaContactsProvider, picasaIniFileProvider, picasaIniFileWriter);
         }
 
         [Fact]
@@ -110,7 +111,7 @@
             await sut.HandleAsync(DummyFilename, null, CancellationToken.None);
 
             // assert
-            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, iniFile)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, iniFile, true)).MustHaveHappenedOnceExactly();
             await Verify(writtenIniFiles);
         }
 
@@ -140,7 +141,7 @@
             await sut.HandleAsync(DummyFilename, null, CancellationToken.None);
 
             // assert
-            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, iniFile)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, iniFile, true)).MustHaveHappenedOnceExactly();
             writtenIniFiles[0].Updater.IniFile.Files[0].Persons.Should()
                               .BeEquivalentTo(
                                               new PicasaPersonLocation(person123AliceUpdated, region1),

@@ -19,6 +19,25 @@
             UpdateContactForId(id, newContact);
         }
 
+        public void ReplaceContact(string id, PicasaPerson newContact)
+        {
+            var updated = false;
+            foreach (var file in IniFile.Files)
+            {
+                foreach (var personWithLocation in file.Persons.Where(personWithLocation => personWithLocation.Person.Id == id))
+                {
+                    personWithLocation.UpdatePerson(newContact);
+                    updated = true;
+                }
+            }
+
+            foreach (var p in IniFile.Persons.Where(p => p.Id == id).ToArray())
+                IniFile.Persons.Remove(p);
+
+            if (updated)
+                IniFile.Persons.Add(newContact);
+        }
+
         public void UpdateContactForId(string id, PicasaPerson newContact)
         {
             foreach (var file in IniFile.Files)
