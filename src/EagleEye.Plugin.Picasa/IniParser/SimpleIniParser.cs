@@ -63,8 +63,8 @@
                     continue;
                 }
 
-                (string key, string value) = GetKeyValueFromIni(line);
-                currentSection.AddContentLine(key, value);
+                if (TryGetKeyValueFromIni(line, out var key, out var value))
+                    currentSection.AddContentLine(key, value);
             }
 
             return result;
@@ -99,7 +99,7 @@
             return true;
         }
 
-        private static (string key, string value) GetKeyValueFromIni(string line)
+        private static bool TryGetKeyValueFromIni(string line, out string key, out string value)
         {
             Guard.Argument(line, nameof(line)).NotNull().NotWhiteSpace();
 
@@ -108,9 +108,15 @@
             var result = line.Split(KeyValueSeparator, 2, StringSplitOptions.RemoveEmptyEntries);
 
             if (result.Length != 2)
-                throw new ArgumentException($"Cannot parse {line}");
+            {
+                key = string.Empty;
+                value = string.Empty;
+                return false;
+            }
 
-            return (result[0].Trim(), result[1].Trim());
+            key = result[0].Trim();
+            value = result[1].Trim();
+            return true;
         }
     }
 }
