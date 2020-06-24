@@ -93,15 +93,17 @@ redo=enhance=1;";
         }
 
         [Fact]
-        public void InvalidSectionShouldThrowExceptionTest()
+        public void Parse_ShouldSkipInvalidData()
         {
             // arrange
             const string content = "[Abc\r\nkey=value\r\n";
             using var stream = GenerateStreamFromString(content);
 
             // act
+            var result = Sut.Parse(stream);
+
             // assert
-            Assert.Throws<ArgumentException>(() => Sut.Parse(stream));
+            result.Should().BeEmpty();
         }
 
         [Fact]
