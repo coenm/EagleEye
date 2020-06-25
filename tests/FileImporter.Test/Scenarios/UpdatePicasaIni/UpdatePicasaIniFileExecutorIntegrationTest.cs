@@ -32,7 +32,7 @@
             picasaIniFileProvider = new PicasaIniFileProvider(fileService, origDir, backupsDir);
             picasaIniFileWriter = new PicasaIniWriter(fileService);
 
-            sut = new UpdatePicasaIniFileExecutor(picasaContactsProvider, picasaIniFileProvider, picasaIniFileWriter);
+            sut = new UpdatePicasaIniFileExecutor(fileService, picasaContactsProvider, picasaIniFileProvider, picasaIniFileWriter);
         }
 
         [Fact(Skip="tmp")]
