@@ -37,37 +37,35 @@
 
             var result = new List<PhotoHash>(3);
 
-            using (var image = LoadImageFromStream(input))
+            using var image = LoadImageFromStream(input);
+            using (var clone = image.Clone())
             {
-                using (var clone = image.Clone())
-                {
-                    result.Add(
-                        new PhotoHash
-                        {
-                            Hash = AverageHash.Hash(clone),
-                            HashName = nameof(CoenM.ImageHash.HashAlgorithms.AverageHash),
-                        });
-                }
+                result.Add(
+                           new PhotoHash
+                           {
+                               Hash = AverageHash.Hash(clone),
+                               HashName = nameof(CoenM.ImageHash.HashAlgorithms.AverageHash),
+                           });
+            }
 
-                using (var clone = image.Clone())
-                {
-                    result.Add(
-                        new PhotoHash
-                        {
-                            Hash = DifferenceHash.Hash(clone),
-                            HashName = nameof(CoenM.ImageHash.HashAlgorithms.DifferenceHash),
-                        });
-                }
+            using (var clone = image.Clone())
+            {
+                result.Add(
+                           new PhotoHash
+                           {
+                               Hash = DifferenceHash.Hash(clone),
+                               HashName = nameof(CoenM.ImageHash.HashAlgorithms.DifferenceHash),
+                           });
+            }
 
-                using (var clone = image.Clone())
-                {
-                    result.Add(
-                        new PhotoHash
-                        {
-                            Hash = PerceptualHash.Hash(clone),
-                            HashName = nameof(CoenM.ImageHash.HashAlgorithms.PerceptualHash),
-                        });
-                }
+            using (var clone = image.Clone())
+            {
+                result.Add(
+                           new PhotoHash
+                           {
+                               Hash = PerceptualHash.Hash(clone),
+                               HashName = nameof(CoenM.ImageHash.HashAlgorithms.PerceptualHash),
+                           });
             }
 
             return result;

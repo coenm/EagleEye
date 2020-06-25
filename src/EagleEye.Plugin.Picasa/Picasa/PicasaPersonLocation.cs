@@ -1,23 +1,50 @@
 ﻿namespace EagleEye.Picasa.Picasa
 {
     using System;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
 
-    using Dawn;
     using JetBrains.Annotations;
 
-    public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
+    public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>, ICloneable
     {
-        public PicasaPersonLocation([NotNull] string name, [CanBeNull] RelativeRegion? region = null)
+        public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] Rect64RelativeRegion? region = null)
         {
-            Guard.Argument(name, nameof(name)).NotNull().NotWhiteSpace();
-            Name = name;
+            Person = person;
             Region = region;
         }
 
-        public string Name { get; }
+        public PicasaPersonLocation([NotNull] string person, [CanBeNull] Rect64RelativeRegion? region = null)
+        {
+            Person = new PicasaPerson(string.Empty, person);
+            Region = region;
+        }
+
+        [NotNull]
+        public PicasaPerson Person { get; private set; }
 
         [CanBeNull]
-        public RelativeRegion? Region { get; }
+        public Rect64RelativeRegion? Region { get; }
+
+        [DebuggerNonUserCode]
+        [SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "DebuggerDisplay")]
+        private string DebuggerDisplay => ToString();
+
+        public override string ToString()
+        {
+            if (Region == null)
+                return Person + " [Region unknown]";
+            return Person + "; Region:" + Region.Value.Rect64;
+        }
+
+        public void UpdatePerson([NotNull] PicasaPerson picasaPerson)
+        {
+            if (string.IsNullOrWhiteSpace(picasaPerson.Name))
+                throw new ArgumentNullException(nameof(picasaPerson.Name));
+
+            Person = picasaPerson;
+        }
 
         public bool Equals(PicasaPersonLocation other)
         {
@@ -25,10 +52,7 @@
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-
-            return Name == other.Name
-                   &&
-                   Nullable.Equals(Region, other.Region);
+            return Person.Equals(other.Person) && Nullable.Equals(Region, other.Region);
         }
 
         public override bool Equals(object obj)
@@ -39,7 +63,6 @@
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-
             return Equals((PicasaPersonLocation)obj);
         }
 
@@ -47,8 +70,13 @@
         {
             unchecked
             {
-                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ Region.GetHashCode();
+                return (Person.GetHashCode() * 397) ^ Region.GetHashCode();
             }
+        }
+
+        public object Clone()
+        {
+            return new PicasaPersonLocation(Person, Region);
         }
     }
 }

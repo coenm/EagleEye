@@ -291,3 +291,4 @@ tools/**
 *.patch
 exiftool-*.zip
 *.diff
+*received.txt

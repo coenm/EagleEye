@@ -47,10 +47,10 @@
                 Skip = $"Test skipped. Configured to run on {hosts}. " + reason;
         }
 
-        private void ActOnHostMatched(TestHostMode mode, TestHost matchedTesthost, string reason)
+        private void ActOnHostMatched(TestHostMode mode, TestHost matchedTestHost, string reason)
         {
             if (mode == TestHostMode.Skip)
-                Skip = $"Test skipped for {matchedTesthost}. " + reason;
+                Skip = $"Test skipped for {matchedTestHost}. " + reason;
         }
     }
 }

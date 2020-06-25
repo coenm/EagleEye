@@ -5,6 +5,7 @@
     using System.Linq;
 
     using EagleEye.Core.DefaultImplementations;
+    using EagleEye.TestHelper.XUnit.Facts;
     using FluentAssertions;
     using Pose;
     using Xunit;
@@ -18,7 +19,7 @@
             sut = SystemDirectoryService.Instance;
         }
 
-        [Theory]
+        [ConditionalHostTheory(TestHostMode.Skip, TestHost.AppVeyor, reason: "Does not work with code coverage")]
         [InlineData(true)]
         [InlineData(false)]
         public void Exists_ShouldCallAndReturnSystemDirectoryExists_WhenCalled(bool exists)
@@ -41,7 +42,7 @@
             directoryExistsCalled.Should().BeEquivalentTo("test directory");
         }
 
-        [Fact]
+        [ConditionalHostFact(TestHostMode.Skip, TestHost.AppVeyor, reason: "Does not work with code coverage")]
         public void EnumerateFiles_ShouldCallAndReturnSystemDirectoryEnumerateFiles_WhenCalled()
         {
             // arrange

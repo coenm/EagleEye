@@ -48,8 +48,8 @@
         [Fact]
         public void GetPhotoHashesByHashIdentifier_ShouldReturnCorrectItemsWithoutHashIdentifier()
         {
-            using var ctx = ctxFactory.CreateDbContext();
             // arrange
+            using var ctx = ctxFactory.CreateDbContext();
 
             // act
             var result = sut.GetPhotoHashesByHashIdentifier(ctx, hashIdentifier1);

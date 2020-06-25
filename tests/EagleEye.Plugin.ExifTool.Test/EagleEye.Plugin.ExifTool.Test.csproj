@@ -6,13 +6,6 @@
     <RootNamespace>EagleEye.ExifTool.Test</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- https://stackoverflow.com/questions/45469143/net-core-msb3277-found-conflicts-between-different-versions -->
-    <!-- Found conflicts between different versions of "System.Numerics.Vectors" that could not be resolved. -->
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="ExifTool\**" />
     <EmbeddedResource Remove="ExifTool\**" />

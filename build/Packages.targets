@@ -37,6 +37,8 @@
     <PackageReference Update="Microsoft.Data.Sqlite" Version="$(VersionMicrosoftEntityFrameworkAndData)" IsImplicitlyDefined="true"/>
     <PackageReference Update="MimeTypes" Version="1.1.0" IsImplicitlyDefined="true"/>
     <PackageReference Update="Nito.AsyncEx" Version="5.0.0" IsImplicitlyDefined="true"/>
+    <PackageReference Update="SoftCircuits.IniFileParser" Version="1.0.11"  IsImplicitlyDefined="true" />
+
 
     <!-- lucene -->
     <PackageReference Update="Lucene.Net" Version="$(VersionLuceneNet)" IsImplicitlyDefined="true"/>
@@ -65,6 +67,7 @@
     <PackageReference Update="xunit" Version="2.4.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="xunit.analyzers" Version="0.10.0" IsImplicitlyDefined="true"/>
     <PackageReference Update="xunit.categories" Version="2.0.4" IsImplicitlyDefined="true"/>
+    <PackageReference Update="xunit.extensibility.core" Version="2.4.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="xunit.runner.console" Version="2.4.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="xunit.runner.reporters" Version="2.4.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" IsImplicitlyDefined="true"/>
