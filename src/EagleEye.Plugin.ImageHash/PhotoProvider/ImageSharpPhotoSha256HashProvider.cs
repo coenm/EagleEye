@@ -1,6 +1,7 @@
 ﻿namespace EagleEye.ImageHash.PhotoProvider
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
@@ -11,7 +12,6 @@
     using EagleEye.Core.Interfaces.PhotoInformationProviders;
     using JetBrains.Annotations;
     using SixLabors.ImageSharp;
-    using SixLabors.ImageSharp.Advanced;
     using SixLabors.ImageSharp.PixelFormats;
     using SixLabors.ImageSharp.Processing;
 
@@ -55,7 +55,22 @@
         {
             Guard.Argument(img, nameof(img)).NotNull();
 
-            var data = MemoryMarshal.AsBytes(img.GetPixelSpan()).ToArray();
+            byte[] data = Array.Empty<byte>();
+
+            if (img.TryGetSinglePixelSpan(out var fullImagePixelSpan))
+            {
+                data = MemoryMarshal.AsBytes(fullImagePixelSpan).ToArray();
+            }
+            else
+            {
+                // stupid implementation
+                var listOfByteArrays = new List<byte[]>(img.Height);
+
+                for (int row = 0; row < img.Height; row++)
+                    listOfByteArrays.Add(MemoryMarshal.AsBytes(img.GetPixelRowSpan(row)).ToArray());
+
+                data = listOfByteArrays.SelectMany(x => x).ToArray();
+            }
 
             using var sha256 = SHA256.Create();
             return sha256.ComputeHash(data);
