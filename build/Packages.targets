@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Update="CoenM.AsyncExifTool" Version="1.1.0-beta.1" IsImplicitlyDefined="true"/>
-    <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0-beta.5" IsImplicitlyDefined="true"/>
+    <PackageReference Update="CoenM.ImageSharp.ImageHash" Version="1.0.0" IsImplicitlyDefined="true"/>
     <PackageReference Update="CoenM.Encoding.Z85e" Version="1.2.1" IsImplicitlyDefined="true"/>
     <PackageReference Update="SimpleInjector" Version="$(VersionSimpleInjector)" IsImplicitlyDefined="true"/>
     <PackageReference Update="SimpleInjector.Packaging" Version="$(VersionSimpleInjector)" IsImplicitlyDefined="true"/>
