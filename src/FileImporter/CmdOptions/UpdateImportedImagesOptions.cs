@@ -7,7 +7,7 @@
     [UsedImplicitly]
     internal class UpdateImportedImagesOptions
     {
-        [Option(shortName: 'd', longName: "processing-directory", HelpText = "File to find duplicates", Required = true)]
+        [Option(shortName: 'd', longName: "processing-directory", HelpText = "Directory to process", Required = true)]
         public string ProcessingDirectory { get; set; }
     }
 }
