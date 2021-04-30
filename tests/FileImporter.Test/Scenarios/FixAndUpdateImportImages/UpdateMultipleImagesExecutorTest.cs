@@ -1,4 +1,5 @@
-﻿namespace EagleEye.FileImporter.Test.Scenarios.FixAndUpdateImportImages
+﻿/*
+namespace EagleEye.FileImporter.Test.Scenarios.FixAndUpdateImportImages
 {
     using System;
     using System.Collections.Generic;
@@ -63,3 +64,4 @@
         }
     }
 }
+*/

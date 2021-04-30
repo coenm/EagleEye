@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.CmdOptions
+﻿namespace EagleEye.FileStamper.Console.CmdOptions
 {
     using CommandLine;
     using JetBrains.Annotations;

@@ -13,7 +13,6 @@
     using EagleEye.Core.Interfaces.Core;
     using EagleEye.FileImporter.CmdOptions;
     using EagleEye.FileImporter.Scenarios.Check;
-    using EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages;
     using EagleEye.FileImporter.Scenarios.UpdateIndex;
     using EagleEye.FileImporter.Similarity;
     using EagleEye.Photo.ReadModel.SearchEngineLucene.Interface;
@@ -27,25 +26,6 @@
     public static class Program
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly Dictionary<string, ChildProgressBar> SpawnedFiles = new Dictionary<string, ChildProgressBar>();
-        private static readonly object SpawnLock = new object();
-
-        private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
-        {
-            ProgressCharacter = '─',
-            ForegroundColor = ConsoleColor.Yellow,
-            BackgroundColor = ConsoleColor.DarkYellow,
-            EnableTaskBarProgress = true,
-        };
-
-        private static readonly ProgressBarOptions ChildOptions = new ProgressBarOptions
-        {
-            ForegroundColor = ConsoleColor.Green,
-            BackgroundColor = ConsoleColor.DarkGreen,
-            ProgressCharacter = '─',
-            CollapseWhenFinished = true,
-        };
-
         private static ConnectionStrings connectionStrings;
 
         public static async Task Main(string[] args)
@@ -78,7 +58,12 @@
         {
             var task = Task.CompletedTask;
 
-            using var container = Startup.ConfigureContainer(connectionStrings);
+            using var container = Startup.ConfigureContainer(
+                connectionStrings,
+                new Dictionary<string, object>
+                {
+                    { "EXIFTOOL_PLUGIN_FULL_EXE", "C:\\Tools\\ExifTool\\exiftool.exe" },
+                });
 
             await Startup.InitializeAllServices(container).ConfigureAwait(false);
             Startup.StartServices(container);
@@ -87,11 +72,9 @@
             {
                 Parser.Default.ParseArguments<
                         IndexFilesOptions,
-                        UpdateImportedImagesOptions,
                         CheckMetadataOptions,
                         SearchOptions>(args)
                     .WithParsed<IndexFilesOptions>(option => task = Index(container, option))
-                    .WithParsed<UpdateImportedImagesOptions>(option => task = UpdateImportedImages(container, option))
                     .WithParsed<CheckMetadataOptions>(option => task = CheckMetadata(container, option))
                     .WithParsed<SearchOptions>(option => task = Search(container, option))
                     .WithNotParsed(errs => Console.WriteLine($"Could not parse the arguments. {errs.First()}"));
@@ -131,7 +114,7 @@
 
             var fromSeconds = TimeSpan.FromSeconds(25);
 
-            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
+            using var progressBar = new ProgressBar(files.Length, "Initial message", MyProgressBar.ProgressOptions);
             var progress = new Progress<FilenameProgressData>(data =>
                                                               {
                                                                   // progressBar.MaxTicks = data.Total;
@@ -249,40 +232,6 @@
             Logger.Info(string.Empty);
         }
 
-        private static async Task UpdateImportedImages([NotNull] Container container, [NotNull] UpdateImportedImagesOptions option)
-        {
-            Guard.Argument(container, nameof(container)).NotNull();
-            Guard.Argument(option, nameof(option)).NotNull();
-
-            var directoryService = container.GetInstance<IDirectoryService>();
-
-            if (!directoryService.Exists(option.ProcessingDirectory))
-            {
-                Console.WriteLine("Directory does not exist.");
-                return;
-            }
-
-            var dirToIndex = new DirectoryInfo(option.ProcessingDirectory).FullName;
-            var files = GetMediaFiles(directoryService, dirToIndex).ToArray();
-
-            var singleExecutor = container.GetInstance<UpdateImportImageCommandHandler>();
-            var executor = new UpdateMultipleImagesExecutor(singleExecutor);
-            var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
-
-            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
-
-            var progress = new Progress<FileProcessingProgress>(data => progressBars.AddOrUpdate(
-                                                                                                 data.Filename,
-                                                                                                 filename => SpawnChildProgressBar(progressBar, data, filename),
-                                                                                                 (_, childProgressBar) => UpdateProgress(progressBar, data, childProgressBar)));
-
-            await executor.ExecuteAsync(files, progress, CancellationToken.None).ConfigureAwait(false);
-
-            // to be sure.
-            foreach (var item in progressBars)
-                item.Value?.Dispose();
-        }
-
         private static async Task Search([NotNull] Container container, [NotNull] SearchOptions option)
         {
             Guard.Argument(container, nameof(container)).NotNull();
@@ -335,13 +284,13 @@
             Console.WriteLine("Do you want to search something else? (yY)");
             var result = Console.ReadLine();
             var firstChar = result?.FirstOrDefault();
-            if (firstChar == null)
-                return false;
-            if (firstChar == 'y')
-                return true;
-            if (firstChar == 'Y')
-                return true;
-            return false;
+            return firstChar switch
+            {
+                null => false,
+                'y' => true,
+                'Y' => true,
+                _ => false
+            };
         }
 
         private static async Task<bool> SearchAndShow(IReadModel search)
@@ -352,7 +301,7 @@
             if (string.IsNullOrWhiteSpace(query))
                 return false;
 
-            var searchResults = new List<PhotoResult>(0);
+            List<PhotoResult> searchResults;
 
             try
             {
@@ -403,75 +352,11 @@
             var singleExecutor = container.GetInstance<UpdateIndexExecutor>();
             var executor = new UpdateMultipleIndexesExecutor(singleExecutor);
 
-            using var progressBar = new ProgressBar(files.Length, "Initial message", ProgressOptions);
+            using var progressBar = new MyProgressBar(files.Length, "Initial message");
 
-            var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
-
-            var progress = new Progress<FileProcessingProgress>(data => progressBars.AddOrUpdate(
-                                                                                                 data.Filename,
-                                                                                                 filename => SpawnChildProgressBar(progressBar, data, filename),
-                                                                                                 (_, childProgressBar) => UpdateProgress(progressBar, data, childProgressBar)));
+            var progress = new Progress<FileProcessingProgress>(data => progressBar.Update(data));
 
             await executor.ExecuteAsync(files, progress, CancellationToken.None).ConfigureAwait(false);
-
-            // to be sure.
-            foreach (var item in progressBars)
-                item.Value?.Dispose();
-        }
-
-        private static ChildProgressBar SpawnChildProgressBar(ProgressBar parent, FileProcessingProgress fileProcessingProgress, string message)
-        {
-            ChildProgressBar bar;
-
-            lock (SpawnLock)
-            {
-                if (!SpawnedFiles.ContainsKey(fileProcessingProgress.Filename))
-                    bar = parent.Spawn(int.MaxValue, message, ChildOptions);
-                else
-                    bar = SpawnedFiles[fileProcessingProgress.Filename];
-            }
-
-            if (fileProcessingProgress.Step == 0)
-                return bar;
-
-            if (fileProcessingProgress.Step == fileProcessingProgress.TotalSteps)
-            {
-                bar.Tick(int.MaxValue);
-                return bar;
-            }
-
-            decimal totalSteps = (decimal)fileProcessingProgress.Step / fileProcessingProgress.TotalSteps;
-            var x = Math.Floor(totalSteps * int.MaxValue);
-            var step = (int)x;
-            bar.Tick(step);
-            return bar;
-        }
-
-        private static ChildProgressBar UpdateProgress(ProgressBar parentProgressBar, FileProcessingProgress fileProcessingProgress, ChildProgressBar childProgressBar)
-        {
-            if (childProgressBar == null)
-                return null;
-
-            if (fileProcessingProgress.Step == fileProcessingProgress.TotalSteps)
-            {
-                childProgressBar.Tick(int.MaxValue);
-                /*childProgressBar.Dispose();*/
-                parentProgressBar.Tick();
-                return childProgressBar;
-            }
-            else if (fileProcessingProgress.Step == 0)
-            {
-                childProgressBar.Tick(0);
-                return childProgressBar;
-            }
-            else
-            {
-                decimal totalSteps = (decimal)fileProcessingProgress.Step / fileProcessingProgress.TotalSteps;
-                decimal decimalStep = Math.Floor(totalSteps * int.MaxValue);
-                var step = (int)decimalStep;
-                childProgressBar.Tick(step);
-                return childProgressBar;
-            }
         }
 
         private static IEnumerable<string> GetMediaFiles(IDirectoryService directoryService, string path)

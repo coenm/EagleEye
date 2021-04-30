@@ -52,7 +52,7 @@
             }
             catch (Exception e)
             {
-                Logger.Error(e.Message);
+                Logger.Error($"Could not process result '{result}'. {e.Message}");
                 return null;
             }
         }

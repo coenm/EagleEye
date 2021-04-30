@@ -85,6 +85,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.EventStore.NEventS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.EventStore.NEventStoreAdapter.Test", "tests\EagleEye.EventStore.NEventStoreAdapter.Test\EagleEye.EventStore.NEventStoreAdapter.Test.csproj", "{2001F25D-B8CB-4F7D-BAB3-E7E01E720091}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagleEye.FileStamper.Console", "src\EagleEye.FileStamper.Console\EagleEye.FileStamper.Console.csproj", "{5A374304-1BB9-4FD1-A81C-9982C039EF5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,6 +217,10 @@ Global
 		{2001F25D-B8CB-4F7D-BAB3-E7E01E720091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2001F25D-B8CB-4F7D-BAB3-E7E01E720091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2001F25D-B8CB-4F7D-BAB3-E7E01E720091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A374304-1BB9-4FD1-A81C-9982C039EF5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A374304-1BB9-4FD1-A81C-9982C039EF5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A374304-1BB9-4FD1-A81C-9982C039EF5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A374304-1BB9-4FD1-A81C-9982C039EF5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
