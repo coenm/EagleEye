@@ -73,7 +73,7 @@
             catch (OperationCanceledException)
             {
                 Logger.Error("Could not UpdateImporteImage due to timeout.");
-                progress?.Report(new FileProcessingProgress(file, int.MaxValue, int.MaxValue, "Operation Cancelled", ProgressState.Failure));
+                progress?.Report(new FileProcessingProgress(file, int.MaxValue, int.MaxValue, "Operation Canceled", ProgressState.Failure));
             }
             catch (Exception e)
             {

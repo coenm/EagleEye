@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages
+﻿namespace EagleEye.FileStamper.Console.Scenarios.FixAndUpdateImportImages
 {
     using System.Threading;
     using System.Threading.Tasks;

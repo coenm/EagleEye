@@ -152,6 +152,9 @@
             RegisterEventStore(connectionStringEventStore);
 
             RegisterPhotoDomain();
+
+            container.Collection.Append<IEagleEyeProcess, DummyProcess>();
+            container.Collection.Append<IEagleEyeInitialize, DummyEagleEyeInitialize>();
         }
 
         private void RegisterCqrsLite()
@@ -317,6 +320,29 @@
             {
                 return await decoratee.Get(aggregateId, fromVersion, cancellationToken).ConfigureAwait(false);
             }
+        }
+    }
+
+    internal class DummyProcess : IEagleEyeProcess
+    {
+        public void Start()
+        {
+        }
+
+        public void Stop()
+        {
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+
+    internal class DummyEagleEyeInitialize : IEagleEyeInitialize
+    {
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }

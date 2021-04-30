@@ -62,7 +62,7 @@
             PoseContext.Isolate(() => _ = sut.OpenWrite("test.jpg"), fileShim);
 
             // assert
-            fileOpenCalled.Should().BeEquivalentTo($"test.jpg,{FileMode.Open},{FileAccess.Write},{FileShare.Read}");
+            fileOpenCalled.Should().BeEquivalentTo($"test.jpg,{FileMode.Truncate},{FileAccess.Write},{FileShare.Read}");
         }
     }
 }

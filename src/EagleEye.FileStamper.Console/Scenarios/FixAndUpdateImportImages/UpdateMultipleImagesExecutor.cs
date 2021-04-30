@@ -1,4 +1,4 @@
-﻿namespace EagleEye.FileImporter.Scenarios.FixAndUpdateImportImages
+﻿namespace EagleEye.FileStamper.Console.Scenarios.FixAndUpdateImportImages
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
 
     using Dawn;
-    using EagleEye.FileImporter.Similarity;
     using JetBrains.Annotations;
     using NLog;
 
@@ -71,7 +70,7 @@
             catch (OperationCanceledException)
             {
                 Logger.Error("Could not UpdateImporteImage due to timeout.");
-                progress?.Report(new FileProcessingProgress(file, 2, 2, "Operation Cancelled", ProgressState.Failure));
+                progress?.Report(new FileProcessingProgress(file, 2, 2, "Operation Canceled", ProgressState.Failure));
             }
             catch (Exception e)
             {
