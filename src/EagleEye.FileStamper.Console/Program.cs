@@ -26,7 +26,6 @@
             await Run(args).ConfigureAwait(false);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AccessToDisposedClosure", Justification = "Manual verification.")]
         private static async Task Run(string[] args)
         {
             var task = Task.CompletedTask;

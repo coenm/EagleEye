@@ -8,11 +8,6 @@
 
     public class MyProgressBar : IDisposable
     {
-        private readonly Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
-        private readonly object spawnLock = new object();
-        private readonly ProgressBar inner;
-        private readonly ConcurrentDictionary<string, ChildProgressBar> progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
-
         public static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
@@ -28,6 +23,11 @@
             ProgressCharacter = '─',
             CollapseWhenFinished = true,
         };
+
+        private readonly Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
+        private readonly object spawnLock = new object();
+        private readonly ProgressBar inner;
+        private readonly ConcurrentDictionary<string, ChildProgressBar> progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
 
         public MyProgressBar(int maxTicks, string message)
         {

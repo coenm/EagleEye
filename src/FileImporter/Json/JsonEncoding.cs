@@ -40,7 +40,7 @@
 
         public static void WriteDataToJsonFile(object obj, string filename)
         {
-            Debug.Assert(string.IsNullOrWhiteSpace(filename) == false, $"{nameof(filename)} should not be null or empty.");
+            Debug.Assert(!string.IsNullOrWhiteSpace(filename), $"{nameof(filename)} should not be null or empty.");
             Debug.Assert(obj != null, $"{nameof(obj)} should not be null.");
 
             using var streamWriter = File.CreateText(filename);
