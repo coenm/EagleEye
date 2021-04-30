@@ -285,13 +285,13 @@
             Console.WriteLine("Do you want to search something else? (yY)");
             var result = Console.ReadLine();
             var firstChar = result?.FirstOrDefault();
-            if (firstChar == null)
-                return false;
-            if (firstChar == 'y')
-                return true;
-            if (firstChar == 'Y')
-                return true;
-            return false;
+            return firstChar switch
+            {
+                null => false,
+                'y' => true,
+                'Y' => true,
+                _ => false
+            };
         }
 
         private static async Task<bool> SearchAndShow(IReadModel search)
