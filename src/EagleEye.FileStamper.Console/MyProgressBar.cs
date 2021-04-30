@@ -8,10 +8,13 @@
 
     public class MyProgressBar : IDisposable
     {
-        private readonly Dictionary<string, ChildProgressBar> _spawnedFiles = new Dictionary<string, ChildProgressBar>();
-        private readonly object _spawnLock = new object();
-        private readonly ProgressBar _inner;
-        private ConcurrentDictionary<string, ChildProgressBar> progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
+        private readonly Dictionary<string, ChildProgressBar> spawnedFiles = new Dictionary<string, ChildProgressBar>();
+
+        private readonly object spawnLock = new object();
+
+        private readonly ProgressBar inner;
+
+        private readonly ConcurrentDictionary<string, ChildProgressBar> progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
 
         private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
@@ -31,15 +34,15 @@
 
         public MyProgressBar(int maxTicks, string message)
         {
-            _inner = new ProgressBar(maxTicks, message, ProgressOptions);
+            inner = new ProgressBar(maxTicks, message, ProgressOptions);
         }
 
         public void Update(FileProcessingProgress data)
         {
             progressBars.AddOrUpdate(
                 data.Filename,
-                filename => SpawnChildProgressBar(_inner, data, filename),
-                (_, childProgressBar) => UpdateProgress(_inner, data, childProgressBar));
+                filename => SpawnChildProgressBar(inner, data, filename),
+                (_, childProgressBar) => UpdateProgress(inner, data, childProgressBar));
         }
 
         public void Dispose()
@@ -47,7 +50,7 @@
             foreach (var item in progressBars)
                 item.Value?.Dispose();
 
-            _inner?.Dispose();
+            inner?.Dispose();
         }
 
         private static ChildProgressBar UpdateProgress(ProgressBar parentProgressBar, FileProcessingProgress fileProcessingProgress, ChildProgressBar childProgressBar)
@@ -79,16 +82,16 @@
         {
             ChildProgressBar bar;
 
-            lock (_spawnLock)
+            lock (spawnLock)
             {
-                if (!_spawnedFiles.ContainsKey(fileProcessingProgress.Filename))
+                if (!spawnedFiles.ContainsKey(fileProcessingProgress.Filename))
                 {
                     bar = parent.Spawn(int.MaxValue, message, ChildOptions);
-                    _spawnedFiles.Add(fileProcessingProgress.Filename, bar);
+                    spawnedFiles.Add(fileProcessingProgress.Filename, bar);
                 }
                 else
                 {
-                    bar = _spawnedFiles[fileProcessingProgress.Filename];
+                    bar = spawnedFiles[fileProcessingProgress.Filename];
                 }
             }
 
