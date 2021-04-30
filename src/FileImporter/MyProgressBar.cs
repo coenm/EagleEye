@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+
     using ShellProgressBar;
 
     public class MyProgressBar : IDisposable
@@ -12,7 +13,7 @@
         private readonly ProgressBar _inner;
         private ConcurrentDictionary<string, ChildProgressBar> progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
 
-        public static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
+        private static readonly ProgressBarOptions ProgressOptions = new ProgressBarOptions
         {
             ProgressCharacter = '─',
             ForegroundColor = ConsoleColor.Yellow,
@@ -20,7 +21,7 @@
             EnableTaskBarProgress = true,
         };
 
-        public static readonly ProgressBarOptions ChildOptions = new ProgressBarOptions
+        private static readonly ProgressBarOptions ChildOptions = new ProgressBarOptions
         {
             ForegroundColor = ConsoleColor.Green,
             BackgroundColor = ConsoleColor.DarkGreen,
@@ -57,7 +58,6 @@
             if (fileProcessingProgress.Step == fileProcessingProgress.TotalSteps)
             {
                 childProgressBar.Tick(int.MaxValue);
-                /*childProgressBar.Dispose();*/
                 parentProgressBar.Tick();
                 return childProgressBar;
             }
@@ -69,8 +69,7 @@
             else
             {
                 decimal totalSteps = (decimal)fileProcessingProgress.Step / fileProcessingProgress.TotalSteps;
-                decimal decimalStep = Math.Floor(totalSteps * int.MaxValue);
-                var step = (int)decimalStep;
+                var step = (int)Math.Floor(totalSteps * int.MaxValue);
                 childProgressBar.Tick(step);
                 return childProgressBar;
             }
@@ -103,8 +102,7 @@
             }
 
             decimal totalSteps = (decimal)fileProcessingProgress.Step / fileProcessingProgress.TotalSteps;
-            var x = Math.Floor(totalSteps * int.MaxValue);
-            var step = (int)x;
+            var step = (int)Math.Floor(totalSteps * int.MaxValue);
             bar.Tick(step);
             return bar;
         }

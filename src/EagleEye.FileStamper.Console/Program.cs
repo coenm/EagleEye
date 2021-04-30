@@ -79,8 +79,6 @@
 
             var singleExecutor = container.GetInstance<IUpdateImportImageCommandHandler>();
             var executor = new UpdateMultipleImagesExecutor(singleExecutor);
-            // var progressBars = new ConcurrentDictionary<string, ChildProgressBar>();
-
             using var progressBar = new MyProgressBar(files.Length, "Initial message");
 
             var progress = new Progress<FileProcessingProgress>(data => progressBar.Update(data));
