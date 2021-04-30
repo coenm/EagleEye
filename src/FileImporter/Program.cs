@@ -23,7 +23,6 @@
     using ShellProgressBar;
     using SimpleInjector;
 
-
     public static class Program
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
@@ -302,7 +301,7 @@
             if (string.IsNullOrWhiteSpace(query))
                 return false;
 
-            var searchResults = new List<PhotoResult>(0);
+            List<PhotoResult> searchResults;
 
             try
             {
