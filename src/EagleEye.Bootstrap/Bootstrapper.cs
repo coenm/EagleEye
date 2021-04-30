@@ -153,8 +153,8 @@
 
             RegisterPhotoDomain();
 
-            container.Collection.Append<IEagleEyeProcess, DummyProcess>();
-            container.Collection.Append<IEagleEyeInitialize, DummyEagleEyeInitialize>();
+            container.Collection.Append<IEagleEyeProcess, DummyProcess>(Lifestyle.Singleton);
+            container.Collection.Append<IEagleEyeInitialize, DummyEagleEyeInitialize>(Lifestyle.Singleton);
         }
 
         private void RegisterCqrsLite()
