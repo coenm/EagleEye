@@ -5,7 +5,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using EagleEye.Core.Interfaces.Module;
     using EagleEye.ExifTool;
     using EagleEye.ExifTool.Test;
@@ -49,13 +49,13 @@
         }
 
         [Fact]
-        public void Bootstrap_ShouldNotThrow()
+        public async Task Bootstrap_ShouldNotThrow()
         {
             // arrange
 
             // act
             var sut = Sut.Initialize(plugins, config);
-            using var container = sut.Finalize();
+            await using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
@@ -64,14 +64,14 @@
         }
 
         [Fact]
-        public void Bootstrap_ShouldNotThrow_WhenRegisterPhotoDatabaseReadModel()
+        public async Task Bootstrap_ShouldNotThrow_WhenRegisterPhotoDatabaseReadModel()
         {
             // arrange
 
             // act
             var sut = Sut.Initialize(plugins, config);
             sut.RegisterPhotoDatabaseReadModel("InMemory a");
-            using var container = sut.Finalize();
+            await using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
@@ -80,7 +80,7 @@
         }
 
         [Fact]
-        public void Bootstrap_ShouldNotThrow_WhenRegisterSearchEngineReadModel()
+        public async Task Bootstrap_ShouldNotThrow_WhenRegisterSearchEngineReadModel()
         {
             // arrange
             var searchEngineDirectory = Path.Combine(tempPath, "Lucene");
@@ -88,7 +88,7 @@
             // act
             var sut = Sut.Initialize(plugins, config);
             sut.RegisterSearchEngineReadModel(searchEngineDirectory);
-            using var container = sut.Finalize();
+            await using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 
@@ -97,7 +97,7 @@
         }
 
         [Fact]
-        public void Bootstrap_ShouldNotThrow_WhenRegisterSimilarityReadModel()
+        public async Task Bootstrap_ShouldNotThrow_WhenRegisterSimilarityReadModel()
         {
             // arrange
             const string connectionString = "InMemory a";
@@ -106,7 +106,7 @@
             // act
             var sut = Sut.Initialize(plugins, config);
             sut.RegisterSimilarityReadModel(connectionString, connectionStringHangFire);
-            using var container = sut.Finalize();
+            await using var container = sut.Finalize();
 
             Action act = () => container.Verify(VerificationOption.VerifyAndDiagnose);
 

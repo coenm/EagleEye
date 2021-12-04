@@ -9,7 +9,8 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class UpdatePicasaIniFileExecutorIntegrationTest : VerifyBase
+    [UsesVerify]
+    public class UpdatePicasaIniFileExecutorIntegrationTest
     {
         private const string DummyFilename = "M:\\Fotoalbum\\Coen\\2003-Coen\\.picasa.ini";
         private readonly IPicasaContactsProvider picasaContactsProvider;
@@ -19,7 +20,6 @@
         private readonly IPicasaIniFileWriter picasaIniFileWriter;
 
         public UpdatePicasaIniFileExecutorIntegrationTest(ITestOutputHelper output)
-            : base(output)
         {
             var fileService = SystemFileService.Instance;
             var xmlFile = "M:\\FotoalbumBackups\\contacts.xml";

@@ -10,7 +10,8 @@
 
     using Sut = EagleEye.Picasa.Picasa.PicasaIniParser;
 
-    public class PicasaIniParserTest : VerifyBase
+    [UsesVerify]
+    public class PicasaIniParserTest
     {
         private const string PicasaIniFileContent = @"
 [pica 1.jpg]
@@ -32,7 +33,6 @@ faces=rect64(787e40a89fff7fc0),ffffffffffffffff;rect64(3df8363c8b6289d8),7131e76
 backuphash=11571";
 
         public PicasaIniParserTest(ITestOutputHelper output)
-            : base(output)
         {
         }
 
@@ -46,7 +46,7 @@ backuphash=11571";
             var result = Sut.Parse(stream);
 
             // assert
-            await Verify(result);
+            await Verifier.Verify(result);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ backuphash=11571";
             var result = Sut.Parse(stream);
 
             // assert
-            await Verify(result);
+            await Verifier.Verify(result);
         }
 
         private static MemoryStream GenerateStreamFromString(string value)

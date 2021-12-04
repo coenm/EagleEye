@@ -14,7 +14,8 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class UpdatePicasaIniFileExecutorTest : VerifyBase
+    [UsesVerify]
+    public class UpdatePicasaIniFileExecutorTest
     {
         private const string DummyFilename = "dummy.ini";
         private readonly IPicasaContactsProvider picasaContactsProvider;
@@ -36,7 +37,6 @@
         private readonly List<WrittenIniFilesData> writtenIniFiles;
 
         public UpdatePicasaIniFileExecutorTest(ITestOutputHelper output)
-            : base(output)
         {
             picasaContactsProvider = A.Fake<IPicasaContactsProvider>();
             picasaIniFileProvider = A.Fake<IPicasaIniFileProvider>();
@@ -51,7 +51,6 @@
                           var original = call.Arguments[2] as PicasaIniFile;
 
                           writtenIniFiles.Add(new WrittenIniFilesData(updater, original));
-                          return;
                       });
 
             sut = new UpdatePicasaIniFileExecutor(SystemFileService.Instance, picasaContactsProvider, picasaIniFileProvider, picasaIniFileWriter);
@@ -112,7 +111,7 @@
 
             // assert
             A.CallTo(() => picasaIniFileWriter.Write(DummyFilename, A<PicasaIniFileUpdater>._, iniFile, true)).MustHaveHappenedOnceExactly();
-            await Verify(writtenIniFiles);
+            await Verifier.Verify(writtenIniFiles);
         }
 
         [Fact]
@@ -146,7 +145,7 @@
                               .BeEquivalentTo(
                                               new PicasaPersonLocation(person123AliceUpdated, region1),
                                               new PicasaPersonLocation(person1234Bob, region2));
-            await Verify(writtenIniFiles);
+            await Verifier.Verify(writtenIniFiles);
         }
 
         private void SetupPicasaContactsProvider(params PicasaPerson[] persons)

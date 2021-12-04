@@ -77,7 +77,7 @@
     <PackageReference Update="FakeItEasy.Analyzer.CSharp" Version="6.0.0" IsImplicitlyDefined="true"/>
     <PackageReference Update="FluentAssertions" Version="5.10.3" IsImplicitlyDefined="true"/>
     <PackageReference Update="FluentAssertions.Analyzers" Version="0.11.4" IsImplicitlyDefined="true"/>
-    <PackageReference Update="Verify.Xunit" Version="2.1.2" IsImplicitlyDefined="true"/>
+    <PackageReference Update="Verify.Xunit" Version="14.7.0" IsImplicitlyDefined="true"/>
     <PackageReference Update="Pose" Version="1.2.1" IsImplicitlyDefined="true"/>
 
     <!--Test coverage -->

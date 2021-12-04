@@ -11,11 +11,14 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class PicasaContactsXmlWriterTest : VerifyBase
+    [UsesVerify]
+    public class PicasaContactsXmlWriterTest
     {
+        [NotNull] private readonly ITestOutputHelper output;
+
         public PicasaContactsXmlWriterTest([NotNull] ITestOutputHelper output)
-            : base(output)
         {
+            this.output = output;
         }
 
         [Fact]
@@ -35,7 +38,7 @@
             sut.Write(items, stream);
 
             // assert
-            await Verify(Encoding.UTF8.GetString(stream.ToArray()));
+            await Verifier.Verify(Encoding.UTF8.GetString(stream.ToArray()));
         }
     }
 }

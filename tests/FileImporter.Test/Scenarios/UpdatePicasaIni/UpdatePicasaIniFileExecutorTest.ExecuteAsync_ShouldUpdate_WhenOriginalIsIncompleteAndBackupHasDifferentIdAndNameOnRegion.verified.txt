@@ -4,15 +4,15 @@
       IniFile: {
         Files: [
           {
-            Filename: 'A.jpg',
+            Filename: A.jpg,
             Persons: [
               {
                 Person: {
-                  Id: '123',
-                  Name: 'AliceUpdated'
+                  Id: 123,
+                  Name: AliceUpdated
                 },
                 Region: {
-                  Rect64: 'rect64(935f5217a1696893)',
+                  Rect64: rect64(935f5217a1696893),
                   Left: 0.5756771,
                   Top: 0.32066834,
                   Right: 0.630518,
@@ -21,11 +21,11 @@
               },
               {
                 Person: {
-                  Id: '1234',
-                  Name: 'Bob'
+                  Id: 1234,
+                  Name: Bob
                 },
                 Region: {
-                  Rect64: 'rect64(4f5c884659bb98b2)',
+                  Rect64: rect64(4f5c884659bb98b2),
                   Left: 0.3100023,
                   Top: 0.5323262,
                   Right: 0.35051498,
@@ -37,12 +37,12 @@
         ],
         Persons: [
           {
-            Id: '123',
-            Name: 'AliceUpdated'
+            Id: 123,
+            Name: AliceUpdated
           },
           {
-            Id: '1234',
-            Name: 'Bob'
+            Id: 1234,
+            Name: Bob
           }
         ]
       }
@@ -50,15 +50,15 @@
     Original: {
       Files: [
         {
-          Filename: 'A.jpg',
+          Filename: A.jpg,
           Persons: [
             {
               Person: {
-                Id: '123',
-                Name: 'Alice'
+                Id: 123,
+                Name: Alice
               },
               Region: {
-                Rect64: 'rect64(935f5217a1696893)',
+                Rect64: rect64(935f5217a1696893),
                 Left: 0.5756771,
                 Top: 0.32066834,
                 Right: 0.630518,
@@ -67,11 +67,11 @@
             },
             {
               Person: {
-                Id: '1234',
-                Name: ''
+                Id: 1234,
+                Name: 
               },
               Region: {
-                Rect64: 'rect64(4f5c884659bb98b2)',
+                Rect64: rect64(4f5c884659bb98b2),
                 Left: 0.3100023,
                 Top: 0.5323262,
                 Right: 0.35051498,
@@ -83,8 +83,8 @@
       ],
       Persons: [
         {
-          Id: '123',
-          Name: 'Alice'
+          Id: 123,
+          Name: Alice
         }
       ]
     }
