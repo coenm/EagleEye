@@ -31,7 +31,6 @@
             // bootstrapper.RegisterPhotoDatabaseReadModel(connectionStrings.ConnectionStringPhotoDatabase);
             // bootstrapper.RegisterSearchEngineReadModel(connectionStrings.LuceneDirectory);
             // bootstrapper.RegisterSimilarityReadModel(connectionStrings.Similarity, connectionStrings.HangFire);
-
             return bootstrapper.Finalize();
         }
 

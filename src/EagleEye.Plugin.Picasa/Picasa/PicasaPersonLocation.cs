@@ -9,19 +9,19 @@
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     public class PicasaPersonLocation : IEquatable<PicasaPersonLocation>, ICloneable
     {
-        public PicasaPersonLocation([NotNull] PicasaPerson person, [CanBeNull] Rect64RelativeRegion? region = null)
+        public PicasaPersonLocation([JetBrains.Annotations.NotNull] PicasaPerson person, [CanBeNull] Rect64RelativeRegion? region = null)
         {
             Person = person;
             Region = region;
         }
 
-        public PicasaPersonLocation([NotNull] string person, [CanBeNull] Rect64RelativeRegion? region = null)
+        public PicasaPersonLocation([JetBrains.Annotations.NotNull] string person, [CanBeNull] Rect64RelativeRegion? region = null)
         {
             Person = new PicasaPerson(string.Empty, person);
             Region = region;
         }
 
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         public PicasaPerson Person { get; private set; }
 
         [CanBeNull]
@@ -38,7 +38,7 @@
             return Person + "; Region:" + Region.Value.Rect64;
         }
 
-        public void UpdatePerson([NotNull] PicasaPerson picasaPerson)
+        public void UpdatePerson([JetBrains.Annotations.NotNull] PicasaPerson picasaPerson)
         {
             if (string.IsNullOrWhiteSpace(picasaPerson.Name))
                 throw new ArgumentNullException(nameof(picasaPerson.Name));

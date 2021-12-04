@@ -164,7 +164,7 @@
             container.Register<IEventPublisher>(container.GetInstance<Router>, Lifestyle.Singleton);
             container.Register<IHandlerRegistrar>(container.GetInstance<Router>, Lifestyle.Singleton);
             // container.RegisterDecorator<ICommandSender, RetryCommandSenderDecorator>(Lifestyle.Singleton);
-
+            
             container.RegisterSingleton<ICache, MemoryCache>();
 
             // add scoped?!

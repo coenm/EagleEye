@@ -123,7 +123,7 @@
 
             var mapping = new Dictionary<string, string>();
             await using (var s = fileService.OpenRead(mappingFile))
-            using(var r = new StreamReader(s))
+            using (var r = new StreamReader(s))
             {
                 var content = await r.ReadToEndAsync();
 

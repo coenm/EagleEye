@@ -11,11 +11,11 @@
 
     internal class DbContextOptionsFactory
     {
-        [NotNull] private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        [NotNull] private readonly IEnumerable<IDbContextOptionsStrategy> strategies;
+        [JetBrains.Annotations.NotNull] private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        [JetBrains.Annotations.NotNull] private readonly IEnumerable<IDbContextOptionsStrategy> strategies;
 
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration", Justification = "Used by Guard for null check")]
-        public DbContextOptionsFactory([NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
+        public DbContextOptionsFactory([JetBrains.Annotations.NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
         {
             Guard.Argument(strategies, nameof(strategies)).NotNull();
             this.strategies = strategies;

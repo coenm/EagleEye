@@ -10,7 +10,7 @@
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     public readonly struct PicasaContact : IEquatable<PicasaContact>
     {
-        public PicasaContact([NotNull] string id, [NotNull] string name, [CanBeNull] string displayValue, [CanBeNull] string modifiedTimeValue, [CanBeNull] string localContactValue)
+        public PicasaContact([JetBrains.Annotations.NotNull] string id, [JetBrains.Annotations.NotNull] string name, [CanBeNull] string displayValue, [CanBeNull] string modifiedTimeValue, [CanBeNull] string localContactValue)
         {
             Guard.Argument(name, nameof(name)).NotNull(); // can be empty
             Guard.Argument(id, nameof(id)).NotNull(); // can be empty

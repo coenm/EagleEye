@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6</TargetFramework>
     <AssemblyName>EagleEye.Plugin.ExifTool.Test</AssemblyName>
     <RootNamespace>EagleEye.ExifTool.Test</RootNamespace>
   </PropertyGroup>
