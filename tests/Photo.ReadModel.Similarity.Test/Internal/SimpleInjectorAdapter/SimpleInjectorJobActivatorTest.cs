@@ -12,6 +12,7 @@
         {
             // arrange
             var container = new Container();
+            container.Register<TestJob>();
             var sut = new SimpleInjectorJobActivator(container);
 
             // act

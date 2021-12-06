@@ -18,7 +18,7 @@
         public DbContextOptionsFactory([JetBrains.Annotations.NotNull] IEnumerable<IDbContextOptionsStrategy> strategies)
         {
             Guard.Argument(strategies, nameof(strategies)).NotNull();
-            this.strategies = strategies;
+            this.strategies = strategies.ToList();
         }
 
         [CanBeNull]

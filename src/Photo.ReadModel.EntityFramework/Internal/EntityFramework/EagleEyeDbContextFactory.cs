@@ -17,11 +17,9 @@
 
         public async Task Initialize()
         {
-            using (var db = CreateMediaItemDbContext())
-            {
-                // await db.Database.OpenConnectionAsync();
-                await db.Database.EnsureCreatedAsync();
-            }
+            await using var db = CreateMediaItemDbContext();
+            // await db.Database.OpenConnectionAsync();
+            await db.Database.EnsureCreatedAsync();
         }
 
         public EagleEyeDbContext CreateMediaItemDbContext() => new EagleEyeDbContext(options);

@@ -17,40 +17,23 @@
             this.contextFactory = contextFactory;
         }
 
-        public Task<Photo> GetByIdAsync(Guid id)
+        public async Task<Photo> GetByIdAsync(Guid id)
         {
-            using (var db = contextFactory.CreateMediaItemDbContext())
-            {
-                var result = db.Photos.FirstOrDefault(x => x.Id.Equals(id));
-                return Task.FromResult(result);
-            }
+            await using var db = contextFactory.CreateMediaItemDbContext();
+            return db.Photos.FirstOrDefault(x => x.Id.Equals(id));
         }
 
-        public Task<Photo> GetByFilenameAsync(Guid id)
+        public async Task<List<Photo>> GetAllAsync()
         {
-            using (var db = contextFactory.CreateMediaItemDbContext())
-            {
-                var result = db.Photos.FirstOrDefault(x => x.Id.Equals(id));
-                return Task.FromResult(result);
-            }
-        }
-
-        public Task<List<Photo>> GetAllAsync()
-        {
-            using (var db = contextFactory.CreateMediaItemDbContext())
-            {
-                var result = db.Photos.ToList();
-                return Task.FromResult(result);
-            }
+            await using var db = contextFactory.CreateMediaItemDbContext();
+            return db.Photos.ToList();
         }
 
         public async Task<int> UpdateAsync(Photo item)
         {
-            using (var db = contextFactory.CreateMediaItemDbContext())
-            {
-                db.Photos.Update(item);
-                return await db.SaveChangesAsync().ConfigureAwait(false);
-            }
+            await using var db = contextFactory.CreateMediaItemDbContext();
+            db.Photos.Update(item);
+            return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<int> RemoveByIdAsync(params Guid[] itemIds)
@@ -58,30 +41,26 @@
             if (itemIds == null || itemIds.Any() == false)
                 return 0;
 
-            using (var db = contextFactory.CreateMediaItemDbContext())
-            {
-                var items = await db.Photos
-                                    .Where(x => itemIds.Contains(x.Id))
-                                    .ToListAsync()
-                                    .ConfigureAwait(false);
+            await using var db = contextFactory.CreateMediaItemDbContext();
+            var items = await db.Photos
+                .Where(x => itemIds.Contains(x.Id))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-                if (items.Any() == false)
-                    return 0;
+            if (!items.Any())
+                return 0;
 
-                foreach (var item in items)
-                    db.Photos.Remove(item);
+            foreach (var item in items)
+                db.Photos.Remove(item);
 
-                return await db.SaveChangesAsync().ConfigureAwait(false);
-            }
+            return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<int> SaveAsync(Photo item)
         {
-            using (var db = contextFactory.CreateMediaItemDbContext())
-            {
-                await db.Photos.AddAsync(item).ConfigureAwait(false);
-                return await db.SaveChangesAsync().ConfigureAwait(false);
-            }
+            await using var db = contextFactory.CreateMediaItemDbContext();
+            await db.Photos.AddAsync(item).ConfigureAwait(false);
+            return await db.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

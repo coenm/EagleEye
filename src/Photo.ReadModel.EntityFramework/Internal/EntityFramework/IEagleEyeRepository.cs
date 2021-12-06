@@ -10,8 +10,6 @@
     {
         Task<Photo> GetByIdAsync(Guid id);
 
-        Task<Photo> GetByFilenameAsync(Guid id);
-
         Task<List<Photo>> GetAllAsync();
 
         Task<int> UpdateAsync(Photo item);

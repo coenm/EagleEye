@@ -58,6 +58,9 @@
 
         private static void RegisterDbContextOptions(Container container)
         {
+            container.Register<SqlLiteDatabaseOptionsBuilder>(Lifestyle.Singleton);
+            container.Register<InMemoryDatabaseOptionsBuilder>(Lifestyle.Singleton);
+
             // original:
             // container.Collection.Register(typeof(IDbContextOptionsStrategy), thisAssembly);
             // workaround https://stackoverflow.com/questions/52777116/simple-injector-how-to-register-resolve-collection-of-singletons-against-same-i
